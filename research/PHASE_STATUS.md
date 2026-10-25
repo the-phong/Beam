@@ -1,5 +1,20 @@
 # Phase status — 2026-10-25
 
+## Active Phase 03E implementation candidate
+
+The Owner approved one complete Phase 03E four-validator BFT integration
+workflow after merging the accepted Phase 03D branch into `test-mainet` at
+`c3756843c5e804e3a985d817ab5c83d2dd6798a0`. The implementation branch
+is `phase/03e-four-validator-bft`. D-027 records the bounded shared-genesis
+provisioning choice. Four real local CometBFT validators, transaction/state
+agreement, quorum and crash recovery are under implementation and test. The
+Phase 03E report and exact verification evidence govern claims. Independent
+Controller technical acceptance and Owner formal closure remain pending.
+Phase 04 and later phases are unauthorized.
+
+The Phase 03D authority statements below are historical and superseded by
+the Owner's Phase 03E execution contract; they remain for audit traceability.
+
 ## Phase 03D formal acceptance and Git closeout
 
 The Controller technically accepted the classical B0 ABCI++ Phase 03D

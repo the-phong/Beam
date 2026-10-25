@@ -8,3 +8,5 @@ node_key.json
 coverage*.txt
 .env
 .DS_Store
+/research/evidence/phase_03e/*.log
+/research/evidence/phase_03e/*_raw/

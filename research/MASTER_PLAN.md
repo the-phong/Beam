@@ -1,5 +1,14 @@
 # Pluto research master plan
 
+**Phase 03E authorization addendum (2026-10-25):** The Owner merged the
+accepted Phase 03D closeout into `test-mainet` at
+`c3756843c5e804e3a985d817ab5c83d2dd6798a0` and authorized one complete
+Phase 03E four-validator BFT implementation on
+`phase/03e-four-validator-bft`. The required local multi-validator tests and
+Draft PR are one engineering workflow. Controller review and Owner acceptance
+remain separate; Phase 04 and later work remain unauthorized. The older
+current-authority paragraph below records the earlier Phase 03D closeout.
+
 Project question: What are the resource costs and correctness properties of
 hybrid secp256k1–ML-DSA-44 transactions in a custom CometBFT-based
 application under deliberately invalid workloads, and does an EVM add value
