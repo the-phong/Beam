@@ -23,7 +23,7 @@ type fixture struct {
 	Receiver string `json:"receiver_hex"`
 }
 
-func baseFixture(t *testing.T) (Address, Address, []byte) {
+func baseFixture(t testing.TB) (Address, Address, []byte) {
 	t.Helper()
 	data, err := os.ReadFile("../../research/evidence/phase_03b/golden_vectors.json")
 	if err != nil {
@@ -62,7 +62,7 @@ func genesis(t *testing.T) (State, Address, Address, []byte) {
 	return s, a, b, wire
 }
 
-func signed(t *testing.T, keyByte byte, receiver Address, amount, nonce uint64) []byte {
+func signed(t testing.TB, keyByte byte, receiver Address, amount, nonce uint64) []byte {
 	t.Helper()
 	var secret [32]byte
 	secret[31] = keyByte // explicitly public TEST ONLY scalar 1 or 2.

@@ -8,6 +8,7 @@ require (
 	github.com/cockroachdb/pebble v1.1.5
 	github.com/cometbft/cometbft v0.38.26
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.4.1
+	github.com/spf13/viper v1.19.0
 )
 
 require (
@@ -74,7 +75,6 @@ require (
 	github.com/spf13/cast v1.6.0 // indirect
 	github.com/spf13/cobra v1.9.1 // indirect
 	github.com/spf13/pflag v1.0.6 // indirect
-	github.com/spf13/viper v1.19.0 // indirect
 	github.com/stretchr/testify v1.10.0 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7 // indirect

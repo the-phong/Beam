@@ -1,0 +1,2 @@
+normal: required=13 passed=13 missing=[] skipped=[] failed=[] callback_markers=12 post_commit_ack=check_code=0 tx_code=0 height=3 final_pass=True
+race: required=13 passed=13 missing=[] skipped=[] failed=[] callback_markers=12 post_commit_ack=check_code=0 tx_code=0 height=3 final_pass=True

@@ -1,0 +1,2 @@
+2026/10/25 01:38:03 [JOB 1] WAL file /tmp/TestB0M4RealCrossStoreWALFaultwal-write561615496/001/home/data/pluto-b0-v2/000002.log with log number 000002 stopped reading at offset: 489; replayed 3 keys in 3 batches
+2026/10/25 01:38:04 pebble: fatal commit error: injected error

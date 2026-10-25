@@ -1,0 +1,84 @@
+I[2026-10-25|02:40:13.666] service start                                module=proxy msg="Starting multiAppConn service" impl=multiAppConn
+I[2026-10-25|02:40:13.667] service start                                module=abci-client connection=query msg="Starting socketClient service" impl=socketClient
+I[2026-10-25|02:40:13.671] service start                                module=abci-client connection=snapshot msg="Starting socketClient service" impl=socketClient
+I[2026-10-25|02:40:13.671] service start                                module=abci-client connection=mempool msg="Starting socketClient service" impl=socketClient
+I[2026-10-25|02:40:13.671] service start                                module=abci-client connection=consensus msg="Starting socketClient service" impl=socketClient
+I[2026-10-25|02:40:13.673] service start                                module=events msg="Starting EventBus service" impl=EventBus
+I[2026-10-25|02:40:13.673] service start                                module=pubsub msg="Starting PubSub service" impl=PubSub
+I[2026-10-25|02:40:13.686] service start                                module=txindex msg="Starting IndexerService service" impl=IndexerService
+I[2026-10-25|02:40:13.691] ABCI Handshake App Info                      module=consensus height=2 hash=C0305DE0DF961F7BB6B7B379A392FB96C3CB7EE1CA6B48C767BD833570D55AE0 software-version=0.2.0-foundation protocol-version=2
+I[2026-10-25|02:40:13.691] ABCI Replay Blocks                           module=consensus appHeight=2 storeHeight=2 stateHeight=2
+I[2026-10-25|02:40:13.691] Completed ABCI Handshake - CometBFT and App are synced module=consensus appHeight=2 appHash=C0305DE0DF961F7BB6B7B379A392FB96C3CB7EE1CA6B48C767BD833570D55AE0
+I[2026-10-25|02:40:13.691] Version info                                 module=main tendermint_version=0.38.26 abci=2.0.0 block=11 p2p=8 commit_hash=
+I[2026-10-25|02:40:13.691] This node is a validator                     module=consensus addr=E34812A761E7785A4F988DEA8D50BA2CF465A0CD pubKey=PubKeyEd25519{094DAFCD122DAFB667940AC58471FD13CBA84462505A206F220151399C60D1ED}
+I[2026-10-25|02:40:13.710] P2P Node ID                                  module=p2p ID=7faf2ccd1652dad9f4954943fb68ccc563a01647 file=/tmp/TestB0M7OtherApplicationCallbackscheck-new654249339/001/home/config/node_key.json
+I[2026-10-25|02:40:13.710] Adding persistent peers                      module=p2p addrs=[]
+I[2026-10-25|02:40:13.710] Adding unconditional peer ids                module=p2p ids=[]
+I[2026-10-25|02:40:13.710] Add our address to book                      module=p2p book=/tmp/TestB0M7OtherApplicationCallbackscheck-new654249339/001/home/config/addrbook.json addr=7faf2ccd1652dad9f4954943fb68ccc563a01647@127.0.0.1:41205
+I[2026-10-25|02:40:13.710] service start                                module=main msg="Starting Node service" impl=Node
+I[2026-10-25|02:40:13.716] service start                                module=p2p msg="Starting P2P Switch service" impl="P2P Switch"
+I[2026-10-25|02:40:13.716] service start                                module=mempool msg="Starting Mempool service" impl=Mempool
+I[2026-10-25|02:40:13.716] service start                                module=blocksync msg="Starting Reactor service" impl=Reactor
+I[2026-10-25|02:40:13.716] serve                                        module=rpc-server msg="Starting RPC HTTP server on 127.0.0.1:40685"
+I[2026-10-25|02:40:13.717] service start                                module=consensus msg="Starting Consensus service" impl=ConsensusReactor
+I[2026-10-25|02:40:13.717] Reactor                                      module=consensus waitSync=false
+I[2026-10-25|02:40:13.718] service start                                module=consensus msg="Starting State service" impl=ConsensusState
+I[2026-10-25|02:40:13.720] service start                                module=consensus wal=/tmp/TestB0M7OtherApplicationCallbackscheck-new654249339/001/home/data/cs.wal/wal msg="Starting baseWAL service" impl=baseWAL
+I[2026-10-25|02:40:13.720] service start                                module=consensus wal=/tmp/TestB0M7OtherApplicationCallbackscheck-new654249339/001/home/data/cs.wal/wal msg="Starting Group service" impl=Group
+I[2026-10-25|02:40:13.720] service start                                module=consensus msg="Starting TimeoutTicker service" impl=TimeoutTicker
+I[2026-10-25|02:40:13.720] Searching for height                         module=consensus wal=/tmp/TestB0M7OtherApplicationCallbackscheck-new654249339/001/home/data/cs.wal/wal height=3 min=0 max=0
+I[2026-10-25|02:40:13.721] Searching for height                         module=consensus wal=/tmp/TestB0M7OtherApplicationCallbackscheck-new654249339/001/home/data/cs.wal/wal height=2 min=0 max=0
+I[2026-10-25|02:40:13.721] Found                                        module=consensus wal=/tmp/TestB0M7OtherApplicationCallbackscheck-new654249339/001/home/data/cs.wal/wal height=2 index=0
+I[2026-10-25|02:40:13.721] Catchup by replaying consensus messages      module=consensus height=3
+I[2026-10-25|02:40:13.721] Replay: New Step                             module=consensus height=3 round=0 step=RoundStepNewHeight
+I[2026-10-25|02:40:13.721] Replay: Done                                 module=consensus 
+I[2026-10-25|02:40:13.721] service start                                module=evidence msg="Starting Evidence service" impl=Evidence
+I[2026-10-25|02:40:13.721] service start                                module=statesync msg="Starting StateSync service" impl=StateSync
+I[2026-10-25|02:40:13.721] service start                                module=pex msg="Starting PEX service" impl=PEX
+I[2026-10-25|02:40:13.721] service start                                module=p2p book=/tmp/TestB0M7OtherApplicationCallbackscheck-new654249339/001/home/config/addrbook.json msg="Starting AddrBook service" impl=AddrBook
+I[2026-10-25|02:40:13.723] Saving AddrBook to file                      module=p2p book=/tmp/TestB0M7OtherApplicationCallbackscheck-new654249339/001/home/config/addrbook.json size=0
+I[2026-10-25|02:40:13.724] Ensure peers                                 module=pex numOutPeers=0 numInPeers=0 numDialing=0 numToDial=10
+I[2026-10-25|02:40:13.725] Started node                                 module=main nodeInfo="{ProtocolVersion:{P2P:8 Block:11 App:2} DefaultNodeID:7faf2ccd1652dad9f4954943fb68ccc563a01647 ListenAddr:tcp://127.0.0.1:41205 Network:pluto-b0-v1 Version:0.38.26 Channels:40202122233038606100 Moniker:PhongJunior Other:{TxIndex:on RPCAddress:tcp://127.0.0.1:40685}}"
+I[2026-10-25|02:40:13.725] No addresses to dial. Falling back to seeds  module=pex 
+I[2026-10-25|02:40:14.707] Timed out                                    module=consensus dur=984.800695ms height=3 round=0 step=RoundStepNewHeight
+I[2026-10-25|02:40:14.722] received proposal                            module=consensus proposal="Proposal{3/0 (F9A4F59C7B67B0138CF5AC281385B5D79B62BE833988DEDB20A65301E22F8C03:1:BBE19C495B08, -1) 242748BB703B @ 2026-10-24T19:40:14.716934058Z}" proposer=E34812A761E7785A4F988DEA8D50BA2CF465A0CD
+I[2026-10-25|02:40:14.723] received complete proposal block             module=consensus height=3 hash=F9A4F59C7B67B0138CF5AC281385B5D79B62BE833988DEDB20A65301E22F8C03
+I[2026-10-25|02:40:14.732] finalizing commit of block                   module=consensus height=3 hash=F9A4F59C7B67B0138CF5AC281385B5D79B62BE833988DEDB20A65301E22F8C03 root=C0305DE0DF961F7BB6B7B379A392FB96C3CB7EE1CA6B48C767BD833570D55AE0 num_txs=0
+I[2026-10-25|02:40:14.735] finalized block                              module=state height=3 num_txs_res=0 num_val_updates=0 block_app_hash=57434E9BF8B6DF4FE6C14476A65EFE33117EFE7B58291158D5E7ACF567338C5A
+I[2026-10-25|02:40:14.735] executed block                               module=state height=3 app_hash=57434E9BF8B6DF4FE6C14476A65EFE33117EFE7B58291158D5E7ACF567338C5A
+I[2026-10-25|02:40:14.739] committed state                              module=state height=3 block_app_hash=C0305DE0DF961F7BB6B7B379A392FB96C3CB7EE1CA6B48C767BD833570D55AE0
+I[2026-10-25|02:40:14.742] indexed block events                         module=txindex height=3
+I[2026-10-25|02:40:15.731] Timed out                                    module=consensus dur=990.78924ms height=4 round=0 step=RoundStepNewHeight
+I[2026-10-25|02:40:15.738] received proposal                            module=consensus proposal="Proposal{4/0 (4428412B149F7F2993DD8340B015C01BC26E743626696FB97E43E1B4B989F577:1:F259BE23EBC5, -1) 3DFF670E28B4 @ 2026-10-24T19:40:15.734669184Z}" proposer=E34812A761E7785A4F988DEA8D50BA2CF465A0CD
+I[2026-10-25|02:40:15.740] received complete proposal block             module=consensus height=4 hash=4428412B149F7F2993DD8340B015C01BC26E743626696FB97E43E1B4B989F577
+I[2026-10-25|02:40:15.749] finalizing commit of block                   module=consensus height=4 hash=4428412B149F7F2993DD8340B015C01BC26E743626696FB97E43E1B4B989F577 root=57434E9BF8B6DF4FE6C14476A65EFE33117EFE7B58291158D5E7ACF567338C5A num_txs=1
+I[2026-10-25|02:40:15.753] finalized block                              module=state height=4 num_txs_res=1 num_val_updates=0 block_app_hash=44295DA9566BF288667D249E95CD301217ABBF9B76B500F594110FD11F9E2FFA
+I[2026-10-25|02:40:15.753] executed block                               module=state height=4 app_hash=44295DA9566BF288667D249E95CD301217ABBF9B76B500F594110FD11F9E2FFA
+I[2026-10-25|02:40:15.757] committed state                              module=state height=4 block_app_hash=57434E9BF8B6DF4FE6C14476A65EFE33117EFE7B58291158D5E7ACF567338C5A
+I[2026-10-25|02:40:15.760] indexed block events                         module=txindex height=4
+I[2026-10-25|02:40:15.854] signal trapped                               module=main msg="captured terminated, exiting..."
+I[2026-10-25|02:40:15.854] service stop                                 module=main msg="Stopping Node service" impl=Node
+I[2026-10-25|02:40:15.854] Stopping Node                                module=main 
+I[2026-10-25|02:40:15.854] service stop                                 module=events msg="Stopping EventBus service" impl=EventBus
+I[2026-10-25|02:40:15.854] service stop                                 module=pubsub msg="Stopping PubSub service" impl=PubSub
+I[2026-10-25|02:40:15.854] service stop                                 module=txindex msg="Stopping IndexerService service" impl=IndexerService
+I[2026-10-25|02:40:15.854] service stop                                 module=p2p msg="Stopping P2P Switch service" impl="P2P Switch"
+I[2026-10-25|02:40:15.854] service stop                                 module=mempool msg="Stopping Mempool service" impl=Mempool
+I[2026-10-25|02:40:15.854] service stop                                 module=blocksync msg="Stopping Reactor service" impl=Reactor
+I[2026-10-25|02:40:15.854] service stop                                 module=consensus msg="Stopping Consensus service" impl=ConsensusReactor
+I[2026-10-25|02:40:15.854] service stop                                 module=consensus msg="Stopping State service" impl=ConsensusState
+I[2026-10-25|02:40:15.855] service stop                                 module=consensus msg="Stopping TimeoutTicker service" impl=TimeoutTicker
+I[2026-10-25|02:40:15.855] service stop                                 module=consensus wal=/tmp/TestB0M7OtherApplicationCallbackscheck-new654249339/001/home/data/cs.wal/wal msg="Stopping baseWAL service" impl=baseWAL
+I[2026-10-25|02:40:15.859] service stop                                 module=consensus wal=/tmp/TestB0M7OtherApplicationCallbackscheck-new654249339/001/home/data/cs.wal/wal msg="Stopping Group service" impl=Group
+I[2026-10-25|02:40:15.859] service stop                                 module=evidence msg="Stopping Evidence service" impl=Evidence
+I[2026-10-25|02:40:15.859] service stop                                 module=statesync msg="Stopping StateSync service" impl=StateSync
+I[2026-10-25|02:40:15.859] service stop                                 module=pex msg="Stopping PEX service" impl=PEX
+I[2026-10-25|02:40:15.859] service stop                                 module=p2p book=/tmp/TestB0M7OtherApplicationCallbackscheck-new654249339/001/home/config/addrbook.json msg="Stopping AddrBook service" impl=AddrBook
+I[2026-10-25|02:40:15.859] Closing rpc listener                         module=main listener="&{Listener:0xc000217440 sem:0xc000211030 closeOnce:{_:{} done:{_:{} v:0} m:{_:{} mu:{state:0 sema:0}}} done:0xc0002110a0}"
+I[2026-10-25|02:40:15.859] Saving AddrBook to file                      module=p2p book=/tmp/TestB0M7OtherApplicationCallbackscheck-new654249339/001/home/config/addrbook.json size=0
+I[2026-10-25|02:40:15.859] RPC HTTP server stopped                      module=rpc-server err="accept tcp 127.0.0.1:40685: use of closed network connection"
+E[2026-10-25|02:40:15.859] Error serving server                         module=main err="accept tcp 127.0.0.1:40685: use of closed network connection"
+I[2026-10-25|02:40:15.859] Closing blockstore                           module=main 
+E[2026-10-25|02:40:15.859] Stopped accept routine, as transport is closed module=p2p numPeers=0
+I[2026-10-25|02:40:15.859] Closing statestore                           module=main 
+I[2026-10-25|02:40:15.859] Closing evidencestore                        module=main 

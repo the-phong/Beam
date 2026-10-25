@@ -1,6 +1,44 @@
 # Pluto agent execution contract
 
-## Current authority — Phase 03C Owner acceptance closeout (2026-10-24)
+## Current authority — Phase 03D Git closeout (2026-10-25)
+
+The Controller technically accepted and the Owner formally accepted the
+Phase 03D classical B0 ABCI++ implementation at staged tree
+`7f7002496f38cea99cc3e0b7137e452523cc0b94`. Under D-018, the Owner
+authorized a closeout commit on `phase/03d-b0-abci-integration`, a push of
+that branch only, and a Draft PR targeting `test-mainet`. The Owner controls
+merge. Preserve D-020–D-026 and accepted source behavior. Keep D-026 raw
+evidence and unrelated untracked artifacts local unless publication-safe and
+explicitly selected. Do not force-push, change `master` or `test-mainet`,
+merge, or begin Phase 03E. Stop after verifying the Draft PR.
+
+## Historical authority — Remaining Phase 03D (superseded 2026-10-25)
+
+The Owner accepted and closed the D-025 checkpoint after Controller review of
+R-025-01 and R-025-02. Its staged source tree
+`7295b641254c91c53b3b80a0c2ec5f6c286e8dd1` is the implementation
+baseline for remaining Phase 03D work on `phase/03d-b0-abci-integration`.
+The Owner authorized B0 ABCI++ transaction integration, R2 integrity and cost
+work, V01–V25 validation, real single-validator execution, M1–M12 recovery
+testing and diagnostic benchmarks. D-020–D-025 remain accepted and frozen.
+T7 remains PARTIAL; untested interruption boundaries belong to Phase 03D
+recovery gates. Keep all work local unless the Owner separately authorizes a
+push or PR. Do not invent a Git identity, merge, start Phase 03E, or claim
+completion while a required gate lacks evidence. Stop for Controller review.
+
+## Historical D-025 checkpoint authority (superseded by Owner closure)
+
+The Owner merged Phase 03C PR #6 into `test-mainet` at
+`b56c81ccce7ea4a0e7f52053c7459c4601c15b38`, authorized Phase 03D, and
+accepted D-025. Work on `phase/03d-b0-abci-integration` was then limited
+to canonical Genesis V2 JSON/Base64 transport and explicit B0 initialization,
+tests, documentation and evidence. D-025 amends only the `InitChain`
+transport boundary; D-020–D-024 binary, transaction, state and persistence
+rules remain accepted. Stop after this checkpoint for Controller review
+before any transaction-processing integration. Do not merge, push to
+`test-mainet`, begin Phase 03E, or claim live B0 transfers are operational.
+
+## Historical Phase 03C Owner acceptance closeout (superseded by Phase 03D)
 
 The Owner accepted Phase 03C, Controller R1, the risk addendum and D-024 on
 2026-10-24. D-024's single-record Pebble layout is accepted only as an
@@ -88,9 +126,10 @@ next phase.
 The owner approved Master Roadmap v2: finish minimal B0-Core through Phase
 03E before the Phase 04 decision on whether sequential EVM integration is
 necessary. EVM is optional pending that decision; if approved, execution must
-begin sequentially. Phase 03C is accepted and awaiting Owner-controlled merge;
-03D–14 remain future work until separately authorized. Do not design admission
-optimization before Phase 11 profiling.
+begin sequentially. Phase 03C is merged; Phase 03D is authorized subject to
+the current D-025 checkpoint gate, while Phase 03E–14 remain future work until
+separately authorized. Do not design admission optimization before Phase 11
+profiling.
 
 ## Historical Phase 02R authority (superseded by owner Phase 03A decision)
 

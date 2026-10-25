@@ -1,37 +1,53 @@
-# Phase 03C Owner-accepted isolated V2 state awaiting owner-controlled merge.
-# This is a tested development configuration, not a performance experiment.
+# Phase 03D Controller technically accepted and Owner formally accepted on 2026-10-25.
+# Git closeout only; diagnostic measurements remain preliminary.
 project:
   name: Pluto
   research_title: Evaluation of Resource Cost and Processing Correctness for Hybrid secp256k1–ML-DSA-44 Transactions in a CometBFT-Based Blockchain Application under Deliberately Invalid Input Workloads
-  phase: "03C"
-  active_authorization: phase_03c_documentation_acceptance_closeout_only
+  phase: "03D"
+  active_authorization: phase_03d_D018_git_closeout_draft_PR_only
   phase_03b_status: completed_controller_accepted_merged
   phase_03c_implementation_authorized: false
   phase_03c_was_authorized: true
-  phase_03c_status: completed_controller_owner_accepted_awaiting_owner_merge
-  phase_03d_implementation_authorized: false
-  implementation_status: single_validator_empty_block_foundation_plus_isolated_b0_library_and_v2_state
+  phase_03c_status: completed_controller_owner_accepted_merged
+  phase_03d_implementation_authorized: true
+  phase_03d_checkpoint_scope: D025_closed_D026_implemented_controller_owner_accepted
+  phase_03e_implementation_authorized: false
+  implementation_status: historical_v1_runtime_plus_accepted_classical_b0_v2_transaction_single_validator
   phase_03a_specification_authorized: true
   phase_03b_was_authorized: true
   evm_decision: conditional_phase_04_after_b0_core
-  b0_protocol_status: accepted_by_owner_stateless_and_isolated_state_subsets_implemented
+  b0_protocol_status: accepted_by_owner_integrated_classical_B0_V2
   v2_physical_layout_decision: D024_owner_accepted_2026_10_24_experimental_baseline
+  genesis_transport_decision: D025_owner_accepted_2026_10_24_json_base64
+  initialization_lifecycle_decision: D026_owner_accepted_2026_10_25_explicit_H0_creation
+  d026_source_review: R_D026_01_and_02_controller_technically_accepted
 application:
   version: 0.2.0-foundation
   state_format_version: 1
   isolated_b0_state_format_version: 2
+  b0_runtime_profile: explicit_durable_H0_init_b0_and_strict_existing_state_start
   module_path: example.com/pluto
   module_path_status: provisional_migration_required
 source:
+  # Earlier tested/recovery identities below remain historical; the accepted
+  # Phase 03D staged tree is recorded separately in phase_03d_accepted_staged_tree.
   source_branch: test-mainet
-  source_commit: 61bc65fdebf358fb0330cb9ebd4a332ca4a06aca
-  working_branch: phase/03c-b0-state-persistence
+  source_commit: b56c81ccce7ea4a0e7f52053c7459c4601c15b38
+  phase_03d_source_commit: b56c81ccce7ea4a0e7f52053c7459c4601c15b38
+  phase_03d_final_tested_staged_tree: fa28e6f7b02b70020899c8294b74af02c7ab51d0
+  phase_03d_source_manifest_sha256: 210be2016048643b05b521dcf2af4925556d909a0a36b4ac660381eea2853ee0
+  phase_03d_recovery_reviewed_source_tree: 87b504853cb0ff98790976879ea8832db92b83e0
+  phase_03d_recovery_source_manifest_sha256: f0146d74ebe11561efbdd3c23f4508caf42a69a2a0456035a72a69213f47355c
+  phase_03d_recovery_bundle_sha256: 94e4c562a1ed43ad92fcf22d65fa5724379e6fc3a74e715be587ac2a6f523916
+  working_branch: phase/03d-b0-abci-integration
+  phase_03d_accepted_staged_tree: 7f7002496f38cea99cc3e0b7137e452523cc0b94
   phase_03b_result_commit: 96d395ca0d8218ed3eb52fbf24c9b0cf528ba8b1
   phase_03b_merge_commit: 8be07c87abed73763d40252e99bbf0573da487b4
   phase_03b_governance_merge_commit: 61bc65fdebf358fb0330cb9ebd4a332ca4a06aca
   accepted_protocol_commit: e205a2195d3beb634842cf986e1df5d0ed542dbb
   reviewed_branch_commit: 3484c0f3a47dffa24ddcc0dbad2d95ca23ce31fc
   closeout_result_commit: recorded_in_closeout_report_and_draft_pr
+  phase_03c_merge_commit: b56c81ccce7ea4a0e7f52053c7459c4601c15b38
   phase_01_baseline_manifest: research/evidence/phase_02/BASELINE_SHA256.txt
   phase_02_source_manifest: research/evidence/phase_02/RESULT_SHA256.txt
 toolchain:
@@ -44,6 +60,10 @@ dependencies:
     module: github.com/cometbft/cometbft
     selected_version: v0.38.26
     status: pinned_compiled_integrated_single_validator_tested
+  comet_config_parser:
+    module: github.com/spf13/viper
+    selected_version: v1.19.0
+    status: existing_pinned_CometBFT_transitive_promoted_to_direct_for_D026_artifact_verification
   secp256k1:
     module: github.com/decred/dcrd/dcrec/secp256k1/v4
     selected_version: v4.4.1
@@ -74,15 +94,20 @@ build:
   configuration: standard_go_compiler_with_revision_ldflag
   binaries: build/plutod_and_build/cometbft
 verification:
-  status: phase_03c_owner_accepted_pre_merge_closeout
+  status: phase_03d_controller_technically_accepted_owner_formally_accepted
   phase_03c_historical_suite: build_test_vet_fmt_mod_verify_integration_race_coverage_fuzz_oracle
   closeout_suite: diff_check_make_verify_integration_consistency_source_diff
-  evidence: research/evidence/phase_03c/
+  evidence: research/evidence/phase_03d/d025/
+  phase_03c_historical_evidence: research/evidence/phase_03c/
   risk_addendum: research/evidence/phase_03c/RISK_AND_ACCEPTANCE_ADDENDUM.md
-  future_b0_v2_cross_store_recovery: not_run
+  b0_v2_cross_store_recovery: M1_to_M12_tested_software_boundaries_accepted_D026_T7_hardware_not_run
   phase_03b_closeout_evidence: research/evidence/phase_03b_closeout/verification.log
   phase_03c_closeout_evidence: research/evidence/phase_03c_closeout/verification.log
-  limitations: isolated_process_kill_and_graceful_restart_only_no_power_loss_four_validator_or_cross_store_replay_test
+  phase_03d_checkpoint_evidence: research/evidence/phase_03d/d025/
+  phase_03d_checkpoint_suite: build_test_vet_fmt_mod_verify_integration_transport_negative_race_golden
+  phase_03d_remaining_evidence: research/evidence/phase_03d/remaining/
+  phase_03d_recovery_closure_evidence: research/evidence/phase_03d/closure/
+  limitations: no_physical_power_loss_no_four_validator_no_hosted_CI_no_PQC_hybrid_no_DoS_resistance_claim
 experiments:
-  status: not_applicable
-  results: none
+  status: preliminary_diagnostic_resource_cost_only
+  results: research/evidence/phase_03d/remaining/

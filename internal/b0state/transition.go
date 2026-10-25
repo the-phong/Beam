@@ -20,6 +20,17 @@ func Evaluate(s State, raw []byte) (State, tx.Code, error) {
 	if err := s.Validate(); err != nil {
 		return State{}, 0, err
 	}
+	return EvaluateTrusted(s, raw)
+}
+
+// EvaluateTrusted is for immutable states produced by NewState, ParseGenesis,
+// DecodeLogical, or a prior successful transition. The store verifies its
+// complete snapshot on load; this path avoids an O(K) hash for cheap-invalid
+// wire input. A malformed in-memory State is an internal error, not a tx code.
+func EvaluateTrusted(s State, raw []byte) (State, tx.Code, error) {
+	if !s.trusted {
+		return State{}, 0, ErrState
+	}
 	if code := tx.Validate(raw, s.chainID); code != tx.CodeOK {
 		return s, code, nil
 	}
@@ -75,6 +86,25 @@ func Evaluate(s State, raw []byte) (State, tx.Code, error) {
 	}
 	next, err := NewState(s.chainID, s.height, s.supply, accounts)
 	return next, tx.CodeOK, err
+}
+
+// SimulateOrderedTrusted starts from a verified immutable snapshot and uses
+// the same transition logic as Evaluate without repeated full-state checks.
+func SimulateOrderedTrusted(s State, raws [][]byte) (State, []tx.Code, error) {
+	if !s.trusted {
+		return State{}, nil, ErrState
+	}
+	candidate := s
+	codes := make([]tx.Code, 0, len(raws))
+	for _, raw := range raws {
+		next, code, err := EvaluateTrusted(candidate, raw)
+		if err != nil {
+			return State{}, nil, err
+		}
+		candidate = next
+		codes = append(codes, code)
+	}
+	return candidate, codes, nil
 }
 
 // SimulateOrdered evaluates every byte string in supplied order against all

@@ -1,0 +1,2 @@
+targeted_normal.log: required=13 passed=13 missing=[] skipped=[] failed=[] final_pass=True
+targeted_race.log: required=13 passed=13 missing=[] skipped=[] failed=[] final_pass=True

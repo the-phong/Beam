@@ -1,0 +1,8 @@
+=== RUN   TestB0M7AsymmetricApplicationCrash
+=== RUN   TestB0M7AsymmetricApplicationCrash/before-process
+2026/10/25 02:07:28 [JOB 1] WAL file /tmp/TestB0M7AsymmetricApplicationCrashbefore-process114449942/001/home/data/pluto-b0-v2/000002.log with log number 000002 stopped reading at offset: 489; replayed 3 keys in 3 batches
+    b0_asymmetric_test.go:247: M7 before-process: SIGKILL app child at marked callback; Comet RPC after 1.2s=Get "http://127.0.0.1:45509/status": dial tcp 127.0.0.1:45509: connect: connection refused; before B=2 C=2 A=2 hash=c0305de0df961f7bb6b7b379a392fb96c3cb7ee1ca6b48c767bd833570d55ae0 sender=100/0 receiver=absent; decided=false; after B=4 C=4 A=4 hash=44295da9566bf288667d249e95cd301217abbf9b76b500f594110fd11f9e2ffa sender=75/1 receiver=25/0; logs=/tmp/TestB0M7AsymmetricApplicationCrashbefore-process114449942/001
+--- PASS: TestB0M7AsymmetricApplicationCrash (6.72s)
+    --- PASS: TestB0M7AsymmetricApplicationCrash/before-process (6.72s)
+PASS
+ok  	example.com/pluto/test/integration	6.738s

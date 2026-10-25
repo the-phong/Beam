@@ -1,0 +1,10 @@
+source_staged_tree=29d67744c5b189aeb8b3454e865f0e6dbddf3b72
+command=go test -tags integration ./test/integration -run ^TestB0ApplicationProcessKilledWhileCometChildAlive$ -timeout 120s -count=1 -v
+=== RUN   TestB0ApplicationProcessKilledWhileCometChildAlive
+2026/10/24 19:28:52 [JOB 1] WAL file /tmp/TestB0ApplicationProcessKilledWhileCometChildAlive3597231329/001/home/data/pluto-b0-v2/000002.log with log number 000002 stopped reading at offset: 689; replayed 4 keys in 4 batches
+2026/10/24 19:28:54 [JOB 1] WAL file /tmp/TestB0ApplicationProcessKilledWhileCometChildAlive3597231329/001/home/data/pluto-b0-v2/000008.log with log number 000008 stopped reading at offset: 200; replayed 1 keys in 1 batches
+    b0_recovery_test.go:813: M7: SIGKILL application parent, Comet child remained alive; before coordinated restart B=3 C=3 A=3; after B=4 C=4 A=4; sender balance=75 nonce=1
+--- PASS: TestB0ApplicationProcessKilledWhileCometChildAlive (5.57s)
+PASS
+ok  	example.com/pluto/test/integration	5.583s
+exit_code=0

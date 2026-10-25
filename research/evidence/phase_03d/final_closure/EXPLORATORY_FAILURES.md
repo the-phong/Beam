@@ -1,0 +1,8 @@
+# M7 exploratory failures retained
+
+The final targeted runs passed. These earlier failures are retained as evidence of test-harness timing and assumptions, not marked recovery PASS.
+
+1. First `before-process` extension: the test tried to rebroadcast immediately after restart and received `RPC HTTP 500` (duplicate transaction). Comet had retained the admitted transaction in its WAL/mempool and later included it once. The first command did not set `PLUTO_RECOVERY_ARTIFACTS`; Go removed its disposable home, so its child/Comet raw files are unavailable. Its terminal output recorded `readmission after undecided proposal: RPC HTTP 500 code=0`. The subsequent `process_exploratory.log` reached the same callback and showed B=C=A=2 before, B=C=A=4 after, sender 75/nonce 1, receiver 25/nonce 0. The harness now waits for inclusion without rebroadcasting that case.
+2. `m7_targeted_integration.log` failed `check-recheck` because `/tx` was queried at a minimum height before its index entry appeared: `committed tx lookup: RPC HTTP 500 code=0`. The marker and app-only SIGKILL were reached, but this run was **not** counted as PASS. The harness now polls the indexed result for up to 15 seconds. `m7_targeted_integration_final.log`, `m7_targeted_race.log`, `check_tx_exploratory.log`, `m7_asymmetric_final.log`, and `m7_asymmetric_race_final.log` passed. Raw successful child/Comet logs are in `raw/`; later harness failures also copy available raw files before cleanup.
+
+The test faults are application `SIGKILL`s. Comet was a distinct live process at each marked callback; it subsequently exited after loss of ABCI connectivity. The tests are not physical power-loss simulations.

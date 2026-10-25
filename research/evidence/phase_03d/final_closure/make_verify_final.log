@@ -1,0 +1,22 @@
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=b56c81c" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test ./...
+ok  	example.com/pluto/cmd/plutod	(cached)
+ok  	example.com/pluto/internal/app	(cached)
+ok  	example.com/pluto/internal/b0app	(cached)
+ok  	example.com/pluto/internal/b0genesis	(cached)
+ok  	example.com/pluto/internal/b0state	(cached)
+ok  	example.com/pluto/internal/b0store	(cached)
+?   	example.com/pluto/internal/node	[no test files]
+ok  	example.com/pluto/internal/store	(cached)
+ok  	example.com/pluto/internal/tx	(cached)
+?   	example.com/pluto/internal/version	[no test files]
+go vet ./...
+go mod verify
+all modules verified
+./build/plutod version
+plutod 0.2.0-foundation
+Go: go1.24.1
+Platform: linux/amd64
+Revision: b56c81c
