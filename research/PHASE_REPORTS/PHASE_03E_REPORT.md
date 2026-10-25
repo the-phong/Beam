@@ -1,9 +1,10 @@
 # Phase 03E implementation report — four-validator classical B0
 
-Status: implementation candidate for Independent Controller review. Phase 03E
-has not been Controller accepted or Owner closed. The Owner authorized the
-complete Phase 03E workflow on 2026-10-25; Phase 04 and later work remain
-unauthorized. No merge is authorized for the Coding Agent.
+Status: conditional source review passed; final acceptance evidence submitted
+for Independent Controller review. Phase 03E has not been Controller accepted
+or Owner closed. The Owner authorized the complete Phase 03E workflow on
+2026-10-25; Phase 04 and later work remain unauthorized. No merge is
+authorized for the Coding Agent.
 
 ## Source identity and scope
 
@@ -17,16 +18,28 @@ unauthorized. No merge is authorized for the Coding Agent.
   `7f7002496f38cea99cc3e0b7137e452523cc0b94`; Phase 03D closeout
   commit `de6ab2267b1feddbaa7e8c3251907bf41028209d` is an ancestor
   of the merge.
-- Pre-report Phase 03E staged source/document checkpoint, excluding this
-  report and the evidence manifest:
+- Initial Phase 03E source/document checkpoint, excluding this report and
+  evidence manifests:
   `5ef7519ee8e9aca17e9654699658b70adf7b49a2`. Its only change from
   the fully passing `post_fix_4v.log` code/test snapshot is one diagnostic
   log call that prints all 20 latency samples; the diagnostic case is rerun
-  on this checkpoint. The final commit and tree are reported in the PR and
-  Controller handoff.
-- The 15-path source SHA-256 manifest is
+  on this checkpoint. The Controller-reviewed implementation commit is
+  `03be9b120c5ae495985bfb86e671a9863d9508dd`, tree
+  `ac2756480ffd2baa7077f9aafec620cf44751e52`.
+- The final verified implementation/CI correction commit is
+  `ade215dbb16f4a9ce0580d6f59a4f7b849536664`, tree
+  `5f4cd5afca871982fbb3a823ffd591163ce066a9`. This commit changes only
+  `.github/workflows/verify.yml` and `.gitignore`; the B0 runtime and tests
+  remain byte-identical to the reviewed commit. The later report-only closeout
+  commit is identified in the PR and final Controller handoff because a commit
+  cannot contain its own identifier.
+- The historical 15-path source SHA-256 manifest is
   `research/evidence/phase_03e/SOURCE_SHA256.txt` (SHA-256
   `f4f235ebc7f80a2374a77b81f1b3cb2b426a0915dce005b4b7d666285020dec8`).
+  The final 16-path source/document/CI manifest is
+  `research/evidence/phase_03e/CLOSEOUT_SOURCE_SHA256.txt` (SHA-256
+  `ef325397ec968cb3a53b72094f1a30e4ae2c129f38beb7f97369b248d1a174e8`),
+  verified against the local files with exit 0.
   The verbatim source delta is `SOURCE_REVIEW.patch` (SHA-256
   `90cf65d25ae808b3ecb161972074c844d899d35225ac802a62826fea62f8be35`).
 - Dependencies remain Go 1.24.1 observed (`go.mod` minimum 1.24.0),
@@ -35,8 +48,9 @@ unauthorized. No merge is authorized for the Coding Agent.
 
 The changed source is `cmd/plutod/main.go`, `internal/node/b0.go`,
 `internal/node/b0_init_verify.go`, new `internal/node/b0_network.go`,
-`test/integration/b0_four_validator_test.go`, and `Makefile`. Governance
-and reproduction changes are `.gitignore`, `AGENTS.md`,
+`test/integration/b0_four_validator_test.go`, and `Makefile`. Governance,
+CI and reproduction changes are `.github/workflows/verify.yml`, `.gitignore`,
+`AGENTS.md`,
 `research/ARCHITECTURE.md`, `research/DECISIONS.md`,
 `research/MASTER_PLAN.md`, `research/PHASE_STATUS.md`,
 `research/config/manifest.yaml`,
@@ -84,10 +98,10 @@ at H; crash tests use that mapping explicitly.
 | ID | Setup and oracle | Observed result | Verdict |
 |---|---|---|---|
 | T01 | Fresh root, four unique validator and P2P keys, identical genesis/H0 | Four unique identities, byte-identical genesis, four H0 snapshots | PASS |
-| T02 | Four active Comet nodes and votes from all four identities | Commit range through H6 contains votes from all four | PASS |
-| T03 | Real signed transfer through RPC/ABCI | Transfer committed H7, Code 0; sender 75/1, receiver 25/0 | PASS |
+| T02 | Four active Comet nodes and votes from all four identities | Final closeout commit range through H4 contains votes from all four | PASS |
+| T03 | Real signed transfer through RPC/ABCI | Final closeout transfer committed H5, Code 0; sender 75/1, receiver 25/0 | PASS |
 | T04 | Invalid CheckTx and direct invalid ProcessProposal oracle | Malformed, noncanonical, chain, signature, nonce, balance and replay rejection; all four proposal oracles reject malformed/signature/replay/sequence cases without state mutation | PASS |
-| T05 | Matching-height block, AppHash, ordered tx, balances, nonce and supply | All four block H8 hash `4510E5C94BD7F50C736251E8141C2015E1F7BEC79A640D6EED93C09A99AF75FB`, AppHash `6DD82DC6F6FF4A5B60216421AA0F54CF4A971ED566EE4885F17FB1A7AB95DC6D`; H7 contains the single ordered transfer; supply 100 | PASS |
+| T05 | Matching-height block, AppHash, ordered tx, balances, nonce and supply | Final closeout all-four block H6 hash `D039A591E06241A53823FC8A1B4CDC626BEF6ACC483FDEDE4F29ACAFA8C70597`, AppHash `CEAF56AC281E653A7AC09EE4D27E6CFD251242DEF3F14FD5C5F004841A8189B2`; H5 contains the single ordered transfer; supply 100 | PASS |
 | T06 | Stop one validator; 3/4 add three heights within 60 s | Three fresh runs: H2 to H5 | PASS |
 | T07 | Restart stopped validator with preserved key/last-sign state | Fourth node caught up and matched H8 block/AppHash in all runs | PASS |
 | T08 | Stop two; 2/4 add zero heights over stable 30 s | Three runs: both remaining nodes H5 to H5 | PASS |
@@ -97,9 +111,9 @@ at H; crash tests use that mapping explicitly.
 | T12 | Missing and corrupt H0 | `start` refused before Comet launch with specific snapshot errors | PASS |
 | T13 | Wrong validator key/address or conflicting genesis chain | `start` refused before Comet launch with identity/genesis errors | PASS |
 | T14 | Fresh network repeats, CLI retry and concurrent root claim | Three fresh identity sets; one exclusive initializer succeeded and one refused; four homes intact | PASS |
-| T15 | Phase 02/03D build, unit, integration, fault and race regression | `make verify`, `make test-integration`, targeted D-026, core race, M7/four-validator race and D-026 race all exit 0 | PASS |
+| T15 | Phase 02/03D build, unit, integration, fault and race regression | Final closeout `make verify`, `make test-integration`, targeted D-026, core race, M7/four-validator race and D-026 race all exit 0 | PASS |
 
-In the final `post_fix_raw/` network-transfer logs, validator 0 recorded
+In the final `closeout_4v_raw/` network-transfer logs, validator 0 recorded
 three distinct P2P peer starts and the four process logs each identified
 their local Comet instance as a validator. The committed-signature oracle
 also observed all four distinct validator addresses by H6.
@@ -153,11 +167,11 @@ via 9p, while `testing.T.TempDir` places disposable node homes under
 runtime storage and shared host scheduling therefore have different
 confounders; these samples do not isolate any one storage effect.
 
-The final source-snapshot run took 26.596 s for 20 sequential transfers,
-or 0.752 tx/s. RPC wall latency was p50 1.319 s, p95 1.422 s and p99
-1.424 s. All 20 sorted raw latency samples are in `raw_samples.log`.
-Pluto app samples were 0.2% lifetime CPU and 29,008–29,396 KiB RSS;
-Comet samples were 7.0–7.1% and 45,800–50,876 KiB RSS. Four
+The final closeout run took 29.115 s for 20 sequential transfers,
+or 0.687 tx/s. RPC wall latency was p50 1.318 s, p95 1.414 s and p99
+4.059 s. All 20 sorted raw latency samples are in `closeout_4v.log`.
+Pluto app samples were 0.2% lifetime CPU and 28,716–29,824 KiB RSS;
+Comet samples were 6.3% and 46,652–47,976 KiB RSS. Four
 nodes agreed on sender 80/nonce 20 and receiver 20/nonce 0 after the
 diagnostic workload. These values are one local run with only 20 samples.
 
@@ -168,21 +182,21 @@ evidence directory and summarized in its publication-safe manifest.
 
 | Command | Exit | Raw log |
 |---|---:|---|
-| `make test-integration-4v` with `PLUTO_4V_ARTIFACTS` after startup-order fix | 0 | `post_fix_4v.log`, `post_fix_raw/` |
+| `PLUTO_4V_ARTIFACTS="$PWD/research/evidence/phase_03e/closeout_4v_raw" make test-integration-4v` | 0; 16/16 named cases and subcases PASS, no SKIP | `closeout_4v.log`, `closeout_4v_raw/` |
 | `go test -tags 'integration fourval' ./test/integration -run '^TestB0FourValidatorDiagnostics$' -count=1 -v -timeout=120s` | 0 | `raw_samples.log`, `raw_samples_raw/` |
-| `make verify` after startup-order fix | 0 | `make_verify_final.log` |
-| `go build ./...` after startup-order fix | 0 | `go_build_all_final.log` |
-| `go test -count=1 ./...` after startup-order fix | 0 | `go_test_all_final.log` |
-| `go vet ./...` after startup-order fix | 0 | `go_vet_final.log` |
-| `make fmt-check` | 0 | recorded in verification summary |
-| `go mod verify` | 0 | recorded in verification summary |
-| `make test-integration` after bounded startup-order fix | 0 | `integration_regression_final.log` |
-| `go test -tags integration ./internal/node -run '^TestD026' -count=1 -v -timeout=300s` | 0; all reached, no SKIP | `d026_regression.log` |
-| `go test -race -count=1 ./internal/b0app ./internal/b0state ./internal/b0store ./internal/tx ./cmd/plutod` | 0 | `race_core.log` |
-| Relevant four-validator/M7 `go test -race -tags 'integration fourval'` | 0; 5 M7 asymmetric plus 9 other M7 subtests, no SKIP | `race_integration.log`, `race_integration_raw/` |
-| `go test -race -tags integration ./internal/node -run '^TestD026' -count=1 -v -timeout=300s` | 0; no SKIP | `race_d026.log` |
-| `go vet -tags 'integration fourval' ./test/integration ./internal/node` | 0 | verification summary |
-| `git diff --check` and `git diff --cached --check` | 0 at checkpoint; repeat before commit | recorded in verification summary |
+| `make verify` | 0 | `closeout_make_verify.log` |
+| `go build ./...` | 0 | `closeout_go_build.log` |
+| `go test -count=1 ./...` | 0 | `closeout_go_test.log` |
+| `go vet ./...` | 0 | `closeout_go_vet.log` |
+| `make fmt-check` | 0 | `closeout_fmt_check.log` |
+| `go mod verify` | 0 | `closeout_go_mod_verify.log` |
+| `make test-integration` | 0; 192.905 s | `closeout_integration.log` |
+| `go test -tags integration ./internal/node -run '^TestD026' -count=1 -v -timeout=300s` | 0; 28/28 named cases and subcases PASS, no SKIP | `closeout_d026.log` |
+| `go test -race -count=1 ./internal/b0app ./internal/b0state ./internal/b0store ./internal/tx ./cmd/plutod` | 0; no data race | `closeout_race_core.log` |
+| `PLUTO_4V_ARTIFACTS="$PWD/research/evidence/phase_03e/closeout_race_4v_raw" go test -race -tags 'integration fourval' ./test/integration -run '^(TestB0FourValidator(NetworkTransfer\|ApplicationCommitCrash\|InitializationRefusals\|CLIInitialization\|ConcurrentInitialization)\|TestB0M7(OtherApplicationCallbacks\|AsymmetricApplicationCrash))$' -count=1 -v -timeout=600s` | 0; 27/27 named cases and subcases PASS, no SKIP or data race | `closeout_race_4v_m7.log`, `closeout_race_4v_raw/` |
+| `go test -race -tags integration ./internal/node -run '^TestD026' -count=1 -v -timeout=300s` | 0; 28/28 named cases and subcases PASS, no SKIP or data race | `closeout_race_d026.log` |
+| `go vet -tags 'integration fourval' ./test/integration ./internal/node` | 0 | `closeout_go_vet_tags.log` |
+| `git diff --check` and `git diff --cached --check` | 0 before each commit | local command output |
 
 Earlier exploratory runs remain local. `targeted_exploratory.log` first
 treated Comet's RPC duplicate transaction cache HTTP 500 as application
@@ -195,7 +209,10 @@ exploratory results is marked PASS. Their logs and process logs are retained.
 `targeted_rerun.log` is also retained: it used only the `integration` build
 tag after the four-validator file moved to `integration && fourval`, so Go
 reported "no tests to run"; it satisfies no acceptance case. All mandatory
-four-validator cases in `post_fix_4v.log` actually executed without SKIP.
+four-validator cases in `closeout_4v.log` actually executed without SKIP:
+16 named tests/subtests ran and 16 passed. The closeout M7/four-validator
+race log has 27 named runs and 27 passes, with no SKIP or data race; each
+targeted D-026 log has 28 named runs and 28 passes, with no SKIP.
 
 The first Phase 02/03D `make test-integration` rerun exited 2 in
 `TestPinnedCometGenesisTransportAndB0Restart`. The new startup identity
@@ -209,14 +226,15 @@ missing-B0 refusal. The full corrected integration rerun is recorded
 separately as `integration_regression_final.log`.
 
 Raw evidence remains local under `research/evidence/phase_03e/`; only the
-sanitized manifest and report are intended for Git publication. The 291
+sanitized manifest and report are intended for Git publication. The 363
 test/fault `.log` and `.blocked` files captured before manifest validation,
 including unsuccessful exploratory runs, are enumerated
 in `research/evidence/phase_03e/RAW_LOG_SHA256.txt` (SHA-256
-`11b3fe1bf59c6a38f9c392debda7b7a9fac27b42aa3b62c8101b64664d188627`).
+`78401fdeefbc49bc56de7805b3759c26361978842ebd020ca534429b13f196f5`).
 `sha256sum -c` verified every listed file with exit 0; its own output is
-retained locally as `raw_manifest_check.log`. The raw files are ignored by
-Git and remain on the local workstation; the public manifest contains
+retained locally as `closeout_manifest_verify.log`. This verification-output
+file was generated after the manifest and is not one of its 363 inputs. The
+raw files are ignored by Git and remain on the local workstation; the public manifest contains
 relative paths and digests only.
 
 Historical D-026 evidence remains untouched and untracked in
@@ -224,6 +242,45 @@ Historical D-026 evidence remains untouched and untracked in
 `research/evidence/phase_03d/d026_review/` (353 local files together),
 along with the local `pluto_d026_acceptance_evidence.tar.gz` archive
 (SHA-256 `aef510dc4c6b278494c92295759bc5811877c2e43f3f1a76fb5c9690bfcdc8cc`).
+
+## Final Controller correction and hosted verification
+
+The Independent Controller's initial source/test-design review passed
+conditionally. The bounded closeout changes are:
+
+1. `.github/workflows/verify.yml` now executes `make test-integration-4v`
+   after the existing verification and single-validator integration steps.
+   The job timeout is 35 minutes and the four-validator step timeout is
+   20 minutes; the Go target itself has a 900-second test timeout.
+2. `.gitignore` explicitly excludes `priv_validator_state.json`. The staged
+   payload contains no validator private-key, node-key, signing-state,
+   runtime-home, `.env`, private-key PEM or raw-log path. Private homes and
+   unsanitized process logs remain local.
+3. `research/config/manifest.yaml` now identifies the Phase 03D merged base
+   separately from the reviewed and current Phase 03E implementation commits,
+   and records local verification complete while Controller final acceptance
+   remains pending. Historical Phase 03D identifiers are retained.
+
+The final local `make test-integration-4v` run reached all T01–T14 oracles
+in its seven top-level tests and 16 named runs/subruns. T15 is established
+by the separate full Phase 02/03D regression and race commands in the table
+above. No mandatory run or fault boundary was marked PASS from a SKIP.
+The final transfer was at H5 and the common matching-height block was H6;
+the three separate quorum networks each held at H5 with 2/4 for the stable
+30-second window and reached H8 after quorum restoration. The two
+application-only crash records include the killed application PID, live
+Comet PID, B/C/A heights, matching-height AppHash and once-only account
+effects above and in `closeout_4v.log`.
+
+Hosted GitHub Actions on the initial reviewed commit
+`03be9b120c5ae495985bfb86e671a9863d9508dd` independently returned
+SUCCESS for both `verify` jobs: push run `40199285716` and pull-request run
+`40199312958`. Those jobs predate the four-validator workflow addition and
+therefore do not establish hosted four-validator execution. The final
+closeout commit's hosted result must be checked on PR #8 after publication;
+its outcome and final report-only commit/tree are recorded in the Controller
+handoff because this tracked report cannot contain its own commit identity
+or a future CI result.
 
 ## Limitations, review and Git closeout
 

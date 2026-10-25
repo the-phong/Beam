@@ -33,7 +33,9 @@ source:
   # Earlier tested/recovery identities below remain historical; the accepted
   # Phase 03D staged tree is recorded separately in phase_03d_accepted_staged_tree.
   source_branch: phase/03e-four-validator-bft
-  source_commit: c3756843c5e804e3a985d817ab5c83d2dd6798a0
+  # Current verified implementation/CI commit. The later report-only
+  # closeout commit is recorded externally because it cannot contain itself.
+  source_commit: ade215dbb16f4a9ce0580d6f59a4f7b849536664
   phase_03d_source_commit: b56c81ccce7ea4a0e7f52053c7459c4601c15b38
   phase_03d_final_tested_staged_tree: fa28e6f7b02b70020899c8294b74af02c7ab51d0
   phase_03d_source_manifest_sha256: 210be2016048643b05b521dcf2af4925556d909a0a36b4ac660381eea2853ee0
@@ -43,6 +45,9 @@ source:
   working_branch: phase/03e-four-validator-bft
   phase_03e_base_commit: c3756843c5e804e3a985d817ab5c83d2dd6798a0
   phase_03e_base_tree: 39dd15ed276ffa49297cf659b6dcca9f78d942c2
+  phase_03e_controller_initial_review_commit: 03be9b120c5ae495985bfb86e671a9863d9508dd
+  phase_03e_reviewed_implementation_tree: ac2756480ffd2baa7077f9aafec620cf44751e52
+  phase_03e_current_implementation_tree: 5f4cd5afca871982fbb3a823ffd591163ce066a9
   phase_03e_provisioning_decision: D027_candidate_controller_review_pending
   phase_03d_accepted_staged_tree: 7f7002496f38cea99cc3e0b7137e452523cc0b94
   phase_03b_result_commit: 96d395ca0d8218ed3eb52fbf24c9b0cf528ba8b1
@@ -98,7 +103,7 @@ build:
   configuration: standard_go_compiler_with_revision_ldflag
   binaries: build/plutod_and_build/cometbft
 verification:
-  status: phase_03e_implementation_verification_in_progress
+  status: phase_03e_implementation_locally_verified_controller_final_acceptance_pending
   phase_03c_historical_suite: build_test_vet_fmt_mod_verify_integration_race_coverage_fuzz_oracle
   closeout_suite: diff_check_make_verify_integration_consistency_source_diff
   evidence: research/evidence/phase_03d/d025/
@@ -110,6 +115,8 @@ verification:
   phase_03d_checkpoint_evidence: research/evidence/phase_03d/d025/
   phase_03e_evidence: research/evidence/phase_03e/
   phase_03e_integration_target: make_test-integration-4v
+  phase_03e_local_verification: make_verify_make_test_integration_make_test_integration_4v_build_unit_vet_mod_verify_core_M7_D026_race_all_passed_no_mandatory_skips
+  phase_03e_hosted_ci: reviewed_commit_03be9b_two_verify_checks_passed_final_closeout_result_in_controller_handoff
   phase_03d_checkpoint_suite: build_test_vet_fmt_mod_verify_integration_transport_negative_race_golden
   phase_03d_remaining_evidence: research/evidence/phase_03d/remaining/
   phase_03d_recovery_closure_evidence: research/evidence/phase_03d/closure/
