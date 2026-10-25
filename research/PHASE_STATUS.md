@@ -1,6 +1,83 @@
-# Phase status — 2026-10-24
+# Phase status — 2026-10-25
 
-## Current Phase 03C Owner acceptance and pre-merge closeout
+## Phase 03D formal acceptance and Git closeout
+
+The Controller technically accepted the classical B0 ABCI++ Phase 03D
+implementation, including D-026 and the R-D026-01/R-D026-02 corrections, at
+accepted staged tree `7f7002496f38cea99cc3e0b7137e452523cc0b94`.
+The Owner formally accepted Phase 03D on 2026-10-25 and authorized a local
+closeout commit, push of `phase/03d-b0-abci-integration`, and a Draft PR
+targeting `test-mainet` under D-018. The Owner retains merge control.
+Phase 03E remains unauthorized.
+
+Acceptance covers classical secp256k1 transactions in the single-validator
+CometBFT B0 ABCI++ runtime, explicit D-026 H0 initialization, and the tested
+software-fault recovery boundaries. Hosted CI is not fully verified; physical
+power-loss durability and four-validator BFT were not tested. PQC/hybrid
+transaction authentication is not implemented, and DoS resistance is not
+established. Diagnostic benchmarks do not establish those later results.
+The pre-acceptance review statuses below are retained as historical records.
+Detailed D-026 raw evidence and the final source-review package remain local
+for Controller inspection and are not part of this public Git closeout.
+
+## Historical D-026 conditional source review
+
+**D-026 conditional source pass rework:** Controller findings R-D026-01
+(atomic fresh-home claim) and R-D026-02 (Comet initialization artifact
+verification) are being addressed locally. The previous tested tree
+`cdce2bb2ed79abe9f5768d77d5278495e9e5b61c` and final staged tree
+`51830c4b63506a73018297a27a7333ac7643de99` remain preserved as review
+baselines. The corrections require fresh evidence and Controller final review;
+Phase 03D remains PARTIAL.
+
+## Historical Phase 03D implementation candidate
+
+**D-026 checkpoint authorization, 2026-10-25:** The Owner approved the
+explicit B0 initialization lifecycle for implementation within Phase 03D.
+The local candidate now has `init-b0` create and verify H0, `start` require a
+complete existing snapshot, and B0 `InitChain` validate identical persisted
+H0 without a write. D-024 record bytes and D-025 transport remain frozen.
+Software-fault evidence is recorded in the
+[D-026 implementation report](PHASE_REPORTS/PHASE_03D_D026_IMPLEMENTATION_REPORT.md).
+This is implementation evidence, not Controller acceptance. Hardware power
+loss remains unverified; Phase 03D remains PARTIAL pending review. Phase 03E
+remains unauthorized. See [D-026](DECISIONS.md) and its
+[decision rationale](decisions/D-026_EXPLICIT_B0_INITIALIZATION_PROPOSAL.md).
+
+The Owner closed the D-025 checkpoint after Controller review and authorized
+remaining Phase 03D work on `phase/03d-b0-abci-integration`. The accepted
+checkpoint staged tree is `7295b641254c91c53b3b80a0c2ec5f6c286e8dd1`.
+The branch now contains an explicit B0 V2 runtime with transaction admission,
+proposal validation, sequential finalization, durable V2 Commit and latest
+committed-state account queries. Local direct ABCI and real pinned
+single-validator tests exercise transfers, restart and controlled recovery
+boundaries. The [recovery closure report](PHASE_REPORTS/PHASE_03D_RECOVERY_CLOSURE_REPORT.md)
+supersedes the earlier Phase 03D partial matrix: M4, M6, M9, M10 and the
+feasible M11 software windows now have direct evidence. Phase 03D is **NOT
+OWNER-ACCEPTED OR MERGED** and its technical verdict remains **PARTIAL**:
+The earlier M7 callback coverage and T7 policy limits are historical; M7
+software callback evidence has since been strengthened and the D-026 policy
+has now been Owner-approved for implementation. Physical power-loss and four-validator behavior were
+not tested. Phase 03E and later phases are **NOT AUTHORIZED**. The
+historical Phase 02 runtime remains transaction-free.
+
+## Historical D-025 genesis transport checkpoint (closed by Owner)
+
+Phase 03C PR #6 was Owner-merged into `test-mainet` at
+`b56c81ccce7ea4a0e7f52053c7459c4601c15b38`; both post-merge checks
+succeeded. The Owner authorized Phase 03D and accepted D-025 on 2026-10-24.
+The then-current checkpoint permitted only strict JSON/Base64 transport for the
+unchanged canonical Genesis V2 binary and explicit B0 initialization. The
+separately selected B0 profile was genesis-only and continued to reject
+transactions. Full Phase 03D transaction integration, R2 work, resource
+measurements and M1–M12 crash testing wait for Controller checkpoint review.
+Controller R-025 rework is staged for source review. T7 remains PARTIAL;
+missing-data and cross-store recovery limitations are retained in the Phase
+03D D-025 report addendum, not marked accepted or complete.
+Phase 03E and later work are **NOT AUTHORIZED**. The Phase 02 profile remains
+available and transaction-free.
+
+## Historical Phase 03C Owner acceptance and pre-merge closeout
 
 **Phase 03C — COMPLETED, CONTROLLER ACCEPTED, OWNER ACCEPTED, AWAITING
 OWNER-CONTROLLED MERGE OF PR #6.** The Owner accepted the implementation,

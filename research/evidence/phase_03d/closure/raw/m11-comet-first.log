@@ -1,0 +1,10 @@
+I[2026-10-25|01:37:57.420] service start                                module=proxy msg="Starting multiAppConn service" impl=multiAppConn
+I[2026-10-25|01:37:57.421] service start                                module=abci-client connection=query msg="Starting socketClient service" impl=socketClient
+I[2026-10-25|01:37:57.424] service start                                module=abci-client connection=snapshot msg="Starting socketClient service" impl=socketClient
+I[2026-10-25|01:37:57.425] service start                                module=abci-client connection=mempool msg="Starting socketClient service" impl=socketClient
+I[2026-10-25|01:37:57.425] service start                                module=abci-client connection=consensus msg="Starting socketClient service" impl=socketClient
+I[2026-10-25|01:37:57.427] service start                                module=events msg="Starting EventBus service" impl=EventBus
+I[2026-10-25|01:37:57.427] service start                                module=pubsub msg="Starting PubSub service" impl=PubSub
+I[2026-10-25|01:37:57.440] service start                                module=txindex msg="Starting IndexerService service" impl=IndexerService
+I[2026-10-25|01:37:57.446] ABCI Handshake App Info                      module=consensus height=0 hash= software-version=0.2.0-foundation protocol-version=2
+I[2026-10-25|01:37:57.446] ABCI Replay Blocks                           module=consensus appHeight=0 storeHeight=0 stateHeight=0

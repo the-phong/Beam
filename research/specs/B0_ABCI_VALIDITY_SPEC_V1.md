@@ -1,6 +1,6 @@
 # B0 ABCI++ validity contract V1 — Owner-accepted Phase 03A specification
 
-**Status: ACCEPTED BY OWNER on 2026-10-23 after Controller rework; not implemented.** This contract records accepted D-022 and targets the pinned [CometBFT v0.38.26 `abci.Application` interface](https://github.com/cometbft/cometbft/blob/v0.38.26/abci/types/application.go) and its [ABCI++ application requirements](https://github.com/cometbft/cometbft/blob/v0.38.26/spec/abci/abci%2B%2B_app_requirements.md). It must not be substituted with the historical Phase 01 v1.0.0 reference. Current Phase 02 code continues to reject all transactions.
+**Status: ACCEPTED BY OWNER on 2026-10-23; InitChain transport explicitly amended by Owner-accepted D-025 on 2026-10-24.** This contract records accepted D-022 and targets the pinned [CometBFT v0.38.26 `abci.Application` interface](https://github.com/cometbft/cometbft/blob/v0.38.26/abci/types/application.go) and its [ABCI++ application requirements](https://github.com/cometbft/cometbft/blob/v0.38.26/spec/abci/abci%2B%2B_app_requirements.md). It must not be substituted with the historical Phase 01 v1.0.0 reference. Current Phase 02 code continues to reject all transactions.
 
 ## 1. Shared evaluator and limits
 
@@ -33,6 +33,26 @@ For every per-transaction evaluation, first-failure precedence is **Code 1 struc
 ### `Info` and `InitChain`
 
 `Info` reports the last **durably committed** B0 height and V2 AppHash; pending state is invisible. On a new B0 chain, `InitChain` checks `InitialHeight==1`, matching chain ID and exact canonical V2 genesis bytes, writes genesis height 0 durably, and returns V2 AppHash while retaining CometBFT genesis validators/consensus parameters. An identical height-0 retry may be idempotent; conflicting genesis or an existing Phase 02 V1 record is an error, never an implicit migration. Phase 03C must test interrupted initialization and CometBFT handshake before activation.
+
+**D-025 amendment (2026-10-24):** The historical phrase "exact canonical V2
+genesis bytes" above described raw `InitChain.AppStateBytes`. For the
+CometBFT v0.38.26 JSON genesis path, `AppStateBytes` actually contains one
+canonical JSON string with standard padded Base64 of the unchanged Genesis
+V2 binary. The B0 adapter strictly decodes the transport, then validates
+the resulting binary with `b0state.ParseGenesis` and exact request/configured
+chain IDs before durable height-zero initialization. Only that binary
+determines state or AppHash; alternate transport representations are rejected.
+
+**D-026 lifecycle supersession (Owner approved 2026-10-25):** The historical
+sentence above requiring B0 `InitChain` to write Genesis H0 is superseded.
+`plutod init-b0` durably creates and verifies the canonical H0 snapshot in a
+fresh home before returning success. `plutod start` requires a complete,
+existing snapshot and never creates H0. B0 `InitChain` still checks
+`InitialHeight==1`, chain ID and the unchanged D-025 canonical JSON/Base64
+transport, but validates the identical persisted H0 and returns its AppHash
+without writing. Identical H0 retries return the same result; missing,
+incomplete, conflicting or advanced application state fails closed. D-024
+record bytes, AppHash V2 and all transaction validity rules are unchanged.
 
 ### `CheckTx`
 

@@ -1,0 +1,36 @@
+=== RUN   TestM11GenesisCreationFaultBoundaries
+=== RUN   TestM11GenesisCreationFaultBoundaries/before-mkdir
+    recovery_closure_test.go:324: M11 before-mkdir reached; no B0 directory; fresh retry A=0 hash=e480c8b300c5ac1d662628f90334aae185ad38ed791c59ab14e3aa42abf083da sender=100/0
+=== RUN   TestM11GenesisCreationFaultBoundaries/after-mkdir
+    recovery_closure_test.go:349: M11 simulated after-mkdir reached; create=after B0 directory creation: injected error; incomplete store fails closed: open existing B0 Pebble database: dirname="/tmp/TestM11GenesisCreationFaultBoundariesafter-mkdir2456508642/001/b0": pebble: database does not exist
+=== RUN   TestM11GenesisCreationFaultBoundaries/before-record
+2026/10/25 01:44:58 [JOB 1] WAL file /tmp/TestM11GenesisCreationFaultBoundariesbefore-record3578199481/001/b0/000002.log with log number 000002 stopped reading at offset: 0; replayed 0 keys in 0 batches
+    recovery_closure_test.go:349: M11 simulated before-record reached; create=persist B0 genesis: injected error; incomplete store fails closed: B0 committed state missing
+=== RUN   TestM11GenesisCreationFaultBoundaries/wal-write
+2026/10/25 01:44:58 [JOB 1] WAL file /tmp/TestM11GenesisCreationFaultBoundarieswal-write2681670281/001/b0/000002.log with log number 000002 stopped reading at offset: 0; replayed 0 keys in 0 batches
+    recovery_closure_test.go:349: M11 simulated wal-write reached; create=child exit=exit status 1 output="2026/10/25 01:44:58 pebble: fatal commit error: injected error\n"; incomplete store fails closed: B0 committed state missing
+=== RUN   TestM11GenesisCreationFaultBoundaries/wal-sync
+2026/10/25 01:44:58 [JOB 1] WAL file /tmp/TestM11GenesisCreationFaultBoundarieswal-sync1863045572/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+    recovery_closure_test.go:345: M11 wal-sync reached; A=0 hash=e480c8b300c5ac1d662628f90334aae185ad38ed791c59ab14e3aa42abf083da sender=100/0 receiver=absent; identical record recoverable
+=== RUN   TestM11GenesisCreationFaultBoundaries/wal-write-kill
+2026/10/25 01:44:59 [JOB 1] WAL file /tmp/TestM11GenesisCreationFaultBoundarieswal-write-kill3322063575/001/b0/000002.log with log number 000002 stopped reading at offset: 0; replayed 0 keys in 0 batches
+    recovery_closure_test.go:349: M11 simulated wal-write-kill reached; create=child exit=signal: killed output=""; incomplete store fails closed: B0 committed state missing
+=== RUN   TestM11GenesisCreationFaultBoundaries/wal-sync-kill
+2026/10/25 01:44:59 [JOB 1] WAL file /tmp/TestM11GenesisCreationFaultBoundarieswal-sync-kill3844951757/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+    recovery_closure_test.go:345: M11 wal-sync-kill reached; A=0 hash=e480c8b300c5ac1d662628f90334aae185ad38ed791c59ab14e3aa42abf083da sender=100/0 receiver=absent; identical record recoverable
+=== RUN   TestM11GenesisCreationFaultBoundaries/after-sync
+2026/10/25 01:44:59 [JOB 1] WAL file /tmp/TestM11GenesisCreationFaultBoundariesafter-sync916613650/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+    recovery_closure_test.go:345: M11 after-sync reached; A=0 hash=e480c8b300c5ac1d662628f90334aae185ad38ed791c59ab14e3aa42abf083da sender=100/0 receiver=absent; identical record recoverable
+--- PASS: TestM11GenesisCreationFaultBoundaries (0.38s)
+    --- PASS: TestM11GenesisCreationFaultBoundaries/before-mkdir (0.03s)
+    --- PASS: TestM11GenesisCreationFaultBoundaries/after-mkdir (0.00s)
+    --- PASS: TestM11GenesisCreationFaultBoundaries/before-record (0.05s)
+    --- PASS: TestM11GenesisCreationFaultBoundaries/wal-write (0.06s)
+    --- PASS: TestM11GenesisCreationFaultBoundaries/wal-sync (0.06s)
+    --- PASS: TestM11GenesisCreationFaultBoundaries/wal-write-kill (0.05s)
+    --- PASS: TestM11GenesisCreationFaultBoundaries/wal-sync-kill (0.06s)
+    --- PASS: TestM11GenesisCreationFaultBoundaries/after-sync (0.06s)
+PASS
+ok  	example.com/pluto/internal/b0store	0.387s
+
+exit_code=0

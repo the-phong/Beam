@@ -1,13 +1,20 @@
 # Pluto architecture — implemented Phase 02 baseline and Phase 02R review
 
 This section supersedes the historical Phase 01 proposal retained below for
-traceability. The implemented chain is a **single-validator, transaction-free**
-custom Go ABCI++ application connected by a localhost socket to a pinned
-CometBFT v0.38.26 child process. It is not an EVM or hybrid chain.
+traceability. The historical Phase 02 profile remains a **single-validator,
+transaction-free** custom Go ABCI++ application. A separately selected B0 V2
+profile now executes classical transactions in a single-validator local
+CometBFT v0.38.26 node. Neither profile is EVM or hybrid.
 Phase 02R retains this implementation. D-019 requires a complete minimal
 classical B0-Core before deciding at Phase 04 whether EVM integration is
-needed; Phase 03C's isolated state subsystem is Owner-accepted and awaiting
-Owner-controlled merge of Draft PR #6. No further implementation is authorized.
+needed. Phase 03C's isolated state subsystem was merged at
+`b56c81ccce7ea4a0e7f52053c7459c4601c15b38`. Phase 03D began with an
+accepted D-025 genesis transport checkpoint. The Owner subsequently closed
+that checkpoint and authorized B0 transaction integration; the current
+review candidate is described in the [Phase 03D report](PHASE_REPORTS/PHASE_03D_REPORT.md).
+The subsequent [recovery closure report](PHASE_REPORTS/PHASE_03D_RECOVERY_CLOSURE_REPORT.md)
+records real-node WAL, replay, height/hash and genesis fault evidence; Phase
+03D remains unaccepted pending Controller review and residual recovery policy.
 The owner has accepted Phase 03A's B0 V1 transaction and V2 logical-state
 specifications in `research/specs/` and D-020–D-022 after Controller rework.
 The subsequent explicit Phase 03B authorization permits a standalone
@@ -24,18 +31,61 @@ isolated pending candidate. D-024 is Owner-accepted on 2026-10-24 strictly as
 a correctness-oriented experimental B0 layout. Its full-snapshot O(K) cost,
 unverified B0 V2 cross-store recovery and physical-failure limits remain in
 the [risk addendum](evidence/phase_03c/RISK_AND_ACCEPTANCE_ADDENDUM.md).
-Neither package is imported by `internal/app` or `internal/node`; the current
-runtime AppHash remains the Phase 02 V1 digest. Phase 03D is unauthorized.
+Neither package is imported by the historical `internal/app`; its AppHash
+remains the Phase 02 V1 digest. The new B0 profile imports the isolated V2
+packages through a separate ABCI adapter.
+
+**D-025 transport boundary:** `plutod init-b0` reads canonical Genesis V2
+binary and writes its standard padded Base64 as one JSON `app_state` string.
+Pinned CometBFT forwards those JSON bytes to `internal/b0app.InitChain`.
+`internal/b0genesis` strictly decodes them, and `b0state.ParseGenesis` remains
+the sole binary parser. Historically `b0app.InitChain` initialized D-024
+storage at height zero. Owner-approved D-026 supersedes that creation actor:
+`init-b0` creates and verifies H0, `start` requires an existing valid B0
+snapshot, and `InitChain` validates the matching persisted H0 without writing;
+the B0 application now validates and executes classical transfers through
+the accepted `internal/tx`, `internal/b0state` and `internal/b0store` packages.
+`CheckTx` reads committed state only; proposal methods use throwaway state;
+`FinalizeBlock` prepares pending state; `Commit` performs the synchronized
+D-024 snapshot write. The historical Phase 02 `init` profile still uses V1
+state and its original empty-block ABCI application.
+
+**D-026 B0 lifecycle (Owner-approved Phase 03D implementation target):**
+
+```mermaid
+sequenceDiagram
+  participant O as Operator
+  participant N as Pluto node
+  participant P as B0 Pebble store
+  participant C as CometBFT v0.38.26
+  O->>N: init-b0 with canonical Genesis V2
+  N->>P: Create and sync H0 using D-024 record
+  N->>P: Reopen and verify H0
+  N-->>O: success after full home verification
+  O->>N: start
+  N->>P: OpenExisting and verify snapshot
+  N->>C: start real node
+  C->>N: Info (H0, AppHash V2)
+  C->>N: InitChain (D-025 JSON/Base64)
+  N->>P: read and validate identical H0
+  N-->>C: H0 AppHash, no genesis write
+```
+
+The historical Phase 02 sequence below retains its separate V1 `InitChain`
+write and is not changed by D-026.
 
 ```mermaid
 flowchart TB
-  Operator[plutod init/start/state] --> Runtime[internal/node]
+  Operator[plutod init or init-b0/start] --> Runtime[internal/node]
   Client[HTTP RPC reader] --> Comet[CometBFT: RPC / P2P / consensus / mempool]
   Runtime --> Comet
-  Comet -->|localhost ABCI socket| App[internal/app: ABCI++ lifecycle]
-  App --> State[internal/store: canonical state and SHA-256 AppHash]
-  State --> Pebble[Pebble v1.1.5: synced committed record]
-  Future[Future B0-Core / conditional EVM / hybrid] -. not implemented .-> App
+  Comet -->|historical V1 localhost ABCI| App[internal/app]
+  App --> State[internal/store: V1 state and AppHash]
+  Comet -->|explicit B0 localhost ABCI| B0[internal/b0app: classical B0 transfers]
+  B0 --> V2[internal/b0state + internal/b0store: V2 state and AppHash]
+  State --> Pebble[Pebble v1.1.5]
+  V2 --> Pebble
+  Future[Phase 03E validation / conditional EVM / hybrid] -. not implemented .-> B0
 ```
 
 CometBFT owns consensus, validator signing, P2P, block construction and the

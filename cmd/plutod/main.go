@@ -13,6 +13,7 @@ import (
 	"runtime"
 	"syscall"
 
+	"example.com/pluto/internal/b0genesis"
 	"example.com/pluto/internal/node"
 	"example.com/pluto/internal/version"
 )
@@ -23,7 +24,7 @@ func main() {
 
 func run(args []string, stdout, stderr io.Writer) int {
 	if len(args) == 0 {
-		fmt.Fprintln(stdout, "Pluto Phase 02: initialize a local node, then start it.")
+		fmt.Fprintln(stdout, "Pluto: use init for the historical Phase 02 profile or init-b0 to create the B0 Genesis H0 snapshot.")
 		usage(stdout)
 		return 0
 	}
@@ -59,6 +60,35 @@ func run(args []string, stdout, stderr io.Writer) int {
 			return 1
 		}
 		fmt.Fprintf(stdout, "Initialized Pluto node at %s (chain %s)\n", *home, *chainID)
+		return 0
+	case "init-b0":
+		flags := flag.NewFlagSet("init-b0", flag.ContinueOnError)
+		flags.SetOutput(stderr)
+		home := flags.String("home", ".pluto-b0", "fresh B0 node data directory")
+		chainID := flags.String("chain-id", "pluto-b0-v1", "B0 chain identity")
+		genesisFile := flags.String("genesis-file", "", "path to canonical binary Genesis V2")
+		rpcPort := flags.Int("rpc-port", 26657, "localhost RPC port")
+		p2pPort := flags.Int("p2p-port", 26656, "localhost P2P port")
+		abciPort := flags.Int("abci-port", 26658, "localhost ABCI port")
+		if err := flags.Parse(args[1:]); err != nil || flags.NArg() != 0 || *genesisFile == "" {
+			fmt.Fprintln(stderr, "invalid init-b0 arguments")
+			return 2
+		}
+		info, err := os.Stat(*genesisFile)
+		if err != nil || !info.Mode().IsRegular() || info.Size() > b0genesis.MaxBinarySize {
+			fmt.Fprintln(stderr, "invalid or oversized binary Genesis V2 file")
+			return 1
+		}
+		binary, err := os.ReadFile(*genesisFile)
+		if err != nil {
+			fmt.Fprintln(stderr, err)
+			return 1
+		}
+		if err := node.InitB0(*home, cometBinary(), *chainID, binary, *rpcPort, *p2pPort, *abciPort, stdout); err != nil {
+			fmt.Fprintln(stderr, err)
+			return 1
+		}
+		fmt.Fprintf(stdout, "Initialized Pluto B0 Genesis H0 snapshot at %s (chain %s)\n", *home, *chainID)
 		return 0
 	case "start":
 		flags := flag.NewFlagSet("start", flag.ContinueOnError)
@@ -107,8 +137,8 @@ func run(args []string, stdout, stderr io.Writer) int {
 }
 
 func usage(w io.Writer) {
-	fmt.Fprintln(w, "Usage: plutod [init|start|state|help|version] [flags]")
-	fmt.Fprintln(w, "Phase 02 supports empty blocks only; application transactions are rejected.")
+	fmt.Fprintln(w, "Usage: plutod [init|init-b0|start|state|help|version] [flags]")
+	fmt.Fprintln(w, "init selects Phase 02; init-b0 durably creates the D-026 B0 Genesis H0 snapshot.")
 }
 
 func cometBinary() string {

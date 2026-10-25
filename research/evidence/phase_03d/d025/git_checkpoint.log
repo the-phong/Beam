@@ -1,0 +1,53 @@
+UTC timestamp: 2026-10-24T06:40:57Z
+
+$ git branch --show-current
+phase/03d-b0-abci-integration
+exit_code=0
+
+$ git rev-parse HEAD
+b56c81ccce7ea4a0e7f52053c7459c4601c15b38
+exit_code=0
+
+$ git diff --cached --check
+exit_code=0
+
+$ git var GIT_AUTHOR_IDENT
+Author identity unknown
+
+*** Please tell me who you are.
+
+Run
+
+  git config --global user.email "you@example.com"
+  git config --global user.name "Your Name"
+
+to set your account's default identity.
+Omit --global to set the identity only in this repository.
+
+fatal: empty ident name (for <ntp@PhongJunior.localdomain>) not allowed
+exit_code=128
+
+$ git status --short
+M  AGENTS.md
+M  README.md
+M  cmd/plutod/main.go
+A  internal/b0app/app.go
+A  internal/b0app/app_test.go
+A  internal/b0genesis/transport.go
+A  internal/b0genesis/transport_test.go
+A  internal/node/b0.go
+M  internal/node/node.go
+M  research/ARCHITECTURE.md
+M  research/DECISIONS.md
+M  research/MASTER_PLAN.md
+AM research/PHASE_REPORTS/PHASE_03D_D025_REPORT.md
+M  research/PHASE_STATUS.md
+M  research/config/manifest.yaml
+A  research/evidence/phase_03d/d025/reference_transport.py
+A  research/evidence/phase_03d/d025/run_verification.sh
+A  research/evidence/phase_03d/d025/verification.log
+M  research/specs/B0_ABCI_VALIDITY_SPEC_V1.md
+M  research/specs/B0_STATE_TRANSITION_SPEC_V1.md
+A  test/integration/b0_genesis_test.go
+?? research/evidence/phase_03d/d025/git_checkpoint.log
+exit_code=0

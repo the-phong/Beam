@@ -36,6 +36,10 @@ type State struct {
 	supply   uint64
 	accounts []Account
 	hash     [32]byte
+	// trusted is set only by constructors which check every invariant and
+	// compute (or verify) the complete commitment. State is immutable after
+	// construction; a zero State cannot enter the fast evaluation path.
+	trusted bool
 }
 
 var ErrState = errors.New("invalid B0 V2 state")
@@ -76,7 +80,7 @@ func NewState(chainID string, height int64, supply uint64, accounts []Account) (
 	if sum != supply {
 		return State{}, ErrState
 	}
-	s := State{chainID: chainID, height: height, supply: supply, accounts: copyAccounts}
+	s := State{chainID: chainID, height: height, supply: supply, accounts: copyAccounts, trusted: true}
 	s.hash = sha256.Sum256(append([]byte(stateDomain), s.marshalLogical()...))
 	return s, nil
 }

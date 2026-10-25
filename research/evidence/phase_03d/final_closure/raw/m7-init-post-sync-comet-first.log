@@ -1,0 +1,19 @@
+I[2026-10-25|02:15:03.468] service start                                module=proxy msg="Starting multiAppConn service" impl=multiAppConn
+I[2026-10-25|02:15:03.468] service start                                module=abci-client connection=query msg="Starting socketClient service" impl=socketClient
+I[2026-10-25|02:15:03.473] service start                                module=abci-client connection=snapshot msg="Starting socketClient service" impl=socketClient
+I[2026-10-25|02:15:03.473] service start                                module=abci-client connection=mempool msg="Starting socketClient service" impl=socketClient
+I[2026-10-25|02:15:03.473] service start                                module=abci-client connection=consensus msg="Starting socketClient service" impl=socketClient
+I[2026-10-25|02:15:03.475] service start                                module=events msg="Starting EventBus service" impl=EventBus
+I[2026-10-25|02:15:03.475] service start                                module=pubsub msg="Starting PubSub service" impl=PubSub
+I[2026-10-25|02:15:03.488] service start                                module=txindex msg="Starting IndexerService service" impl=IndexerService
+I[2026-10-25|02:15:03.492] ABCI Handshake App Info                      module=consensus height=0 hash= software-version=0.2.0-foundation protocol-version=2
+I[2026-10-25|02:15:03.492] ABCI Replay Blocks                           module=consensus appHeight=0 storeHeight=0 stateHeight=0
+E[2026-10-25|02:15:03.538] Stopping abci.socketClient for error: read message: EOF module=abci-client connection=query
+E[2026-10-25|02:15:03.538] Stopping abci.socketClient for error: read message: EOF module=abci-client connection=mempool
+E[2026-10-25|02:15:03.538] Stopping abci.socketClient for error: read message: EOF module=abci-client connection=snapshot
+I[2026-10-25|02:15:03.538] service stop                                 module=abci-client connection=query msg="Stopping socketClient service" impl=socketClient
+I[2026-10-25|02:15:03.538] service stop                                 module=abci-client connection=mempool msg="Stopping socketClient service" impl=socketClient
+I[2026-10-25|02:15:03.538] service stop                                 module=abci-client connection=snapshot msg="Stopping socketClient service" impl=socketClient
+E[2026-10-25|02:15:03.538] Stopping abci.socketClient for error: read message: EOF module=abci-client connection=consensus
+I[2026-10-25|02:15:03.538] service stop                                 module=abci-client connection=consensus msg="Stopping socketClient service" impl=socketClient
+ERROR: failed to create node: error during handshake: error on replay: read message: EOF

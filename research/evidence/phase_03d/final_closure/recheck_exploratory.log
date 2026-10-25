@@ -1,0 +1,8 @@
+=== RUN   TestB0M7OtherApplicationCallbacks
+=== RUN   TestB0M7OtherApplicationCallbacks/check-recheck
+2026/10/25 02:10:04 [JOB 1] WAL file /tmp/TestB0M7OtherApplicationCallbackscheck-recheck1674679571/001/home/data/pluto-b0-v2/000002.log with log number 000002 stopped reading at offset: 652; replayed 4 keys in 4 batches
+    b0_m7_callbacks_test.go:111: M7 check-recheck: callback reached; SIGKILL app; Comet alive after 1.2s=false exit=<nil> RPC=Get "http://127.0.0.1:40929/status": dial tcp 127.0.0.1:40929: connect: connection refused; before B=3 C=3 A=3 H=57434e9bf8b6df4fe6c14476a65efe33117efe7b58291158d5e7acf567338c5a sender=100/0 receiver=absent; actual Comet restart after B=5 C=5 A=5 H=ceaf56ac281e653a7ac09ee4d27e6cfd251242def3f14fd5c5f004841a8189b2 sender=75/1 receiver=25/0 found=true; logs=/tmp/TestB0M7OtherApplicationCallbackscheck-recheck1674679571/001
+--- PASS: TestB0M7OtherApplicationCallbacks (7.66s)
+    --- PASS: TestB0M7OtherApplicationCallbacks/check-recheck (7.66s)
+PASS
+ok  	example.com/pluto/test/integration	7.682s

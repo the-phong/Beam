@@ -1,0 +1,62 @@
+2026/10/25 01:43:18 [JOB 1] WAL file /tmp/TestB0PinnedHeightAndHashMismatchFailClosedreplay-hash-conflict2447594873/001/home/data/pluto-b0-v2/000012.log with log number 000012 stopped reading at offset: 0; replayed 0 keys in 0 batches
+I[2026-10-25|01:43:19.188] service start                                module=proxy msg="Starting multiAppConn service" impl=multiAppConn
+I[2026-10-25|01:43:19.189] service start                                module=abci-client connection=query msg="Starting socketClient service" impl=socketClient
+I[2026-10-25|01:43:19.193] service start                                module=abci-client connection=snapshot msg="Starting socketClient service" impl=socketClient
+I[2026-10-25|01:43:19.193] service start                                module=abci-client connection=mempool msg="Starting socketClient service" impl=socketClient
+I[2026-10-25|01:43:19.193] service start                                module=abci-client connection=consensus msg="Starting socketClient service" impl=socketClient
+I[2026-10-25|01:43:19.195] service start                                module=events msg="Starting EventBus service" impl=EventBus
+I[2026-10-25|01:43:19.195] service start                                module=pubsub msg="Starting PubSub service" impl=PubSub
+I[2026-10-25|01:43:19.210] service start                                module=txindex msg="Starting IndexerService service" impl=IndexerService
+I[2026-10-25|01:43:19.214] ABCI Handshake App Info                      module=consensus height=1 hash=E6CDBE4347B271CF3193CA9D63B196EBE2F73784E3EF3487479070EC72057DAC software-version=0.2.0-foundation protocol-version=2
+I[2026-10-25|01:43:19.214] ABCI Replay Blocks                           module=consensus appHeight=1 storeHeight=2 stateHeight=2
+I[2026-10-25|01:43:19.214] Applying block                               module=consensus height=2
+I[2026-10-25|01:43:19.219] executed block                               module=consensus height=2 app_hash=E2434048376271E68674D9C56137D510C6B85A38514235DACDF0920A8AABCC90
+panic: state.AppHash does not match AppHash after replay. Got
+	E2434048376271E68674D9C56137D510C6B85A38514235DACDF0920A8AABCC90, expected C0305DE0DF961F7BB6B7B379A392FB96C3CB7EE1CA6B48C767BD833570D55AE0.
+	
+	State: {{{11 2} 0.38.26} pluto-b0-v1 1 2 F4962433AC649CFA9014DB619AC8F8BA5ADE8F68BA6FAF4CB6E8267A5335705C:1:57B271BBB7A3 2026-10-24 18:43:17.415505738 +0000 UTC ValidatorSet{
+	  Proposer: Validator{197D98F81A9EB5CD93B4C7AA78E6D64EBB36D38F PubKeyEd25519{189F5AAE4CC9FCC9A93509E19D5936203506B41BEEBBCF4502BEFF4C0B373DC7} VP:10 A:0}
+	  Validators:
+	    Validator{197D98F81A9EB5CD93B4C7AA78E6D64EBB36D38F PubKeyEd25519{189F5AAE4CC9FCC9A93509E19D5936203506B41BEEBBCF4502BEFF4C0B373DC7} VP:10 A:0}
+	} ValidatorSet{
+	  Proposer: Validator{197D98F81A9EB5CD93B4C7AA78E6D64EBB36D38F PubKeyEd25519{189F5AAE4CC9FCC9A93509E19D5936203506B41BEEBBCF4502BEFF4C0B373DC7} VP:10 A:0}
+	  Validators:
+	    Validator{197D98F81A9EB5CD93B4C7AA78E6D64EBB36D38F PubKeyEd25519{189F5AAE4CC9FCC9A93509E19D5936203506B41BEEBBCF4502BEFF4C0B373DC7} VP:10 A:0}
+	} ValidatorSet{
+	  Proposer: Validator{197D98F81A9EB5CD93B4C7AA78E6D64EBB36D38F PubKeyEd25519{189F5AAE4CC9FCC9A93509E19D5936203506B41BEEBBCF4502BEFF4C0B373DC7} VP:10 A:0}
+	  Validators:
+	    Validator{197D98F81A9EB5CD93B4C7AA78E6D64EBB36D38F PubKeyEd25519{189F5AAE4CC9FCC9A93509E19D5936203506B41BEEBBCF4502BEFF4C0B373DC7} VP:10 A:0}
+	} 1 {{22020096 -1} {100000 48h0m0s 1048576} {[ed25519]} {0} {0}} 1 [227 176 196 66 152 252 28 20 154 251 244 200 153 111 185 36 39 174 65 228 100 155 147 76 164 149 153 27 120 82 184 85] [192 48 93 224 223 150 31 123 182 183 179 121 163 146 251 150 195 203 126 225 202 107 72 199 103 189 131 53 112 213 90 224]}
+	
+	Did you reset CometBFT without resetting your application's data?
+
+goroutine 1 [running]:
+github.com/cometbft/cometbft/consensus.assertAppHashEqualsOneFromState({_, _, _}, {{{0xb, 0x2}, {0xc000418b08, 0x7}}, {0xc000418b30, 0xb}, 0x1, ...})
+	/home/ntp/go/pkg/mod/github.com/cometbft/cometbft@v0.38.26/consensus/replay.go:557 +0x119
+github.com/cometbft/cometbft/consensus.(*Handshaker).replayBlocks(_, {_, _}, {{{0xb, 0x2}, {0xc000418b08, 0x7}}, {0xc000418b30, 0xb}, 0x1, ...}, ...)
+	/home/ntp/go/pkg/mod/github.com/cometbft/cometbft@v0.38.26/consensus/replay.go:520 +0x446
+github.com/cometbft/cometbft/consensus.(*Handshaker).ReplayBlocksWithContext(_, {_, _}, {{{0xb, 0x2}, {0xc000418b08, 0x7}}, {0xc000418b30, 0xb}, 0x1, ...}, ...)
+	/home/ntp/go/pkg/mod/github.com/cometbft/cometbft@v0.38.26/consensus/replay.go:411 +0x426
+github.com/cometbft/cometbft/consensus.(*Handshaker).HandshakeWithContext(0xc0006bee68, {0x1490948, 0x1d80300}, {0x149bc50, 0xc0002d81c0})
+	/home/ntp/go/pkg/mod/github.com/cometbft/cometbft@v0.38.26/consensus/replay.go:274 +0x425
+github.com/cometbft/cometbft/node.doHandshake({_, _}, {_, _}, {{{0xb, 0x2}, {0xc000418b08, 0x7}}, {0xc000418b30, 0xb}, ...}, ...)
+	/home/ntp/go/pkg/mod/github.com/cometbft/cometbft@v0.38.26/node/setup.go:186 +0x18b
+github.com/cometbft/cometbft/node.NewNodeWithContext({0x1490948, 0x1d80300}, 0xc000177a40, {0x148b450, 0xc00024c6e0}, 0xc0001c8c20, {0x1485820, 0xc0000d7d70}, 0xc000059aa0, 0x133faf0, ...)
+	/home/ntp/go/pkg/mod/github.com/cometbft/cometbft@v0.38.26/node/node.go:358 +0x64d
+github.com/cometbft/cometbft/node.NewNode(0x5c?, {0x148b450?, 0xc00024c6e0?}, 0xc000059868?, {0x1485820?, 0xc0000d7d70?}, 0x0?, 0x8080808080808080?, 0x0?, {0x1490a60, ...}, ...)
+	/home/ntp/go/pkg/mod/github.com/cometbft/cometbft@v0.38.26/node/node.go:277 +0xa9
+github.com/cometbft/cometbft/node.DefaultNewNode(0xc000177a40, {0x1490a60, 0xc000110560})
+	/home/ntp/go/pkg/mod/github.com/cometbft/cometbft@v0.38.26/node/setup.go:70 +0x356
+github.com/cometbft/cometbft/cmd/cometbft/commands.NewRunNodeCmd.func1(0xc000040608?, {0xc00049ed20?, 0x0?, 0x2?})
+	/home/ntp/go/pkg/mod/github.com/cometbft/cometbft@v0.38.26/cmd/cometbft/commands/run_node.go:107 +0x4f
+github.com/spf13/cobra.(*Command).execute(0xc000040608, {0xc00049ed00, 0x2, 0x2})
+	/home/ntp/go/pkg/mod/github.com/spf13/cobra@v1.9.1/command.go:1015 +0xa94
+github.com/spf13/cobra.(*Command).ExecuteC(0x1d4c2a0)
+	/home/ntp/go/pkg/mod/github.com/spf13/cobra@v1.9.1/command.go:1148 +0x40c
+github.com/spf13/cobra.(*Command).Execute(...)
+	/home/ntp/go/pkg/mod/github.com/spf13/cobra@v1.9.1/command.go:1071
+github.com/cometbft/cometbft/libs/cli.Executor.Execute({0x1d4c2a0?, 0x133fb30?})
+	/home/ntp/go/pkg/mod/github.com/cometbft/cometbft@v0.38.26/libs/cli/setup.go:89 +0x3e
+main.main()
+	/home/ntp/go/pkg/mod/github.com/cometbft/cometbft@v0.38.26/cmd/cometbft/main.go:52 +0x21d
+CometBFT exited: exit status 2

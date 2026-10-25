@@ -1,0 +1,16 @@
+=== RUN   TestB0M4RealCrossStoreWALFault
+=== RUN   TestB0M4RealCrossStoreWALFault/wal-write-kill
+2026/10/25 01:44:20 [JOB 1] WAL file /tmp/TestB0M4RealCrossStoreWALFaultwal-write-kill426421193/001/home/data/pluto-b0-v2/000005.log with log number 000005 stopped reading at offset: 0; replayed 0 keys in 0 batches
+2026/10/25 01:44:22 [JOB 1] WAL file /tmp/TestB0M4RealCrossStoreWALFaultwal-write-kill426421193/001/home/data/pluto-b0-v2/000011.log with log number 000011 stopped reading at offset: 400; replayed 2 keys in 2 batches
+    b0_m4_test.go:363: M4 wal-write-kill at "Write /tmp/TestB0M4RealCrossStoreWALFaultwal-write-kill426421193/001/home/data/pluto-b0-v2/000005.log", SIGKILL application while WAL call blocked; before B=3 C=2 A=2 hash=c0305de0df961f7bb6b7b379a392fb96c3cb7ee1ca6b48c767bd833570d55ae0 sender=100/0; real replay; after B=4 C=4 A=4 hash=44295da9566bf288667d249e95cd301217abbf9b76b500f594110fd11f9e2ffa sender=75/1 receiver=25/0
+=== RUN   TestB0M4RealCrossStoreWALFault/wal-sync-kill
+2026/10/25 01:44:26 [JOB 1] WAL file /tmp/TestB0M4RealCrossStoreWALFaultwal-sync-kill3771924448/001/home/data/pluto-b0-v2/000005.log with log number 000005 stopped reading at offset: 200; replayed 1 keys in 1 batches
+2026/10/25 01:44:28 [JOB 1] WAL file /tmp/TestB0M4RealCrossStoreWALFaultwal-sync-kill3771924448/001/home/data/pluto-b0-v2/000013.log with log number 000013 stopped reading at offset: 200; replayed 1 keys in 1 batches
+    b0_m4_test.go:363: M4 wal-sync-kill at "SyncData /tmp/TestB0M4RealCrossStoreWALFaultwal-sync-kill3771924448/001/home/data/pluto-b0-v2/000005.log", SIGKILL application while WAL call blocked; before B=3 C=2 A=3 hash=b8f217cdbeb9a716851387d5b0fb7319389bca0cb1acfac67ff35ad6e468b743 sender=75/1; mock replay; after B=4 C=4 A=4 hash=44295da9566bf288667d249e95cd301217abbf9b76b500f594110fd11f9e2ffa sender=75/1 receiver=25/0
+--- PASS: TestB0M4RealCrossStoreWALFault (12.67s)
+    --- PASS: TestB0M4RealCrossStoreWALFault/wal-write-kill (6.41s)
+    --- PASS: TestB0M4RealCrossStoreWALFault/wal-sync-kill (6.26s)
+PASS
+ok  	example.com/pluto/test/integration	12.689s
+
+exit_code=0

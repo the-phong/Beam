@@ -1,5 +1,90 @@
 # Architectural decision log
 
+## Phase 03D Owner acceptance and Git closeout (2026-10-25)
+
+After independent Controller technical acceptance, the Owner formally
+accepted Phase 03D at staged tree
+`7f7002496f38cea99cc3e0b7137e452523cc0b94`.
+D-020–D-026 remain accepted; this closeout changes no transaction, state,
+genesis, persistence or consensus rule. Under D-018, the Owner authorized a
+commit and push on `phase/03d-b0-abci-integration` and a Draft PR targeting
+`test-mainet`. Merge remains an Owner decision; Phase 03E is unauthorized.
+Hosted CI, physical power-loss durability, four-validator BFT, PQC/hybrid
+authentication and DoS resistance remain outside the accepted evidence.
+The D-026 implementation and conditional-review wording below records its
+earlier status and is superseded for execution authority by this closeout.
+
+## Phase 03D explicit initialization decision (2026-10-25; accepted by Owner)
+
+**D-026 — Explicit B0 Initialization and Complete-Data-Loss Detection
+(OWNER APPROVED FOR PHASE 03D IMPLEMENTATION on 2026-10-25).** `plutod
+init-b0` must durably create and verify the canonical Genesis V2 height-zero
+snapshot in a genuinely fresh home. `plutod start` requires an existing,
+complete and integrity-valid B0 snapshot and never creates or repairs it.
+CometBFT `InitChain` validates the identical persisted H0 and returns its
+AppHash; identical H0 retries are idempotent without a write. Missing,
+incomplete, conflicting or unexpectedly advanced state fails closed. Older
+D-025 homes containing configuration but no B0 snapshot require explicit
+operator disposition, not an automatic reset or migration. This decision
+changes the initialization actor and order only. The accepted D-024 key,
+record bytes, synced write and AppHash V2, and the D-025 canonical JSON/Base64
+transport remain unchanged. The local implementation and software fault
+evidence are review candidates; Phase 03D remains subject to Controller
+review. Approval does not authorize a
+commit, push, merge or Phase 03E.
+
+| Prior requirement | D-026 replacement | Affected implementation | Required verification |
+|---|---|---|---|
+| B0 D-022 `InitChain` durably creates H0 on first start | `init-b0` creates and verifies H0 before success | `internal/node.InitB0`, `internal/b0store` existing Create API | Fresh-home H0, failure windows, duplicate `init-b0` refusal |
+| B0 D-022 `InitChain` accepts identical H0 retry | Keep retry, but validate only; never create or rewrite | `internal/b0app.InitChain` | Exact H0 response, retry byte equality, conflicting/missing/H>0 rejection |
+| D-025 transport is decoded before H0 creation inside `InitChain` | Keep transport bytes and strict decoding; validate during `init-b0` and again at `InitChain` | `internal/b0genesis`, `internal/node`, `internal/b0app` | Canonical JSON/Base64 vectors and real Comet handshake |
+| `start` could allow missing B0 when Comet data was absent | `start` requires a valid existing snapshot regardless of Comet data | `internal/node.runB0`, `internal/b0app.Open` | Missing/incomplete/corrupt home rejection and existing H0/H>0 compatibility |
+
+The [D-026 decision document](decisions/D-026_EXPLICIT_B0_INITIALIZATION_PROPOSAL.md)
+records crash windows, alternatives, compatibility and operator recovery.
+Historical D-022 and D-025 wording below is preserved as superseded history.
+
+**D-026 conditional source review correction (2026-10-25):** The final
+fresh-home directory claim now uses exclusive `os.Mkdir` after any parent
+creation; a preliminary existence check is only an early diagnostic.
+Successful initialization also parses the generated CometBFT TOML, checks
+the configured local addresses and file paths, and validates the generated
+node key, validator key/genesis binding and fresh last-sign state. This adds
+no persistent marker, changes no D-024 record bytes or D-025 transport, and
+does not regenerate an invalid identity. The verifier uses the already pinned
+`github.com/spf13/viper v1.19.0` parser path used by CometBFT; its module
+version is unchanged and its `go.mod` classification becomes direct. The
+Controller's R-D026-01/R-D026-02 findings remain pending final review until
+the rework evidence is assessed.
+
+## Phase 03D genesis transport decision (2026-10-24; accepted by Owner)
+
+**D-025 — Canonical Genesis V2 JSON/Base64 transport (ACCEPTED BY OWNER on
+2026-10-24).** The D-021 Genesis V2 binary and AppHash V2 remain unchanged.
+For the explicit B0 profile, CometBFT `genesis.json` stores `app_state` as a
+JSON string equal to `json.Marshal(base64.StdEncoding.EncodeToString(G))`,
+where `G` is the complete canonical Genesis V2 binary. Pinned CometBFT
+v0.38.26 forwards those JSON value bytes unchanged in
+`RequestInitChain.AppStateBytes`. The Pluto B0 adapter accepts only that
+canonical JSON string and RFC 4648 standard padded Base64, decodes it, and
+passes the original binary to the existing `b0state.ParseGenesis` parser.
+The decoded chain ID must match both the ABCI request and configured profile.
+The binary alone defines genesis state and AppHash; transport text is never
+committed. There is no alternate-format fallback.
+
+This explicitly amends the Phase 03A wording that required raw binary bytes
+directly in `InitChain.AppStateBytes`: standard CometBFT genesis files carry
+JSON `app_state` values. The historical rule is retained in the amended
+specifications. D-020–D-024's transaction, account, state commitment and
+physical persistence rules are unchanged. This checkpoint authorizes only
+transport and initialization; transaction processing remains gated on
+Controller review within Phase 03D. Phase 03E is unauthorized.
+
+**Execution-status addendum, 2026-10-24:** The Owner subsequently accepted
+closure of the D-025 checkpoint and authorized the remaining Phase 03D B0
+ABCI integration and recovery work. This changes execution authority only;
+the accepted D-025 transport rule above is unchanged. T7 remains PARTIAL.
+
 ## Phase 03C physical storage decision (2026-10-24; accepted by Owner)
 
 **D-024 — Isolated B0 V2 complete-snapshot persistence (Accepted by Owner on

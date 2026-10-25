@@ -1,0 +1,6 @@
+# example.com/pluto/internal/b0store [example.com/pluto/internal/b0store.test]
+internal/b0store/recovery_closure_test.go:266:14: undefined: bytes
+FAIL	example.com/pluto/internal/b0store [build failed]
+FAIL
+
+exit_code=1

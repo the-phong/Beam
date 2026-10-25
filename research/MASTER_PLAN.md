@@ -7,16 +7,17 @@ to that investigation? No finding or publication
 outcome is presumed. Every phase requires a separate human authorization;
 finishing one phase does not authorize the next.
 
-**Current execution authority (2026-10-24):** Phase 03C is completed,
-Controller-accepted and Owner-accepted on
-`phase/03c-b0-state-persistence`, awaiting Owner-controlled merge of Draft
-PR #6 into `test-mainet`. Its verified source baseline is
-`61bc65fdebf358fb0330cb9ebd4a332ca4a06aca`. D-024 is accepted only as
-an experimental, correctness-oriented V2 storage baseline. The current
-authorization is documentation-only acceptance closeout. Phase 03D and all
-later work remain unauthorized; the Phase 02 runtime still has no B0
-transaction integration. The accepted B0 V1 rules and conditional Phase 04
-EVM gate are unchanged.
+**Current execution authority (2026-10-25):** Phase 03C is merged at
+`b56c81ccce7ea4a0e7f52053c7459c4601c15b38`. The Controller technically
+accepted Phase 03D, and the Owner formally accepted its classical B0 ABCI++
+implementation at staged tree `7f7002496f38cea99cc3e0b7137e452523cc0b94`.
+D-020–D-026 remain accepted. The Owner authorized only D-018 Git closeout:
+commit and push `phase/03d-b0-abci-integration` and open a Draft PR against
+`test-mainet`. The Owner controls merge. Hosted CI is not fully verified;
+physical power-loss durability and four-validator BFT were not tested.
+PQC/hybrid authentication is not implemented and DoS resistance is not
+established. Phase 03E and later phases remain unauthorized. The conditional
+Phase 04 EVM gate is unchanged.
 
 The method is: protocol specification → correctness oracle → functional
 implementation → adversarial testing → instrumentation → baseline measurement

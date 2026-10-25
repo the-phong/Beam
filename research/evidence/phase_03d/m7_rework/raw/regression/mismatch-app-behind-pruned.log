@@ -1,0 +1,13 @@
+2026/10/25 02:37:49 [JOB 1] WAL file /tmp/TestB0PinnedHeightAndHashMismatchFailClosedapp-behind-pruned2272970769/001/home/data/pluto-b0-v2/000012.log with log number 000012 stopped reading at offset: 0; replayed 0 keys in 0 batches
+I[2026-10-25|02:37:49.661] service start                                module=proxy msg="Starting multiAppConn service" impl=multiAppConn
+I[2026-10-25|02:37:49.661] service start                                module=abci-client connection=query msg="Starting socketClient service" impl=socketClient
+I[2026-10-25|02:37:49.665] service start                                module=abci-client connection=snapshot msg="Starting socketClient service" impl=socketClient
+I[2026-10-25|02:37:49.665] service start                                module=abci-client connection=mempool msg="Starting socketClient service" impl=socketClient
+I[2026-10-25|02:37:49.665] service start                                module=abci-client connection=consensus msg="Starting socketClient service" impl=socketClient
+I[2026-10-25|02:37:49.668] service start                                module=events msg="Starting EventBus service" impl=EventBus
+I[2026-10-25|02:37:49.668] service start                                module=pubsub msg="Starting PubSub service" impl=PubSub
+I[2026-10-25|02:37:49.681] service start                                module=txindex msg="Starting IndexerService service" impl=IndexerService
+I[2026-10-25|02:37:49.685] ABCI Handshake App Info                      module=consensus height=0 hash=E480C8B300C5AC1D662628F90334AAE185AD38ED791C59AB14E3AA42ABF083DA software-version=0.2.0-foundation protocol-version=2
+I[2026-10-25|02:37:49.685] ABCI Replay Blocks                           module=consensus appHeight=0 storeHeight=2 stateHeight=2
+ERROR: failed to create node: error during handshake: error on replay: app block height (0) is too far below block store base (2)
+CometBFT exited: exit status 1

@@ -1,0 +1,79 @@
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=b56c81c" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test ./...
+ok  	example.com/pluto/cmd/plutod	0.015s
+ok  	example.com/pluto/internal/app	(cached)
+ok  	example.com/pluto/internal/b0app	3.447s
+ok  	example.com/pluto/internal/b0genesis	0.062s
+ok  	example.com/pluto/internal/b0state	0.118s
+2026/10/25 01:39:09 [JOB 1] WAL file /tmp/TestM4ReturnedWALWriteAndSyncErrorswal-write194672598/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:09 [JOB 1] WAL file /tmp/TestM4ReturnedWALWriteAndSyncErrorswal-write194672598/001/b0/000008.log with log number 000008 stopped reading at offset: 0; replayed 0 keys in 0 batches
+2026/10/25 01:39:09 [JOB 1] WAL file /tmp/TestM4ReturnedWALWriteAndSyncErrorswal-sync3156313324/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:10 [JOB 1] WAL file /tmp/TestM4ReturnedWALWriteAndSyncErrorswal-sync3156313324/001/b0/000008.log with log number 000008 stopped reading at offset: 200; replayed 1 keys in 1 batches
+2026/10/25 01:39:10 [JOB 1] WAL file /tmp/TestM11GenesisCreationFaultBoundariesbefore-record2556340322/001/b0/000002.log with log number 000002 stopped reading at offset: 0; replayed 0 keys in 0 batches
+2026/10/25 01:39:10 [JOB 1] WAL file /tmp/TestM11GenesisCreationFaultBoundarieswal-write4151760252/001/b0/000002.log with log number 000002 stopped reading at offset: 0; replayed 0 keys in 0 batches
+2026/10/25 01:39:10 [JOB 1] WAL file /tmp/TestM11GenesisCreationFaultBoundarieswal-sync3866798013/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:10 [JOB 1] WAL file /tmp/TestM11GenesisCreationFaultBoundariesafter-sync2637597014/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+--- FAIL: TestM11GenesisCreationFaultBoundaries (0.24s)
+    --- FAIL: TestM11GenesisCreationFaultBoundaries/before-mkdir (0.00s)
+        recovery_closure_test.go:279: fresh retry failed: B0 database path already exists
+2026/10/25 01:39:10 [JOB 1] WAL file /tmp/TestCreateCommitRestartAndIsolation3932750655/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:10 [JOB 1] WAL file /tmp/TestCreateCommitRestartAndIsolation3932750655/001/b0/000005.log with log number 000005 stopped reading at offset: 200; replayed 1 keys in 1 batches
+2026/10/25 01:39:10 [JOB 1] WAL file /tmp/TestCreateCommitRestartAndIsolation3932750655/001/b0/000009.log with log number 000009 stopped reading at offset: 200; replayed 1 keys in 1 batches
+2026/10/25 01:39:10 [JOB 1] WAL file /tmp/TestFaultBoundaries3906377952/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:10 [JOB 1] WAL file /tmp/TestFaultBoundaries3906377952/001/b0/000005.log with log number 000005 stopped reading at offset: 200; replayed 1 keys in 1 batches
+2026/10/25 01:39:10 [JOB 1] WAL file /tmp/TestFaultBoundaries3906377952/001/b0/000009.log with log number 000009 stopped reading at offset: 0; replayed 0 keys in 0 batches
+2026/10/25 01:39:10 [JOB 1] WAL file /tmp/TestFaultBoundaries3906377952/001/b0/000013.log with log number 000013 stopped reading at offset: 200; replayed 1 keys in 1 batches
+2026/10/25 01:39:10 [JOB 1] WAL file /tmp/TestConcurrentReadersFailClosedOnUncertainCommit2397212552/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:10 [JOB 1] WAL file /tmp/TestConcurrentReadersFailClosedOnUncertainCommit2397212552/001/b0/000005.log with log number 000005 stopped reading at offset: 200; replayed 1 keys in 1 batches
+2026/10/25 01:39:10 [JOB 1] WAL file /tmp/TestProcessKillRecoverypending2765262260/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:10 [JOB 1] WAL file /tmp/TestProcessKillRecoverycommitted3655964289/001/b0/000002.log with log number 000002 stopped reading at offset: 363; replayed 2 keys in 2 batches
+2026/10/25 01:39:10 [JOB 1] WAL file /tmp/TestCorruptPhysicalRecordsFailClosedmagic3001489555/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:10 [JOB 1] WAL file /tmp/TestCorruptPhysicalRecordsFailClosedmagic3001489555/001/b0/000005.log with log number 000005 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:10 [JOB 1] WAL file /tmp/TestCorruptPhysicalRecordsFailClosedlong3365845294/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:10 [JOB 1] WAL file /tmp/TestCorruptPhysicalRecordsFailClosedlong3365845294/001/b0/000005.log with log number 000005 stopped reading at offset: 164; replayed 1 keys in 1 batches
+2026/10/25 01:39:10 [JOB 1] WAL file /tmp/TestCorruptPhysicalRecordsFailClosedhash1352028590/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:10 [JOB 1] WAL file /tmp/TestCorruptPhysicalRecordsFailClosedhash1352028590/001/b0/000005.log with log number 000005 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:10 [JOB 1] WAL file /tmp/TestCorruptPhysicalRecordsFailClosedbalance1166117469/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:10 [JOB 1] WAL file /tmp/TestCorruptPhysicalRecordsFailClosedbalance1166117469/001/b0/000005.log with log number 000005 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:10 [JOB 1] WAL file /tmp/TestCorruptPhysicalRecordsFailClosedsupply3101319201/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:10 [JOB 1] WAL file /tmp/TestCorruptPhysicalRecordsFailClosedsupply3101319201/001/b0/000005.log with log number 000005 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:11 [JOB 1] WAL file /tmp/TestCorruptPhysicalRecordsFailClosedcount2287275707/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:11 [JOB 1] WAL file /tmp/TestCorruptPhysicalRecordsFailClosedcount2287275707/001/b0/000005.log with log number 000005 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:11 [JOB 1] WAL file /tmp/TestCorruptPhysicalRecordsFailClosedchain1714650857/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:11 [JOB 1] WAL file /tmp/TestCorruptPhysicalRecordsFailClosedchain1714650857/001/b0/000005.log with log number 000005 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:11 [JOB 1] WAL file /tmp/TestCorruptPhysicalRecordsFailClosedversion2744873043/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:11 [JOB 1] WAL file /tmp/TestCorruptPhysicalRecordsFailClosedversion2744873043/001/b0/000005.log with log number 000005 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:11 [JOB 1] WAL file /tmp/TestCorruptPhysicalRecordsFailClosedshort1743117040/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:11 [JOB 1] WAL file /tmp/TestCorruptPhysicalRecordsFailClosedshort1743117040/001/b0/000005.log with log number 000005 stopped reading at offset: 162; replayed 1 keys in 1 batches
+2026/10/25 01:39:11 [JOB 1] WAL file /tmp/TestCorruptPhysicalRecordsFailClosednonce3153663499/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:11 [JOB 1] WAL file /tmp/TestCorruptPhysicalRecordsFailClosednonce3153663499/001/b0/000005.log with log number 000005 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:11 [JOB 1] WAL file /tmp/TestCorruptPhysicalRecordsFailClosed2446088150/001/v1/000002.log with log number 000002 stopped reading at offset: 58; replayed 1 keys in 1 batches
+2026/10/25 01:39:11 [JOB 1] WAL file /tmp/TestCorruptPhysicalRecordsFailClosed2446088150/003/wrong-chain/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:11 [JOB 1] WAL file /tmp/TestPhysicalOrderingOverflowAndHeight679327336/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:11 [JOB 1] WAL file /tmp/TestPhysicalOrderingOverflowAndHeight679327336/001/b0/000005.log with log number 000005 stopped reading at offset: 200; replayed 1 keys in 1 batches
+2026/10/25 01:39:11 [JOB 1] WAL file /tmp/TestPhysicalOrderingOverflowAndHeight679327336/001/b0/000009.log with log number 000009 stopped reading at offset: 0; replayed 0 keys in 0 batches
+2026/10/25 01:39:11 [JOB 1] WAL file /tmp/TestPhysicalOrderingOverflowAndHeight679327336/001/b0/000013.log with log number 000013 stopped reading at offset: 200; replayed 1 keys in 1 batches
+2026/10/25 01:39:11 [JOB 1] WAL file /tmp/TestPhysicalOrderingOverflowAndHeight679327336/001/b0/000017.log with log number 000017 stopped reading at offset: 0; replayed 0 keys in 0 batches
+2026/10/25 01:39:11 [JOB 1] WAL file /tmp/TestPhysicalOrderingOverflowAndHeight679327336/001/b0/000020.log with log number 000020 stopped reading at offset: 200; replayed 1 keys in 1 batches
+2026/10/25 01:39:11 [JOB 1] WAL file /tmp/TestPhysicalOrderingOverflowAndHeight679327336/001/b0/000024.log with log number 000024 stopped reading at offset: 0; replayed 0 keys in 0 batches
+2026/10/25 01:39:11 [JOB 1] WAL file /tmp/TestPhysicalOrderingOverflowAndHeight679327336/001/b0/000028.log with log number 000028 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:11 [JOB 1] WAL file /tmp/TestPhysicalOrderingOverflowAndHeight679327336/001/b0/000032.log with log number 000032 stopped reading at offset: 0; replayed 0 keys in 0 batches
+2026/10/25 01:39:11 [JOB 1] WAL file /tmp/TestPhysicalOrderingOverflowAndHeight679327336/001/b0/000035.log with log number 000035 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:11 [JOB 1] WAL file /tmp/TestLifecycleAndStorageErrorBranches3242864829/003/empty-db/000002.log with log number 000002 stopped reading at offset: 0; replayed 0 keys in 0 batches
+2026/10/25 01:39:11 [JOB 1] WAL file /tmp/TestLifecycleAndStorageErrorBranches3242864829/004/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:11 [JOB 1] WAL file /tmp/TestLifecycleAndStorageErrorBranches3242864829/004/b0/000005.log with log number 000005 stopped reading at offset: 0; replayed 0 keys in 0 batches
+2026/10/25 01:39:11 [JOB 1] WAL file /tmp/TestLifecycleAndStorageErrorBranches3242864829/004/b0/000008.log with log number 000008 stopped reading at offset: 0; replayed 0 keys in 0 batches
+2026/10/25 01:39:11 [JOB 1] WAL file /tmp/TestLifecycleAndStorageErrorBranches3242864829/005/oversized/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:39:11 [JOB 1] WAL file /tmp/TestLifecycleAndStorageErrorBranches3242864829/005/oversized/000008.log with log number 000008 stopped reading at offset: 0; replayed 0 keys in 0 batches
+FAIL
+FAIL	example.com/pluto/internal/b0store	2.025s
+?   	example.com/pluto/internal/node	[no test files]
+ok  	example.com/pluto/internal/store	(cached)
+ok  	example.com/pluto/internal/tx	(cached)
+?   	example.com/pluto/internal/version	[no test files]
+FAIL
+make: *** [Makefile:12: test] Error 1
+
+exit_code=2

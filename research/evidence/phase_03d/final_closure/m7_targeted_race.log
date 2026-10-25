@@ -1,0 +1,48 @@
+=== RUN   TestB0M7AsymmetricApplicationCrash
+=== RUN   TestB0M7AsymmetricApplicationCrash/before-proposal
+2026/10/25 02:14:38 [JOB 1] WAL file /tmp/TestB0M7AsymmetricApplicationCrashbefore-proposal977639014/001/home/data/pluto-b0-v2/000002.log with log number 000002 stopped reading at offset: 489; replayed 3 keys in 3 batches
+    b0_asymmetric_test.go:272: M7 before-proposal: SIGKILL app child at marked callback; Comet alive after 1.2s=false exit=<nil> RPC=Get "http://127.0.0.1:38935/status": dial tcp 127.0.0.1:38935: connect: connection refused; before B=2 C=2 A=2 hash=c0305de0df961f7bb6b7b379a392fb96c3cb7ee1ca6b48c767bd833570d55ae0 sender=100/0 receiver=absent; decided=false; after B=4 C=4 A=4 hash=44295da9566bf288667d249e95cd301217abbf9b76b500f594110fd11f9e2ffa sender=75/1 receiver=25/0; logs=/tmp/TestB0M7AsymmetricApplicationCrashbefore-proposal977639014/001
+=== RUN   TestB0M7AsymmetricApplicationCrash/before-process
+2026/10/25 02:14:45 [JOB 1] WAL file /tmp/TestB0M7AsymmetricApplicationCrashbefore-process1537689636/001/home/data/pluto-b0-v2/000002.log with log number 000002 stopped reading at offset: 489; replayed 3 keys in 3 batches
+    b0_asymmetric_test.go:272: M7 before-process: SIGKILL app child at marked callback; Comet alive after 1.2s=false exit=<nil> RPC=Get "http://127.0.0.1:44847/status": dial tcp 127.0.0.1:44847: connect: connection refused; before B=2 C=2 A=2 hash=c0305de0df961f7bb6b7b379a392fb96c3cb7ee1ca6b48c767bd833570d55ae0 sender=100/0 receiver=absent; decided=false; after B=4 C=4 A=4 hash=44295da9566bf288667d249e95cd301217abbf9b76b500f594110fd11f9e2ffa sender=75/1 receiver=25/0; logs=/tmp/TestB0M7AsymmetricApplicationCrashbefore-process1537689636/001
+=== RUN   TestB0M7AsymmetricApplicationCrash/before-finalize
+2026/10/25 02:14:52 [JOB 1] WAL file /tmp/TestB0M7AsymmetricApplicationCrashbefore-finalize1299848942/001/home/data/pluto-b0-v2/000002.log with log number 000002 stopped reading at offset: 489; replayed 3 keys in 3 batches
+    b0_asymmetric_test.go:272: M7 before-finalize: SIGKILL app child at marked callback; Comet alive after 1.2s=false exit=<nil> RPC=Get "http://127.0.0.1:34921/status": dial tcp 127.0.0.1:34921: connect: connection refused; before B=3 C=2 A=2 hash=c0305de0df961f7bb6b7b379a392fb96c3cb7ee1ca6b48c767bd833570d55ae0 sender=100/0 receiver=absent; decided=true; after B=4 C=4 A=4 hash=44295da9566bf288667d249e95cd301217abbf9b76b500f594110fd11f9e2ffa sender=75/1 receiver=25/0; logs=/tmp/TestB0M7AsymmetricApplicationCrashbefore-finalize1299848942/001
+=== RUN   TestB0M7AsymmetricApplicationCrash/before-commit
+2026/10/25 02:14:58 [JOB 1] WAL file /tmp/TestB0M7AsymmetricApplicationCrashbefore-commit269573120/001/home/data/pluto-b0-v2/000002.log with log number 000002 stopped reading at offset: 489; replayed 3 keys in 3 batches
+    b0_asymmetric_test.go:272: M7 before-commit: SIGKILL app child at marked callback; Comet alive after 1.2s=false exit=<nil> RPC=Get "http://127.0.0.1:33039/status": dial tcp 127.0.0.1:33039: connect: connection refused; before B=3 C=2 A=2 hash=c0305de0df961f7bb6b7b379a392fb96c3cb7ee1ca6b48c767bd833570d55ae0 sender=100/0 receiver=absent; decided=true; after B=4 C=4 A=4 hash=44295da9566bf288667d249e95cd301217abbf9b76b500f594110fd11f9e2ffa sender=75/1 receiver=25/0; logs=/tmp/TestB0M7AsymmetricApplicationCrashbefore-commit269573120/001
+--- PASS: TestB0M7AsymmetricApplicationCrash (26.71s)
+    --- PASS: TestB0M7AsymmetricApplicationCrash/before-proposal (6.66s)
+    --- PASS: TestB0M7AsymmetricApplicationCrash/before-process (6.70s)
+    --- PASS: TestB0M7AsymmetricApplicationCrash/before-finalize (6.67s)
+    --- PASS: TestB0M7AsymmetricApplicationCrash/before-commit (6.68s)
+=== RUN   TestB0M7OtherApplicationCallbacks
+=== RUN   TestB0M7OtherApplicationCallbacks/info-initial
+    b0_m7_callbacks_test.go:112: M7 info-initial: callback reached before InitChain; SIGKILL app; Comet alive after 1.2s=false exit=exit status 1 RPC=Get "http://127.0.0.1:44335/status": dial tcp 127.0.0.1:44335: connect: connection refused; before B=0 C=0 A=absent sender=absent receiver=absent; production restart refused: B0 database is absent while CometBFT state exists; refusing implicit reset
+        ; no tx requested; logs=/tmp/TestB0M7OtherApplicationCallbacksinfo-initial1234873706/001
+=== RUN   TestB0M7OtherApplicationCallbacks/init-post-sync
+2026/10/25 02:15:04 [JOB 1] WAL file /tmp/TestB0M7OtherApplicationCallbacksinit-post-sync3229253448/001/home/data/pluto-b0-v2/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+    b0_m7_callbacks_test.go:112: M7 init-post-sync: callback reached; SIGKILL app; Comet alive after 1.2s=false exit=exit status 1 RPC=Get "http://127.0.0.1:36491/status": dial tcp 127.0.0.1:36491: connect: connection refused; before B=0 C=0 A=0 H=e480c8b300c5ac1d662628f90334aae185ad38ed791c59ab14e3aa42abf083da sender=100/0 receiver=absent; actual Comet restart after B=2 C=2 A=2 H=c0305de0df961f7bb6b7b379a392fb96c3cb7ee1ca6b48c767bd833570d55ae0 sender=100/0 receiver=0/0 found=false; logs=/tmp/TestB0M7OtherApplicationCallbacksinit-post-sync3229253448/001
+=== RUN   TestB0M7OtherApplicationCallbacks/check-new
+2026/10/25 02:15:11 [JOB 1] WAL file /tmp/TestB0M7OtherApplicationCallbackscheck-new1469720689/001/home/data/pluto-b0-v2/000002.log with log number 000002 stopped reading at offset: 489; replayed 3 keys in 3 batches
+    b0_m7_callbacks_test.go:112: M7 check-new: final indexed transaction result Code=0
+    b0_m7_callbacks_test.go:112: M7 check-new: callback reached; SIGKILL app; Comet alive after 1.2s=false exit=<nil> RPC=Get "http://127.0.0.1:43205/status": dial tcp 127.0.0.1:43205: connect: connection refused; before B=2 C=2 A=2 H=c0305de0df961f7bb6b7b379a392fb96c3cb7ee1ca6b48c767bd833570d55ae0 sender=100/0 receiver=absent; actual Comet restart after B=4 C=4 A=4 H=44295da9566bf288667d249e95cd301217abbf9b76b500f594110fd11f9e2ffa sender=75/1 receiver=25/0 found=true; logs=/tmp/TestB0M7OtherApplicationCallbackscheck-new1469720689/001
+=== RUN   TestB0M7OtherApplicationCallbacks/check-recheck
+2026/10/25 02:15:18 [JOB 1] WAL file /tmp/TestB0M7OtherApplicationCallbackscheck-recheck4006861002/001/home/data/pluto-b0-v2/000002.log with log number 000002 stopped reading at offset: 652; replayed 4 keys in 4 batches
+    b0_m7_callbacks_test.go:112: M7 check-recheck: final indexed transaction result Code=0
+    b0_m7_callbacks_test.go:112: M7 check-recheck: callback reached; SIGKILL app; Comet alive after 1.2s=false exit=<nil> RPC=Get "http://127.0.0.1:36937/status": dial tcp 127.0.0.1:36937: connect: connection refused; before B=3 C=3 A=3 H=57434e9bf8b6df4fe6c14476a65efe33117efe7b58291158d5e7acf567338c5a sender=100/0 receiver=absent; actual Comet restart after B=5 C=5 A=5 H=ceaf56ac281e653a7ac09ee4d27e6cfd251242def3f14fd5c5f004841a8189b2 sender=75/1 receiver=25/0 found=true; logs=/tmp/TestB0M7OtherApplicationCallbackscheck-recheck4006861002/001
+=== RUN   TestB0M7OtherApplicationCallbacks/info
+2026/10/25 02:15:25 [JOB 1] WAL file /tmp/TestB0M7OtherApplicationCallbacksinfo2467835767/001/home/data/pluto-b0-v2/000002.log with log number 000002 stopped reading at offset: 489; replayed 3 keys in 3 batches
+    b0_m7_callbacks_test.go:112: M7 info: callback reached; SIGKILL app; Comet alive after 1.2s=false exit=<nil> RPC=Get "http://127.0.0.1:36843/status": dial tcp 127.0.0.1:36843: connect: connection refused; before B=2 C=2 A=2 H=c0305de0df961f7bb6b7b379a392fb96c3cb7ee1ca6b48c767bd833570d55ae0 sender=100/0 receiver=absent; actual Comet restart after B=3 C=3 A=3 H=57434e9bf8b6df4fe6c14476a65efe33117efe7b58291158d5e7acf567338c5a sender=100/0 receiver=0/0 found=false; logs=/tmp/TestB0M7OtherApplicationCallbacksinfo2467835767/001
+=== RUN   TestB0M7OtherApplicationCallbacks/query
+2026/10/25 02:15:31 [JOB 1] WAL file /tmp/TestB0M7OtherApplicationCallbacksquery1752964333/001/home/data/pluto-b0-v2/000002.log with log number 000002 stopped reading at offset: 489; replayed 3 keys in 3 batches
+    b0_m7_callbacks_test.go:112: M7 query: callback reached; SIGKILL app; Comet alive after 1.2s=false exit=<nil> RPC=Get "http://127.0.0.1:37381/status": dial tcp 127.0.0.1:37381: connect: connection refused; before B=2 C=2 A=2 H=c0305de0df961f7bb6b7b379a392fb96c3cb7ee1ca6b48c767bd833570d55ae0 sender=100/0 receiver=absent; actual Comet restart after B=3 C=3 A=3 H=57434e9bf8b6df4fe6c14476a65efe33117efe7b58291158d5e7acf567338c5a sender=100/0 receiver=0/0 found=false; logs=/tmp/TestB0M7OtherApplicationCallbacksquery1752964333/001
+--- PASS: TestB0M7OtherApplicationCallbacks (32.35s)
+    --- PASS: TestB0M7OtherApplicationCallbacks/info-initial (2.23s)
+    --- PASS: TestB0M7OtherApplicationCallbacks/init-post-sync (4.58s)
+    --- PASS: TestB0M7OtherApplicationCallbacks/check-new (6.69s)
+    --- PASS: TestB0M7OtherApplicationCallbacks/check-recheck (7.52s)
+    --- PASS: TestB0M7OtherApplicationCallbacks/info (5.68s)
+    --- PASS: TestB0M7OtherApplicationCallbacks/query (5.64s)
+PASS
+ok  	example.com/pluto/test/integration	60.110s

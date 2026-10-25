@@ -1,0 +1,197 @@
+UTC timestamp: 2026-10-24T06:38:10Z
+Branch: phase/03d-b0-abci-integration
+Source HEAD: b56c81ccce7ea4a0e7f52053c7459c4601c15b38
+Remote integration: b56c81ccce7ea4a0e7f52053c7459c4601c15b38
+System: Linux 6.18.33.2-microsoft-standard-WSL2 x86_64
+Working directory: /mnt/d/personal/search&develop/blockchain/system/pluto
+
+$ go version
+go version go1.24.1 linux/amd64
+exit_code=0
+
+$ python3 --version
+Python 3.10.12
+exit_code=0
+
+$ go list -m github.com/cometbft/cometbft github.com/cockroachdb/pebble github.com/decred/dcrd/dcrec/secp256k1/v4
+github.com/cometbft/cometbft v0.38.26
+github.com/cockroachdb/pebble v1.1.5
+github.com/decred/dcrd/dcrec/secp256k1/v4 v4.4.1
+exit_code=0
+
+$ go build ./...
+exit_code=0
+
+$ go test -count=1 ./...
+ok  	example.com/pluto/cmd/plutod	0.021s
+ok  	example.com/pluto/internal/app	0.312s
+ok  	example.com/pluto/internal/b0app	0.276s
+ok  	example.com/pluto/internal/b0genesis	0.046s
+ok  	example.com/pluto/internal/b0state	0.087s
+ok  	example.com/pluto/internal/b0store	2.295s
+?   	example.com/pluto/internal/node	[no test files]
+ok  	example.com/pluto/internal/store	0.131s
+ok  	example.com/pluto/internal/tx	0.023s
+?   	example.com/pluto/internal/version	[no test files]
+exit_code=0
+
+$ go vet ./...
+exit_code=0
+
+$ make fmt-check
+exit_code=0
+
+$ go mod verify
+all modules verified
+exit_code=0
+
+$ make verify
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=b56c81c" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test ./...
+ok  	example.com/pluto/cmd/plutod	0.024s
+ok  	example.com/pluto/internal/app	(cached)
+ok  	example.com/pluto/internal/b0app	0.148s
+ok  	example.com/pluto/internal/b0genesis	0.042s
+ok  	example.com/pluto/internal/b0state	(cached)
+ok  	example.com/pluto/internal/b0store	(cached)
+?   	example.com/pluto/internal/node	[no test files]
+ok  	example.com/pluto/internal/store	(cached)
+ok  	example.com/pluto/internal/tx	(cached)
+?   	example.com/pluto/internal/version	[no test files]
+go vet ./...
+go mod verify
+all modules verified
+./build/plutod version
+plutod 0.2.0-foundation
+Go: go1.24.1
+Platform: linux/amd64
+Revision: b56c81c
+exit_code=0
+
+$ make test-integration
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=b56c81c" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test -tags integration ./test/integration -timeout 120s -count=1
+ok  	example.com/pluto/test/integration	12.029s
+exit_code=0
+
+$ go test -tags integration ./test/integration -run TestPinnedCometGenesisTransportAndB0Restart -timeout 120s -count=1 -v
+=== RUN   TestPinnedCometGenesisTransportAndB0Restart
+    b0_genesis_test.go:143: pinned CometBFT delivered exact JSON/Base64 InitChain bytes: length=78
+2026/10/24 13:39:12 [JOB 1] WAL file /tmp/TestPinnedCometGenesisTransportAndB0Restart1930870303/001/b0-home/data/pluto-b0-v2/000002.log with log number 000002 stopped reading at offset: 489; replayed 3 keys in 3 batches
+    b0_genesis_test.go:208: B0 restart preserved genesis balance and refused implicit reset at height >= 3
+--- PASS: TestPinnedCometGenesisTransportAndB0Restart (5.14s)
+PASS
+ok  	example.com/pluto/test/integration	5.160s
+exit_code=0
+
+$ go test -count=1 -v ./internal/b0genesis ./internal/b0app
+=== RUN   TestGoldenTransportAndState
+--- PASS: TestGoldenTransportAndState (0.00s)
+=== RUN   TestTransportRejectsAlternates
+=== RUN   TestTransportRejectsAlternates/null
+=== RUN   TestTransportRejectsAlternates/object
+=== RUN   TestTransportRejectsAlternates/array
+=== RUN   TestTransportRejectsAlternates/non-JSON_whitespace
+=== RUN   TestTransportRejectsAlternates/oversized_JSON
+=== RUN   TestTransportRejectsAlternates/wrong_binary_magic
+=== RUN   TestTransportRejectsAlternates/wrong_chain
+=== RUN   TestTransportRejectsAlternates/number
+=== RUN   TestTransportRejectsAlternates/trailing_value
+=== RUN   TestTransportRejectsAlternates/truncated
+=== RUN   TestTransportRejectsAlternates/nonzero_pad_bits
+=== RUN   TestTransportRejectsAlternates/boolean
+=== RUN   TestTransportRejectsAlternates/bad_alphabet
+=== RUN   TestTransportRejectsAlternates/bad_padding
+=== RUN   TestTransportRejectsAlternates/escaped_JSON
+=== RUN   TestTransportRejectsAlternates/Unicode_whitespace
+--- PASS: TestTransportRejectsAlternates (0.00s)
+    --- PASS: TestTransportRejectsAlternates/null (0.00s)
+    --- PASS: TestTransportRejectsAlternates/object (0.00s)
+    --- PASS: TestTransportRejectsAlternates/array (0.00s)
+    --- PASS: TestTransportRejectsAlternates/non-JSON_whitespace (0.00s)
+    --- PASS: TestTransportRejectsAlternates/oversized_JSON (0.00s)
+    --- PASS: TestTransportRejectsAlternates/wrong_binary_magic (0.00s)
+    --- PASS: TestTransportRejectsAlternates/wrong_chain (0.00s)
+    --- PASS: TestTransportRejectsAlternates/number (0.00s)
+    --- PASS: TestTransportRejectsAlternates/trailing_value (0.00s)
+    --- PASS: TestTransportRejectsAlternates/truncated (0.00s)
+    --- PASS: TestTransportRejectsAlternates/nonzero_pad_bits (0.00s)
+    --- PASS: TestTransportRejectsAlternates/boolean (0.00s)
+    --- PASS: TestTransportRejectsAlternates/bad_alphabet (0.00s)
+    --- PASS: TestTransportRejectsAlternates/bad_padding (0.00s)
+    --- PASS: TestTransportRejectsAlternates/escaped_JSON (0.00s)
+    --- PASS: TestTransportRejectsAlternates/Unicode_whitespace (0.00s)
+=== RUN   TestMalformedBinaryThroughTransport
+=== RUN   TestMalformedBinaryThroughTransport/version
+=== RUN   TestMalformedBinaryThroughTransport/count_length
+=== RUN   TestMalformedBinaryThroughTransport/zero_allocation
+=== RUN   TestMalformedBinaryThroughTransport/trailing_byte
+=== RUN   TestMalformedBinaryThroughTransport/unsorted
+=== RUN   TestMalformedBinaryThroughTransport/duplicate
+=== RUN   TestMalformedBinaryThroughTransport/supply_overflow
+--- PASS: TestMalformedBinaryThroughTransport (0.00s)
+    --- PASS: TestMalformedBinaryThroughTransport/version (0.00s)
+    --- PASS: TestMalformedBinaryThroughTransport/count_length (0.00s)
+    --- PASS: TestMalformedBinaryThroughTransport/zero_allocation (0.00s)
+    --- PASS: TestMalformedBinaryThroughTransport/trailing_byte (0.00s)
+    --- PASS: TestMalformedBinaryThroughTransport/unsorted (0.00s)
+    --- PASS: TestMalformedBinaryThroughTransport/duplicate (0.00s)
+    --- PASS: TestMalformedBinaryThroughTransport/supply_overflow (0.00s)
+=== RUN   TestMaximumLengthCalculation
+--- PASS: TestMaximumLengthCalculation (0.03s)
+PASS
+ok  	example.com/pluto/internal/b0genesis	0.045s
+=== RUN   TestInitializeDurableIdempotentAndReproducible
+2026/10/24 13:39:18 [JOB 1] WAL file /tmp/TestInitializeDurableIdempotentAndReproducible4091638619/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/24 13:39:18 [JOB 1] WAL file /tmp/TestInitializeDurableIdempotentAndReproducible4091638619/001/b0/000005.log with log number 000005 stopped reading at offset: 0; replayed 0 keys in 0 batches
+--- PASS: TestInitializeDurableIdempotentAndReproducible (0.10s)
+=== RUN   TestInitConflictAndInterruptedDirectory
+--- PASS: TestInitConflictAndInterruptedDirectory (0.00s)
+=== RUN   TestCheckpointNoTransactionHotPath
+--- PASS: TestCheckpointNoTransactionHotPath (0.02s)
+PASS
+ok  	example.com/pluto/internal/b0app	0.142s
+exit_code=0
+
+$ go test -race -count=1 ./internal/b0genesis ./internal/b0app ./internal/node ./cmd/plutod
+ok  	example.com/pluto/internal/b0genesis	1.525s
+ok  	example.com/pluto/internal/b0app	1.202s
+?   	example.com/pluto/internal/node	[no test files]
+ok  	example.com/pluto/cmd/plutod	1.044s
+exit_code=0
+
+$ python3 research/evidence/phase_03d/d025/reference_transport.py
+genesis_binary_hex=504c55544f47322100000002000b706c75746f2d62302d763100000001b9631c0f8d9d2d9d56bd6151559f3339e14eb36a0000000000000064
+genesis_binary_sha256=d41a0d212d2af0b572b4bed1190a43f50a4e21034d8eaa4927e4c1c7251e46e8
+genesis_transport_hex=2255457856564539484d694541414141434141747762485630627931694d4331324d51414141414735597877506a5a30746e566139595646566e7a4d353455367a61674141414141414141426b22
+genesis_transport_length=78
+genesis_apphash_v2=e480c8b300c5ac1d662628f90334aae185ad38ed791c59ab14e3aa42abf083da
+max_binary=1835076 max_base64=2446768 max_canonical_json=2446770
+reference PASS
+exit_code=0
+
+$ python3 research/evidence/phase_03c/reference_oracle.py
+genesis: e480c8b300c5ac1d662628f90334aae185ad38ed791c59ab14e3aa42abf083da PASS
+min_chain_genesis: d6c802d654b16be9a8a1d7ef92206c3b0e8f7b77595f4321248c189e97f65b01 PASS
+max_chain_genesis: 5df773851ea3aa65afc4235fd07fc501b6d2cf08e601a01a90a5414dfb20d488 PASS
+post_transfer: c735447cd853aed15e488a349710e96284640994c9da0158478f19fee293982e PASS
+post_self_transfer: 9e512d901ea0137a89bfab07a5b03505540f98bf5fe7fc86a680ae90b4f7caec PASS
+post_empty_block: 7822225ce3300e3be2e954828c6f7944c669b16f16ecc4ddc149108e75fad024 PASS
+oracle PASS; Python 3.10.12; cryptography 3.4.8
+exit_code=0
+
+$ sha256sum research/evidence/phase_03c/state_vectors.json
+3d8491b174f44ae51c99796d48c4001ba56e86e008c5dbd08f7d1b68007d69f7  research/evidence/phase_03c/state_vectors.json
+exit_code=0
+
+$ git diff --check
+exit_code=0
+
+$ git diff --exit-code b56c81ccce7ea4a0e7f52053c7459c4601c15b38 -- internal/app internal/tx internal/b0state internal/b0store internal/store go.mod go.sum Makefile .github research/evidence/phase_03c research/evidence/phase_03b research/specs/B0_CLASSICAL_TRANSACTION_PROTOCOL_V1.md research/specs/B0_TEST_VECTOR_PLAN_V1.md
+exit_code=0
+
+Verification command failures: 0

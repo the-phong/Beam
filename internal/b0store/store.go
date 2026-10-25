@@ -13,6 +13,7 @@ import (
 	"example.com/pluto/internal/b0state"
 	"example.com/pluto/internal/tx"
 	"github.com/cockroachdb/pebble"
+	"github.com/cockroachdb/pebble/vfs"
 )
 
 const (
@@ -37,6 +38,13 @@ var ErrClosed = errors.New("B0 store closed")
 type Options struct {
 	BeforeSync func() error
 	AfterSync  func() error
+	// FS and the genesis hooks are used by recovery tests. A nil FS uses the
+	// production filesystem. No hook changes the persisted record format.
+	FS                 vfs.FS
+	BeforeGenesisMkdir func() error
+	AfterGenesisMkdir  func() error
+	BeforeGenesisSync  func() error
+	AfterGenesisSync   func() error
 }
 
 // Store owns one Pebble lock and serializes candidate and committed access.
@@ -54,6 +62,17 @@ type Store struct {
 // Create initializes only a previously absent directory. A failed attempt
 // leaves its directory for explicit operator inspection; it never resets it.
 func Create(dir string, genesis []byte, expectedChainID string) (*Store, error) {
+	return createWithOptions(dir, genesis, expectedChainID, Options{})
+}
+
+// CreateWithOptions is the same D-024 creation path with deterministic
+// filesystem fault hooks for D-026 initialization tests. Production passes
+// zero Options and writes the identical single committed record.
+func CreateWithOptions(dir string, genesis []byte, expectedChainID string, options Options) (*Store, error) {
+	return createWithOptions(dir, genesis, expectedChainID, options)
+}
+
+func createWithOptions(dir string, genesis []byte, expectedChainID string, options Options) (*Store, error) {
 	if dir == "" {
 		return nil, ErrMissing
 	}
@@ -69,16 +88,38 @@ func Create(dir string, genesis []byte, expectedChainID string) (*Store, error) 
 	if err := os.MkdirAll(filepath.Dir(dir), 0700); err != nil {
 		return nil, err
 	}
+	if options.BeforeGenesisMkdir != nil {
+		if err := options.BeforeGenesisMkdir(); err != nil {
+			return nil, fmt.Errorf("before B0 directory creation: %w", err)
+		}
+	}
 	if err := os.Mkdir(dir, 0700); err != nil {
 		return nil, fmt.Errorf("create B0 database directory: %w", err)
 	}
-	db, err := pebble.Open(dir, &pebble.Options{ErrorIfExists: true})
+	if options.AfterGenesisMkdir != nil {
+		if err := options.AfterGenesisMkdir(); err != nil {
+			return nil, fmt.Errorf("after B0 directory creation: %w", err)
+		}
+	}
+	fs := options.FS
+	if fs == nil {
+		fs = vfs.Default
+	}
+	db, err := pebble.Open(dir, &pebble.Options{ErrorIfExists: true, FS: fs})
 	if err != nil {
 		return nil, fmt.Errorf("open new B0 Pebble database: %w", err)
 	}
 	record, err := encodeRecord(state)
 	if err == nil {
-		err = db.Set(committedKey, record, pebble.Sync)
+		if options.BeforeGenesisSync != nil {
+			err = options.BeforeGenesisSync()
+		}
+		if err == nil {
+			err = db.Set(committedKey, record, pebble.Sync)
+		}
+		if err == nil && options.AfterGenesisSync != nil {
+			err = options.AfterGenesisSync()
+		}
 	}
 	if err != nil {
 		_ = db.Close()
@@ -91,13 +132,68 @@ func OpenExisting(dir, expectedChainID string) (*Store, error) {
 	return OpenExistingWithOptions(dir, expectedChainID, Options{})
 }
 
+// ProbeExisting validates a committed snapshot without granting Pebble a
+// writable handle. Startup uses this before opening the application so a
+// refused incomplete or corrupt home is not modified by database recovery.
+func ProbeExisting(dir, expectedChainID string) (b0state.State, error) {
+	if dir == "" {
+		return b0state.State{}, ErrMissing
+	}
+	info, err := os.Stat(dir)
+	if errors.Is(err, os.ErrNotExist) {
+		return b0state.State{}, ErrMissing
+	}
+	if err != nil {
+		return b0state.State{}, err
+	}
+	if !info.IsDir() {
+		return b0state.State{}, ErrMissing
+	}
+	// Pebble's read-only Open still creates LOCK. Reject directories that lack
+	// Pebble's CURRENT manifest pointer before opening them at all.
+	current, err := os.Stat(filepath.Join(dir, "CURRENT"))
+	if errors.Is(err, os.ErrNotExist) {
+		return b0state.State{}, ErrMissing
+	}
+	if err != nil {
+		return b0state.State{}, err
+	}
+	if !current.Mode().IsRegular() {
+		return b0state.State{}, ErrMissing
+	}
+	db, err := pebble.Open(dir, &pebble.Options{ErrorIfNotExists: true, ReadOnly: true})
+	if err != nil {
+		return b0state.State{}, fmt.Errorf("open B0 snapshot read-only: %w", err)
+	}
+	state, loadErr := load(db, expectedChainID)
+	closeErr := db.Close()
+	if loadErr != nil {
+		return b0state.State{}, loadErr
+	}
+	if closeErr != nil {
+		return b0state.State{}, closeErr
+	}
+	return state, nil
+}
+
 // OpenExistingWithOptions is intended for fault-injection tests. It requires
 // an existing Pebble database and a complete, integrity-valid V2 record.
 func OpenExistingWithOptions(dir, expectedChainID string, options Options) (*Store, error) {
 	if dir == "" {
 		return nil, ErrMissing
 	}
-	db, err := pebble.Open(dir, &pebble.Options{ErrorIfNotExists: true})
+	if info, err := os.Stat(dir); errors.Is(err, os.ErrNotExist) {
+		return nil, ErrMissing
+	} else if err != nil {
+		return nil, err
+	} else if !info.IsDir() {
+		return nil, ErrMissing
+	}
+	fs := options.FS
+	if fs == nil {
+		fs = vfs.Default
+	}
+	db, err := pebble.Open(dir, &pebble.Options{ErrorIfNotExists: true, FS: fs})
 	if err != nil {
 		return nil, fmt.Errorf("open existing B0 Pebble database: %w", err)
 	}
@@ -202,6 +298,41 @@ func (s *Store) Prepare(raws [][]byte) ([]tx.Code, [32]byte, error) {
 	candidate, codes, err := b0state.SimulateOrdered(s.committed, raws)
 	if err != nil {
 		return nil, [32]byte{}, err
+	}
+	candidate, err = candidate.AdvanceBlock()
+	if err != nil {
+		return nil, [32]byte{}, err
+	}
+	s.pending = &candidate
+	return codes, candidate.AppHash(), nil
+}
+
+// PrepareTrusted is the B0 ABCI finalization path. The committed value was
+// fully validated on creation/reload and cannot be mutated by callers. It
+// preserves the Phase 03C Prepare API as the reference evaluator path.
+// An over-limit decided block passes no transactions and advances once.
+func (s *Store) PrepareTrusted(raws [][]byte, overLimit bool) ([]tx.Code, [32]byte, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if s.closed {
+		return nil, [32]byte{}, ErrClosed
+	}
+	if s.uncertain {
+		return nil, [32]byte{}, ErrUncertain
+	}
+	if s.pending != nil {
+		return nil, [32]byte{}, ErrPending
+	}
+	var candidate b0state.State
+	var codes []tx.Code
+	var err error
+	if overLimit {
+		candidate = s.committed
+	} else {
+		candidate, codes, err = b0state.SimulateOrderedTrusted(s.committed, raws)
+		if err != nil {
+			return nil, [32]byte{}, err
+		}
 	}
 	candidate, err = candidate.AdvanceBlock()
 	if err != nil {

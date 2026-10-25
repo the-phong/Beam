@@ -1,0 +1,5 @@
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=b56c81c" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test -tags integration ./test/integration -timeout 180s -count=1
+ok  	example.com/pluto/test/integration	175.167s

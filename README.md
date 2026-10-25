@@ -1,10 +1,12 @@
 # Pluto
 
-Pluto Phase 02 is a real, local, **single-validator CometBFT v0.38.26** chain
-with a custom Go ABCI++ application, deterministic height-based AppHash and
-durable Pebble v1.1.5 committed state. It produces empty blocks only; all
-application transactions are rejected. This is a research foundation, not a
-production chain, EVM, hybrid verifier or multi-validator experiment.
+Pluto has two explicit local **single-validator CometBFT v0.38.26** profiles.
+The historical Phase 02 profile produces empty blocks and rejects all
+transactions. The Phase 03D B0 V2 profile now admits and executes canonical
+classical transfers with durable Pebble v1.1.5 account state. The Controller
+technically accepted and the Owner formally accepted this Phase 03D classical
+single-validator baseline. It is not a production, EVM, hybrid or
+multi-validator chain.
 
 ## Prerequisites and build
 
@@ -97,14 +99,21 @@ records fresh checks and limitations. The 14-phase [master plan](research/MASTER
 now places minimal B0-Core before a conditional Phase 04 EVM decision.
 Phase 03B is completed, Controller-accepted and merged through PR #4 at
 `8be07c87abed73763d40252e99bbf0573da487b4`; the Owner accepted D-023.
-Phase 03C is completed, Controller-accepted and Owner-accepted on 2026-10-24,
-awaiting the Owner-controlled merge of Draft PR #6 into `test-mainet`. D-024
-accepts its single-record V2 Pebble layout only as an experimental,
-correctness-oriented baseline. The isolated V2 state and persistence packages
-do not run in the live node, which still rejects all transactions. B0 V2
-cross-store recovery has not been tested; see the
-[risk addendum](research/evidence/phase_03c/RISK_AND_ACCEPTANCE_ADDENDUM.md).
-Phase 03D and later work are not authorized. D-018 governs new work:
+Phase 03C was merged into `test-mainet` at
+`b56c81ccce7ea4a0e7f52053c7459c4601c15b38`. D-024 accepts its
+single-record V2 Pebble layout only as an experimental, correctness-oriented
+baseline. The Owner accepted D-025 for Phase 03D's Genesis V2 transport.
+The Owner closed the D-025 checkpoint and subsequently formally accepted
+Phase 03D after Controller technical acceptance of D-026 and its source
+review corrections. The explicit B0 profile executes signed transfers and
+supports latest committed-state account queries. Local real-node replay and
+software-fault tests cover selected failure boundaries; physical power loss,
+four-validator BFT, hosted CI, PQC/hybrid authentication and DoS resistance
+remain unverified or unimplemented. The [Phase 03D report](research/PHASE_REPORTS/PHASE_03D_REPORT.md)
+records the earlier implementation evidence. See the earlier
+[risk addendum](research/evidence/phase_03c/RISK_AND_ACCEPTANCE_ADDENDUM.md)
+for the original M1–M12 obligations.
+Phase 03E and later work are not authorized. D-018 governs new work:
 one approved phase per branch, Draft PRs to `test-mainet`, and owner-controlled
 merges. The Phase 02 local-only Git exception remains in historical records.
 
@@ -118,10 +127,41 @@ protocol and decisions D-020–D-022 after Controller rework. The accepted
 [test-vector plan](research/specs/B0_TEST_VECTOR_PLAN_V1.md) are protocol and
 test requirements. Phase 03A PR #3 was merged into `test-mainet` at
 `54bf720ac4625c17eaa6101a8f398ef7c0663432`. Phase 03B now implements a
-standalone `internal/tx` library; the current binary still rejects all
-transactions. Phase 03B PR #4 is merged. Phase 03C adds a standalone
+standalone `internal/tx` library; the historical Phase 02 profile still
+rejects all transactions. Phase 03B PR #4 is merged. Phase 03C adds a
 `internal/b0state` transition engine and `internal/b0store` V2 persistence
-adapter; neither is connected to the live ABCI application. See the
+adapter; neither is connected to the historical Phase 02 ABCI application.
+The explicit Phase 03D B0 profile connects them for genesis and classical
+transfer execution. See the
 [Phase 03C report](research/PHASE_REPORTS/PHASE_03C_REPORT.md) for verification
 and limitations.
 
+## Explicit B0 V2 profile (local research only)
+
+`plutod init` selects the historical Phase 02 profile. `plutod init-b0`
+explicitly selects the B0 V2 profile and requires an existing
+canonical binary Genesis V2 file. For a disposable test chain, the public
+nonproduction fixture can be written with:
+
+```bash
+python3 -c 'import json,pathlib; v=json.loads(pathlib.Path("research/evidence/phase_03c/state_vectors.json").read_text()); pathlib.Path("/tmp/pluto-b0-genesis.bin").write_bytes(bytes.fromhex(v["genesis_wire_hex"]))'
+make build
+./build/plutod init-b0 --home .pluto-b0 --chain-id pluto-b0-v1 --genesis-file /tmp/pluto-b0-genesis.bin
+./build/plutod start --home .pluto-b0
+```
+
+Use a fresh home and protect the generated validator/node keys. The CLI
+validates the binary, stores only its canonical JSON/Base64 representation in
+CometBFT `genesis.json`, and records a digest in Pluto metadata. On startup,
+the B0 application decodes the transport, validates the original binary and
+uses a separate `data/pluto-b0-v2` database. Restart never reconstructs a
+missing database from genesis. The historical `state` command remains V1-only.
+The B0 profile accepts only the Owner-approved signed transaction wire
+format. `CheckTx` uses committed state, proposals are checked independently,
+and `FinalizeBlock` advances pending state before a synchronized `Commit`.
+The account query path is `b0/account/v1` with a 20-byte address, latest
+height only and no proof. The public test-only transaction in
+`research/evidence/phase_03b/golden_vectors.json` can be submitted on a
+fresh fixture chain; its sender begins with 100 units in the example
+genesis. The [Phase 03D tests](test/integration/b0_transaction_test.go)
+show exact RPC calls, result codes, hash alignment and restart checks.

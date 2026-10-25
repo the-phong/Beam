@@ -1,0 +1,5 @@
+ok  	example.com/pluto/internal/b0app	4.126s	coverage: 84.8% of statements
+ok  	example.com/pluto/internal/b0state	0.093s	coverage: 88.0% of statements
+ok  	example.com/pluto/internal/b0store	2.942s	coverage: 82.9% of statements
+
+exit_code=0

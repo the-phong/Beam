@@ -1,6 +1,6 @@
 # B0 account state and transitions V1 — Owner-accepted Phase 03A specification
 
-**Status: ACCEPTED BY OWNER on 2026-10-23 after Controller rework; no account state or V2 AppHash is implemented.** This document defines logical consensus state under accepted D-021. It preserves the existing Phase 02 `PLUTO02!` record and height-only V1 AppHash as a historical baseline. No Phase 02 database is migrated, reset or rewritten by this specification.
+**Status: ACCEPTED BY OWNER on 2026-10-23; Genesis V2 transport explicitly amended by Owner-accepted D-025 on 2026-10-24.** This document defines logical consensus state under accepted D-021. It preserves the existing Phase 02 `PLUTO02!` record and height-only V1 AppHash as a historical baseline. No Phase 02 database is migrated, reset or rewritten by this specification.
 
 ## 1. Logical state and invariants
 
@@ -13,7 +13,7 @@ The complete committed state and chain ID MUST be sufficient to replay the same 
 
 ## 2. Canonical genesis application bytes
 
-For a **new B0 chain**, `InitChain.AppStateBytes` is exactly:
+For a **new B0 chain**, the authoritative decoded Genesis V2 binary `G` is exactly:
 
 ```text
 ASCII("PLUTOG2!") || uint32_be(2) || uint16_be(N) || chain_id[N] ||
@@ -21,6 +21,21 @@ uint32_be(K) || K * (address[20] || uint64_be(balance))
 ```
 
 `N` is 1–50, with the permitted ASCII chain ID. `K` is 1–65,536. Entries are strictly increasing by raw address bytes, unique, and each genesis balance is greater than zero. No nonce is encoded because every genesis nonce is zero. Exact input length is `8 + 4 + 2 + N + 4 + 28*K` bytes; trailing bytes, unknown magic/version, noncanonical order, duplicate addresses, zero balances or sum exceeding `MaxUint64` fail genesis validation. `InitChain.ChainId` MUST equal this encoded chain ID. `total_supply` is the checked sum of allocations. The resulting application state is height 0 and uses the V2 AppHash below.
+
+**D-025 transport amendment (2026-10-24):** The original Phase 03A wording
+required these raw binary bytes directly in `InitChain.AppStateBytes`.
+CometBFT v0.38.26 instead loads genesis `app_state` as a JSON value and
+forwards its JSON bytes unchanged. The accepted B0 transport is precisely
+`app_state = json.Marshal(base64.StdEncoding.EncodeToString(G))`: one JSON
+string containing RFC 4648 standard padded Base64. Thus the actual
+`RequestInitChain.AppStateBytes` carries that JSON string's bytes, **not**
+`G` directly. The Pluto B0 adapter MUST reject other JSON types, trailing
+values, noncanonical JSON/Base64, malformed or oversized input, then decode
+to `G` and call the existing canonical binary parser. Both the request and
+configured profile chain IDs MUST match the decoded `G` chain ID. The binary
+format, height-zero state and AppHash V2 computation above are unchanged;
+JSON/Base64 bytes are never part of the state commitment. No fallback
+transport or implicit migration is permitted.
 
 The existing Phase 02 genesis uses empty app state and the V1 state record. A V2-capable implementation MUST NOT silently read that record as V2, infer allocations, reset either store or change AppHash. The accepted B0 V1 path is fresh genesis only unless a separately authorized, explicit, tested migration is specified. Operators must preserve Phase 02 homes and use a new home for a fresh B0 chain. This is a protocol compatibility boundary, not a current runtime behavior.
 

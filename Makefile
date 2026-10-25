@@ -12,7 +12,7 @@ test:
 	$(GO) test ./...
 
 test-integration: build
-	$(GO) test -tags integration ./test/integration -timeout 120s -count=1
+	$(GO) test -tags integration ./test/integration -timeout 240s -count=1
 
 vet:
 	$(GO) vet ./...
