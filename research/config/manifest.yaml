@@ -38,9 +38,10 @@ source:
   # Earlier tested/recovery identities below remain historical; the accepted
   # Phase 03D staged tree is recorded separately in phase_03d_accepted_staged_tree.
   source_branch: phase/04-b1-hybrid-authentication
-  # Current verified implementation/CI commit. The later report-only
-  # closeout commit is recorded externally because it cannot contain itself.
-  source_commit: final_phase_04_result_recorded_in_report_and_Draft_PR
+  # Exact implementation commit tested locally. The later documentation-only
+  # closeout commit is recorded in the report and Draft PR.
+  source_commit: e0b33751e5cca0337ee8e623979f09ac52ccc872
+  phase_04_source_tree: fe298b4eaafc207790b22aa85b842c6a568d62fc
   phase_04_base_commit: 007e827f740c9c741f47bf1f7a51eec98a79cc5a
   phase_03e_accepted_implementation_commit: 94cd9ae5cd952d86cf3d89c89546ca516e158578
   phase_03d_source_commit: b56c81ccce7ea4a0e7f52053c7459c4601c15b38
@@ -71,7 +72,7 @@ toolchain:
   go_mod_minimum: "1.24.0"
   platform_observed: linux/amd64
 dependencies:
-  current_third_party: cometbft_and_pebble_with_transitives
+  current_third_party: cometbft_pebble_circl_with_transitives
   cometbft:
     module: github.com/cometbft/cometbft
     selected_version: v0.38.26
@@ -102,7 +103,7 @@ dependencies:
 environment:
   operating_system: WSL2_Ubuntu_linux_amd64
   docker: unavailable
-  deployment: local_four_validator_same_WSL2_host_candidate
+  deployment: local_four_validator_same_WSL2_host_tested
   rpc_default: 127.0.0.1:26657
   p2p_default: 127.0.0.1:26656
   abci_default: 127.0.0.1:26658
@@ -112,7 +113,7 @@ build:
   configuration: standard_go_compiler_with_revision_ldflag
   binaries: build/plutod_and_build/cometbft
 verification:
-  status: phase_04_B1_candidate_local_verification_in_progress_controller_review_pending
+  status: phase_04_B1_candidate_local_verification_passed_controller_review_pending
   phase_03c_historical_suite: build_test_vet_fmt_mod_verify_integration_race_coverage_fuzz_oracle
   closeout_suite: diff_check_make_verify_integration_consistency_source_diff
   evidence: research/evidence/phase_03d/d025/
@@ -127,7 +128,7 @@ verification:
   phase_03e_local_verification: make_verify_make_test_integration_make_test_integration_4v_build_unit_vet_mod_verify_core_M7_D026_race_all_passed_no_mandatory_skips
   phase_03e_hosted_ci: reviewed_commit_03be9b_two_verify_checks_passed_final_closeout_result_in_controller_handoff
   phase_04_hybrid_integration_target: make_test-integration-b1-4v
-  phase_04_hosted_ci: pending_Draft_PR
+  phase_04_hosted_ci: source_commit_e0b3375_push_and_Draft_PR_9_verify_success
   phase_03d_checkpoint_suite: build_test_vet_fmt_mod_verify_integration_transport_negative_race_golden
   phase_03d_remaining_evidence: research/evidence/phase_03d/remaining/
   phase_03d_recovery_closure_evidence: research/evidence/phase_03d/closure/

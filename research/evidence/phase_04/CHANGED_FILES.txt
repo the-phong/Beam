@@ -1,0 +1,43 @@
+# Phase 04 tested source delta
+base_commit=007e827f740c9c741f47bf1f7a51eec98a79cc5a
+source_commit=e0b33751e5cca0337ee8e623979f09ac52ccc872
+source_tree=fe298b4eaafc207790b22aa85b842c6a568d62fc
+source_patch_sha256=ac983e705cb74d0e978fe9190b1e23cf321c1b75eb4e1934a9187662fcc95df5
+source_patch_text_bundle=research/evidence/phase_04/SOURCE_REVIEW.patch.b64
+source_patch_text_bundle_sha256=0dab5db2831d9bd51c7aeade4c8ffd1cea759f0a2669337aefce34064081125d
+# Restore exact patch: base64 -d research/evidence/phase_04/SOURCE_REVIEW.patch.b64 > /tmp/pluto-phase04-source.patch
+
+# git diff --name-status base source
+M	.github/workflows/verify.yml
+M	.gitignore
+M	AGENTS.md
+M	Makefile
+M	cmd/plutod/main.go
+M	go.mod
+M	go.sum
+M	internal/b0state/transition.go
+A	internal/b1app/app.go
+A	internal/b1app/app_test.go
+A	internal/b1genesis/transport.go
+A	internal/b1genesis/transport_test.go
+A	internal/b1state/state.go
+A	internal/b1state/state_test.go
+A	internal/b1store/store.go
+A	internal/b1store/store_test.go
+A	internal/b1test/fixture.go
+A	internal/b1tx/testdata/hybrid_public_vector.json
+A	internal/b1tx/tx.go
+A	internal/b1tx/tx_test.go
+A	internal/node/b1.go
+A	internal/node/b1_network.go
+M	internal/node/node.go
+M	research/ARCHITECTURE.md
+M	research/DECISIONS.md
+M	research/MASTER_PLAN.md
+M	research/PHASE_STATUS.md
+M	research/config/manifest.yaml
+A	research/evidence/phase_04/SOURCE_SHA256.txt
+A	research/specs/B1_4V_REPRODUCIBILITY.md
+A	research/specs/B1_HYBRID_AUTHENTICATION.md
+A	test/integration/b1_crash_test.go
+A	test/integration/b1_four_validator_test.go
