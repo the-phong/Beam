@@ -40,8 +40,8 @@ source:
   source_branch: phase/04-b1-hybrid-authentication
   # Exact implementation commit tested locally. The later documentation-only
   # closeout commit is recorded in the report and Draft PR.
-  source_commit: e0b33751e5cca0337ee8e623979f09ac52ccc872
-  phase_04_source_tree: fe298b4eaafc207790b22aa85b842c6a568d62fc
+  source_commit: fa5c95ba6a2a0f4489796c4248e6265f27cbcc89
+  phase_04_source_tree: 3045db9db16837687ec2e55c0db4689797900c22
   phase_04_base_commit: 007e827f740c9c741f47bf1f7a51eec98a79cc5a
   phase_03e_accepted_implementation_commit: 94cd9ae5cd952d86cf3d89c89546ca516e158578
   phase_03d_source_commit: b56c81ccce7ea4a0e7f52053c7459c4601c15b38
@@ -128,7 +128,7 @@ verification:
   phase_03e_local_verification: make_verify_make_test_integration_make_test_integration_4v_build_unit_vet_mod_verify_core_M7_D026_race_all_passed_no_mandatory_skips
   phase_03e_hosted_ci: reviewed_commit_03be9b_two_verify_checks_passed_final_closeout_result_in_controller_handoff
   phase_04_hybrid_integration_target: make_test-integration-b1-4v
-  phase_04_hosted_ci: source_commit_e0b3375_push_and_Draft_PR_9_verify_success
+  phase_04_hosted_ci: initial_source_e0b3375_two_verify_success_doc_PR_40268983466_failed_test_cleanup_corrected_final_checks_pending
   phase_03d_checkpoint_suite: build_test_vet_fmt_mod_verify_integration_transport_negative_race_golden
   phase_03d_remaining_evidence: research/evidence/phase_03d/remaining/
   phase_03d_recovery_closure_evidence: research/evidence/phase_03d/closure/
