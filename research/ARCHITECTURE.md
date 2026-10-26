@@ -1,5 +1,21 @@
 # Pluto architecture — implemented Phase 02 baseline and Phase 02R review
 
+## Phase 05 experimental measurement boundary
+
+`internal/phase05/corpus` holds public, hash-checked B0/B1 transaction and
+genesis fixtures. The generator uses ephemeral signing keys and publishes
+only signed bytes and public bindings. The oracle runs accepted state
+evaluators and real ABCI CheckTx/ProcessProposal against disposable stores.
+`internal/phase05/bench` contains research-only stage/callback timers and Go
+microbenchmarks; no production application imports it. The four-validator
+benchmark test provisions four fresh homes with the accepted B0/B1 node APIs,
+uses localhost RPC/P2P, records per-process diagnostics and checks matched
+block/state history. Analysis scripts consume retained raw JSON, using
+independent runs as the statistical unit. These components neither change
+consensus validity nor install a DoS admission mechanism. Exact boundaries,
+confounders and hypotheses are in
+[`PHASE_05_EXPERIMENT.md`](specs/PHASE_05_EXPERIMENT.md).
+
 ## Phase 04 B1 hybrid candidate
 
 A separately selected B1 profile uses the existing pinned CometBFT consensus

@@ -24,3 +24,12 @@ jobs:
       - name: Verify B1 hybrid four-validator network
         run: make test-integration-b1-4v
         timeout-minutes: 20
+      - name: Verify Phase 05 public corpus and correctness oracle
+        run: make benchmark-corpus
+        timeout-minutes: 5
+      - name: Verify Phase 05 result analysis
+        run: python3 -m unittest discover research/benchmarks/phase05 -p 'test_*.py' -v
+        timeout-minutes: 2
+      - name: Verify Phase 05 real four-validator workload smoke
+        run: make benchmark-smoke
+        timeout-minutes: 8

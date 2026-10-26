@@ -1,5 +1,18 @@
 # Pluto research master plan
 
+**Active Phase 05 experimental authority (2026-10-26):** The Owner technically
+accepted Phase 04 B1, merged PR #9 at
+`b861479982b0114be2ad60f1e7727362075a7f73`, and authorized one complete
+adversarial-corpus, correctness-oracle, benchmark and research-decision
+workflow on `phase/05-b1-experimental-evaluation`. This scheduling amendment
+consolidates the original roadmap's adversarial testing, benchmark
+infrastructure and baseline measurement objectives (historical Phases 09–11)
+into the active Phase 05. The historical rows below remain unchanged for
+audit. EVM remains NO-GO under D-028; no DoS mechanism or admission
+optimization is authorized. See D-030 and the preregistered
+[`Phase 05 experiment`](specs/PHASE_05_EXPERIMENT.md). Controller review and
+Owner acceptance remain separate from Coding Agent implementation.
+
 **Owner Phase 04 authorization and roadmap amendment (2026-10-26):** The
 accepted Phase 03E PR #8 is merged into `test-mainet` at
 `007e827f740c9c741f47bf1f7a51eec98a79cc5a`. The Owner authorized one

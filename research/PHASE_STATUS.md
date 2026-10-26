@@ -1,5 +1,19 @@
 # Phase status — 2026-10-26
 
+## Active Phase 05 experimental implementation candidate
+
+The Owner technically accepted and merged Phase 04 PR #9 at
+`b861479982b0114be2ad60f1e7727362075a7f73`. Accepted B1 hybrid
+authentication remains within its Phase 04 limitations. The Owner authorized
+one consolidated Phase 05 invalid-input corpus, B0/B1 correctness and
+resource-cost evaluation on `phase/05-b1-experimental-evaluation`.
+The executable experiment is an implementation candidate. Its definitive
+122-run local matrix completed with zero failed runs; local regression and
+hosted checks, Controller review and Owner acceptance remain separate gates.
+No DoS
+mechanism, admission policy, EVM or subsequent phase is authorized. D-028's
+EVM NO-GO continues. The Phase 04 paragraphs below are historical.
+
 ## Active Phase 04 B1 candidate (Owner authorized 2026-10-26)
 
 The Owner merged accepted Phase 03E PR #8 at

@@ -1,5 +1,18 @@
 # Pluto agent execution contract
 
+## Current authority — Phase 05 B1 experimental evaluation (2026-10-26)
+
+The Owner technically accepted and merged Phase 04 PR #9 into `test-mainet`
+at `b861479982b0114be2ad60f1e7727362075a7f73` and authorized one complete
+Phase 05 adversarial-corpus, correctness-oracle, benchmark and research
+decision workflow on `phase/05-b1-experimental-evaluation`. Preserve accepted
+B0/B1/Phase 02 semantics. Tests and workloads target only isolated localhost
+homes. Publish no private keys, runtime homes or unsanitized raw evidence.
+Commit/push only the Phase 05 branch, open a Draft PR against `test-mainet`,
+and stop for Controller review. No DoS mechanism, admission optimization,
+EVM, protected-branch change, merge or subsequent phase is authorized. The
+older authority sections below are historical.
+
 ## Current authority — Phase 04 B1 hybrid authentication (2026-10-26)
 
 The Owner merged accepted Phase 03E PR #8 into `test-mainet` at
