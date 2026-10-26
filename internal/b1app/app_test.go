@@ -33,7 +33,14 @@ func TestHybridABCIProposalAndCommit(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer a.Close()
+	t.Cleanup(func() {
+		if a == nil {
+			return
+		}
+		if err := a.Close(); err != nil && !errors.Is(err, b1store.ErrClosed) {
+			t.Errorf("close reopened B1 application: %v", err)
+		}
+	})
 	ctx := context.Background()
 	transport, err := b1genesis.Encode(fixture.Genesis, fixture.ChainID)
 	if err != nil {

@@ -1,6 +1,6 @@
-# Phase 04 changed-source SHA-256 manifest
+# Phase 04 corrected changed-source SHA-256 manifest
 # Base commit: 007e827f740c9c741f47bf1f7a51eec98a79cc5a
-# Excludes research/config/manifest.yaml: its source-commit field is finalized in the governance-only closeout commit.
+# Excludes research/config/manifest.yaml and closeout evidence: their commit metadata is finalized separately.
 # Format: SHA-256  path
 707591deb39b9b851dc4e2f1d208d801df026b3fd090ba37df34a9df09c92b05  .github/workflows/verify.yml
 72259f82f332477dda6f545d66dc73877b83f69182071d12a73db237aa3d9e69  .gitignore
@@ -11,7 +11,7 @@
 72db0025609d6476eef9be4d797e4558c803760b5647d34b7b8052873055c185  go.sum
 7ac83a395c3599b8b3ecacd69e46e9ec4ae1dc59e4a8df55d2b26bc376d31a83  internal/b0state/transition.go
 c4984b6d0022bdaee0474105788cc93687d10782afd7a86fdb4bc6b75bd39f57  internal/b1app/app.go
-f986c02240d5ddd4d085d7c0fa2b14f2b00f1b1d3ba2cf16038ad1b8435b6f0e  internal/b1app/app_test.go
+6c7a4da38019d88697e5ded8c314f3c67be29c56b2c4207571de1fa02f20ed81  internal/b1app/app_test.go
 99659a0194936943934c15ad93e64e1fdc3eb86933dc39d315363f8a81ef023f  internal/b1genesis/transport.go
 87b506a196d2ace2ce1fd35e8c45ec43c4c854557d48a990fcec255d3665dfd4  internal/b1genesis/transport_test.go
 df82d1c004b1c6e50aa32aa1b01e2d9ee9be419272740e3363221e98c16deb13  internal/b1state/state.go
