@@ -1,5 +1,27 @@
 # Architectural decision log
 
+## Phase 03E four-validator provisioning decision (2026-10-25; implementation candidate)
+
+**D-027 — Shared four-validator genesis with independent D-026 H0 homes.**
+The Owner authorized Phase 03E after merging Phase 03D into `test-mainet`.
+For a fresh local four-validator network, `plutod init-b0-4v` exclusively
+claims one root, asks the pinned CometBFT binary to generate four independent
+validator and P2P identities, then constructs one byte-identical genesis
+containing those four validator public keys at equal power. Each home receives
+the same D-025 application genesis transport and an independently synced
+D-024 H0 snapshot. The local validator private key must match exactly one
+genesis member before start; P2P keys and last-sign state remain private and
+independent. Interrupted initialization remains incomplete and cannot be
+silently retried over the same root. No consensus, transaction, AppHash or
+record-format rule changes. This is a Phase 03E implementation decision for
+Controller review, not Owner acceptance of Phase 03E.
+
+The four-node helper is scoped to one host and fresh homes. It does not
+import externally provisioned validator keys, migrate existing homes, or
+establish independent fault domains. Genesis time is generated once and
+shared, so repeated networks have different genesis hashes and must never
+reuse validator signing state across them.
+
 ## Phase 03D Owner acceptance and Git closeout (2026-10-25)
 
 After independent Controller technical acceptance, the Owner formally

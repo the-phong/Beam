@@ -1,5 +1,24 @@
 # Pluto architecture — implemented Phase 02 baseline and Phase 02R review
 
+## Phase 03E local four-validator extension (candidate)
+
+`init-b0-4v` creates four independent D-026 homes under one fresh root. It
+generates four validator and four P2P identities, writes one shared CometBFT
+genesis with four equal-power validators and the unchanged D-025 B0 Genesis
+V2 app state, then writes one D-024 H0 snapshot per home. Each home has its
+own local ABCI, RPC and P2P endpoint and Pebble database. CometBFT persistent
+peers connect the four local P2P instances; the only shared data are public
+genesis contents and protocol rules. Production `start` checks that the local
+validator signing key matches one member of the genesis validator set before
+opening the application. The application performs the same Phase 03D
+CheckTx, proposal, FinalizeBlock, Commit and replay logic in each process.
+The test harness compares block hashes and AppHashes at matching heights.
+All four processes run on one WSL2 host, so host or filesystem failure is a
+common-mode fault and no Byzantine or physical power-loss claim follows.
+
+The historical description below reflects the earlier single-validator
+implementation and its acceptance sequence.
+
 This section supersedes the historical Phase 01 proposal retained below for
 traceability. The historical Phase 02 profile remains a **single-validator,
 transaction-free** custom Go ABCI++ application. A separately selected B0 V2

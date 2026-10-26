@@ -2,9 +2,12 @@
 /.pluto/
 /results/
 priv_validator_key.json
+priv_validator_state.json
 node_key.json
 *.test
 *.out
 coverage*.txt
 .env
 .DS_Store
+/research/evidence/phase_03e/*.log
+/research/evidence/phase_03e/*_raw/

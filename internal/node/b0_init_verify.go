@@ -22,6 +22,16 @@ import (
 // files without calling Comet's LoadFilePV, which exits the process on a bad
 // file. It never regenerates or repairs an artifact.
 func verifyCometInitArtifacts(home string, expected Config, genesis *types.GenesisDoc) error {
+	return verifyCometArtifacts(home, expected, genesis, true)
+}
+
+// verifyCometRunArtifacts checks the same identity binding on restart while
+// allowing CometBFT's last-sign state to have advanced with committed blocks.
+func verifyCometRunArtifacts(home string, expected Config, genesis *types.GenesisDoc) error {
+	return verifyCometArtifacts(home, expected, genesis, false)
+}
+
+func verifyCometArtifacts(home string, expected Config, genesis *types.GenesisDoc, fresh bool) error {
 	configFile := filepath.Join(home, "config", "config.toml")
 	v := viper.New()
 	v.SetConfigFile(configFile)
@@ -63,7 +73,7 @@ func verifyCometInitArtifacts(home string, expected Config, genesis *types.Genes
 			return fmt.Errorf("CometBFT %s path conflicts with initialized B0 home", name)
 		}
 	}
-	if err := verifyCometValidator(paths["priv_validator_key"], paths["priv_validator_state"], genesis); err != nil {
+	if err := verifyCometValidator(paths["priv_validator_key"], paths["priv_validator_state"], genesis, fresh); err != nil {
 		return err
 	}
 	if err := verifyCometNodeKey(paths["node_key"]); err != nil {
@@ -80,7 +90,7 @@ func validCometEd25519Key(key interface{ Bytes() []byte }) bool {
 	return bytes.Equal(stded25519.NewKeyFromSeed(priv[:stded25519.SeedSize]), priv)
 }
 
-func verifyCometValidator(keyPath, statePath string, genesis *types.GenesisDoc) error {
+func verifyCometValidator(keyPath, statePath string, genesis *types.GenesisDoc, fresh bool) error {
 	rawKey, err := os.ReadFile(keyPath)
 	if err != nil {
 		return fmt.Errorf("read CometBFT validator key: %w", err)
@@ -93,10 +103,27 @@ func verifyCometValidator(keyPath, statePath string, genesis *types.GenesisDoc) 
 		return errors.New("CometBFT validator key is incomplete or invalid")
 	}
 	pub := key.PrivKey.PubKey()
-	if !bytes.Equal(key.PubKey.Bytes(), pub.Bytes()) || !bytes.Equal(key.Address, pub.Address()) ||
-		len(genesis.Validators) != 1 || genesis.Validators[0].PubKey == nil ||
-		!bytes.Equal(genesis.Validators[0].PubKey.Bytes(), pub.Bytes()) ||
-		!bytes.Equal(genesis.Validators[0].Address, pub.Address()) {
+	if !bytes.Equal(key.PubKey.Bytes(), pub.Bytes()) || !bytes.Equal(key.Address, pub.Address()) {
+		return errors.New("CometBFT validator key conflicts with genesis validator")
+	}
+	if len(genesis.Validators) != 1 && len(genesis.Validators) != 4 {
+		return errors.New("CometBFT genesis must contain one or four validators")
+	}
+	matched := 0
+	seen := make(map[string]bool, len(genesis.Validators))
+	for _, validator := range genesis.Validators {
+		if validator.PubKey == nil || validator.Power <= 0 || !bytes.Equal(validator.Address, validator.PubKey.Address()) || seen[string(validator.Address)] {
+			return errors.New("CometBFT genesis validator set is incomplete or duplicated")
+		}
+		seen[string(validator.Address)] = true
+		if len(genesis.Validators) == 4 && validator.Power != genesis.Validators[0].Power {
+			return errors.New("CometBFT four-validator voting power must be equal")
+		}
+		if bytes.Equal(validator.PubKey.Bytes(), pub.Bytes()) && bytes.Equal(validator.Address, pub.Address()) {
+			matched++
+		}
+	}
+	if matched != 1 {
 		return errors.New("CometBFT validator key conflicts with genesis validator")
 	}
 	rawState, err := os.ReadFile(statePath)
@@ -117,7 +144,7 @@ func verifyCometValidator(keyPath, statePath string, genesis *types.GenesisDoc) 
 	if err := cmtjson.Unmarshal(rawState, &state); err != nil {
 		return fmt.Errorf("decode CometBFT validator initialization state: %w", err)
 	}
-	if state.Height != 0 || state.Round != 0 || state.Step != 0 || len(state.Signature) != 0 || len(state.SignBytes) != 0 {
+	if state.Height < 0 || (fresh && (state.Height != 0 || state.Round != 0 || state.Step != 0 || len(state.Signature) != 0 || len(state.SignBytes) != 0)) {
 		return errors.New("CometBFT validator initialization state is not fresh")
 	}
 	return nil

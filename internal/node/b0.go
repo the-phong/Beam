@@ -64,6 +64,9 @@ func runB0(ctx context.Context, home, cometBinary string, config Config, output 
 		(state.Height() == 0 && (state.AppHash() != expected.AppHash() || !slices.Equal(state.Accounts(), expected.Accounts()))) {
 		return b0app.ErrGenesisConflict
 	}
+	if err := verifyCometRunArtifacts(home, config, genesis); err != nil {
+		return fmt.Errorf("validate CometBFT identity and configuration: %w", err)
+	}
 	a, err := b0app.Open(dbDir, config.ChainID, binary)
 	if err != nil {
 		return fmt.Errorf("open existing B0 snapshot: %w", err)

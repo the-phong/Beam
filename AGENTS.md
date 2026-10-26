@@ -1,5 +1,18 @@
 # Pluto agent execution contract
 
+## Current authority — Phase 03E (2026-10-25)
+
+The Owner merged accepted Phase 03D into `test-mainet` at
+`c3756843c5e804e3a985d817ab5c83d2dd6798a0` and authorized the complete
+Phase 03E four-validator BFT integration on `phase/03e-four-validator-bft`.
+Implement and verify the complete scoped workflow, then commit and push only
+that branch and open a Draft PR against `test-mainet`. The Controller reviews
+technical evidence and the Owner controls acceptance and merge. Preserve
+D-020–D-026 and Phase 02 legacy behavior. Do not publish validator keys or
+runtime homes; do not merge, change protected branches, start Phase 04, or
+claim unsupported PQC, DoS, Byzantine or power-loss results. The older
+Phase 03D and earlier authority paragraphs below are historical.
+
 ## Current authority — Phase 03D Git closeout (2026-10-25)
 
 The Controller technically accepted and the Owner formally accepted the
