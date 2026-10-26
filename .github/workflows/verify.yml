@@ -33,3 +33,6 @@ jobs:
       - name: Verify Phase 05 real four-validator workload smoke
         run: make benchmark-smoke
         timeout-minutes: 8
+      - name: Verify Phase 05 matched-rate contention smoke
+        run: make benchmark-contention-smoke
+        timeout-minutes: 8

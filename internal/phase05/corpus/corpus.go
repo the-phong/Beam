@@ -19,7 +19,9 @@ import (
 )
 
 const Version = "pluto-phase05-corpus-v2"
+const ContentionVersion = "pluto-phase05-corpus-contention-v1"
 const SenderCount = 64
+const ContentionNonceLayers = 6
 const MaxFileBytes = 16 << 20
 
 type Vector struct {
@@ -29,6 +31,7 @@ type Vector struct {
 	SenderHex   string `json:"sender_hex"`
 	ReceiverHex string `json:"receiver_hex"`
 	Size        int    `json:"size"`
+	Nonce       uint64 `json:"nonce,omitempty"`
 }
 
 type Case struct {
@@ -90,6 +93,12 @@ func digest(raw []byte) string {
 func vector(id string, wire []byte, sender, receiver b0state.Address) Vector {
 	return Vector{ID: id, WireHex: hex.EncodeToString(wire), SHA256: digest(wire),
 		SenderHex: hex.EncodeToString(sender[:]), ReceiverHex: hex.EncodeToString(receiver[:]), Size: len(wire)}
+}
+
+func vectorAtNonce(id string, wire []byte, sender, receiver b0state.Address, nonce uint64) Vector {
+	v := vector(id, wire, sender, receiver)
+	v.Nonce = nonce
+	return v
 }
 
 func addCase(p *Profile, id, name, class, capability, context, construction string, wire []byte, code uint32, stage, effect string) {
@@ -192,6 +201,20 @@ func Generate() (Corpus, error) {
 	return Corpus{Version: Version, Profiles: []Profile{b0, b1}}, nil
 }
 
+// GenerateContention creates public, pre-signed sequential transactions.
+// Signing keys remain ephemeral and are never present in the returned corpus.
+func GenerateContention() (Corpus, error) {
+	b0, err := generateB0WithLayers(ContentionNonceLayers)
+	if err != nil {
+		return Corpus{}, err
+	}
+	b1, err := generateB1WithLayers(ContentionNonceLayers)
+	if err != nil {
+		return Corpus{}, err
+	}
+	return Corpus{Version: ContentionVersion, Profiles: []Profile{b0, b1}}, nil
+}
+
 // WriteFresh never overwrites an existing public corpus. The private keys
 // used by Generate remain in memory and are not serialized by these types.
 func WriteFresh(path string, c Corpus) error {
@@ -246,20 +269,27 @@ func Load(path string) (Corpus, string, error) {
 }
 
 func ValidateStructure(c Corpus) error {
-	if c.Version != Version || len(c.Profiles) != 2 || c.Profiles[0].Name != "b0" || c.Profiles[1].Name != "b1" {
+	if (c.Version != Version && c.Version != ContentionVersion) || len(c.Profiles) != 2 || c.Profiles[0].Name != "b0" || c.Profiles[1].Name != "b1" {
 		return errors.New("invalid corpus version or profile set")
 	}
+	expectedVectors := SenderCount
+	if c.Version == ContentionVersion {
+		expectedVectors *= ContentionNonceLayers
+	}
 	for _, p := range c.Profiles {
-		if p.AccountCount != SenderCount+1 || len(p.Valid) != SenderCount || len(p.Cases) < 20 || len(p.Proposals) < 4 {
+		if p.AccountCount != SenderCount+1 || len(p.Valid) != expectedVectors || len(p.Cases) < 20 || len(p.Proposals) < 4 {
 			return fmt.Errorf("incomplete %s corpus", p.Name)
 		}
 		if _, err := p.Genesis(); err != nil {
 			return err
 		}
 		seen := make(map[string]bool)
-		for _, v := range p.Valid {
+		for i, v := range p.Valid {
 			if v.ID == "" || seen[v.ID] {
 				return errors.New("duplicate or missing vector ID")
+			}
+			if c.Version == ContentionVersion && (v.Nonce != uint64(i/SenderCount) || v.SenderHex != p.Valid[i%SenderCount].SenderHex) {
+				return errors.New("invalid contention nonce or sender sequence")
 			}
 			seen[v.ID] = true
 			if _, err := v.Bytes(); err != nil {

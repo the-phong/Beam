@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	mode := flag.String("mode", "verify", "generate or verify")
+	mode := flag.String("mode", "verify", "generate, generate-contention, or verify")
 	path := flag.String("file", "research/corpus/phase_05/public_corpus.json", "public corpus path")
 	flag.Parse()
 	if err := run(*mode, *path); err != nil {
@@ -32,6 +32,17 @@ func run(mode, path string) error {
 		if err := corpus.WriteFresh(path, c); err != nil {
 			return err
 		}
+	case "generate-contention":
+		c, err := corpus.GenerateContention()
+		if err != nil {
+			return err
+		}
+		if err := corpus.CheckOracle(c); err != nil {
+			return err
+		}
+		if err := corpus.WriteFresh(path, c); err != nil {
+			return err
+		}
 	case "verify":
 		c, hash, err := corpus.Load(path)
 		if err != nil {
@@ -40,7 +51,7 @@ func run(mode, path string) error {
 		if err := corpus.CheckOracle(c); err != nil {
 			return err
 		}
-		fmt.Printf("corpus_sha256=%s profiles=%d b0_cases=%d b1_cases=%d\n", hash, len(c.Profiles), len(c.Profiles[0].Cases), len(c.Profiles[1].Cases))
+		fmt.Printf("corpus_sha256=%s version=%s profiles=%d b0_valid=%d b1_valid=%d b0_cases=%d b1_cases=%d\n", hash, c.Version, len(c.Profiles), len(c.Profiles[0].Valid), len(c.Profiles[1].Valid), len(c.Profiles[0].Cases), len(c.Profiles[1].Cases))
 	default:
 		return fmt.Errorf("unknown mode %q", mode)
 	}

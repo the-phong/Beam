@@ -1,5 +1,67 @@
 # Phase 05 local reproduction
 
+## Supplementary matched-rate contention correction
+
+The previous 122-run, 12-request experiment below remains a historical
+**exploratory** dataset. For the Controller-requested matched legitimate
+traffic experiment, use the new public corpus and separate commands:
+
+```bash
+make benchmark-contention-corpus
+make benchmark-contention-smoke
+make benchmark-contention-full
+PHASE05_RUN_ROOT=research/evidence/phase_05/raw/<UTC-run-id>-contention-full make benchmark-contention-analyze
+python3 -m unittest discover research/benchmarks/phase05 -p 'test_*.py' -v
+```
+
+`benchmark-contention-full` schedules 78 independent fresh networks. The
+primary conditions keep 1.5 legitimate tx/s and add 0, 0.5, 1.5, 4.5 or
+13.5 invalid tx/s. The 100%-invalid condition separately offers 15 invalid
+tx/s; the secondary conditions offer 4 valid tx/s plus 0, 4 or 12 invalid
+tx/s. Total offered rate never exceeds 16 tx/s. Each primary or secondary
+run submits 300 valid public signed transactions, and primary conditions
+have five independent repetitions. The program uses a bounded 360-second Go
+test and 390-second outer timeout per run. Do not run competing benchmarks
+on the shared host. A full run requires several hours and must retain the
+exact `execution.jsonl`, raw JSON, command logs and validator logs locally.
+
+The contention corpus is
+`research/corpus/phase_05/public_corpus_contention.json`. It contains 384
+sequenced valid signed transactions per profile, using 64 public senders and
+nonce layers 0–5. Generator signing keys remain ephemeral. Verifying the
+committed public bytes needs no private key. Re-running generation creates
+new random identities and a new digest, so use the stored public corpus for
+byte-identical replay. The reserved sender-zero state-invalid probe retains
+its expected first-failure code throughout the run.
+
+The new analyzer writes publication-safe `per_run.csv`, `per_run.json`,
+`normalized.json`, `aggregate.json` and `failed_runs.json`. It verifies the
+execution ledger's log/result hashes and refuses to call a full matrix
+complete unless all 78 runs are present and successful. Valid client RPC
+admission latency and valid inclusion latency are separate distributions;
+100%-invalid runs have no valid latency. The block observer polls a second
+validator every 150 ms and queries each committed block once, producing an
+upper-bound inclusion timestamp. Its load and the shared-host environment
+remain measurement confounders. A per-run p99 from 300 samples is descriptive
+and still uncertain; run-to-run intervals resample independent runs.
+
+Raw results remain ignored and local; only reviewed sanitized tables and
+hash manifests may enter Git. The runner creates and stops only its own
+process tree. Timeouts and failed assertions remain in the ledger and are
+never relabeled successful.
+
+If a run has a wall-clock discontinuity, retain its original ledger, result
+and log. Rerun the exact condition in a new root with
+`python3 research/benchmarks/phase05/run_contention.py --mode repair34` for
+the identified B0 secondary baseline case. Pass that new root as
+`PHASE05_REPAIR_ROOT` to `benchmark-contention-analyze`. The analyzer verifies
+both ledgers and hashes, records the original in `excluded_runs.json`, and
+uses the replacement only for the matching condition. The repaired Go harness
+measures inclusion and elapsed duration with monotonic time; Unix timestamps
+remain diagnostic only. No original file is overwritten.
+
+## Historical exploratory commands and artifacts
+
 The repository runs B0 and B1 four-validator networks under Go test control.
 Use Go 1.24.1 and the pinned `go.mod`; Python 3 standard library is required
 for the matrix and analysis. Tests launch the repository's built `plutod` and

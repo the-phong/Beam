@@ -85,7 +85,20 @@ func checkProfile(p Profile) error {
 			if e != nil || code != 0 {
 				return fmt.Errorf("valid B0 transition: code=%d err=%v", code, e)
 			}
-			return checkCasesB0(p, initial, next, check)
+			if err := checkCasesB0(p, initial, next, check); err != nil {
+				return err
+			}
+			if len(p.Valid) > SenderCount {
+				state := initial
+				for _, v := range p.Valid {
+					wire, _ := v.Bytes()
+					state, code, e = b0state.EvaluateTrusted(state, wire)
+					if e != nil || code != 0 {
+						return fmt.Errorf("sequenced B0 %s: code=%d err=%v", v.ID, code, e)
+					}
+				}
+			}
+			return nil
 		}
 	} else {
 		initial, err := b1state.ParseGenesis(genesis, p.ChainID)
@@ -124,11 +137,27 @@ func checkProfile(p Profile) error {
 			if e != nil || code != 0 {
 				return fmt.Errorf("valid B1 transition: code=%d err=%v", code, e)
 			}
-			return checkCasesB1(p, initial, next, check)
+			if err := checkCasesB1(p, initial, next, check); err != nil {
+				return err
+			}
+			if len(p.Valid) > SenderCount {
+				state := initial
+				for _, v := range p.Valid {
+					wire, _ := v.Bytes()
+					state, code, e = b1state.EvaluateTrusted(state, wire)
+					if e != nil || code != 0 {
+						return fmt.Errorf("sequenced B1 %s: code=%d err=%v", v.ID, code, e)
+					}
+				}
+			}
+			return nil
 		}
 	}
 	defer closeApp()
 	for _, v := range p.Valid {
+		if v.Nonce > 0 {
+			continue // future nonces are verified by sequential evaluator replay
+		}
 		raw, _ := v.Bytes()
 		code, err := check(raw)
 		if err != nil || code != 0 {

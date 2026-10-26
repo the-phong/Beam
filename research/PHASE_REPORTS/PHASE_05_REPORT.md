@@ -1,5 +1,132 @@
 # PLUTO Phase 05 — adversarial workload and resource-cost evaluation
 
+> **Controller correction in progress:** This report describes the original
+> 122-run exploratory dataset. Its 12-request runs have insufficient per-run
+> p99 samples, and changing invalid percentage also changed the legitimate
+> offered rate. A separate matched-legitimate-rate experiment has been added
+> under the existing Phase 05 branch and Draft PR #10. Until its full matrix,
+> hosted CI is complete, the corrected Phase 05 verdict remains an
+> **implementation candidate pending Controller review**. The prior dataset
+> is preserved, not replaced.
+
+## Controller correction: matched legitimate service experiment
+
+The Controller's review of PR #10 at `3758fb7fb7df973d1003a5a49ff9071351a19dcf`
+requested a supplementary test. The 122 historical runs remain intact and
+are now explicitly called **exploratory**. They had only 12 requests per
+network run, so their p99 values were insufficient; changing invalid share
+also changed legitimate offered traffic, preventing a causal legitimate
+service comparison. The bounded 2/8 tx/s settings did not locate saturation
+or a service-degradation threshold. The historical NO-GO recommendation
+therefore did not settle broader B1 susceptibility.
+
+The new corpus has 384 public signed nonce-sequenced transfers per profile,
+with one sender reserved for a stable late-invalid probe. A new real
+four-validator test sends two independently paced streams, keeps legitimate
+rate at 1.5 tx/s and adds invalid traffic at 0, 0.5, 1.5, 4.5 or 13.5 tx/s.
+It separately covers 15 invalid tx/s without valid traffic and a secondary
+4 valid tx/s series. The maximum total offered rate is 16 tx/s. Each
+primary/secondary run submits 300 distinct legitimate transfers. Five
+fresh-network repetitions are planned for each primary/invalid-only
+condition; three for each secondary condition. The 78-run plan and
+predeclared interpretation are in
+[`PHASE_05_EXPERIMENT.md`](../specs/PHASE_05_EXPERIMENT.md).
+
+The test observes committed blocks from a second validator, confirms each
+valid transaction exactly once, checks every sender nonce and balance, and
+compares ordered blocks and AppHashes at matching heights across all four
+validators. A separate analyzer checks raw result/log hashes and emits
+sanitized per-run, normalized, aggregate and failure tables. It requires 300
+confirmed valid transactions for even a descriptive per-run p99. Exact
+source tree and corpus digest are recorded in every raw run. RPC admission
+and block-observation inclusion latency are never merged into one number.
+
+Two preliminary bounded trials passed before the full matrix: B0 valid-only
+confirmed 300/300 at H154; B1 90%-invalid confirmed 300/300 legitimate and
+rejected 2700/2700 invalid at H154. These are engineering feasibility
+trials, not principal repetitions. The B0 H154 AppHash was
+`298E09A044501073BD543757A993F5E90EAAF259B3FEAF4D4CA57EAFF98D56C1`;
+the B1 H154 AppHash was
+`DE3D7EE77D55CFBEC7AFD1ED3B26BE3CBC956DE4988DA6FF0D46E6F54544640F`.
+The exact trial logs and JSON remain local under `/tmp/pluto-p05-contention-trial*`.
+No tail-latency or DoS conclusion follows from the trials.
+
+### Completed matched-rate dataset and correction
+
+The full supplementary matrix exited **0** with 78/78 test commands and 78
+raw result files. The first raw dataset is retained under ignored local root
+`research/evidence/phase_05/raw/20261026T083247Z-contention-full/` and
+was measured with staged tree
+`29c16ad5f65c08a8922fcdba8448c6e84c0e4ea7`. It contains one
+measurement-invalid but test-PASS row:
+`034-secondary-b0-p0-r2`. Its outer wall duration was 2463.80 s, while
+Go's monotonic test duration was 83.85 s. Wall-based inclusion timestamps
+therefore spanned a host clock discontinuity and falsely suggested a
+multi-minute tail. The original raw JSON, command log and ledger hash remain
+untouched. The strict analyzer rejects the full dataset without a repair
+(`77/78 usable`, nonzero exit). The Go harness now computes inclusion and
+experiment duration with monotonic `time.Time`/`time.Since`, while retaining
+Unix timestamps as diagnostics. One fresh-network rerun of exactly that
+condition exited **0** (87.5 s outer duration) under staged tree
+`dfb1d32a821736ad029a7e77790577003186502f`; its ignored root is
+`research/evidence/phase_05/raw/20261026T131246Z-contention-repair34/`.
+The analyzer verifies both ledgers and hashes, writes the original to
+`excluded_runs.json`, and uses only the replacement for that condition.
+The repair wrapper's console summary printed `runs=34` because it displayed
+the original matrix index rather than the number executed. Its manifest
+contains exactly one repair command and one result. The summary counter was
+corrected afterward; no measured event or result file was changed.
+During final staging, `git diff --cached --check` detected the CSV module's
+default CRLF output as trailing whitespace. The analyzer now emits LF CSV;
+the 79-row sanitized table and source manifest were regenerated, and the
+staged whitespace check returned 0. No numerical measurement changed.
+
+The corrected analysis has **78 usable independent runs**, 68 with 300/300
+legitimate transactions confirmed and 10 invalid-only runs with no valid
+offers. Thus 20,400 legitimate transfers were confirmed; 77,200 invalid
+submissions were rejected with their expected CheckTx codes. Each run
+compared four validators' ordered blocks, matching-height AppHashes, all
+sender balances and nonces, receiver balance, and supply. No raw node home,
+validator private key or process log is included in the publication-safe
+[`CONTENTION_PER_RUN.csv`](../evidence/phase_05/CONTENTION_PER_RUN.csv),
+[`CONTENTION_PER_RUN.json`](../evidence/phase_05/CONTENTION_PER_RUN.json),
+[`CONTENTION_AGGREGATE.json`](../evidence/phase_05/CONTENTION_AGGREGATE.json),
+[`CONTENTION_NORMALIZED.json`](../evidence/phase_05/CONTENTION_NORMALIZED.json),
+or [`CONTENTION_EXCLUDED_RUNS.json`](../evidence/phase_05/CONTENTION_EXCLUDED_RUNS.json).
+The [result tables](../evidence/phase_05/CONTENTION_RESULT_TABLES.md) derive
+from those files; raw files and exact command logs remain ignored locally.
+The raw `source_commit` field records the reviewed pre-correction HEAD
+`3758fb7fb7df973d1003a5a49ff9071351a19dcf` because measurement code
+was staged but uncommitted. The exact executed Go source is identified by
+the recorded staged `source_tree` and per-file SHA-256 manifest. The final
+closeout commit/tree will be recorded separately; documentation and analysis
+changes after measurement do not retroactively change the raw source tree.
+
+At 1.5 legitimate tx/s and 90% invalid, the mean of five paired per-run
+valid-inclusion p99 amplification values was **1.008× B0** (95% run
+bootstrap interval 0.963–1.063) and **0.986× B1** (0.963–1.010).
+Legitimate goodput degradation was **0.12% B0**, **0.13% B1**. At the
+secondary 4-valid-tx/s, 75%-invalid condition, amplification was **1.027×
+B0**, **1.001× B1**, and goodput degradation **0.46%**, **0.19%**.
+The fixed-valid-load comparison therefore shows no repeatable large
+degradation within these bounded conditions. The B1 90%-invalid mean process
+CPU was 3.33% of one core across four Pluto/Comet processes, versus 2.82%
+valid-only; B0 was 1.26% versus 0.88%. Sampled RSS was roughly 122 MiB
+B1 and 114 MiB B0. Client RPC rejection median at the 100%-invalid B1
+condition was 751 µs for structural S04 versus 1057 µs for altered ML
+proof P04. Direct Go microbenchmarks isolate a larger early/late validation
+asymmetry but use different byte classes and do not imply comparable RPC
+cost. The 100%-invalid condition has **no valid inclusion latency**.
+
+Each p99 is descriptive with 300 valid observations within its run; five
+run-level replicates provide limited uncertainty information. The 16-tx/s
+safety ceiling did not produce a measured saturation threshold, so broader
+DoS susceptibility remains **INCONCLUSIVE**. B0/B1 have different wire sizes,
+registry/state layouts and persistence behavior. The evidence supports a
+**NO-GO recommendation for implementing a new DoS mechanism now**, while
+leaving stronger-load risk unresolved. The updated
+[research decision](PHASE_05_RESEARCH_DECISION.md) explains this scope.
+
 **Status:** implementation and measurement candidate. This report is an
 engineering handoff, not Independent Controller acceptance or Owner closure.
 
@@ -15,7 +142,7 @@ production transaction, AppHash, persistence or consensus source was changed.
 D-030 records the research-only public corpus and run-level analysis design.
 EVM remains NO-GO; no DoS mechanism or admission optimization is present.
 
-The frozen definitive workload source tree before the principal matrix was
+The frozen historical exploratory workload source tree before the 122-run matrix was
 `fc629192cb046befcdae2058fac675c92d6de1db`. The final commit and tree
 are recorded in the Git handoff after verification. Raw run records carry
 their exact staged source tree, base HEAD, corpus digest and run ID.
@@ -247,7 +374,7 @@ the 8-tx/s valid-only means of per-run p95 were 6.59 ms B0 and 6.58 ms B1.
 predeclared 100-observation threshold. The 3–5 independent-run bootstrap
 intervals are descriptive and weak for formal inference.
 
-The definitive matrix's PID samples retained combined user+system ticks,
+The historical exploratory matrix's PID samples retained combined user+system ticks,
 so user/system split is `UNAVAILABLE` for those 122 runs. A bounded sampler
 correction added separate `/proc` tick fields without changing transaction
 or measurement validity. Its **supplementary** B1 50%-invalid smoke run
@@ -288,7 +415,7 @@ power-loss durability, Byzantine behavior, multi-host resource independence,
 production capacity or DoS resistance. Controller review and Owner decision
 remain required before any acceptance, merge or later phase.
 
-## Correctness, regression and gate disposition
+## Historical exploratory correctness and gate disposition
 
 The corpus oracle checks both B0 and B1 evaluator codes, ABCI CheckTx
 codes, unchanged state after invalid input, and direct ProcessProposal
@@ -323,14 +450,17 @@ modified. The same-host consistency result does not prove Byzantine safety.
 | G23 hosted CI on implementation commit | PASS | push run `40286051014`, PR run `40286103670`, both success on `ea5b2ce` |
 | G24 report/handoff | CANDIDATE | this report, decision, tables, figure, private raw audit |
 
-`PASS` above means the stated implementation or local execution gate passed;
+These statuses describe the historical 122-run engineering handoff. Its
+G10–G14 evidence did not establish matched legitimate-service contention or
+per-run p99. The corrected gate disposition appears in the final section
+of this report. `PASS` above means the stated implementation or local execution gate passed;
 it does not grant Independent Controller technical acceptance or Owner
 closure. The final evidence-only commit requires its own hosted rerun before
 the final branch HEAD can satisfy G23.
 
 ## Exact local verification
 
-The definitive matrix command was `make benchmark-full`, exit **0**;
+The historical exploratory matrix command was `make benchmark-full`, exit **0**;
 `PHASE05_RUN_ROOT=research/evidence/phase_05/raw/20261026T062154Z-full
 make benchmark-analyze` exited **0** with 122 expected and 122 complete
 records. `make benchmark-micro` with five fixed 200-iteration repetitions
@@ -422,5 +552,68 @@ the decompressed patch SHA-256 is
 `gzip -dc` reproduced the exact patch, and its reverse-application check
 returned zero. Phase 05 is an implementation
 candidate and requires Independent Controller review and Owner decision.
+
+## Controller correction gate assessment and verification
+
+The corrected matched-rate analysis, with the retained clock exclusion and
+fresh replacement, satisfies the local evidence gates below. Independent
+Controller review and hosted CI on the final branch HEAD remain distinct.
+
+| Gate | Corrected disposition | Evidence |
+|---|---|---|
+| G01–G03 corpus, replay, invalid classes | PASS | Public contention corpus: 384 sequenced signed vectors per profile; old v2 corpus unchanged; both corpus oracles exit 0 |
+| G04 CheckTx and direct ProcessProposal | PASS | Existing oracle and ten ordered proposal cases; regression exits 0 |
+| G05 cross-validator agreement | PASS | 78 usable real four-validator runs; identical matching-height blocks, AppHashes and account state |
+| G06–G07 B0/B1 preserved | PASS | `make test-integration`, both four-validator suites, source diff contains no production B0/B1 transaction or state changes |
+| G08–G09 crypto/application benchmarks | PASS | 34 microbenchmark names, five fixed-size samples each; new `make benchmark-micro` exit 0 |
+| G10–G11 real network and invalid ratios | PASS | 78 corrected independent conditions, 0/25/50/75/90/100% at fixed valid rate; 16 tx/s maximum |
+| G12 CPU/RSS/latency | PASS with limits | Valid-only RPC and inclusion p50/p95/p99, class rejection cost, per-validator CPU/RSS; single-host and sampled RSS limits |
+| G13–G14 raw analysis, repetition and sample count | PASS with limits | 68 runs × 300 valid confirmations; five primary or three secondary replicates; one clock-disrupted original excluded and replaced; p99 descriptive |
+| G15–G17 confounders, interpretation, decision | PASS | Matched valid rate, byte/state confounders, NO-GO mechanism recommendation; broader DoS risk INCONCLUSIVE |
+| G18 reproduction commands | PASS | New corpus, smoke, full, repair and strict analysis commands executed; no unreached workload called PASS |
+| G19 manifests | PASS | 15-source SHA-256 and 481-raw-file SHA-256 checks returned 0; prior exploratory manifest still matches |
+| G20 publication boundary | PASS for reviewed payload | Only public corpus and sanitized tables/manifests selected; raw homes/logs remain ignored locally |
+| G21 build/unit/integration | PASS | Local verification ledger, all exit 0 |
+| G22 race/fuzz | PASS | Real workload race, Phase 05/state race, corpus and B1 decoder fuzz, all exit 0 |
+| G23 hosted CI on final branch HEAD | PENDING | Prior PR #10 checks passed on `3758fb7…`; final correction commit must run hosted checks |
+| G24 report and evidence handoff | CANDIDATE | This report, decision, public tables, private raw audit; Controller acceptance pending |
+
+The ignored local command ledger is
+`research/evidence/phase_05/raw/closeout-verification-20261026T131638Z/execution.jsonl`.
+It contains each exact command, exit code, elapsed wall time and command-log
+SHA-256. All 22 recorded verification commands exited **0**; the logs had
+no `--- SKIP:`, `--- FAIL:` or `WARNING: DATA RACE` marker.
+
+| Exact command | Exit |
+|---|---:|
+| `make verify` | 0 |
+| `make test-integration` | 0 |
+| `make test-integration-4v` | 0 |
+| `make test-integration-b1-4v` | 0 |
+| `go build ./...` | 0 |
+| `go test -count=1 ./...` | 0 |
+| `go vet ./...` | 0 |
+| `go mod verify` | 0 |
+| `make benchmark-corpus` | 0 |
+| `make benchmark-contention-corpus` | 0 |
+| `make benchmark-smoke` | 0 |
+| `make benchmark-contention-smoke` | 0 |
+| `python3 -m unittest discover research/benchmarks/phase05 -p 'test_*.py' -v` | 0 |
+| `go test -race ./internal/phase05/... ./internal/b0app ./internal/b1app` | 0 |
+| `go test -race -tags 'integration fourval' ./test/integration -run '^TestPhase05ContentionSchedule$' -count=1` | 0 |
+| `go test -race -tags 'integration fourval' ./test/integration -run '^TestPhase05(Contention\|Workload)$' -timeout 360s -count=1 -v` | 0 |
+| `go test ./internal/phase05/corpus -run '^$' -fuzz '^FuzzCorpusDecoder$' -fuzztime=5s -parallel=2` | 0 |
+| `go test ./internal/b1state -run '^$' -fuzz '^FuzzHybridDecode$' -fuzztime=5s -parallel=2` | 0 |
+| `make benchmark-micro` | 0 |
+| `make fmt-check` | 0 |
+| `git diff --check` | 0 |
+| `git diff --cached --check` | 0 |
+
+`make benchmark-contention-full` exited **0**, and strict analysis with
+`PHASE05_REPAIR_ROOT` exited **0** at 78 usable rows. Strict analysis without
+the repair intentionally exited nonzero at 77/78; this negative check proves
+that a clock-disrupted measurement cannot silently enter the aggregate.
+The original 122-run raw SHA-256 manifest and the new 481-file manifest both
+verified. Hosted CI and final Git identities are recorded after publication.
 
 **STOP — no merge, no DoS mechanism and no subsequent phase.**

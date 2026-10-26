@@ -1,4 +1,59 @@
-# Phase 05 experimental protocol (registered before the main matrix)
+# Phase 05 experimental protocol and Controller correction
+
+## Supplementary matched-legitimate-rate protocol (Controller correction)
+
+The 122-run, 12-request matrix described below is retained as **exploratory**.
+It cannot establish valid-service degradation: increasing its invalid fraction
+reduced the legitimate offered count, and every per-run p99 was insufficient.
+The supplementary experiment below tests contention while holding legitimate
+traffic constant. It was specified before its full execution; failed and
+superseded attempts remain in the local execution manifest.
+
+The new public corpus is `pluto-phase05-corpus-contention-v1`. Each B0 and B1
+profile contains 64 independent public sender identities and six correctly
+signed nonce layers, 384 valid transfers in total. Sender zero is reserved
+for the stable, fully signed insufficient-balance probe. The workload uses
+300 distinct public signed valid transactions from the other 63 senders.
+Private signing keys are never written by the corpus generator. The original
+v2 corpus and its 122-run results are preserved unchanged.
+
+| Series | Profiles | Legitimate tx/s | Added invalid tx/s | Invalid fraction | Valid / invalid per run | Repetitions |
+|---|---|---:|---:|---:|---:|---:|
+| Primary | B0, B1 | 1.5 | 0, 0.5, 1.5, 4.5, 13.5 | 0, 25, 50, 75, 90% | 300 / 0, 100, 300, 900, 2700 | 5 |
+| Invalid only | B0, B1 | 0 | 15 | 100% | 0 / 3000 | 5 |
+| Secondary | B0, B1 | 4 | 0, 4, 12 | 0, 50, 75% | 300 / 0, 300, 900 | 3 |
+
+There are 78 planned independent runs, each with a new four-validator home.
+All offered rates are at or below 16 tx/s. A nonsecret fixed seed records run
+pairing; already-signed public bytes supply all traffic. Valid and invalid
+streams are independently paced, then deterministically merged. Every run
+waits until all four validators reach height 2, submits its complete bounded
+schedule, observes committed blocks from a second validator, and verifies all
+four validators' block history, matching-height AppHashes, sender balances,
+nonces and total supply. It records achieved rates, client admission latency,
+block-observation inclusion latency, per-process CPU ticks and sampled RSS.
+The block observer polls every 150 ms and queries each new block once; its
+inclusion timestamps are upper-bound observations, not exact finality times.
+Rejected inputs have no inclusion latency. The sampler includes Pluto and its
+embedded CometBFT in one PID on this runtime.
+
+The primary comparison pairs each ratio with its own-profile zero-invalid
+baseline at the same legitimate rate and repetition. Per-run p99 is reported
+only with at least 300 confirmed valid samples and remains a descriptive,
+uncertain tail estimate. Across-run uncertainty uses independent run values.
+The 100%-invalid condition has no valid latency or goodput estimate. Mixed
+invalid classes cycle through structural, binding, classical proof, ML proof
+and state-invalid cases; the B0 binding slot uses a classical-proof case.
+The attacker capability for every class remains as specified below.
+
+The provisional screening signals are 2× valid p99 amplification, 20%
+legitimate goodput degradation, and a repeatable B1/B0 normalized effect.
+They are **not scientific standards or acceptance thresholds**. Without a
+measured contention regime, the broader DoS-risk question is INCONCLUSIVE,
+even if no degradation is observed. The single-host WSL2 setup cannot prove
+multi-host or production capacity. No DoS mechanism is in scope.
+
+## Historical exploratory protocol
 
 **Authority:** Owner Phase 05 contract, 2026-10-26. This protocol characterizes
 the accepted B0/B1 implementations. It changes no transaction, state,

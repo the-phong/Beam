@@ -1,4 +1,4 @@
-.PHONY: build test test-integration test-integration-4v test-integration-b1-4v vet fmt-check verify benchmark-corpus benchmark-smoke benchmark-micro benchmark-b1 benchmark-full benchmark-analyze
+.PHONY: build test test-integration test-integration-4v test-integration-b1-4v vet fmt-check verify benchmark-corpus benchmark-smoke benchmark-micro benchmark-b1 benchmark-full benchmark-analyze benchmark-contention-corpus benchmark-contention-smoke benchmark-contention-full benchmark-contention-analyze
 
 GO ?= go
 REVISION := $(shell git rev-parse --short HEAD 2>/dev/null || printf unavailable)
@@ -48,3 +48,16 @@ benchmark-full: build benchmark-corpus
 benchmark-analyze:
 	@test -n "$(PHASE05_RUN_ROOT)" || { echo 'set PHASE05_RUN_ROOT to a completed raw run directory'; exit 2; }
 	python3 research/benchmarks/phase05/analyze.py "$(PHASE05_RUN_ROOT)" "$(PHASE05_RUN_ROOT)/analysis" --require-complete
+
+benchmark-contention-corpus:
+	$(GO) run ./cmd/phase05-corpus -mode verify -file research/corpus/phase_05/public_corpus_contention.json
+
+benchmark-contention-smoke: build benchmark-contention-corpus
+	python3 research/benchmarks/phase05/run_contention.py --mode smoke
+
+benchmark-contention-full: build benchmark-contention-corpus
+	python3 research/benchmarks/phase05/run_contention.py --mode full
+
+benchmark-contention-analyze:
+	@test -n "$(PHASE05_RUN_ROOT)" || { echo 'set PHASE05_RUN_ROOT to a completed raw run directory'; exit 2; }
+	python3 research/benchmarks/phase05/analyze_contention.py "$(PHASE05_RUN_ROOT)" "$(PHASE05_RUN_ROOT)/analysis" --require-complete $(if $(PHASE05_REPAIR_ROOT),--repair-root "$(PHASE05_REPAIR_ROOT)",)

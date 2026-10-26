@@ -62,6 +62,10 @@ func signedB0(key *secp256k1.PrivateKey, receiver b0state.Address, chain string,
 }
 
 func generateB0() (Profile, error) {
+	return generateB0WithLayers(1)
+}
+
+func generateB0WithLayers(layers int) (Profile, error) {
 	const chain = "phase05-b0"
 	p := Profile{Name: "b0", ChainID: chain, AccountCount: SenderCount + 1}
 	keys := make([]*secp256k1.PrivateKey, SenderCount)
@@ -94,6 +98,16 @@ func generateB0() (Profile, error) {
 		}
 		addr, _ := tx.SenderAddress(*(*[33]byte)(key.PubKey().SerializeCompressed()))
 		p.Valid = append(p.Valid, vector(fmt.Sprintf("V%03d", i), raw, b0state.Address(addr), receiver))
+	}
+	for nonce := 1; nonce < layers; nonce++ {
+		for i, key := range keys {
+			raw, err := signedB0(key, receiver, chain, 1, uint64(nonce))
+			if err != nil {
+				return Profile{}, err
+			}
+			addr, _ := tx.SenderAddress(*(*[33]byte)(key.PubKey().SerializeCompressed()))
+			p.Valid = append(p.Valid, vectorAtNonce(fmt.Sprintf("V%03d", nonce*SenderCount+i), raw, b0state.Address(addr), receiver, uint64(nonce)))
+		}
 	}
 	valid, _ := p.Valid[0].Bytes()
 	other, _ := p.Valid[1].Bytes()
@@ -155,6 +169,10 @@ func mustB1(f *b1test.Fixture, sender b1test.Identity, receiver b0state.Address,
 }
 
 func generateB1() (Profile, error) {
+	return generateB1WithLayers(1)
+}
+
+func generateB1WithLayers(layers int) (Profile, error) {
 	const chain = "phase05-b1"
 	p := Profile{Name: "b1", ChainID: chain, AccountCount: SenderCount + 1}
 	ids := make([]b1test.Identity, SenderCount+1)
@@ -187,6 +205,15 @@ func generateB1() (Profile, error) {
 			return Profile{}, err
 		}
 		p.Valid = append(p.Valid, vector(fmt.Sprintf("V%03d", i), raw, ids[i].Binding.Address, receiver))
+	}
+	for nonce := 1; nonce < layers; nonce++ {
+		for i := 0; i < SenderCount; i++ {
+			raw, err := f.SignedBy(ids[i], receiver, 1, uint64(nonce))
+			if err != nil {
+				return Profile{}, err
+			}
+			p.Valid = append(p.Valid, vectorAtNonce(fmt.Sprintf("V%03d", nonce*SenderCount+i), raw, ids[i].Binding.Address, receiver, uint64(nonce)))
+		}
 	}
 	valid, _ := p.Valid[0].Bytes()
 	other, _ := p.Valid[1].Bytes()

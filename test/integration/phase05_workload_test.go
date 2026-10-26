@@ -43,6 +43,7 @@ type phase05Event struct {
 	Expected           uint32 `json:"expected_code"`
 	LatencyNS          int64  `json:"admission_latency_ns"`
 	SubmitUnixNano     int64  `json:"submit_unix_nano"`
+	SubmitOffsetNS     int64  `json:"submit_offset_ns,omitempty"`
 	Hash               string `json:"comet_hash"`
 	IncludedHeight     int64  `json:"included_height,omitempty"`
 	InclusionLatencyNS int64  `json:"inclusion_latency_ns,omitempty"`
@@ -311,9 +312,11 @@ type phase05Pending struct {
 }
 type phase05Observed struct {
 	index        int
+	hash         string
 	height       int64
 	code         uint32
 	seenUnixNano int64
+	seenAt       time.Time
 }
 
 // A separate validator's RPC is polled throughout the submission window.

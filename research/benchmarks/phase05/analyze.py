@@ -66,7 +66,8 @@ def process_metrics(record):
         role=key[1]
         role_ticks[role]=role_ticks.get(role,0)+max(0,last[key]["cpu_ticks"]-start["cpu_ticks"])
         role_peak[role]=role_peak.get(role,0)+peak[key]
-    wall=(record["measurement_end_unix_nano"]-record["measurement_start_unix_nano"])/1e9
+    wall=(record.get("measurement_duration_ns") or
+          record["measurement_end_unix_nano"]-record["measurement_start_unix_nano"])/1e9
     tick_rate=os.sysconf("SC_CLK_TCK")
     return dict(cpu_seconds=ticks/tick_rate, user_cpu_seconds=user_ticks/tick_rate if user_ticks is not None else None,
                 system_cpu_seconds=system_ticks/tick_rate if system_ticks is not None else None,
