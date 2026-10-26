@@ -8,8 +8,10 @@ authentication remains within its Phase 04 limitations. The Owner authorized
 one consolidated Phase 05 invalid-input corpus, B0/B1 correctness and
 resource-cost evaluation on `phase/05-b1-experimental-evaluation`.
 The executable experiment is an implementation candidate. Its definitive
-122-run local matrix completed with zero failed runs; local regression and
-hosted checks, Controller review and Owner acceptance remain separate gates.
+122-run local matrix completed with zero failed runs; local regressions and
+both hosted checks passed on implementation commit `ea5b2ce802dbb315b7b4c6718d83f698a11a112b`.
+Any final evidence-only closeout commit requires its own hosted rerun.
+Controller review and Owner acceptance remain separate gates.
 No DoS
 mechanism, admission policy, EVM or subsequent phase is authorized. D-028's
 EVM NO-GO continues. The Phase 04 paragraphs below are historical.

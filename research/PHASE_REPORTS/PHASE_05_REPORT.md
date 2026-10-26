@@ -320,12 +320,13 @@ modified. The same-host consistency result does not prove Byzantine safety.
 | G20 private publication boundary | PASS for reviewed payload | raw ignored, explicit staged-path and secret scan |
 | G21 build/unit/integration | PASS | verification command matrix below |
 | G22 race/fuzz | PASS | Phase 05/state races, real workload race, corpus/B1 decoder fuzz |
-| G23 final hosted CI | PENDING | Draft PR verification after push |
+| G23 hosted CI on implementation commit | PASS | push run `40286051014`, PR run `40286103670`, both success on `ea5b2ce` |
 | G24 report/handoff | CANDIDATE | this report, decision, tables, figure, private raw audit |
 
 `PASS` above means the stated implementation or local execution gate passed;
 it does not grant Independent Controller technical acceptance or Owner
-closure. G23 stays open until final hosted checks are observed.
+closure. The final evidence-only commit requires its own hosted rerun before
+the final branch HEAD can satisfy G23.
 
 ## Exact local verification
 
@@ -369,6 +370,22 @@ The same complete regression list was run after the final Go sampler change;
 the Python runner's timeout cleanup was independently unit tested and
 validated by a real four-validator smoke.
 
+## Hosted CI on the implementation commit
+
+GitHub Actions workflow `Pluto verification` completed **successfully** on
+the implementation commit `ea5b2ce802dbb315b7b4c6718d83f698a11a112b`
+for both the [push run](https://github.com/the-phong/DoS-in-Blockchain-PQC/actions/runs/40286051014)
+and [Draft PR run](https://github.com/the-phong/DoS-in-Blockchain-PQC/actions/runs/40286103670).
+Both included foundation, real single-node restart, B0 four-validator,
+B1 four-validator, Phase 05 corpus oracle, Python analysis tests and a
+real B1 four-validator workload smoke. The push smoke reported one complete
+run, zero failures and the expected corpus hash; the six Python analysis
+tests executed, including the owned-PID timeout-cleanup test. No test-level
+`SKIP`, `FAIL` or race warning was found in the PR run log. Hosted CI does
+**not** execute the 122-run full matrix or five-sample microbenchmark;
+those are local evidence. The final evidence-only closeout commit must
+rerun these hosted checks on its own HEAD.
+
 ## Evidence identity, publication and Controller handoff
 
 The public corpus is 1,390,541 bytes, with 155-byte valid B0 and 3,907-byte
@@ -383,9 +400,27 @@ all superseded runs, including the identity-mismatched supplementary smoke.
 
 The source branch is `phase/05-b1-experimental-evaluation`, based on the
 Owner-merged Phase 04 commit `b861479982b0114be2ad60f1e7727362075a7f73`.
-The exact result commit/tree and hosted CI conclusions are supplied with the
-Draft PR final handoff after Git publication. A self-referential commit hash
-cannot be embedded in the same Git commit. Phase 05 is an implementation
+The tested implementation and report commit is
+`ea5b2ce802dbb315b7b4c6718d83f698a11a112b`, tree
+`97dc21e9dc082ca3399a63b56a10732b5900cbc9` (34 changed paths,
+7,042 insertions and 11 deletions). Draft PR #10 targets `test-mainet` and
+remains unmerged. A subsequent evidence-only closeout commit may update this
+paragraph after hosted CI; its own SHA/tree is provided in the final handoff
+because a commit cannot contain its own hash. The SHA-256 of the 33-path
+implementation payload manifest is
+`97592c0bcb68adcd0c71c280e04d72c99d0afea4aa6540ff79c00b9642c86c3e`;
+the 25-path definitive-matrix source manifest is
+`c90b260786d82e3c4e8b6ad70da4abbe0fba18b7c6eba9576c19204d77629feb`;
+and the 1,163-file local raw-evidence manifest is
+`25ab47a271911bbe9143d3c8c65217959af806b46d5b1e34d200cdb81c553f1e`.
+The compact
+[`TESTED_TO_IMPLEMENTATION_CODE.patch.gz`](../evidence/phase_05/TESTED_TO_IMPLEMENTATION_CODE.patch.gz)
+contains the bounded code/spec changes after the definitive matrix. Its
+compressed SHA-256 is `46f145454b4f8f4db72eec8d89f4e8b8b3aafd1609584ec8a685fba8b91f1dd7`;
+the decompressed patch SHA-256 is
+`0910622552c27d32c7d053114f7a6ad665b54cea169a7687fdfe35956dc51395`.
+`gzip -dc` reproduced the exact patch, and its reverse-application check
+returned zero. Phase 05 is an implementation
 candidate and requires Independent Controller review and Owner decision.
 
 **STOP — no merge, no DoS mechanism and no subsequent phase.**

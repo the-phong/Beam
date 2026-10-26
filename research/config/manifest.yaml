@@ -46,7 +46,8 @@ source:
   # closeout commit is recorded in the report and Draft PR.
   source_commit: fa5c95ba6a2a0f4489796c4248e6265f27cbcc89 # historical Phase 04 tested commit
   phase_05_base_commit: b861479982b0114be2ad60f1e7727362075a7f73
-  phase_05_implementation_commit: pending_source_freeze
+  phase_05_implementation_commit: ea5b2ce802dbb315b7b4c6718d83f698a11a112b
+  phase_05_implementation_tree: 97dc21e9dc082ca3399a63b56a10732b5900cbc9
   phase_05_definitive_matrix_staged_tree: fc629192cb046befcdae2058fac675c92d6de1db
   phase_05_cpu_split_smoke_staged_tree: 118d2bdd4451ad363bcb42027164a146b4fbc615
   phase_05_final_runner_smoke_staged_tree: 4277e04d851f247dff85f72c81e804fd46248a0e
@@ -126,7 +127,7 @@ verification:
   status: phase_05_local_matrix_and_regression_passed_hosted_ci_pending_controller_review
   phase_05_definitive_runs: 122_complete_of_122_zero_failed
   phase_05_local_verification: make_verify_make_test_integration_make_test_integration_4v_make_test_integration_b1_4v_go_build_go_test_go_vet_go_mod_verify_fmt_python_unit_race_fuzz_passed
-  phase_05_hosted_ci: pending_phase_05_draft_pr
+  phase_05_hosted_ci: implementation_commit_push_and_PR_success_final_evidence_only_commit_rerun_pending
   phase_05_raw_evidence_root: research/evidence/phase_05/raw/20261026T062154Z-full_local_ignored
   phase_03c_historical_suite: build_test_vet_fmt_mod_verify_integration_race_coverage_fuzz_oracle
   closeout_suite: diff_check_make_verify_integration_consistency_source_diff

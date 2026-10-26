@@ -8,6 +8,19 @@ and public corpus SHA-256
 The tested-source file hashes are in `TESTED_SOURCE_SHA256.txt`. Later analysis
 or report changes get their own final tree and manifest; they are not
 retroactively claimed as the executed workload source.
+The first implementation commit is
+`ea5b2ce802dbb315b7b4c6718d83f698a11a112b`, tree
+`97dc21e9dc082ca3399a63b56a10732b5900cbc9`. The 19,489-byte
+`TESTED_TO_IMPLEMENTATION_CODE.patch.gz` contains the bounded code/spec
+changes from the definitive matrix tree to that commit. Its compressed
+SHA-256 is `46f145454b4f8f4db72eec8d89f4e8b8b3aafd1609584ec8a685fba8b91f1dd7`;
+the original patch SHA-256 after `gzip -dc` is
+`0910622552c27d32c7d053114f7a6ad665b54cea169a7687fdfe35956dc51395`.
+`git apply --reverse --check` against the implementation commit succeeded.
+Both hosted workflow runs on that implementation commit succeeded: push
+`40286051014` and Draft PR `40286103670`. They are public GitHub Actions
+logs; they do not include the private full-matrix raw files. A final
+evidence-only commit needs a fresh CI check at its own HEAD.
 
 Raw material is retained locally under ignored `raw/` and is **not for Git**.
 It includes per-run JSON, exact command/exit ledger, Pluto and Comet logs,
