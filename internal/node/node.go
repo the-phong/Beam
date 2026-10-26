@@ -31,6 +31,7 @@ import (
 )
 
 const ProfileB0 = "b0-v2"
+const ProfileB1 = "b1-hybrid-v1"
 
 type Config struct {
 	ChainID       string `json:"chain_id"`
@@ -39,6 +40,9 @@ type Config struct {
 	P2PAddress    string `json:"p2p_address"`
 	Profile       string `json:"profile,omitempty"`
 	GenesisSHA256 string `json:"genesis_sha256,omitempty"`
+	// B1 binds this home's validator identity to one specific genesis member.
+	// It is omitted in accepted Phase 02/B0 metadata bytes.
+	ValidatorAddress string `json:"validator_address,omitempty"`
 }
 
 func address(port int) (string, error) {
@@ -275,13 +279,22 @@ func ReadConfig(home string) (Config, error) {
 	if _, err := store.Genesis(config.ChainID); err != nil {
 		return Config{}, fmt.Errorf("invalid Pluto node metadata: %w", err)
 	}
-	if config.Profile != "" && config.Profile != ProfileB0 {
+	if config.Profile != "" && config.Profile != ProfileB0 && config.Profile != ProfileB1 {
 		return Config{}, errors.New("unknown Pluto runtime profile")
 	}
-	if config.Profile == ProfileB0 {
+	if config.Profile == ProfileB0 || config.Profile == ProfileB1 {
 		digest, err := hex.DecodeString(config.GenesisSHA256)
 		if err != nil || len(digest) != sha256.Size {
+			if config.Profile == ProfileB1 {
+				return Config{}, errors.New("invalid B1 genesis digest in Pluto metadata")
+			}
 			return Config{}, errors.New("invalid B0 genesis digest in Pluto metadata")
+		}
+	}
+	if config.Profile == ProfileB1 {
+		address, err := hex.DecodeString(config.ValidatorAddress)
+		if err != nil || len(address) != 20 || hex.EncodeToString(address) != config.ValidatorAddress {
+			return Config{}, errors.New("invalid B1 validator address binding in Pluto metadata")
 		}
 	}
 	return config, nil
@@ -292,8 +305,8 @@ func State(home string) (*store.State, error) {
 	if err != nil {
 		return nil, err
 	}
-	if config.Profile == ProfileB0 {
-		return nil, errors.New("Phase 02 state command is unavailable for B0 profile")
+	if config.Profile == ProfileB0 || config.Profile == ProfileB1 {
+		return nil, errors.New("Phase 02 state command is unavailable for B0/B1 profile")
 	}
 	dbDir := filepath.Join(home, "data", "pluto")
 	if _, err := os.Stat(dbDir); err != nil {
@@ -323,6 +336,9 @@ func Run(ctx context.Context, home, cometBinary string, output io.Writer) error 
 	}
 	if config.Profile == ProfileB0 {
 		return runB0(ctx, home, cometBinary, config, output)
+	}
+	if config.Profile == ProfileB1 {
+		return runB1(ctx, home, cometBinary, config, output)
 	}
 	genesis, err := types.GenesisDocFromFile(filepath.Join(home, "config", "genesis.json"))
 	if err != nil {

@@ -11,3 +11,4 @@ coverage*.txt
 .DS_Store
 /research/evidence/phase_03e/*.log
 /research/evidence/phase_03e/*_raw/
+/research/evidence/phase_04/raw/

@@ -1,5 +1,19 @@
 # Pluto agent execution contract
 
+## Current authority — Phase 04 B1 hybrid authentication (2026-10-26)
+
+The Owner merged accepted Phase 03E PR #8 into `test-mainet` at
+`007e827f740c9c741f47bf1f7a51eec98a79cc5a` and authorized one complete
+Phase 04 B1 secp256k1 + ML-DSA-44 authentication workflow on
+`phase/04-b1-hybrid-authentication`. D-028 records an EVM NO-GO for this
+experiment and consolidation of the historical hybrid roadmap activities.
+Preserve Phase 02 and D-020–D-027 B0 behavior. Commit and push only the
+Phase 04 branch, open a Draft PR against `test-mainet`, and stop for
+Controller review. Never publish keys or runtime homes; do not merge,
+change protected branches, start another phase, or claim DoS/Byzantine/
+physical-power-loss results. The older authority sections below are
+historical.
+
 ## Current authority — Phase 03E (2026-10-25)
 
 The Owner merged accepted Phase 03D into `test-mainet` at
