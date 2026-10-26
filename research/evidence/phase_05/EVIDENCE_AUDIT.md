@@ -1,5 +1,11 @@
 # Phase 05 evidence and publication boundary
 
+> **Historical exploratory evidence audit.** The 122-run matrix below is
+> retained unchanged as a data source, but its short runs and varying valid
+> offer count cannot establish matched-rate service degradation. The
+> Controller correction evidence is in
+> [CONTENTION_EVIDENCE_AUDIT.md](CONTENTION_EVIDENCE_AUDIT.md).
+
 The accepted Phase 04 merge baseline is
 `b861479982b0114be2ad60f1e7727362075a7f73`. The definitive workload
 matrix uses staged source tree `fc629192cb046befcdae2058fac675c92d6de1db`

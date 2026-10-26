@@ -6,10 +6,15 @@ confer acceptance or authorize a DoS mechanism.
 ## Source and public fixtures
 
 - Reviewed pre-correction HEAD: `3758fb7fb7df973d1003a5a49ff9071351a19dcf`.
+- Correction implementation commit: `547190a9f6b945cf327f8b6855704b887ad78bda`, tree `56adda92a29c845cf221d401e02d5b869ba5305e`.
 - Original 78-run measurement tree: `29c16ad5f65c08a8922fcdba8448c6e84c0e4ea7`.
 - Monotonic-clock repair tree: `dfb1d32a821736ad029a7e77790577003186502f`.
 - Public sequenced corpus SHA-256: `459148e8d350cecd1509130d88de909b9ce37c2420ef2999d224db9265ec1646`.
 - [`CONTENTION_SOURCE_SHA256.txt`](CONTENTION_SOURCE_SHA256.txt) contains 15 executable source, workflow and fixture hashes; its own SHA-256 is `df31bca6603781c705b49c1277b20cf80e84fcff1c46506fc1ca0537fa8ceab9`.
+
+All 15 source digests were also recomputed directly from the correction
+commit's Git blobs, with zero mismatches. The two earlier staged trees remain
+the precise identities of executed measurements before that commit.
 
 The original v2 corpus, 122-run exploratory dataset, old source identities
 and prior SHA-256 manifests remain unchanged. No accepted B0/B1 transaction,
@@ -47,6 +52,16 @@ execution ledger are identified by
 `724f452be7e6373adc8b7cacef3ca10515927ed58f6e53e73a589acb745ae579`).
 Every command exited 0 and the manifest check returned 0. The benchmark
 matrix command and repair ledgers are in the raw manifest above.
+
+Hosted push run `40332212464` and PR run `40332222233` both succeeded on
+correction implementation commit `547190a9f6b945cf327f8b6855704b887ad78bda`.
+Each had 14 successful job steps, including a real matched-rate smoke run.
+Downloaded hosted logs are retained locally under ignored
+`raw/hosted-ci-547190/`; their two hashes are in
+[`CONTENTION_HOSTED_CI_SHA256.txt`](CONTENTION_HOSTED_CI_SHA256.txt), manifest
+SHA-256 `0e26dc0a913870210a6c9eaa568521c580565cff809a2a2c14067146a6efe2b8`.
+No hosted step or test-level SKIP/FAIL was observed. Full 78-run timing data
+was collected locally, not in CI.
 
 ## Sanitized results
 

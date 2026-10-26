@@ -1,13 +1,12 @@
 # PLUTO Phase 05 — adversarial workload and resource-cost evaluation
 
-> **Controller correction in progress:** This report describes the original
-> 122-run exploratory dataset. Its 12-request runs have insufficient per-run
-> p99 samples, and changing invalid percentage also changed the legitimate
-> offered rate. A separate matched-legitimate-rate experiment has been added
-> under the existing Phase 05 branch and Draft PR #10. Until its full matrix,
-> hosted CI is complete, the corrected Phase 05 verdict remains an
-> **implementation candidate pending Controller review**. The prior dataset
-> is preserved, not replaced.
+> **Controller correction implementation candidate:** The original 122-run
+> dataset is exploratory. Its 12-request runs have insufficient per-run p99,
+> and changing invalid percentage also changed legitimate offered traffic.
+> The 78-run matched-rate experiment, local verification and hosted CI
+> on the correction implementation commit are complete. Hosted CI on the
+> final evidence-only HEAD and Independent Controller review remain open.
+> The prior dataset is preserved.
 
 ## Controller correction: matched legitimate service experiment
 
@@ -19,6 +18,16 @@ also changed legitimate offered traffic, preventing a causal legitimate
 service comparison. The bounded 2/8 tx/s settings did not locate saturation
 or a service-degradation threshold. The historical NO-GO recommendation
 therefore did not settle broader B1 susceptibility.
+
+The correction implementation commit is
+`547190a9f6b945cf327f8b6855704b887ad78bda`, tree
+`56adda92a29c845cf221d401e02d5b869ba5305e` (31 changed files,
+26,445 insertions and 27 deletions). The resulting Git source includes the
+new corpus, harness, analyzer, sanitized evidence and this report. Its
+production B0/B1 transaction, state and consensus packages are unchanged.
+The branch remains `phase/05-b1-experimental-evaluation`, based on the
+Owner-merged Phase 04 commit
+`b861479982b0114be2ad60f1e7727362075a7f73`.
 
 The new corpus has 384 public signed nonce-sequenced transfers per profile,
 with one sender reserved for a stable late-invalid probe. A new real
@@ -575,7 +584,7 @@ Controller review and hosted CI on the final branch HEAD remain distinct.
 | G20 publication boundary | PASS for reviewed payload | Only public corpus and sanitized tables/manifests selected; raw homes/logs remain ignored locally |
 | G21 build/unit/integration | PASS | Local verification ledger, all exit 0 |
 | G22 race/fuzz | PASS | Real workload race, Phase 05/state race, corpus and B1 decoder fuzz, all exit 0 |
-| G23 hosted CI on final branch HEAD | PENDING | Prior PR #10 checks passed on `3758fb7…`; final correction commit must run hosted checks |
+| G23 hosted CI on final branch HEAD | PASS on implementation commit; final evidence-only HEAD pending | Push run `40332212464` and PR run `40332222233` succeeded on `547190a…`; final doc-only commit requires its own check |
 | G24 report and evidence handoff | CANDIDATE | This report, decision, public tables, private raw audit; Controller acceptance pending |
 
 The ignored local command ledger is
@@ -614,6 +623,23 @@ no `--- SKIP:`, `--- FAIL:` or `WARNING: DATA RACE` marker.
 the repair intentionally exited nonzero at 77/78; this negative check proves
 that a clock-disrupted measurement cannot silently enter the aggregate.
 The original 122-run raw SHA-256 manifest and the new 481-file manifest both
-verified. Hosted CI and final Git identities are recorded after publication.
+verified. The correction implementation identity and its hosted CI are recorded
+below; the evidence-only closeout identity will be reported in the final handoff.
+
+### Hosted CI on correction implementation commit
+
+GitHub Actions [push run 40332212464](https://github.com/the-phong/DoS-in-Blockchain-PQC/actions/runs/40332212464)
+and [Draft PR run 40332222233](https://github.com/the-phong/DoS-in-Blockchain-PQC/actions/runs/40332222233)
+both completed **SUCCESS** on
+`547190a9f6b945cf327f8b6855704b887ad78bda`. Each `verify` job had
+14/14 successful steps. The new contention smoke step verified the public
+corpus digest and ran an actual B1 four-validator network:
+`001-smoke-b1-p50-r1: exit=0 data=True ... runs=1 failures=0` in the push
+log. Neither downloaded hosted log contains `--- SKIP:`, `--- FAIL:` or a
+race warning. The logs remain local, with public hashes in
+[`CONTENTION_HOSTED_CI_SHA256.txt`](../evidence/phase_05/CONTENTION_HOSTED_CI_SHA256.txt).
+The multi-hour 78-condition matrix remains a local experiment and is not
+claimed to run in hosted CI. The next evidence-only commit must receive its
+own hosted checks before final handoff.
 
 **STOP — no merge, no DoS mechanism and no subsequent phase.**

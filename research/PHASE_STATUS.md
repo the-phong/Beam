@@ -16,8 +16,10 @@ per-run p99 and varying legitimate workload share. The supplementary
 one wall-clock-disrupted B0 secondary baseline was retained and replaced by
 a fresh monotonic-timed run. The corrected analysis has 78 usable conditions,
 including 300 confirmed valid transfers in every valid-bearing run.
-Regression and hosted-CI verification of the final correction are still
-required before Controller review. The earlier hosted checks passed on
+The 22-command local regression ledger and both hosted checks on correction
+implementation commit `547190a9f6b945cf327f8b6855704b887ad78bda`
+passed. A final documentation/evidence-only closeout commit requires its own
+hosted rerun before Controller review. The earlier hosted checks passed on
 implementation commit `ea5b2ce802dbb315b7b4c6718d83f698a11a112b`;
 those checks do not cover this correction.
 Controller review and Owner acceptance remain separate gates.

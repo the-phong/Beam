@@ -1,5 +1,10 @@
 # Phase 05 raw-derived result tables
 
+> **Historical exploratory 122-run dataset.** Each network run submitted
+> only 12 requests, so per-run p99 is insufficient. Changing invalid share
+> also changed legitimate offered traffic. The corrected matched-rate
+> results are in [CONTENTION_RESULT_TABLES.md](CONTENTION_RESULT_TABLES.md).
+
 Each network row averages independent run summaries; it does not pool requests as independent trials.
 `admission` is client RPC wall time. `confirmed/s` counts only valid included transactions.
 `CPU s` is sampled process user+system time for all Pluto/Comet processes; it is not wall time.
