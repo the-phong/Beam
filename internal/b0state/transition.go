@@ -45,15 +45,29 @@ func EvaluateTrusted(s State, raw []byte) (State, tx.Code, error) {
 	var sender, receiver Address
 	copy(sender[:], sender20[:])
 	copy(receiver[:], record.Receiver[:])
+	return ApplyAuthenticatedTrusted(s, sender, receiver, record.Amount, record.Nonce)
+}
+
+// ApplyAuthenticatedTrusted implements the accepted B0 balance/nonce
+// transition after profile-specific authentication has succeeded. B1 uses
+// this same business-state primitive with its separately bound hybrid keys.
+// A failed result always returns the unchanged candidate state.
+func ApplyAuthenticatedTrusted(s State, sender, receiver Address, amount, nonce uint64) (State, tx.Code, error) {
+	if !s.trusted {
+		return State{}, 0, ErrState
+	}
+	if amount == 0 {
+		return s, tx.CodeZeroAmount, nil
+	}
 	senderIndex, senderFound := s.lookup(sender)
 	senderAccount := Account{Address: sender}
 	if senderFound {
 		senderAccount = s.accounts[senderIndex]
 	}
-	if record.Nonce != senderAccount.Nonce || senderAccount.Nonce == math.MaxUint64 {
+	if nonce != senderAccount.Nonce || senderAccount.Nonce == math.MaxUint64 {
 		return s, CodeInvalidNonce, nil
 	}
-	if senderAccount.Balance < record.Amount {
+	if senderAccount.Balance < amount {
 		return s, CodeInsufficientBalance, nil
 	}
 	if sender == receiver {
@@ -67,7 +81,7 @@ func EvaluateTrusted(s State, raw []byte) (State, tx.Code, error) {
 	if receiverFound {
 		receiverAccount = s.accounts[receiverIndex]
 	}
-	if receiverAccount.Balance > math.MaxUint64-record.Amount {
+	if receiverAccount.Balance > math.MaxUint64-amount {
 		return s, CodeBalanceOverflow, nil
 	}
 	if !receiverFound && len(s.accounts) == MaxAccounts {
@@ -75,14 +89,14 @@ func EvaluateTrusted(s State, raw []byte) (State, tx.Code, error) {
 	}
 	accounts := make([]Account, len(s.accounts))
 	copy(accounts, s.accounts)
-	accounts[senderIndex].Balance -= record.Amount
+	accounts[senderIndex].Balance -= amount
 	accounts[senderIndex].Nonce++
 	if receiverFound {
-		accounts[receiverIndex].Balance += record.Amount
+		accounts[receiverIndex].Balance += amount
 	} else {
 		accounts = append(accounts, Account{})
 		copy(accounts[receiverIndex+1:], accounts[receiverIndex:len(accounts)-1])
-		accounts[receiverIndex] = Account{Address: receiver, Balance: record.Amount}
+		accounts[receiverIndex] = Account{Address: receiver, Balance: amount}
 	}
 	next, err := NewState(s.chainID, s.height, s.supply, accounts)
 	return next, tx.CodeOK, err

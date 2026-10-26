@@ -1,4 +1,4 @@
-.PHONY: build test test-integration test-integration-4v vet fmt-check verify
+.PHONY: build test test-integration test-integration-4v test-integration-b1-4v vet fmt-check verify
 
 GO ?= go
 REVISION := $(shell git rev-parse --short HEAD 2>/dev/null || printf unavailable)
@@ -12,10 +12,13 @@ test:
 	$(GO) test ./...
 
 test-integration: build
-	$(GO) test -tags integration ./test/integration -timeout 240s -count=1
+	$(GO) test -tags integration ./test/integration -timeout 240s -count=1 -v
 
 test-integration-4v: build
 	$(GO) test -tags 'integration fourval' ./test/integration -run '^TestB0FourValidator' -timeout 900s -count=1 -v
+
+test-integration-b1-4v: build
+	$(GO) test -tags 'integration fourval' ./test/integration -run '^TestB1Hybrid' -timeout 900s -count=1 -v
 
 vet:
 	$(GO) vet ./...

@@ -1,5 +1,30 @@
 # Pluto architecture — implemented Phase 02 baseline and Phase 02R review
 
+## Phase 04 B1 hybrid candidate
+
+A separately selected B1 profile uses the existing pinned CometBFT consensus
+engine with a new `internal/b1app` ABCI adapter. `init-b1-4v` exclusively
+claims a fresh root, generates four independent Comet validator/P2P
+identities, installs one canonical Genesis V3 in every home, and writes one
+independent B1 H0 Pebble snapshot per validator. `start` validates the B1
+record and genesis before launching CometBFT. B0 and Phase 02 stores are
+rejected in B1 homes; no migration or fallback exists.
+
+`internal/b1tx` owns bounded canonical transaction decoding, the common
+domain-separated signed digest, and the two independent signature checks.
+`internal/b1state` binds sender/public keys to an immutable genesis registry
+and invokes the accepted B0 balance/nonce transition only after both proofs
+pass. `internal/b1store` persists the B1 registry-bound AppHash under a
+separate key and record magic. `CheckTx` reads committed state;
+`PrepareProposal` and `ProcessProposal` independently simulate ordered
+candidate state; `FinalizeBlock` prepares a pending candidate and `Commit`
+syncs it. Direct invalid-proposal tests bypass mempool admission. The
+application reports the last durable height and AppHash on restart, allowing
+the pinned CometBFT handshake/replay path. Four validators on one WSL2 host
+are four processes but one physical fault domain. The exact binary profile,
+error taxonomy and threat assumptions are in
+[`specs/B1_HYBRID_AUTHENTICATION.md`](specs/B1_HYBRID_AUTHENTICATION.md).
+
 ## Phase 03E local four-validator extension (candidate)
 
 `init-b0-4v` creates four independent D-026 homes under one fresh root. It

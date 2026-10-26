@@ -14,6 +14,7 @@ import (
 	"syscall"
 
 	"example.com/pluto/internal/b0genesis"
+	"example.com/pluto/internal/b1genesis"
 	"example.com/pluto/internal/node"
 	"example.com/pluto/internal/version"
 )
@@ -123,6 +124,39 @@ func run(args []string, stdout, stderr io.Writer) int {
 		}
 		fmt.Fprintf(stdout, "Initialized four independent Pluto B0 validators under %s (chain %s)\n", *root, *chainID)
 		return 0
+	case "init-b1-4v":
+		flags := flag.NewFlagSet("init-b1-4v", flag.ContinueOnError)
+		flags.SetOutput(stderr)
+		root := flags.String("root", "", "fresh root for four independent B1 validator homes")
+		chainID := flags.String("chain-id", "pluto-b1-v1", "shared B1 chain identity")
+		genesisFile := flags.String("genesis-file", "", "path to canonical binary B1 Genesis V3")
+		rpcBase := flags.Int("rpc-base-port", 26657, "first localhost RPC port; subsequent validators use increments of 10")
+		p2pBase := flags.Int("p2p-base-port", 26656, "first localhost P2P port; subsequent validators use increments of 10")
+		abciBase := flags.Int("abci-base-port", 26658, "first localhost ABCI port; subsequent validators use increments of 10")
+		if err := flags.Parse(args[1:]); err != nil || flags.NArg() != 0 || *root == "" || *genesisFile == "" {
+			fmt.Fprintln(stderr, "invalid init-b1-4v arguments")
+			return 2
+		}
+		info, err := os.Stat(*genesisFile)
+		if err != nil || !info.Mode().IsRegular() || info.Size() > b1genesis.MaxBinarySize {
+			fmt.Fprintln(stderr, "invalid or oversized binary B1 Genesis V3 file")
+			return 1
+		}
+		binary, err := os.ReadFile(*genesisFile)
+		if err != nil {
+			fmt.Fprintln(stderr, err)
+			return 1
+		}
+		var ports [4]node.B0Ports
+		for i := range ports {
+			ports[i] = node.B0Ports{RPC: *rpcBase + 10*i, P2P: *p2pBase + 10*i, ABCI: *abciBase + 10*i}
+		}
+		if err := node.InitB1FourValidators(*root, cometBinary(), *chainID, binary, ports, stdout); err != nil {
+			fmt.Fprintln(stderr, err)
+			return 1
+		}
+		fmt.Fprintf(stdout, "Initialized four independent Pluto B1 validators under %s (chain %s)\n", *root, *chainID)
+		return 0
 	case "start":
 		flags := flag.NewFlagSet("start", flag.ContinueOnError)
 		flags.SetOutput(stderr)
@@ -170,8 +204,8 @@ func run(args []string, stdout, stderr io.Writer) int {
 }
 
 func usage(w io.Writer) {
-	fmt.Fprintln(w, "Usage: plutod [init|init-b0|init-b0-4v|start|state|help|version] [flags]")
-	fmt.Fprintln(w, "init selects Phase 02; init-b0 initializes one B0 validator; init-b0-4v initializes four independent B0 validators.")
+	fmt.Fprintln(w, "Usage: plutod [init|init-b0|init-b0-4v|init-b1-4v|start|state|help|version] [flags]")
+	fmt.Fprintln(w, "init selects Phase 02; init-b0 initializes one B0 validator; init-b0-4v and init-b1-4v initialize independent four-validator networks.")
 }
 
 func cometBinary() string {

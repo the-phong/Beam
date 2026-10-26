@@ -1,5 +1,16 @@
 # Pluto research master plan
 
+**Owner Phase 04 authorization and roadmap amendment (2026-10-26):** The
+accepted Phase 03E PR #8 is merged into `test-mainet` at
+`007e827f740c9c741f47bf1f7a51eec98a79cc5a`. The Owner authorized one
+complete B1 hybrid authentication implementation on
+`phase/04-b1-hybrid-authentication`. D-028 consolidates the historical
+Phase 05–08 hybrid design, cryptography, integration and ABCI safety work into
+this Phase 04. EVM is NO-GO for the present authentication/correctness
+experiment. The historical roadmap rows remain below as the original plan,
+not current Phase 04 authority. The implementation and tests require
+independent Controller review and Owner acceptance; no later phase is opened.
+
 **Phase 03E authorization addendum (2026-10-25):** The Owner merged the
 accepted Phase 03D closeout into `test-mainet` at
 `c3756843c5e804e3a985d817ab5c83d2dd6798a0` and authorized one complete

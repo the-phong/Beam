@@ -1,4 +1,18 @@
-# Phase status — 2026-10-25
+# Phase status — 2026-10-26
+
+## Active Phase 04 B1 candidate (Owner authorized 2026-10-26)
+
+The Owner merged accepted Phase 03E PR #8 at
+`007e827f740c9c741f47bf1f7a51eec98a79cc5a` and authorized one complete
+Phase 04 B1 hybrid secp256k1 + ML-DSA-44 implementation. The working branch
+is `phase/04-b1-hybrid-authentication`. D-028 records the consolidated
+hybrid workflow and current EVM NO-GO; D-029 records an isolated,
+genesis-bound B1 account profile. Source, four-validator tests, fault
+evidence, and the Phase 04 report are implementation candidates until
+Independent Controller review and Owner acceptance. No DoS resistance,
+Byzantine fault tolerance, multi-host result or physical durability is
+claimed. The historical status paragraphs below retain their original
+context; their earlier authorization limits are superseded for this phase.
 
 ## Active Phase 03E implementation candidate
 

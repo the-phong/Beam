@@ -1,5 +1,50 @@
 # Architectural decision log
 
+## Phase 04 B1 hybrid implementation decisions (2026-10-26; Controller review candidate)
+
+**D-028 — Consolidated B1 workflow and EVM NO-GO for this experiment.**
+The Owner explicitly authorized one complete Phase 04 implementation that
+consolidates the historical roadmap's hybrid design, cryptographic module,
+transaction integration, and ABCI safety activities previously placed in
+Phases 05–08. This supersedes that scheduling sequence for this B1 experiment;
+the historical rows below remain for audit. EVM is NO-GO at this gate: hybrid
+authentication, correctness and resource costs can be investigated in the
+existing CometBFT application without adding gas, storage or EVM execution
+semantics. Future EVM integration requires a new research need and Owner
+authorization. The full deliberately invalid workload benchmark remains
+future work. This decision does not authorize a DoS mechanism or Phase 05.
+
+**D-029 — Isolated genesis-bound B1 hybrid account profile.** A fresh B1 chain
+uses `PLUTOTX2` transaction version 2/profile 1, `PLUTOG3!` Genesis V3 and
+`PLUTOS3!` committed record under `pluto/committed-state/b1-v1` in a distinct
+`pluto-b1-v1` directory. The B0/Phase 02 formats, keys, genesis, signatures
+and AppHashes remain unchanged and are never silently migrated. Each B1
+genesis account immutably binds its derived address to one compressed
+secp256k1 key and one ML-DSA-44 key. Both proofs sign the same domain-separated
+canonical digest; an unregistered or substituted key is rejected before
+either signature can authorize state. The registered recipient rule fixes the
+account set at genesis; there is no key rotation or account creation in this
+profile. A B1 block uses the accepted B0 balance/nonce transition primitive
+but a separate registry-bound AppHash. `init-b1-4v` creates four fresh D-026
+style H0 homes with one shared B1 genesis. B1's `pluto.json` additionally
+records the expected public validator address for that specific home;
+`start` refuses a copied key from another valid genesis member. This is
+profile metadata, not a new D-024 record or an initialization marker.
+`start` requires an existing valid B1 record and rejects foreign B0 state.
+This is a scoped candidate for
+independent Controller review, not Owner acceptance.
+
+Dependency decision for D-029: `github.com/cloudflare/circl v1.6.4` provides
+`sign/mldsa/mldsa44` with pure ML-DSA signatures and a caller-supplied
+context. The module declares Go 1.24.0. The pinned module archive checksum is
+`h1:pOXuDTCEYyzydgUpQ0CQz3LsinKjiSk6nNP5Lt5K64U=`. The algorithmic
+reference is NIST FIPS 204; this does not establish FIPS module certification.
+The existing `secp256k1/v4 v4.4.1` implementation remains pinned. CIRCL
+v1.6.4 also raises selected indirect `golang.org/x/*` versions; the exact
+`go.mod`/`go.sum` delta and regression results govern acceptance. The B1
+protocol, threat model and byte offsets are in
+[`specs/B1_HYBRID_AUTHENTICATION.md`](specs/B1_HYBRID_AUTHENTICATION.md).
+
 ## Phase 03E four-validator provisioning decision (2026-10-25; implementation candidate)
 
 **D-027 — Shared four-validator genesis with independent D-026 H0 homes.**
