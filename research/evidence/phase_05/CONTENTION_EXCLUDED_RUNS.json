@@ -1,0 +1,10 @@
+[
+  {
+    "data_sha256": "93095dbc6243a7b473f7c8a094bf2381540a78593d7536a8a4aa2fbf2ec20cd6",
+    "go_test_seconds": 83.85,
+    "log_sha256": "a8b437bb3fce4c225c7889d6b35b87064a1cd147889dcd14eef054bd2cb52c38",
+    "outer_wall_seconds": 2463.7997443675995,
+    "reason": "wall-clock discontinuity between outer ledger and Go monotonic test duration",
+    "run_id": "034-secondary-b0-p0-r2"
+  }
+]

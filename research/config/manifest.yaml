@@ -1,10 +1,10 @@
-# Phase 04 B1 hybrid implementation candidate after Owner-merged Phase 03E.
-# Four-validator B1 and fault results require Controller review.
+# Phase 05 experimental implementation candidate after Owner-merged Phase 04.
+# No Phase 05 experimental result is Controller-accepted until reviewed.
 project:
   name: Pluto
   research_title: Evaluation of Resource Cost and Processing Correctness for Hybrid secp256k1–ML-DSA-44 Transactions in a CometBFT-Based Blockchain Application under Deliberately Invalid Input Workloads
-  phase: "04"
-  active_authorization: phase_04_complete_b1_hybrid_implementation_draft_PR
+  phase: "05"
+  active_authorization: phase_05_complete_experimental_evaluation_owner_2026_10_26
   phase_03b_status: completed_controller_accepted_merged
   phase_03c_implementation_authorized: false
   phase_03c_was_authorized: true
@@ -14,8 +14,12 @@ project:
   phase_03e_implementation_authorized: true
   phase_03e_status: owner_accepted_merged_into_test_mainet
   phase_04_implementation_authorized: true
-  phase_04_status: b1_hybrid_implementation_candidate_controller_review_pending
-  implementation_status: historical_v1_plus_accepted_classical_b0_and_candidate_hybrid_b1
+  phase_04_status: controller_accepted_owner_merged_PR9
+  phase_04_merge_commit: b861479982b0114be2ad60f1e7727362075a7f73
+  phase_05_status: controller_correction_implementation_candidate_pending_final_verification_and_review
+  phase_05_research_recommendation: no_go_new_dos_mechanism_under_tested_bounded_conditions_broader_risk_inconclusive
+  phase_05_implementation_authorized: true
+  implementation_status: historical_v1_plus_accepted_classical_b0_and_accepted_hybrid_b1_phase05_experiment_candidate
   phase_03a_specification_authorized: true
   phase_03b_was_authorized: true
   evm_decision: D028_no_go_for_current_B1_authentication_experiment
@@ -37,10 +41,22 @@ application:
 source:
   # Earlier tested/recovery identities below remain historical; the accepted
   # Phase 03D staged tree is recorded separately in phase_03d_accepted_staged_tree.
-  source_branch: phase/04-b1-hybrid-authentication
+  source_branch: phase/05-b1-experimental-evaluation
   # Exact implementation commit tested locally. The later documentation-only
   # closeout commit is recorded in the report and Draft PR.
-  source_commit: fa5c95ba6a2a0f4489796c4248e6265f27cbcc89
+  source_commit: fa5c95ba6a2a0f4489796c4248e6265f27cbcc89 # historical Phase 04 tested commit
+  phase_05_base_commit: b861479982b0114be2ad60f1e7727362075a7f73
+  phase_05_implementation_commit: ea5b2ce802dbb315b7b4c6718d83f698a11a112b
+  phase_05_implementation_tree: 97dc21e9dc082ca3399a63b56a10732b5900cbc9
+  phase_05_controller_correction_implementation_commit: 547190a9f6b945cf327f8b6855704b887ad78bda
+  phase_05_controller_correction_implementation_tree: 56adda92a29c845cf221d401e02d5b869ba5305e
+  phase_05_definitive_matrix_staged_tree: fc629192cb046befcdae2058fac675c92d6de1db
+  phase_05_cpu_split_smoke_staged_tree: 118d2bdd4451ad363bcb42027164a146b4fbc615
+  phase_05_final_runner_smoke_staged_tree: 4277e04d851f247dff85f72c81e804fd46248a0e
+  phase_05_corpus_sha256: 242e5c848aa3c97f731a3e70f9ca0876a9ec68bffbbbab2ead8c222c005cd535
+  phase_05_contention_matrix_staged_tree: 29c16ad5f65c08a8922fcdba8448c6e84c0e4ea7
+  phase_05_contention_repair_staged_tree: dfb1d32a821736ad029a7e77790577003186502f
+  phase_05_contention_corpus_sha256: 459148e8d350cecd1509130d88de909b9ce37c2420ef2999d224db9265ec1646
   phase_04_source_tree: 3045db9db16837687ec2e55c0db4689797900c22
   phase_04_base_commit: 007e827f740c9c741f47bf1f7a51eec98a79cc5a
   phase_03e_accepted_implementation_commit: 94cd9ae5cd952d86cf3d89c89546ca516e158578
@@ -50,7 +66,7 @@ source:
   phase_03d_recovery_reviewed_source_tree: 87b504853cb0ff98790976879ea8832db92b83e0
   phase_03d_recovery_source_manifest_sha256: f0146d74ebe11561efbdd3c23f4508caf42a69a2a0456035a72a69213f47355c
   phase_03d_recovery_bundle_sha256: 94e4c562a1ed43ad92fcf22d65fa5724379e6fc3a74e715be587ac2a6f523916
-  working_branch: phase/04-b1-hybrid-authentication
+  working_branch: phase/05-b1-experimental-evaluation
   phase_03e_base_commit: c3756843c5e804e3a985d817ab5c83d2dd6798a0
   phase_03e_base_tree: 39dd15ed276ffa49297cf659b6dcca9f78d942c2
   phase_03e_controller_initial_review_commit: 03be9b120c5ae495985bfb86e671a9863d9508dd
@@ -113,7 +129,16 @@ build:
   configuration: standard_go_compiler_with_revision_ldflag
   binaries: build/plutod_and_build/cometbft
 verification:
-  status: phase_04_B1_candidate_local_verification_passed_controller_review_pending
+  status: phase_05_matched_rate_matrix_and_22_local_checks_passed_hosted_ci_pending_controller_review
+  phase_05_exploratory_runs: 122_complete_of_122_zero_failed_p99_insufficient
+  phase_05_matched_rate_runs: 78_usable_of_78_with_one_wall_clock_exclusion_and_fresh_replacement
+  phase_05_valid_confirmed: 20400_matched_rate
+  phase_05_invalid_rejected: 77200_matched_rate
+  phase_05_local_verification: 22_command_ledger_all_zero_make_verify_integration_4v_b1_4v_build_unit_vet_mod_verify_corpus_smoke_python_race_fuzz_micro_fmt_diffcheck
+  phase_05_hosted_ci: correction_implementation_547190a_push_40332212464_and_PR_40332222233_success_final_evidence_head_pending
+  phase_05_raw_evidence_root: research/evidence/phase_05/raw/20261026T062154Z-full_local_ignored
+  phase_05_contention_raw_evidence_root: research/evidence/phase_05/raw/20261026T083247Z-contention-full_local_ignored
+  phase_05_contention_repair_raw_evidence_root: research/evidence/phase_05/raw/20261026T131246Z-contention-repair34_local_ignored
   phase_03c_historical_suite: build_test_vet_fmt_mod_verify_integration_race_coverage_fuzz_oracle
   closeout_suite: diff_check_make_verify_integration_consistency_source_diff
   evidence: research/evidence/phase_03d/d025/

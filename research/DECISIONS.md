@@ -1,5 +1,26 @@
 # Architectural decision log
 
+## Phase 05 experimental-methodology decision (Owner-authorized 2026-10-26)
+
+**D-030 — Public signed corpus and run-level comparison without production
+instrumentation.** Phase 05 retains accepted B0/B1 protocol and consensus
+behavior. A public corpus freezes canonical genesis, already signed bytes,
+case IDs, SHA-256 and expected first-failure codes; ephemeral signing keys are
+discarded. A research-only wrapper measures callback boundaries, and Go
+benchmarks measure components. The real four-validator runner uses fresh
+localhost homes, bounded rates, matched-height state checks and per-process
+sampling. Raw network comparison is not interpreted as ML-DSA-only cost
+because B0/B1 differ in transaction size, account registry and persistence.
+Five independent runs are used for primary conditions; statistical resampling
+uses runs, not individual requests. This choice avoids changes to
+consensus-critical code and makes failure history auditable. Its limitations
+are short diagnostic windows, shared WSL2 resources, sampled RSS, polling
+resolution and the absence of an exactly matched byte-rate network condition
+if the safe offered-rate cap prevents one. The preregistered protocol is
+[`specs/PHASE_05_EXPERIMENT.md`](specs/PHASE_05_EXPERIMENT.md). Status:
+implementation and measurement candidate, not Controller acceptance or a
+DoS mechanism authorization.
+
 ## Phase 04 B1 hybrid implementation decisions (2026-10-26; Controller review candidate)
 
 **D-028 — Consolidated B1 workflow and EVM NO-GO for this experiment.**

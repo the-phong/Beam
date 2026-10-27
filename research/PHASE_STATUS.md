@@ -1,5 +1,33 @@
 # Phase status — 2026-10-26
 
+## Active Phase 05 experimental implementation candidate
+
+The Owner technically accepted and merged Phase 04 PR #9 at
+`b861479982b0114be2ad60f1e7727362075a7f73`. Accepted B1 hybrid
+authentication remains within its Phase 04 limitations. The Owner authorized
+one consolidated Phase 05 invalid-input corpus, B0/B1 correctness and
+resource-cost evaluation on `phase/05-b1-experimental-evaluation`.
+The executable experiment is an implementation candidate. The Controller
+requested a matched-legitimate-rate correction on Draft PR #10 at reviewed
+commit `3758fb7fb7df973d1003a5a49ff9071351a19dcf`. The prior 122-run
+matrix is retained as exploratory: its 12-request runs had insufficient
+per-run p99 and varying legitimate workload share. The supplementary
+78-condition four-validator matrix completed with zero command failures;
+one wall-clock-disrupted B0 secondary baseline was retained and replaced by
+a fresh monotonic-timed run. The corrected analysis has 78 usable conditions,
+including 300 confirmed valid transfers in every valid-bearing run.
+The 22-command local regression ledger and both hosted checks on correction
+implementation commit `547190a9f6b945cf327f8b6855704b887ad78bda`
+passed. A final documentation/evidence-only closeout commit requires its own
+hosted rerun before Controller review. The earlier hosted checks passed on
+implementation commit `ea5b2ce802dbb315b7b4c6718d83f698a11a112b`;
+those checks do not cover this correction.
+Controller review and Owner acceptance remain separate gates.
+No DoS mechanism, admission policy, EVM or subsequent phase is authorized. The
+current research recommendation is NO-GO for a new mechanism on the bounded
+data, while broader DoS susceptibility remains INCONCLUSIVE. D-028's
+EVM NO-GO continues. The Phase 04 paragraphs below are historical.
+
 ## Active Phase 04 B1 candidate (Owner authorized 2026-10-26)
 
 The Owner merged accepted Phase 03E PR #8 at
