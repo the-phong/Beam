@@ -1,0 +1,1598 @@
+[
+  {
+    "cpu_percent": {
+      "ci95": [
+        0.7422406009588918,
+        0.8162654855162207
+      ],
+      "mean": 0.7712504437892841,
+      "run_count": 5
+    },
+    "cpu_percent_delta": {
+      "ci95": null,
+      "mean": null,
+      "run_count": 0
+    },
+    "goodput_degradation_fraction": {
+      "ci95": null,
+      "mean": null,
+      "run_count": 0
+    },
+    "goodput_tps": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean": 0.0,
+      "run_count": 5
+    },
+    "inclusion_p99_amplification": {
+      "ci95": null,
+      "mean": null,
+      "run_count": 0
+    },
+    "inclusion_p99_ms": {
+      "ci95": null,
+      "mean": null,
+      "run_count": 0
+    },
+    "peak_sampled_rss_bytes": {
+      "ci95": [
+        107772313.6,
+        110154547.2
+      ],
+      "mean": 108963430.4,
+      "run_count": 5
+    },
+    "profile": "b0",
+    "ratio": 100,
+    "repetitions": 5,
+    "run_ids": [
+      "006-invalid_only-b0-p100-r1",
+      "012-invalid_only-b0-p100-r2",
+      "018-invalid_only-b0-p100-r3",
+      "024-invalid_only-b0-p100-r4",
+      "030-invalid_only-b0-p100-r5"
+    ],
+    "sampled_rss_delta_bytes": {
+      "ci95": null,
+      "mean": null,
+      "run_count": 0
+    },
+    "series": "invalid_only",
+    "valid_admission_p99_us": {
+      "ci95": null,
+      "mean": null,
+      "run_count": 0
+    },
+    "valid_count_per_run": [
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "cpu_percent": {
+      "ci95": [
+        2.4627970053274146,
+        2.597845425199015
+      ],
+      "mean": 2.5228205256235396,
+      "run_count": 5
+    },
+    "cpu_percent_delta": {
+      "ci95": null,
+      "mean": null,
+      "run_count": 0
+    },
+    "goodput_degradation_fraction": {
+      "ci95": null,
+      "mean": null,
+      "run_count": 0
+    },
+    "goodput_tps": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean": 0.0,
+      "run_count": 5
+    },
+    "inclusion_p99_amplification": {
+      "ci95": null,
+      "mean": null,
+      "run_count": 0
+    },
+    "inclusion_p99_ms": {
+      "ci95": null,
+      "mean": null,
+      "run_count": 0
+    },
+    "peak_sampled_rss_bytes": {
+      "ci95": [
+        117606809.6,
+        119102668.8
+      ],
+      "mean": 118296576,
+      "run_count": 5
+    },
+    "profile": "b1",
+    "ratio": 100,
+    "repetitions": 5,
+    "run_ids": [
+      "045-invalid_only-b1-p100-r1",
+      "051-invalid_only-b1-p100-r2",
+      "057-invalid_only-b1-p100-r3",
+      "063-invalid_only-b1-p100-r4",
+      "069-invalid_only-b1-p100-r5"
+    ],
+    "sampled_rss_delta_bytes": {
+      "ci95": null,
+      "mean": null,
+      "run_count": 0
+    },
+    "series": "invalid_only",
+    "valid_admission_p99_us": {
+      "ci95": null,
+      "mean": null,
+      "run_count": 0
+    },
+    "valid_count_per_run": [
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "cpu_percent": {
+      "ci95": [
+        0.8550636468282307,
+        0.8937356663224741
+      ],
+      "mean": 0.8781210216657451,
+      "run_count": 5
+    },
+    "cpu_percent_delta": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean": 0.0,
+      "run_count": 5
+    },
+    "goodput_degradation_fraction": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean": 0.0,
+      "run_count": 5
+    },
+    "goodput_tps": {
+      "ci95": [
+        1.494532907580322,
+        1.4992430381408266
+      ],
+      "mean": 1.4967729843783304,
+      "run_count": 5
+    },
+    "inclusion_p99_amplification": {
+      "ci95": [
+        1.0,
+        1.0
+      ],
+      "mean": 1.0,
+      "run_count": 5
+    },
+    "inclusion_p99_ms": {
+      "ci95": [
+        1718.540772508,
+        1844.07526322
+      ],
+      "mean": 1781.3080178639998,
+      "run_count": 5
+    },
+    "peak_sampled_rss_bytes": {
+      "ci95": [
+        119457382.4,
+        120399462.4
+      ],
+      "mean": 119928422.4,
+      "run_count": 5
+    },
+    "profile": "b0",
+    "ratio": 0,
+    "repetitions": 5,
+    "run_ids": [
+      "001-primary-b0-p0-r1",
+      "007-primary-b0-p0-r2",
+      "013-primary-b0-p0-r3",
+      "019-primary-b0-p0-r4",
+      "025-primary-b0-p0-r5"
+    ],
+    "sampled_rss_delta_bytes": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean": 0,
+      "run_count": 5
+    },
+    "series": "primary",
+    "valid_admission_p99_us": {
+      "ci95": [
+        2260.7037939999896,
+        3143.7423217499995
+      ],
+      "mean": 2663.2010299999943,
+      "run_count": 5
+    },
+    "valid_count_per_run": [
+      300,
+      300,
+      300,
+      300,
+      300
+    ]
+  },
+  {
+    "cpu_percent": {
+      "ci95": [
+        0.8127448474971132,
+        0.8975197229039058
+      ],
+      "mean": 0.8551261584120442,
+      "run_count": 5
+    },
+    "cpu_percent_delta": {
+      "ci95": [
+        -0.0596764235177661,
+        0.010958638145931166
+      ],
+      "mean": -0.02299486325370086,
+      "run_count": 5
+    },
+    "goodput_degradation_fraction": {
+      "ci95": [
+        -0.002705183305429193,
+        0.0028384840237488883
+      ],
+      "mean": -6.015477258669577e-06,
+      "run_count": 5
+    },
+    "goodput_tps": {
+      "ci95": [
+        1.4945332731920828,
+        1.499244291473342
+      ],
+      "mean": 1.4967747600073669,
+      "run_count": 5
+    },
+    "inclusion_p99_amplification": {
+      "ci95": [
+        0.938128191922313,
+        1.0790077725770846
+      ],
+      "mean": 1.0122944451776046,
+      "run_count": 5
+    },
+    "inclusion_p99_ms": {
+      "ci95": [
+        1691.787384534,
+        1873.4527899879997
+      ],
+      "mean": 1799.0870654779999,
+      "run_count": 5
+    },
+    "peak_sampled_rss_bytes": {
+      "ci95": [
+        119173263.36,
+        121030246.4
+      ],
+      "mean": 120148787.2,
+      "run_count": 5
+    },
+    "profile": "b0",
+    "ratio": 25,
+    "repetitions": 5,
+    "run_ids": [
+      "002-primary-b0-p25-r1",
+      "008-primary-b0-p25-r2",
+      "014-primary-b0-p25-r3",
+      "020-primary-b0-p25-r4",
+      "026-primary-b0-p25-r5"
+    ],
+    "sampled_rss_delta_bytes": {
+      "ci95": [
+        -974848.0,
+        1176371.2
+      ],
+      "mean": 220364.8,
+      "run_count": 5
+    },
+    "series": "primary",
+    "valid_admission_p99_us": {
+      "ci95": [
+        1817.3954959999967,
+        2594.6611339999986
+      ],
+      "mean": 2244.558597999998,
+      "run_count": 5
+    },
+    "valid_count_per_run": [
+      300,
+      300,
+      300,
+      300,
+      300
+    ]
+  },
+  {
+    "cpu_percent": {
+      "ci95": [
+        0.8806281038874196,
+        0.9389906834981202
+      ],
+      "mean": 0.9094336328148064,
+      "run_count": 5
+    },
+    "cpu_percent_delta": {
+      "ci95": [
+        0.00929910808367711,
+        0.052426548466334696
+      ],
+      "mean": 0.031312611149061254,
+      "run_count": 5
+    },
+    "goodput_degradation_fraction": {
+      "ci95": [
+        -0.0028506789617916083,
+        0.000749091883141495
+      ],
+      "mean": -0.0015003639098180477,
+      "run_count": 5
+    },
+    "goodput_tps": {
+      "ci95": [
+        1.497665781934736,
+        1.5005809513239732
+      ],
+      "mean": 1.499013299199912,
+      "run_count": 5
+    },
+    "inclusion_p99_amplification": {
+      "ci95": [
+        0.9588431830241633,
+        1.0593289968964137
+      ],
+      "mean": 1.009774685665204,
+      "run_count": 5
+    },
+    "inclusion_p99_ms": {
+      "ci95": [
+        1741.8080974659993,
+        1851.3069062819998
+      ],
+      "mean": 1795.0298935219996,
+      "run_count": 5
+    },
+    "peak_sampled_rss_bytes": {
+      "ci95": [
+        119973478.4,
+        120748441.6
+      ],
+      "mean": 120360960,
+      "run_count": 5
+    },
+    "profile": "b0",
+    "ratio": 50,
+    "repetitions": 5,
+    "run_ids": [
+      "003-primary-b0-p50-r1",
+      "009-primary-b0-p50-r2",
+      "015-primary-b0-p50-r3",
+      "021-primary-b0-p50-r4",
+      "027-primary-b0-p50-r5"
+    ],
+    "sampled_rss_delta_bytes": {
+      "ci95": [
+        -425984.0,
+        1291059.2
+      ],
+      "mean": 432537.6,
+      "run_count": 5
+    },
+    "series": "primary",
+    "valid_admission_p99_us": {
+      "ci95": [
+        1878.4280999999992,
+        2395.097505999997
+      ],
+      "mean": 2107.582123999998,
+      "run_count": 5
+    },
+    "valid_count_per_run": [
+      300,
+      300,
+      300,
+      300,
+      300
+    ]
+  },
+  {
+    "cpu_percent": {
+      "ci95": [
+        0.9829398717231403,
+        1.0172539428540706
+      ],
+      "mean": 0.9981123964782883,
+      "run_count": 5
+    },
+    "cpu_percent_delta": {
+      "ci95": [
+        0.0986259953051545,
+        0.141356754319932
+      ],
+      "mean": 0.11999137481254325,
+      "run_count": 5
+    },
+    "goodput_degradation_fraction": {
+      "ci95": [
+        -0.003147650343512476,
+        0.003136600244545873
+      ],
+      "mean": -0.00030449990065450905,
+      "run_count": 5
+    },
+    "goodput_tps": {
+      "ci95": [
+        1.494532693676091,
+        1.499906887600161
+      ],
+      "mean": 1.4972200895606917,
+      "run_count": 5
+    },
+    "inclusion_p99_amplification": {
+      "ci95": [
+        0.9352986340876212,
+        1.0596019335935998
+      ],
+      "mean": 0.9974502838406105,
+      "run_count": 5
+    },
+    "inclusion_p99_ms": {
+      "ci95": [
+        1721.8629609539998,
+        1821.8005767659997
+      ],
+      "mean": 1771.8317688599998,
+      "run_count": 5
+    },
+    "peak_sampled_rss_bytes": {
+      "ci95": [
+        119021568.0,
+        120569036.8
+      ],
+      "mean": 119788339.2,
+      "run_count": 5
+    },
+    "profile": "b0",
+    "ratio": 75,
+    "repetitions": 5,
+    "run_ids": [
+      "004-primary-b0-p75-r1",
+      "010-primary-b0-p75-r2",
+      "016-primary-b0-p75-r3",
+      "022-primary-b0-p75-r4",
+      "028-primary-b0-p75-r5"
+    ],
+    "sampled_rss_delta_bytes": {
+      "ci95": [
+        -848691.2,
+        568524.8
+      ],
+      "mean": -140083.2,
+      "run_count": 5
+    },
+    "series": "primary",
+    "valid_admission_p99_us": {
+      "ci95": [
+        2238.266047999998,
+        2971.8781799999974
+      ],
+      "mean": 2579.2482819999973,
+      "run_count": 5
+    },
+    "valid_count_per_run": [
+      300,
+      300,
+      300,
+      300,
+      300
+    ]
+  },
+  {
+    "cpu_percent": {
+      "ci95": [
+        1.213847359327154,
+        1.3071200017387692
+      ],
+      "mean": 1.2558595932753651,
+      "run_count": 5
+    },
+    "cpu_percent_delta": {
+      "ci95": [
+        0.3424978834958885,
+        0.4192987432874098
+      ],
+      "mean": 0.37773857160961993,
+      "run_count": 5
+    },
+    "goodput_degradation_fraction": {
+      "ci95": [
+        -0.0004489694925130516,
+        0.0029916800727363357
+      ],
+      "mean": 0.0011942221339415581,
+      "run_count": 5
+    },
+    "goodput_tps": {
+      "ci95": [
+        1.4929715148914697,
+        1.4972184788060043
+      ],
+      "mean": 1.4949822056127016,
+      "run_count": 5
+    },
+    "inclusion_p99_amplification": {
+      "ci95": [
+        0.9625211911395014,
+        1.062643542391123
+      ],
+      "mean": 1.0084928821303931,
+      "run_count": 5
+    },
+    "inclusion_p99_ms": {
+      "ci95": [
+        1707.4758304287998,
+        1878.161851464
+      ],
+      "mean": 1794.488540756,
+      "run_count": 5
+    },
+    "peak_sampled_rss_bytes": {
+      "ci95": [
+        119388569.6,
+        119975936.0
+      ],
+      "mean": 119715430.4,
+      "run_count": 5
+    },
+    "profile": "b0",
+    "ratio": 90,
+    "repetitions": 5,
+    "run_ids": [
+      "005-primary-b0-p90-r1",
+      "011-primary-b0-p90-r2",
+      "017-primary-b0-p90-r3",
+      "023-primary-b0-p90-r4",
+      "029-primary-b0-p90-r5"
+    ],
+    "sampled_rss_delta_bytes": {
+      "ci95": [
+        -939622.4,
+        513638.4
+      ],
+      "mean": -212992,
+      "run_count": 5
+    },
+    "series": "primary",
+    "valid_admission_p99_us": {
+      "ci95": [
+        2251.888247999996,
+        2940.3967119999966
+      ],
+      "mean": 2606.637881999997,
+      "run_count": 5
+    },
+    "valid_count_per_run": [
+      300,
+      300,
+      300,
+      300,
+      300
+    ]
+  },
+  {
+    "cpu_percent": {
+      "ci95": [
+        2.788068609869165,
+        2.8557904407876835
+      ],
+      "mean": 2.8219295253284242,
+      "run_count": 5
+    },
+    "cpu_percent_delta": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean": 0.0,
+      "run_count": 5
+    },
+    "goodput_degradation_fraction": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean": 0.0,
+      "run_count": 5
+    },
+    "goodput_tps": {
+      "ci95": [
+        1.494083927602136,
+        1.4994651891528268
+      ],
+      "mean": 1.4967736021767428,
+      "run_count": 5
+    },
+    "inclusion_p99_amplification": {
+      "ci95": [
+        1.0,
+        1.0
+      ],
+      "mean": 1.0,
+      "run_count": 5
+    },
+    "inclusion_p99_ms": {
+      "ci95": [
+        1798.6570880799998,
+        1875.3166753839998
+      ],
+      "mean": 1838.5435265719998,
+      "run_count": 5
+    },
+    "peak_sampled_rss_bytes": {
+      "ci95": [
+        127057920.0,
+        127908249.6
+      ],
+      "mean": 127483084.8,
+      "run_count": 5
+    },
+    "profile": "b1",
+    "ratio": 0,
+    "repetitions": 5,
+    "run_ids": [
+      "040-primary-b1-p0-r1",
+      "046-primary-b1-p0-r2",
+      "052-primary-b1-p0-r3",
+      "058-primary-b1-p0-r4",
+      "064-primary-b1-p0-r5"
+    ],
+    "sampled_rss_delta_bytes": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean": 0,
+      "run_count": 5
+    },
+    "series": "primary",
+    "valid_admission_p99_us": {
+      "ci95": [
+        2932.1749279999904,
+        3861.9650619999925
+      ],
+      "mean": 3351.0705339999904,
+      "run_count": 5
+    },
+    "valid_count_per_run": [
+      300,
+      300,
+      300,
+      300,
+      300
+    ]
+  },
+  {
+    "cpu_percent": {
+      "ci95": [
+        2.7162672905068264,
+        2.9086676648401246
+      ],
+      "mean": 2.7943677964161195,
+      "run_count": 5
+    },
+    "cpu_percent_delta": {
+      "ci95": [
+        -0.10156537301682364,
+        0.0752985652246414
+      ],
+      "mean": -0.027561728912304417,
+      "run_count": 5
+    },
+    "goodput_degradation_fraction": {
+      "ci95": [
+        -0.00299859124094799,
+        0.0023913689490870247
+      ],
+      "mean": -0.0004509651572548679,
+      "run_count": 5
+    },
+    "goodput_tps": {
+      "ci95": [
+        1.4951993364285152,
+        1.4996834527301492
+      ],
+      "mean": 1.4974413120614194,
+      "run_count": 5
+    },
+    "inclusion_p99_amplification": {
+      "ci95": [
+        0.9717942641089353,
+        1.0165916751851434
+      ],
+      "mean": 0.9949534990028133,
+      "run_count": 5
+    },
+    "inclusion_p99_ms": {
+      "ci95": [
+        1776.548752447999,
+        1872.2251505719996
+      ],
+      "mean": 1829.0843012619996,
+      "run_count": 5
+    },
+    "peak_sampled_rss_bytes": {
+      "ci95": [
+        126823628.8,
+        128167936.0
+      ],
+      "mean": 127460147.2,
+      "run_count": 5
+    },
+    "profile": "b1",
+    "ratio": 25,
+    "repetitions": 5,
+    "run_ids": [
+      "041-primary-b1-p25-r1",
+      "047-primary-b1-p25-r2",
+      "053-primary-b1-p25-r3",
+      "059-primary-b1-p25-r4",
+      "065-primary-b1-p25-r5"
+    ],
+    "sampled_rss_delta_bytes": {
+      "ci95": [
+        -671744.0,
+        946176.0
+      ],
+      "mean": -22937.6,
+      "run_count": 5
+    },
+    "series": "primary",
+    "valid_admission_p99_us": {
+      "ci95": [
+        2461.4406919999956,
+        5599.830843999994
+      ],
+      "mean": 3680.710735999995,
+      "run_count": 5
+    },
+    "valid_count_per_run": [
+      300,
+      300,
+      300,
+      300,
+      300
+    ]
+  },
+  {
+    "cpu_percent": {
+      "ci95": [
+        2.812937979789686,
+        2.8904593916555
+      ],
+      "mean": 2.860526830201956,
+      "run_count": 5
+    },
+    "cpu_percent_delta": {
+      "ci95": [
+        -0.01373088309400754,
+        0.09491411800818765
+      ],
+      "mean": 0.03859730487353223,
+      "run_count": 5
+    },
+    "goodput_degradation_fraction": {
+      "ci95": [
+        -0.000896534620015288,
+        0.002242139417368927
+      ],
+      "mean": 0.0004492652260171592,
+      "run_count": 5
+    },
+    "goodput_tps": {
+      "ci95": [
+        1.4940817413618868,
+        1.4985568602476114
+      ],
+      "mean": 1.4960975292616643,
+      "run_count": 5
+    },
+    "inclusion_p99_amplification": {
+      "ci95": [
+        0.9703786699348984,
+        1.0352549521017869
+      ],
+      "mean": 1.0013533790240923,
+      "run_count": 5
+    },
+    "inclusion_p99_ms": {
+      "ci95": [
+        1767.7968597319998,
+        1914.358522698
+      ],
+      "mean": 1841.333994444,
+      "run_count": 5
+    },
+    "peak_sampled_rss_bytes": {
+      "ci95": [
+        126897356.8,
+        128640614.4
+      ],
+      "mean": 127802572.8,
+      "run_count": 5
+    },
+    "profile": "b1",
+    "ratio": 50,
+    "repetitions": 5,
+    "run_ids": [
+      "042-primary-b1-p50-r1",
+      "048-primary-b1-p50-r2",
+      "054-primary-b1-p50-r3",
+      "060-primary-b1-p50-r4",
+      "066-primary-b1-p50-r5"
+    ],
+    "sampled_rss_delta_bytes": {
+      "ci95": [
+        -936345.6,
+        1467187.2
+      ],
+      "mean": 319488,
+      "run_count": 5
+    },
+    "series": "primary",
+    "valid_admission_p99_us": {
+      "ci95": [
+        2965.5267939999944,
+        4345.510973999997
+      ],
+      "mean": 3655.518883999996,
+      "run_count": 5
+    },
+    "valid_count_per_run": [
+      300,
+      300,
+      300,
+      300,
+      300
+    ]
+  },
+  {
+    "cpu_percent": {
+      "ci95": [
+        2.9409718744730844,
+        3.0057567543026233
+      ],
+      "mean": 2.972244843797099,
+      "run_count": 5
+    },
+    "cpu_percent_delta": {
+      "ci95": [
+        0.0964874627051298,
+        0.20469380061550896
+      ],
+      "mean": 0.15031531846867496,
+      "run_count": 5
+    },
+    "goodput_degradation_fraction": {
+      "ci95": [
+        -0.0028497206651528994,
+        0.0006015516612992711
+      ],
+      "mean": -0.0008984632910303825,
+      "run_count": 5
+    },
+    "goodput_tps": {
+      "ci95": [
+        1.4960953223982518,
+        1.500132799211369
+      ],
+      "mean": 1.4981140608048105,
+      "run_count": 5
+    },
+    "inclusion_p99_amplification": {
+      "ci95": [
+        0.8692762093484042,
+        1.0282411691284696
+      ],
+      "mean": 0.9506217167961392,
+      "run_count": 5
+    },
+    "inclusion_p99_ms": {
+      "ci95": [
+        1601.59003011125,
+        1855.103835764
+      ],
+      "mean": 1744.919848608,
+      "run_count": 5
+    },
+    "peak_sampled_rss_bytes": {
+      "ci95": [
+        126835097.6,
+        128078643.2
+      ],
+      "mean": 127460147.2,
+      "run_count": 5
+    },
+    "profile": "b1",
+    "ratio": 75,
+    "repetitions": 5,
+    "run_ids": [
+      "043-primary-b1-p75-r1",
+      "049-primary-b1-p75-r2",
+      "055-primary-b1-p75-r3",
+      "061-primary-b1-p75-r4",
+      "067-primary-b1-p75-r5"
+    ],
+    "sampled_rss_delta_bytes": {
+      "ci95": [
+        -852787.2,
+        814284.8
+      ],
+      "mean": -22937.6,
+      "run_count": 5
+    },
+    "series": "primary",
+    "valid_admission_p99_us": {
+      "ci95": [
+        3342.245681999996,
+        4788.695669999994
+      ],
+      "mean": 4057.249529999994,
+      "run_count": 5
+    },
+    "valid_count_per_run": [
+      300,
+      300,
+      300,
+      300,
+      300
+    ]
+  },
+  {
+    "cpu_percent": {
+      "ci95": [
+        3.2900037024844857,
+        3.3712035730441743
+      ],
+      "mean": 3.3323494620258627,
+      "run_count": 5
+    },
+    "cpu_percent_delta": {
+      "ci95": [
+        0.4565681254042901,
+        0.5698078470539215
+      ],
+      "mean": 0.5104199366974386,
+      "run_count": 5
+    },
+    "goodput_degradation_fraction": {
+      "ci95": [
+        0.00014767859934141647,
+        0.002542317091385149
+      ],
+      "mean": 0.0013449978453632828,
+      "run_count": 5
+    },
+    "goodput_tps": {
+      "ci95": [
+        1.4931936191001618,
+        1.49654466570358
+      ],
+      "mean": 1.494756619720043,
+      "run_count": 5
+    },
+    "inclusion_p99_amplification": {
+      "ci95": [
+        0.962974754529188,
+        1.0095373073569092
+      ],
+      "mean": 0.9860510702470511,
+      "run_count": 5
+    },
+    "inclusion_p99_ms": {
+      "ci95": [
+        1788.721993038,
+        1835.2528043259997
+      ],
+      "mean": 1811.9062126719998,
+      "run_count": 5
+    },
+    "peak_sampled_rss_bytes": {
+      "ci95": [
+        127261081.6,
+        127838617.6
+      ],
+      "mean": 127560089.6,
+      "run_count": 5
+    },
+    "profile": "b1",
+    "ratio": 90,
+    "repetitions": 5,
+    "run_ids": [
+      "044-primary-b1-p90-r1",
+      "050-primary-b1-p90-r2",
+      "056-primary-b1-p90-r3",
+      "062-primary-b1-p90-r4",
+      "068-primary-b1-p90-r5"
+    ],
+    "sampled_rss_delta_bytes": {
+      "ci95": [
+        -357990.4,
+        428441.6
+      ],
+      "mean": 77004.8,
+      "run_count": 5
+    },
+    "series": "primary",
+    "valid_admission_p99_us": {
+      "ci95": [
+        2399.1412119999986,
+        3326.4984839999993
+      ],
+      "mean": 2903.9252559999986,
+      "run_count": 5
+    },
+    "valid_count_per_run": [
+      300,
+      300,
+      300,
+      300,
+      300
+    ]
+  },
+  {
+    "cpu_percent": {
+      "ci95": [
+        1.7229539678423667,
+        1.7662166815578906
+      ],
+      "mean": 1.7512782070792032,
+      "run_count": 3
+    },
+    "cpu_percent_delta": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean": 0.0,
+      "run_count": 3
+    },
+    "goodput_degradation_fraction": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean": 0.0,
+      "run_count": 3
+    },
+    "goodput_tps": {
+      "ci95": [
+        3.9214754929718945,
+        3.98394740201028
+      ],
+      "mean": 3.960490171026648,
+      "run_count": 3
+    },
+    "inclusion_p99_amplification": {
+      "ci95": [
+        1.0,
+        1.0
+      ],
+      "mean": 1.0,
+      "run_count": 3
+    },
+    "inclusion_p99_ms": {
+      "ci95": [
+        1850.46417364,
+        1851.56745803
+      ],
+      "mean": 1851.1610996499999,
+      "run_count": 3
+    },
+    "peak_sampled_rss_bytes": {
+      "ci95": [
+        119250944.0,
+        120803328.0
+      ],
+      "mean": 119865344,
+      "run_count": 3
+    },
+    "profile": "b0",
+    "ratio": 0,
+    "repetitions": 3,
+    "run_ids": [
+      "031-secondary-b0-p0-r1",
+      "034-secondary-b0-p0-r2",
+      "037-secondary-b0-p0-r3"
+    ],
+    "sampled_rss_delta_bytes": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean": 0,
+      "run_count": 3
+    },
+    "series": "secondary",
+    "valid_admission_p99_us": {
+      "ci95": [
+        1761.1610799999983,
+        2941.773589999997
+      ],
+      "mean": 2423.9743899999985,
+      "run_count": 3
+    },
+    "valid_count_per_run": [
+      300,
+      300,
+      300
+    ]
+  },
+  {
+    "cpu_percent": {
+      "ci95": [
+        1.8205178937172246,
+        1.974779259631606
+      ],
+      "mean": 1.9056828758537725,
+      "run_count": 3
+    },
+    "cpu_percent_delta": {
+      "ci95": [
+        0.054301212159334034,
+        0.2518252917892394
+      ],
+      "mean": 0.15440466877456918,
+      "run_count": 3
+    },
+    "goodput_degradation_fraction": {
+      "ci95": [
+        -0.013913650609142625,
+        0.01374819652528092
+      ],
+      "mean": -5.6660843676170636e-05,
+      "run_count": 3
+    },
+    "goodput_tps": {
+      "ci95": [
+        3.9291753101810603,
+        3.9760656234193408
+      ],
+      "mean": 3.9604261554846074,
+      "run_count": 3
+    },
+    "inclusion_p99_amplification": {
+      "ci95": [
+        1.000291450645052,
+        1.028683591620849
+      ],
+      "mean": 1.0188102350480972,
+      "run_count": 3
+    },
+    "inclusion_p99_ms": {
+      "ci95": [
+        1852.1070985600002,
+        1904.5579508099995
+      ],
+      "mean": 1885.9783145099998,
+      "run_count": 3
+    },
+    "peak_sampled_rss_bytes": {
+      "ci95": [
+        119697408.0,
+        121147392.0
+      ],
+      "mean": 120384170.66666667,
+      "run_count": 3
+    },
+    "profile": "b0",
+    "ratio": 50,
+    "repetitions": 3,
+    "run_ids": [
+      "032-secondary-b0-p50-r1",
+      "035-secondary-b0-p50-r2",
+      "038-secondary-b0-p50-r3"
+    ],
+    "sampled_rss_delta_bytes": {
+      "ci95": [
+        -1105920.0,
+        1896448.0
+      ],
+      "mean": 518826.6666666667,
+      "run_count": 3
+    },
+    "series": "secondary",
+    "valid_admission_p99_us": {
+      "ci95": [
+        1916.0694299999993,
+        2908.0927299999994
+      ],
+      "mean": 2440.930283333333,
+      "run_count": 3
+    },
+    "valid_count_per_run": [
+      300,
+      300,
+      300
+    ]
+  },
+  {
+    "cpu_percent": {
+      "ci95": [
+        2.121683936622688,
+        2.2882809285993595
+      ],
+      "mean": 2.1772460581901005,
+      "run_count": 3
+    },
+    "cpu_percent_delta": {
+      "ci95": [
+        0.35546725506479726,
+        0.523616956762007
+      ],
+      "mean": 0.42596785111089713,
+      "run_count": 3
+    },
+    "goodput_degradation_fraction": {
+      "ci95": [
+        -0.011893922156601455,
+        0.013781074243983338
+      ],
+      "mean": 0.004555712754046796,
+      "run_count": 3
+    },
+    "goodput_tps": {
+      "ci95": [
+        3.9290443270790516,
+        3.968117217224323
+      ],
+      "mean": 3.942123792143257,
+      "run_count": 3
+    },
+    "inclusion_p99_amplification": {
+      "ci95": [
+        0.9996475982675274,
+        1.081521357326936
+      ],
+      "mean": 1.0272171338340215,
+      "run_count": 3
+    },
+    "inclusion_p99_ms": {
+      "ci95": [
+        1850.91496245,
+        2001.3165247599995
+      ],
+      "mean": 1901.525459923333,
+      "run_count": 3
+    },
+    "peak_sampled_rss_bytes": {
+      "ci95": [
+        120020992.0,
+        121012224.0
+      ],
+      "mean": 120374613.33333333,
+      "run_count": 3
+    },
+    "profile": "b0",
+    "ratio": 75,
+    "repetitions": 3,
+    "run_ids": [
+      "033-secondary-b0-p75-r1",
+      "036-secondary-b0-p75-r2",
+      "039-secondary-b0-p75-r3"
+    ],
+    "sampled_rss_delta_bytes": {
+      "ci95": [
+        -782336.0,
+        1761280.0
+      ],
+      "mean": 509269.3333333333,
+      "run_count": 3
+    },
+    "series": "secondary",
+    "valid_admission_p99_us": {
+      "ci95": [
+        1964.2408899999966,
+        4341.69007
+      ],
+      "mean": 3083.816149999996,
+      "run_count": 3
+    },
+    "valid_count_per_run": [
+      300,
+      300,
+      300
+    ]
+  },
+  {
+    "cpu_percent": {
+      "ci95": [
+        4.312029356073535,
+        4.647928531019111
+      ],
+      "mean": 4.444810326295474,
+      "run_count": 3
+    },
+    "cpu_percent_delta": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean": 0.0,
+      "run_count": 3
+    },
+    "goodput_degradation_fraction": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean": 0.0,
+      "run_count": 3
+    },
+    "goodput_tps": {
+      "ci95": [
+        3.9291674477189598,
+        3.9839387408735236
+      ],
+      "mean": 3.9604104542977607,
+      "run_count": 3
+    },
+    "inclusion_p99_amplification": {
+      "ci95": [
+        1.0,
+        1.0
+      ],
+      "mean": 1.0,
+      "run_count": 3
+    },
+    "inclusion_p99_ms": {
+      "ci95": [
+        1851.50886406,
+        1901.0247850300002
+      ],
+      "mean": 1868.14166194,
+      "run_count": 3
+    },
+    "peak_sampled_rss_bytes": {
+      "ci95": [
+        125296640.0,
+        126910464.0
+      ],
+      "mean": 125838677.33333333,
+      "run_count": 3
+    },
+    "profile": "b1",
+    "ratio": 0,
+    "repetitions": 3,
+    "run_ids": [
+      "070-secondary-b1-p0-r1",
+      "073-secondary-b1-p0-r2",
+      "076-secondary-b1-p0-r3"
+    ],
+    "sampled_rss_delta_bytes": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean": 0,
+      "run_count": 3
+    },
+    "series": "secondary",
+    "valid_admission_p99_us": {
+      "ci95": [
+        3178.3031399999954,
+        3936.725909999996
+      ],
+      "mean": 3548.3029266666617,
+      "run_count": 3
+    },
+    "valid_count_per_run": [
+      300,
+      300,
+      300
+    ]
+  },
+  {
+    "cpu_percent": {
+      "ci95": [
+        4.457508671334548,
+        4.705789764220805
+      ],
+      "mean": 4.617860939353978,
+      "run_count": 3
+    },
+    "cpu_percent_delta": {
+      "ci95": [
+        0.05786123320169434,
+        0.3782550264330471
+      ],
+      "mean": 0.17305061305850464,
+      "run_count": 3
+    },
+    "goodput_degradation_fraction": {
+      "ci95": [
+        -0.003952616354940375,
+        0.01567475675487584
+      ],
+      "mean": 0.005221042918879482,
+      "run_count": 3
+    },
+    "goodput_tps": {
+      "ci95": [
+        3.9214914701840047,
+        3.95248683919094
+      ],
+      "mean": 3.9395587495363524,
+      "run_count": 3
+    },
+    "inclusion_p99_amplification": {
+      "ci95": [
+        0.9999898714737588,
+        1.026900475855286
+      ],
+      "mean": 1.009053192943243,
+      "run_count": 3
+    },
+    "inclusion_p99_ms": {
+      "ci95": [
+        1851.8725798,
+        1952.1632563599999
+      ],
+      "mean": 1885.3477282433332,
+      "run_count": 3
+    },
+    "peak_sampled_rss_bytes": {
+      "ci95": [
+        125939712.0,
+        128167936.0
+      ],
+      "mean": 127156224,
+      "run_count": 3
+    },
+    "profile": "b1",
+    "ratio": 50,
+    "repetitions": 3,
+    "run_ids": [
+      "071-secondary-b1-p50-r1",
+      "074-secondary-b1-p50-r2",
+      "077-secondary-b1-p50-r3"
+    ],
+    "sampled_rss_delta_bytes": {
+      "ci95": [
+        -970752.0,
+        2859008.0
+      ],
+      "mean": 1317546.6666666667,
+      "run_count": 3
+    },
+    "series": "secondary",
+    "valid_admission_p99_us": {
+      "ci95": [
+        2366.2877299999973,
+        3302.0932599999987
+      ],
+      "mean": 2942.369809999998,
+      "run_count": 3
+    },
+    "valid_count_per_run": [
+      300,
+      300,
+      300
+    ]
+  },
+  {
+    "cpu_percent": {
+      "ci95": [
+        4.827885927017339,
+        4.999824964461036
+      ],
+      "mean": 4.927288849229702,
+      "run_count": 3
+    },
+    "cpu_percent_delta": {
+      "ci95": [
+        0.1799573959982279,
+        0.6421263001371944
+      ],
+      "mean": 0.4824785229342276,
+      "run_count": 3
+    },
+    "goodput_degradation_fraction": {
+      "ci95": [
+        -0.009912431566947655,
+        0.011751124238628119
+      ],
+      "mean": 0.0019359869616044634,
+      "run_count": 3
+    },
+    "goodput_tps": {
+      "ci95": [
+        3.9214952423831626,
+        3.9681254194663054
+      ],
+      "mean": 3.952578571003007,
+      "run_count": 3
+    },
+    "inclusion_p99_amplification": {
+      "ci95": [
+        0.975136836798656,
+        1.0273599415770114
+      ],
+      "mean": 1.0008876836626102,
+      "run_count": 3
+    },
+    "inclusion_p99_ms": {
+      "ci95": [
+        1852.1992555399995,
+        1902.16603841
+      ],
+      "mean": 1869.3748631666663,
+      "run_count": 3
+    },
+    "peak_sampled_rss_bytes": {
+      "ci95": [
+        126365696.0,
+        128249856.0
+      ],
+      "mean": 127197184,
+      "run_count": 3
+    },
+    "profile": "b1",
+    "ratio": 75,
+    "repetitions": 3,
+    "run_ids": [
+      "072-secondary-b1-p75-r1",
+      "075-secondary-b1-p75-r2",
+      "078-secondary-b1-p75-r3"
+    ],
+    "sampled_rss_delta_bytes": {
+      "ci95": [
+        65536.0,
+        2940928.0
+      ],
+      "mean": 1358506.6666666667,
+      "run_count": 3
+    },
+    "series": "secondary",
+    "valid_admission_p99_us": {
+      "ci95": [
+        2980.7985999999983,
+        4184.906159999999
+      ],
+      "mean": 3649.1752599999986,
+      "run_count": 3
+    },
+    "valid_count_per_run": [
+      300,
+      300,
+      300
+    ]
+  }
+]

@@ -1,0 +1,975 @@
+UTC: 2026-10-24T12:16:02Z
+branch: phase/03d-b0-abci-integration
+HEAD: b56c81ccce7ea4a0e7f52053c7459c4601c15b38
+accepted D-025 tree: 7295b641254c91c53b3b80a0c2ec5f6c286e8dd1
+staged tree before checks: 5190ddf0b8522825d1c917f89196c1582fe38605
+environment: Linux 6.18.33.2-microsoft-standard-WSL2 x86_64
+GOMAXPROCS: Go default
+GOGC: Go default
+Filesystem     Type 1K-blocks      Used Available Use% Mounted on
+D:\            9p   511998972 297156140 214842832  59% /mnt/d
+210be2016048643b05b521dcf2af4925556d909a0a36b4ac660381eea2853ee0  research/evidence/phase_03d/remaining/source_manifest.sha256
+
+$ go version
+go version go1.24.1 linux/amd64
+exit_code=0
+
+$ python3 --version
+Python 3.10.12
+exit_code=0
+
+$ go list -m pinned modules
+github.com/cometbft/cometbft v0.38.26
+github.com/cockroachdb/pebble v1.1.5
+github.com/decred/dcrd/dcrec/secp256k1/v4 v4.4.1
+exit_code=0
+
+$ go build ./...
+exit_code=0
+
+$ go test -count=1 ./...
+ok  	example.com/pluto/cmd/plutod	0.017s
+ok  	example.com/pluto/internal/app	0.141s
+ok  	example.com/pluto/internal/b0app	4.421s
+ok  	example.com/pluto/internal/b0genesis	0.085s
+ok  	example.com/pluto/internal/b0state	0.108s
+ok  	example.com/pluto/internal/b0store	1.569s
+?   	example.com/pluto/internal/node	[no test files]
+ok  	example.com/pluto/internal/store	0.081s
+ok  	example.com/pluto/internal/tx	0.024s
+?   	example.com/pluto/internal/version	[no test files]
+exit_code=0
+
+$ go vet ./...
+exit_code=0
+
+$ make fmt-check
+exit_code=0
+
+$ go mod verify
+all modules verified
+exit_code=0
+
+$ make verify
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=b56c81c" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test ./...
+ok  	example.com/pluto/cmd/plutod	(cached)
+ok  	example.com/pluto/internal/app	(cached)
+ok  	example.com/pluto/internal/b0app	4.431s
+ok  	example.com/pluto/internal/b0genesis	(cached)
+ok  	example.com/pluto/internal/b0state	(cached)
+ok  	example.com/pluto/internal/b0store	(cached)
+?   	example.com/pluto/internal/node	[no test files]
+ok  	example.com/pluto/internal/store	(cached)
+ok  	example.com/pluto/internal/tx	(cached)
+?   	example.com/pluto/internal/version	[no test files]
+go vet ./...
+go mod verify
+all modules verified
+./build/plutod version
+plutod 0.2.0-foundation
+Go: go1.24.1
+Platform: linux/amd64
+Revision: b56c81c
+exit_code=0
+
+$ make test-integration
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=b56c81c" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test -tags integration ./test/integration -timeout 120s -count=1
+ok  	example.com/pluto/test/integration	52.649s
+exit_code=0
+
+$ go test -race -count=1 ./internal/b0app ./internal/b0state ./internal/b0store ./internal/b0genesis
+ok  	example.com/pluto/internal/b0app	59.441s
+ok  	example.com/pluto/internal/b0state	1.976s
+ok  	example.com/pluto/internal/b0store	3.373s
+ok  	example.com/pluto/internal/b0genesis	2.122s
+exit_code=0
+
+$ go test -cover -count=1 ./internal/b0app ./internal/b0state ./internal/b0store
+ok  	example.com/pluto/internal/b0app	4.504s	coverage: 84.8% of statements
+ok  	example.com/pluto/internal/b0state	0.099s	coverage: 88.0% of statements
+ok  	example.com/pluto/internal/b0store	1.643s	coverage: 80.1% of statements
+exit_code=0
+
+$ go test -count=1 -v ./internal/b0app -run ^TestB0Accepted
+=== RUN   TestB0AcceptedSingleTransactionVectors
+=== RUN   TestB0AcceptedSingleTransactionVectors/V01
+    vector_test.go:140: V01 wire_hex=504c55544f5458310001000b706c75746f2d62302d76310279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798e4affb78013f3a929c0e667d632e6fc9fc09732c0000000000000019000000000000000020df7dde51d50110ef79b403c8a76a7d2a4168f802fc03f518e5a54761fa407a6162ceb966e0ab697f64e5a77cdaf3e3bb8df9d95a9e9a87b4bda9a74f03b67a expected_code=0 txid_eligible=true pluto_txid=9b5275a89d6668e558459a94a22407812fdde6d4abe051c93e87cb1e9b480a9c comet_hash=4e55c31771244d6421ef46dd931c4465ae82e09a51bbc510d66a53d30813b26a committed_apphash_h1=c735447cd853aed15e488a349710e96284640994c9da0158478f19fee293982e
+=== RUN   TestB0AcceptedSingleTransactionVectors/V02
+    vector_test.go:140: V02 wire_hex=504c55544f5458310001000b706c75746f2d62302d76310279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798e4affb78013f3a929c0e667d632e6fc9fc09732c0000000000000019000000000000000000000000000000000000000000000000000000000000000000000000000000006162ceb966e0ab697f64e5a77cdaf3e3bb8df9d95a9e9a87b4bda9a74f03b67a expected_code=4 txid_eligible=false pluto_txid=0000000000000000000000000000000000000000000000000000000000000000 comet_hash=f505a9cf6ee414de21f3aef5f0bc162409d12faabf58994233e62e8d7d5d4313 committed_apphash_h1=d3d33f8ab367c11dbd28ea1cffe47ba5c61988041b623e2725c7bf4305b79681
+=== RUN   TestB0AcceptedSingleTransactionVectors/V03
+    vector_test.go:140: V03 wire_hex=504c55544f5458310001000b706c75746f2d62302d76310279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798e4affb78013f3a929c0e667d632e6fc9fc09732c0000000000000019000000000000000020df7dde51d50110ef79b403c8a76a7d2a4168f802fc03f518e5a54761fa407a9e9d3146991f5496809b1a5883250c1aff20e30d54aa05b40b14b4e581328ac7 expected_code=4 txid_eligible=false pluto_txid=0000000000000000000000000000000000000000000000000000000000000000 comet_hash=82fa566ec2d567f5a40ced82a3639ea31c5b1a4fcbf134164b1a210e4702fa36 committed_apphash_h1=d3d33f8ab367c11dbd28ea1cffe47ba5c61988041b623e2725c7bf4305b79681
+=== RUN   TestB0AcceptedSingleTransactionVectors/V04
+    vector_test.go:140: V04 wire_hex=504c55544f5458310001000b706c75746f2d62302d76310279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798e4affb78013f3a929c0e667d632e6fc9fc09732c000000000000001a000000000000000020df7dde51d50110ef79b403c8a76a7d2a4168f802fc03f518e5a54761fa407a6162ceb966e0ab697f64e5a77cdaf3e3bb8df9d95a9e9a87b4bda9a74f03b67a expected_code=4 txid_eligible=true pluto_txid=451310900c0498b60dd3959edb06a6f4b3502488b46af67937dbe02a6f5e9182 comet_hash=44547a7fe5be4a12bfb08da64dde207a7417ac0d6f81f5bd5292ec353c097a16 committed_apphash_h1=d3d33f8ab367c11dbd28ea1cffe47ba5c61988041b623e2725c7bf4305b79681
+=== RUN   TestB0AcceptedSingleTransactionVectors/V05
+    vector_test.go:140: V05 wire_hex=504c55544f5458310001000d706c75746f2d6f746865722d310279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798e4affb78013f3a929c0e667d632e6fc9fc09732c00000000000000190000000000000000c89081b7db06fca24b5c668c875f77672d92881b80176a8e0f27fcda0055f100468bda2b1e732d82199df4b9a4ff513e79e2d27e4349319b543c590e984ffc8e expected_code=2 txid_eligible=true pluto_txid=5ea781d91b3849cad11ed650c7b35c4fbaca89145b38da6686ebab5503d84a3c comet_hash=715043e43292a2db55bfebbcb5b1fb4288b2423d8b60c329d9951f4003ac4ac9 committed_apphash_h1=d3d33f8ab367c11dbd28ea1cffe47ba5c61988041b623e2725c7bf4305b79681
+=== RUN   TestB0AcceptedSingleTransactionVectors/V06
+    vector_test.go:140: V06 wire_hex=504c55544f5458310001000b706c75746f2d62302d76310479be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798e4affb78013f3a929c0e667d632e6fc9fc09732c0000000000000019000000000000000020df7dde51d50110ef79b403c8a76a7d2a4168f802fc03f518e5a54761fa407a6162ceb966e0ab697f64e5a77cdaf3e3bb8df9d95a9e9a87b4bda9a74f03b67a expected_code=3 txid_eligible=true pluto_txid=eaa17db048cd515c3a37fda47f799e220119eaf76eae55ed429683d6db34daaf comet_hash=39a3f5625be96d3f42cbea704c190a98919d8ddf9a105a3e588677145f6d65af committed_apphash_h1=d3d33f8ab367c11dbd28ea1cffe47ba5c61988041b623e2725c7bf4305b79681
+=== RUN   TestB0AcceptedSingleTransactionVectors/V07-bad-magic
+    vector_test.go:140: V07-bad-magic wire_hex=004c55544f5458310001000b706c75746f2d62302d76310279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798e4affb78013f3a929c0e667d632e6fc9fc09732c0000000000000019000000000000000020df7dde51d50110ef79b403c8a76a7d2a4168f802fc03f518e5a54761fa407a6162ceb966e0ab697f64e5a77cdaf3e3bb8df9d95a9e9a87b4bda9a74f03b67a expected_code=1 txid_eligible=false pluto_txid=0000000000000000000000000000000000000000000000000000000000000000 comet_hash=412cff6cd524ab2d89acbb8fda2078eda89aeb074f777bfc6023e14abde313cc committed_apphash_h1=d3d33f8ab367c11dbd28ea1cffe47ba5c61988041b623e2725c7bf4305b79681
+=== RUN   TestB0AcceptedSingleTransactionVectors/V07-version
+    vector_test.go:140: V07-version wire_hex=504c55544f5458310002000b706c75746f2d62302d76310279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798e4affb78013f3a929c0e667d632e6fc9fc09732c0000000000000019000000000000000020df7dde51d50110ef79b403c8a76a7d2a4168f802fc03f518e5a54761fa407a6162ceb966e0ab697f64e5a77cdaf3e3bb8df9d95a9e9a87b4bda9a74f03b67a expected_code=1 txid_eligible=false pluto_txid=0000000000000000000000000000000000000000000000000000000000000000 comet_hash=4242c267ac789c384dd3fe67752390d5194d70b17c53b5282f6d2259101f1145 committed_apphash_h1=d3d33f8ab367c11dbd28ea1cffe47ba5c61988041b623e2725c7bf4305b79681
+=== RUN   TestB0AcceptedSingleTransactionVectors/V07-short
+    vector_test.go:140: V07-short wire_hex=504c55544f5458310001000b706c75746f2d62302d76310279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798e4affb78013f3a929c0e667d632e6fc9fc09732c0000000000000019000000000000000020df7dde51d50110ef79b403c8a76a7d2a4168f802fc03f518e5a54761fa407a6162ceb966e0ab697f64e5a77cdaf3e3bb8df9d95a9e9a87b4bda9a74f03b6 expected_code=1 txid_eligible=false pluto_txid=0000000000000000000000000000000000000000000000000000000000000000 comet_hash=a8628c67599cf8c81612c641bfc7c5a0ad76e4a1e0655e50ac7a754509fd9744 committed_apphash_h1=d3d33f8ab367c11dbd28ea1cffe47ba5c61988041b623e2725c7bf4305b79681
+=== RUN   TestB0AcceptedSingleTransactionVectors/V07-trailing
+    vector_test.go:140: V07-trailing wire_hex=504c55544f5458310001000b706c75746f2d62302d76310279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798e4affb78013f3a929c0e667d632e6fc9fc09732c0000000000000019000000000000000020df7dde51d50110ef79b403c8a76a7d2a4168f802fc03f518e5a54761fa407a6162ceb966e0ab697f64e5a77cdaf3e3bb8df9d95a9e9a87b4bda9a74f03b67a00 expected_code=1 txid_eligible=false pluto_txid=0000000000000000000000000000000000000000000000000000000000000000 comet_hash=7ca760a1852b52aeb5c87dbeeddbe93643403f9152533c6148ce1ae75eaee105 committed_apphash_h1=d3d33f8ab367c11dbd28ea1cffe47ba5c61988041b623e2725c7bf4305b79681
+=== RUN   TestB0AcceptedSingleTransactionVectors/V07-chain-length-zero
+    vector_test.go:140: V07-chain-length-zero wire_hex=504c55544f54583100010000706c75746f2d62302d76310279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798e4affb78013f3a929c0e667d632e6fc9fc09732c0000000000000019000000000000000020df7dde51d50110ef79b403c8a76a7d2a4168f802fc03f518e5a54761fa407a6162ceb966e0ab697f64e5a77cdaf3e3bb8df9d95a9e9a87b4bda9a74f03b67a expected_code=1 txid_eligible=false pluto_txid=0000000000000000000000000000000000000000000000000000000000000000 comet_hash=4ecfcc204f608f9f6831fc1f40ef02d9764db7dbb4e71423f9dcd05a3562877f committed_apphash_h1=d3d33f8ab367c11dbd28ea1cffe47ba5c61988041b623e2725c7bf4305b79681
+=== RUN   TestB0AcceptedSingleTransactionVectors/V07-chain-length-51
+    vector_test.go:140: V07-chain-length-51 wire_hex=504c55544f54583100010033706c75746f2d62302d76310279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798e4affb78013f3a929c0e667d632e6fc9fc09732c0000000000000019000000000000000020df7dde51d50110ef79b403c8a76a7d2a4168f802fc03f518e5a54761fa407a6162ceb966e0ab697f64e5a77cdaf3e3bb8df9d95a9e9a87b4bda9a74f03b67a expected_code=1 txid_eligible=false pluto_txid=0000000000000000000000000000000000000000000000000000000000000000 comet_hash=346080b5e0bdc5b1a58eeaa1c7e78df4ff8f75dfb73b3917bca152e2b329eb3d committed_apphash_h1=d3d33f8ab367c11dbd28ea1cffe47ba5c61988041b623e2725c7bf4305b79681
+=== RUN   TestB0AcceptedSingleTransactionVectors/V07-chain-byte
+    vector_test.go:140: V07-chain-byte wire_hex=504c55544f5458310001000bff6c75746f2d62302d76310279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798e4affb78013f3a929c0e667d632e6fc9fc09732c0000000000000019000000000000000020df7dde51d50110ef79b403c8a76a7d2a4168f802fc03f518e5a54761fa407a6162ceb966e0ab697f64e5a77cdaf3e3bb8df9d95a9e9a87b4bda9a74f03b67a expected_code=1 txid_eligible=false pluto_txid=0000000000000000000000000000000000000000000000000000000000000000 comet_hash=f09ed3899029ffdad2f8e04125b5b91c83d7937a9bcc879c5b8ffba2a5193406 committed_apphash_h1=d3d33f8ab367c11dbd28ea1cffe47ba5c61988041b623e2725c7bf4305b79681
+=== RUN   TestB0AcceptedSingleTransactionVectors/V07-65-byte-key
+    vector_test.go:140: V07-65-byte-key wire_hex=504c55544f5458310001000b706c75746f2d62302d76310279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f817980000000000000000000000000000000000000000000000000000000000000000e4affb78013f3a929c0e667d632e6fc9fc09732c0000000000000019000000000000000020df7dde51d50110ef79b403c8a76a7d2a4168f802fc03f518e5a54761fa407a6162ceb966e0ab697f64e5a77cdaf3e3bb8df9d95a9e9a87b4bda9a74f03b67a expected_code=1 txid_eligible=false pluto_txid=0000000000000000000000000000000000000000000000000000000000000000 comet_hash=75bfa9a3870d87dc85d899efb50760b3b055575bba01a836c89b4003d66a6d3b committed_apphash_h1=d3d33f8ab367c11dbd28ea1cffe47ba5c61988041b623e2725c7bf4305b79681
+=== RUN   TestB0AcceptedSingleTransactionVectors/V08
+    vector_test.go:140: V08 wire_hex=504c55544f5458310001000b706c75746f2d62302d76310279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798e4affb78013f3a929c0e667d632e6fc9fc09732c00000000000000190000000000000001390a35a4fb3813add1b45c78e6c8a25bad9963ffbee006ec4ef7da8b57b245837034a0488b3da5dc3d8b0af75f1716d43b828f74b91341699c093b7eb976b24b expected_code=6 txid_eligible=true pluto_txid=e589c9a81073a55cdbe66f447a2ef9a96b5eb67633724465c9d33d15934e191c comet_hash=22c5f8050f3035e574dc1e6133fa6db54bcc8d48c5af37eb56a1ea5dfc16f75b committed_apphash_h1=d3d33f8ab367c11dbd28ea1cffe47ba5c61988041b623e2725c7bf4305b79681
+=== RUN   TestB0AcceptedSingleTransactionVectors/V10
+    vector_test.go:140: V10 wire_hex=504c55544f5458310001000b706c75746f2d62302d76310279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798e4affb78013f3a929c0e667d632e6fc9fc09732c000000000000006500000000000000001b87c16a20270dac416d5b6a44ecf0777b77b7cfca2aa21f010e93cffab3af6218417215d7ed96c8ef8ca742b18b9e9091c86838b039bdd36ccd3d621d4b5db3 expected_code=7 txid_eligible=true pluto_txid=f59d1fd7e20f014c49ef6a0c5340d1acfdfd95b1b9b606b24a23f97bfdd60926 comet_hash=7d4ddd87c42ac9cd140f2972965534d88228df1a7773885c22a2c3e9b538319c committed_apphash_h1=d3d33f8ab367c11dbd28ea1cffe47ba5c61988041b623e2725c7bf4305b79681
+=== RUN   TestB0AcceptedSingleTransactionVectors/V11
+    vector_test.go:140: V11 wire_hex=504c55544f5458310001000b706c75746f2d62302d76310279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798e4affb78013f3a929c0e667d632e6fc9fc09732c0000000000000000000000000000000068b50d51b8ad0c93ebce3da380114507e785d67b26f61e5cc3b1d3a7f10c1b1072c45e80bf983453ae328b3bf11a26c52eeb9f5cfd8b7d932e3533f931293207 expected_code=5 txid_eligible=true pluto_txid=05b026cd9a869510e26c0e70173233972a4c13e63c015890206ebba62b515aad comet_hash=4492307a0c4a98cba003d233fe6c6fa3b1eef5c41c941f5e65f4a5218e8c45f5 committed_apphash_h1=d3d33f8ab367c11dbd28ea1cffe47ba5c61988041b623e2725c7bf4305b79681
+=== RUN   TestB0AcceptedSingleTransactionVectors/V12
+    vector_test.go:140: V12 wire_hex=504c55544f5458310001000b706c75746f2d62302d76310279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798e4affb78013f3a929c0e667d632e6fc9fc09732c0000000000000064000000000000000036b2c282fd58432c702efd116cc1080e3c19cb0bc28d817b3018ecb6b461981953f4d5206167f4e54949ad09ae3ba36f8194f263d77b72a2db58a76f7dfb0a0b expected_code=0 txid_eligible=true pluto_txid=55ff110244f6ea35ff391fa872da7834c00f6d92e50dfb7896a97585c0a39144 comet_hash=6c05a7acea41416aeb823cb408817db06d3f9685f689d686d8cfc7f5676101de committed_apphash_h1=349f2c1f1289b8252cbb9219ed01eaf0af58ff80cbdb309a1a5abd620911763d
+=== RUN   TestB0AcceptedSingleTransactionVectors/V16-binding
+    vector_test.go:140: V16-binding wire_hex=504c55544f5458310001000b706c75746f2d62302d763102c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5e4affb78013f3a929c0e667d632e6fc9fc09732c0000000000000019000000000000000020df7dde51d50110ef79b403c8a76a7d2a4168f802fc03f518e5a54761fa407a6162ceb966e0ab697f64e5a77cdaf3e3bb8df9d95a9e9a87b4bda9a74f03b67a expected_code=4 txid_eligible=true pluto_txid=3ace31c88eb055ef7e3570103b6fb42f151989ca00f4a3eecf4b25a490b4d4a7 comet_hash=c8129cb5746ae44362dc774535fa543cff7750fca4b37e738c2d45c584364c61 committed_apphash_h1=d3d33f8ab367c11dbd28ea1cffe47ba5c61988041b623e2725c7bf4305b79681
+=== RUN   TestB0AcceptedSingleTransactionVectors/V16-unfunded-B
+    vector_test.go:140: V16-unfunded-B wire_hex=504c55544f5458310001000b706c75746f2d62302d763102c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5e4affb78013f3a929c0e667d632e6fc9fc09732c00000000000000010000000000000000688a0ebeaefb9a7e89971548c84a665c5cb921007470790e975783d201d9f9c43fd3ef549977124c57ae6ef5983691b79728818b2fc82b81d217e9f5d94e33e9 expected_code=7 txid_eligible=true pluto_txid=d32908eae07e6d72e1a3fcf7efd7aceaacf83a3689b4621986aa5fb909b47b6a comet_hash=9b3e13a07835c622c6d86f17b4ef53cf241429f41b002ca67e35dde7ccf59f8b committed_apphash_h1=d3d33f8ab367c11dbd28ea1cffe47ba5c61988041b623e2725c7bf4305b79681
+=== RUN   TestB0AcceptedSingleTransactionVectors/V24
+    vector_test.go:140: V24 wire_hex=504c55544f5458310001000b706c75746f2d62302d76310279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798e4affb78013f3a929c0e667d632e6fc9fc09732c0000000000000000000000000000000020df7dde51d50110ef79b403c8a76a7d2a4168f802fc03f518e5a54761fa407b6162ceb966e0ab697f64e5a77cdaf3e3bb8df9d95a9e9a87b4bda9a74f03b67a expected_code=5 txid_eligible=true pluto_txid=d32af0ca39060e64eae146339e43dc672f80aaa9c1a0a5d058b94d1fb5419fbb comet_hash=862d72e3b4fcaa6f0bbe57ee857bf85daafb35e5015632046bfbf4ef60705364 committed_apphash_h1=d3d33f8ab367c11dbd28ea1cffe47ba5c61988041b623e2725c7bf4305b79681
+--- PASS: TestB0AcceptedSingleTransactionVectors (0.57s)
+    --- PASS: TestB0AcceptedSingleTransactionVectors/V01 (0.05s)
+    --- PASS: TestB0AcceptedSingleTransactionVectors/V02 (0.02s)
+    --- PASS: TestB0AcceptedSingleTransactionVectors/V03 (0.02s)
+    --- PASS: TestB0AcceptedSingleTransactionVectors/V04 (0.02s)
+    --- PASS: TestB0AcceptedSingleTransactionVectors/V05 (0.03s)
+    --- PASS: TestB0AcceptedSingleTransactionVectors/V06 (0.03s)
+    --- PASS: TestB0AcceptedSingleTransactionVectors/V07-bad-magic (0.03s)
+    --- PASS: TestB0AcceptedSingleTransactionVectors/V07-version (0.03s)
+    --- PASS: TestB0AcceptedSingleTransactionVectors/V07-short (0.03s)
+    --- PASS: TestB0AcceptedSingleTransactionVectors/V07-trailing (0.02s)
+    --- PASS: TestB0AcceptedSingleTransactionVectors/V07-chain-length-zero (0.03s)
+    --- PASS: TestB0AcceptedSingleTransactionVectors/V07-chain-length-51 (0.03s)
+    --- PASS: TestB0AcceptedSingleTransactionVectors/V07-chain-byte (0.03s)
+    --- PASS: TestB0AcceptedSingleTransactionVectors/V07-65-byte-key (0.02s)
+    --- PASS: TestB0AcceptedSingleTransactionVectors/V08 (0.02s)
+    --- PASS: TestB0AcceptedSingleTransactionVectors/V10 (0.02s)
+    --- PASS: TestB0AcceptedSingleTransactionVectors/V11 (0.03s)
+    --- PASS: TestB0AcceptedSingleTransactionVectors/V12 (0.02s)
+    --- PASS: TestB0AcceptedSingleTransactionVectors/V16-binding (0.03s)
+    --- PASS: TestB0AcceptedSingleTransactionVectors/V16-unfunded-B (0.03s)
+    --- PASS: TestB0AcceptedSingleTransactionVectors/V24 (0.03s)
+=== RUN   TestB0AcceptedSyntheticBoundaryVectors
+=== RUN   TestB0AcceptedSyntheticBoundaryVectors/V17
+2026/10/24 19:18:33 [JOB 1] WAL file /tmp/TestB0AcceptedSyntheticBoundaryVectorsV172963887272/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/24 19:18:33 [JOB 1] WAL file /tmp/TestB0AcceptedSyntheticBoundaryVectorsV172963887272/001/b0/000005.log with log number 000005 stopped reading at offset: 163; replayed 1 keys in 1 batches
+    vector_test.go:238: V17 synthetic_integrity_valid_h1=8275e978b9ea8bb842aecc7fbc0885f2f7b4364b82737d457d2e475261bff691 wire_hex=504c55544f5458310001000b706c75746f2d62302d76310279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798e4affb78013f3a929c0e667d632e6fc9fc09732c0000000000000001fffffffffffffffff80ed5bf6d7476d7502486aaa44fab9ca0991762441ad3990b398609b523d7e85aae1d04305d2ae222e6d877e566cb9faab07df1bff544cbcadfb6daaa76507d code=6 pending_apphash_h2=77857a5f0a7f16555f78f8e55022bc4593d996794dad820c3eb41831bf39fcc5
+=== RUN   TestB0AcceptedSyntheticBoundaryVectors/V19
+2026/10/24 19:18:33 [JOB 1] WAL file /tmp/TestB0AcceptedSyntheticBoundaryVectorsV193438059472/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/24 19:18:33 [JOB 1] WAL file /tmp/TestB0AcceptedSyntheticBoundaryVectorsV193438059472/001/b0/000008.log with log number 000008 stopped reading at offset: 0; replayed 0 keys in 0 batches
+    vector_test.go:238: V19 synthetic_integrity_valid_h1=e035f67d2aad68b3fd026b4d7715abd05ad0bf622e3cf77600c35b5f0008190a wire_hex=504c55544f5458310001000b706c75746f2d62302d76310279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798e4affb78013f3a929c0e667d632e6fc9fc09732c00000000000000010000000000000000eac8624d7995d5f0a3d7bb6c1a5b2cd18f5503d050007dcf9acf198f74b8655066599fddfad642d73116820a131eb69e694073eb4c40b0d41dba74aa8789f8c3 code=9 pending_apphash_h2=dbae0d07e689c02d356f6436bd99d0909ba7be53618e48862c92e17fe5642702
+=== RUN   TestB0AcceptedSyntheticBoundaryVectors/V25
+2026/10/24 19:18:33 [JOB 1] WAL file /tmp/TestB0AcceptedSyntheticBoundaryVectorsV252534895517/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/24 19:18:34 [JOB 1] WAL file /tmp/TestB0AcceptedSyntheticBoundaryVectorsV252534895517/001/b0/000005.log with log number 000005 stopped reading at offset: 200; replayed 1 keys in 1 batches
+    vector_test.go:238: V25 synthetic_integrity_valid_h1=03d505b528d28ef85ae7db3adcde6d59cda08818825b8992802125ded1f280e2 wire_hex=504c55544f5458310001000b706c75746f2d62302d76310279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798e4affb78013f3a929c0e667d632e6fc9fc09732c0000000000000001fffffffffffffffff80ed5bf6d7476d7502486aaa44fab9ca0991762441ad3990b398609b523d7e85aae1d04305d2ae222e6d877e566cb9faab07df1bff544cbcadfb6daaa76507d code=6 pending_apphash_h2=1e73de6363bb2b32c44d37861761f57e010ecc39fa756e680f32f73cb98d29db
+--- PASS: TestB0AcceptedSyntheticBoundaryVectors (0.25s)
+    --- PASS: TestB0AcceptedSyntheticBoundaryVectors/V17 (0.07s)
+    --- PASS: TestB0AcceptedSyntheticBoundaryVectors/V19 (0.10s)
+    --- PASS: TestB0AcceptedSyntheticBoundaryVectors/V25 (0.07s)
+=== RUN   TestB0AcceptedOrderedVectors
+=== RUN   TestB0AcceptedOrderedVectors/V13
+=== RUN   TestB0AcceptedOrderedVectors/V14
+=== RUN   TestB0AcceptedOrderedVectors/V15
+=== RUN   TestB0AcceptedOrderedVectors/V21
+=== RUN   TestB0AcceptedOrderedVectors/V22
+--- PASS: TestB0AcceptedOrderedVectors (0.14s)
+    --- PASS: TestB0AcceptedOrderedVectors/V13 (0.03s)
+    --- PASS: TestB0AcceptedOrderedVectors/V14 (0.02s)
+    --- PASS: TestB0AcceptedOrderedVectors/V15 (0.03s)
+    --- PASS: TestB0AcceptedOrderedVectors/V21 (0.03s)
+    --- PASS: TestB0AcceptedOrderedVectors/V22 (0.03s)
+PASS
+ok  	example.com/pluto/internal/b0app	0.973s
+exit_code=0
+
+$ go test -count=1 -v ./internal/b0app -run ^TestABCIPathsFailClosedAfterUncertainCommit$
+=== RUN   TestABCIPathsFailClosedAfterUncertainCommit
+2026/10/24 19:18:35 [JOB 1] WAL file /tmp/TestABCIPathsFailClosedAfterUncertainCommit3130224625/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/24 19:18:35 [JOB 1] WAL file /tmp/TestABCIPathsFailClosedAfterUncertainCommit3130224625/001/b0/000005.log with log number 000005 stopped reading at offset: 163; replayed 1 keys in 1 batches
+--- PASS: TestABCIPathsFailClosedAfterUncertainCommit (0.10s)
+PASS
+ok  	example.com/pluto/internal/b0app	0.112s
+exit_code=0
+
+$ go test -count=1 -v ./internal/b0app -run ^TestB0V18GenesisSupplyOverflowAndV23CorruptRecord$
+=== RUN   TestB0V18GenesisSupplyOverflowAndV23CorruptRecord
+2026/10/24 19:18:37 [JOB 1] WAL file /tmp/TestB0V18GenesisSupplyOverflowAndV23CorruptRecord1327674015/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/24 19:18:37 [JOB 1] WAL file /tmp/TestB0V18GenesisSupplyOverflowAndV23CorruptRecord1327674015/001/b0/000005.log with log number 000005 stopped reading at offset: 163; replayed 1 keys in 1 batches
+    vector_test.go:378: V18 InitChain rejected overflowing supply without creating a store; V23 application Open rejected modified logical state with unchanged digest
+--- PASS: TestB0V18GenesisSupplyOverflowAndV23CorruptRecord (0.10s)
+PASS
+ok  	example.com/pluto/internal/b0app	0.112s
+exit_code=0
+
+$ go test -count=1 -v ./internal/b0app -run ^TestB0ProposalBudgetAndLimitFallback$
+=== RUN   TestB0ProposalBudgetAndLimitFallback
+    transaction_test.go:228: V20 count chain=c K=1 genesis_supply=6145 tx_count=6145 aggregate_bytes=897170 sha256_concatenated=243156b61f976efa18a0d909af3d1d4f22085cbf35f57c6b876f9604006d9b15 first_wire=504c55544f54583100010001630279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798e4affb78013f3a929c0e667d632e6fc9fc09732c0000000000000001000000000000000062bf560f86e5623296062ee7ad380319aac695924583ac3a88ed83ed8497f2773685d87cb714a562b1fa3295567f1bd62ae13cabf63d6b0130d038b8aeae0daf last_wire=504c55544f54583100010001630279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798e4affb78013f3a929c0e667d632e6fc9fc09732c000000000000000100000000000018000350bfb11035d40aa0970698d73e18603096fc07704faa25f2653d580d8bf3240e7d25385fda2af1de78ac50032bace0a50848cd9e78d560bf481c410b9dc322
+    transaction_test.go:280: V20 bytes chain_length=50 K=1 genesis_supply=5378 tx_count=5378 aggregate_bytes=1048710 sha256_concatenated=e80839653e1b18044d13db7514fc4a3150c58a1cda81c9dfc32f78212680e07b first_wire=504c55544f5458310001003263636363636363636363636363636363636363636363636363636363636363636363636363636363636363636363636363630279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798e4affb78013f3a929c0e667d632e6fc9fc09732c00000000000000010000000000000000a2e4f06a25def5e335dc347534177dd41e206063e1dcfedafe930e09bae6ee822d4c6e79dd6f588d0e2cd3e8be3f88f5b0172beac4e77fc1913cbe0a1521ec6c last_wire=504c55544f5458310001003263636363636363636363636363636363636363636363636363636363636363636363636363636363636363636363636363630279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798e4affb78013f3a929c0e667d632e6fc9fc09732c000000000000000100000000000015015c4147c516855d8110f042a30859172d086575e7990a7a5020435af4e89109e47a930c30df1d03f0ce65c71248f6c257934886edd9bbf94b0df7b7a5452b7fa2
+--- PASS: TestB0ProposalBudgetAndLimitFallback (2.81s)
+PASS
+ok  	example.com/pluto/internal/b0app	2.826s
+exit_code=0
+
+$ go test -tags integration ./test/integration -run ^TestB0Pinned -timeout 120s -count=1 -v
+=== RUN   TestB0PinnedHeightAndHashMismatchFailClosed
+=== RUN   TestB0PinnedHeightAndHashMismatchFailClosed/app-ahead
+2026/10/24 19:18:47 [JOB 1] WAL file /tmp/TestB0PinnedHeightAndHashMismatchFailClosedapp-ahead4026988574/001/home/data/pluto-b0-v2/000002.log with log number 000002 stopped reading at offset: 489; replayed 3 keys in 3 batches
+2026/10/24 19:18:47 [JOB 1] WAL file /tmp/TestB0PinnedHeightAndHashMismatchFailClosedapp-ahead4026988574/001/home/data/pluto-b0-v2/000005.log with log number 000005 stopped reading at offset: 0; replayed 0 keys in 0 batches
+    b0_mismatch_test.go:150: app-ahead: real Comet refused restart; original B=2 C=2 A=2; process exit=exit status 1
+=== RUN   TestB0PinnedHeightAndHashMismatchFailClosed/same-height-different-hash
+2026/10/24 19:18:50 [JOB 1] WAL file /tmp/TestB0PinnedHeightAndHashMismatchFailClosedsame-height-different-hash884374347/001/home/data/pluto-b0-v2/000002.log with log number 000002 stopped reading at offset: 489; replayed 3 keys in 3 batches
+2026/10/24 19:18:50 [JOB 1] WAL file /tmp/TestB0PinnedHeightAndHashMismatchFailClosedsame-height-different-hash884374347/001/home/data/pluto-b0-v2/000005.log with log number 000005 stopped reading at offset: 0; replayed 0 keys in 0 batches
+2026/10/24 19:18:50 [JOB 1] WAL file /tmp/TestB0PinnedHeightAndHashMismatchFailClosedsame-height-different-hash884374347/001/home/data/pluto-b0-v2/000008.log with log number 000008 stopped reading at offset: 200; replayed 1 keys in 1 batches
+    b0_mismatch_test.go:150: same-height-different-hash: real Comet refused restart; original B=2 C=2 A=2; process exit=exit status 1
+--- PASS: TestB0PinnedHeightAndHashMismatchFailClosed (6.95s)
+    --- PASS: TestB0PinnedHeightAndHashMismatchFailClosed/app-ahead (3.44s)
+    --- PASS: TestB0PinnedHeightAndHashMismatchFailClosed/same-height-different-hash (3.51s)
+=== RUN   TestB0PinnedMockReplayAfterDurableCommitBeforeAcknowledgment
+2026/10/24 19:18:54 [JOB 1] WAL file /tmp/TestB0PinnedMockReplayAfterDurableCommitBeforeAcknowledgment1663524405/001/home/data/pluto-b0-v2/000002.log with log number 000002 stopped reading at offset: 689; replayed 4 keys in 4 batches
+2026/10/24 19:18:56 [JOB 1] WAL file /tmp/TestB0PinnedMockReplayAfterDurableCommitBeforeAcknowledgment1663524405/001/home/data/pluto-b0-v2/000005.log with log number 000005 stopped reading at offset: 200; replayed 1 keys in 1 batches
+    b0_recovery_test.go:317: M5/M6: real Comet SIGKILL while Commit response withheld; before B=3 C=2 A=3; mock replay observed; after B=4 C=4 A=4; sender balance=75 nonce=1; app hash=44295da9566bf288667d249e95cd301217abbf9b76b500f594110fd11f9e2ffa; log=/tmp/TestB0PinnedMockReplayAfterDurableCommitBeforeAcknowledgment1663524405/004/comet-restart.log
+--- PASS: TestB0PinnedMockReplayAfterDurableCommitBeforeAcknowledgment (5.35s)
+=== RUN   TestB0PinnedRealReplayBeforeApplicationCommit
+=== RUN   TestB0PinnedRealReplayBeforeApplicationCommit/before-finalize
+2026/10/24 19:19:00 [JOB 1] WAL file /tmp/TestB0PinnedRealReplayBeforeApplicationCommitbefore-finalize2399626825/001/home/data/pluto-b0-v2/000002.log with log number 000002 stopped reading at offset: 489; replayed 3 keys in 3 batches
+2026/10/24 19:19:01 [JOB 1] WAL file /tmp/TestB0PinnedRealReplayBeforeApplicationCommitbefore-finalize2399626825/001/home/data/pluto-b0-v2/000005.log with log number 000005 stopped reading at offset: 400; replayed 2 keys in 2 batches
+    b0_recovery_test.go:512: before-finalize: Comet SIGKILL before application write; before B=3 C=2 A=2; real replay observed; after B=4 C=4 A=4; balance=75 nonce=1 hash=44295da9566bf288667d249e95cd301217abbf9b76b500f594110fd11f9e2ffa
+=== RUN   TestB0PinnedRealReplayBeforeApplicationCommit/before-commit
+2026/10/24 19:19:05 [JOB 1] WAL file /tmp/TestB0PinnedRealReplayBeforeApplicationCommitbefore-commit2498383451/001/home/data/pluto-b0-v2/000002.log with log number 000002 stopped reading at offset: 489; replayed 3 keys in 3 batches
+2026/10/24 19:19:06 [JOB 1] WAL file /tmp/TestB0PinnedRealReplayBeforeApplicationCommitbefore-commit2498383451/001/home/data/pluto-b0-v2/000005.log with log number 000005 stopped reading at offset: 400; replayed 2 keys in 2 batches
+    b0_recovery_test.go:512: before-commit: Comet SIGKILL before application write; before B=3 C=2 A=2; real replay observed; after B=4 C=4 A=4; balance=75 nonce=1 hash=44295da9566bf288667d249e95cd301217abbf9b76b500f594110fd11f9e2ffa
+--- PASS: TestB0PinnedRealReplayBeforeApplicationCommit (10.41s)
+    --- PASS: TestB0PinnedRealReplayBeforeApplicationCommit/before-finalize (5.29s)
+    --- PASS: TestB0PinnedRealReplayBeforeApplicationCommit/before-commit (5.12s)
+=== RUN   TestB0PinnedCrashBeforeBlockPersistence
+2026/10/24 19:19:10 [JOB 1] WAL file /tmp/TestB0PinnedCrashBeforeBlockPersistence1108381207/001/home/data/pluto-b0-v2/000002.log with log number 000002 stopped reading at offset: 489; replayed 3 keys in 3 batches
+    b0_recovery_test.go:677: M1: killed Comet in PrepareProposal before block persistence; B=C=A=2; after explicit rebroadcast A=4 balance=75 nonce=1
+--- PASS: TestB0PinnedCrashBeforeBlockPersistence (6.11s)
+PASS
+ok  	example.com/pluto/test/integration	28.843s
+exit_code=0
+
+$ python3 research/evidence/phase_03c/reference_oracle.py
+genesis: e480c8b300c5ac1d662628f90334aae185ad38ed791c59ab14e3aa42abf083da PASS
+min_chain_genesis: d6c802d654b16be9a8a1d7ef92206c3b0e8f7b77595f4321248c189e97f65b01 PASS
+max_chain_genesis: 5df773851ea3aa65afc4235fd07fc501b6d2cf08e601a01a90a5414dfb20d488 PASS
+post_transfer: c735447cd853aed15e488a349710e96284640994c9da0158478f19fee293982e PASS
+post_self_transfer: 9e512d901ea0137a89bfab07a5b03505540f98bf5fe7fc86a680ae90b4f7caec PASS
+post_empty_block: 7822225ce3300e3be2e954828c6f7944c669b16f16ecc4ddc149108e75fad024 PASS
+oracle PASS; Python 3.10.12; cryptography 3.4.8
+exit_code=0
+
+$ python3 research/evidence/phase_03d/d025/reference_transport.py
+genesis_binary_hex=504c55544f47322100000002000b706c75746f2d62302d763100000001b9631c0f8d9d2d9d56bd6151559f3339e14eb36a0000000000000064
+genesis_binary_sha256=d41a0d212d2af0b572b4bed1190a43f50a4e21034d8eaa4927e4c1c7251e46e8
+genesis_transport_hex=2255457856564539484d694541414141434141747762485630627931694d4331324d51414141414735597877506a5a30746e566139595646566e7a4d353455367a61674141414141414141426b22
+genesis_transport_length=78
+genesis_apphash_v2=e480c8b300c5ac1d662628f90334aae185ad38ed791c59ab14e3aa42abf083da
+max_binary=1835076 max_base64=2446768 max_canonical_json=2446770
+reference PASS
+exit_code=0
+
+$ sha256sum accepted Phase 03B/03C vectors
+3d08e616583eed8eb3aa408cc55e25a016355de363a44d51021c49a10baeeb70  research/evidence/phase_03b/golden_vectors.json
+3d8491b174f44ae51c99796d48c4001ba56e86e008c5dbd08f7d1b68007d69f7  research/evidence/phase_03c/state_vectors.json
+exit_code=0
+
+$ GOMAXPROCS=2 go test ./internal/b0state -run ^$ -fuzz ^FuzzGenesis$ -fuzztime=2s -parallel=1
+fuzz: elapsed: 0s, gathering baseline coverage: 0/23 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 23/23 completed, now fuzzing with 1 workers
+fuzz: elapsed: 2s, execs: 34033 (16680/sec), new interesting: 0 (total: 23)
+PASS
+ok  	example.com/pluto/internal/b0state	2.049s
+exit_code=0
+
+$ GOMAXPROCS=2 go test ./internal/b0state -run ^$ -fuzz ^FuzzLogical$ -fuzztime=2s -parallel=1
+fuzz: elapsed: 0s, gathering baseline coverage: 0/25 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 25/25 completed, now fuzzing with 1 workers
+fuzz: elapsed: 2s, execs: 33792 (16420/sec), new interesting: 0 (total: 25)
+PASS
+ok  	example.com/pluto/internal/b0state	2.074s
+exit_code=0
+
+$ GOMAXPROCS=2 go test ./internal/b0store -run ^$ -fuzz ^FuzzRecord$ -fuzztime=2s -parallel=1
+fuzz: elapsed: 0s, gathering baseline coverage: 0/6 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 6/6 completed, now fuzzing with 1 workers
+fuzz: elapsed: 2s, execs: 10351 (5146/sec), new interesting: 0 (total: 6)
+PASS
+ok  	example.com/pluto/internal/b0store	2.022s
+exit_code=0
+
+$ GOMAXPROCS=2 go test ./internal/tx -run ^$ -fuzz ^FuzzParse$ -fuzztime=2s -parallel=1
+fuzz: elapsed: 0s, gathering baseline coverage: 0/50 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 50/50 completed, now fuzzing with 1 workers
+fuzz: elapsed: 2s, execs: 32951 (16418/sec), new interesting: 1 (total: 51)
+PASS
+ok  	example.com/pluto/internal/tx	2.034s
+exit_code=0
+
+$ GOMAXPROCS=2 go test ./internal/tx -run ^$ -fuzz ^FuzzCodec$ -fuzztime=2s -parallel=1
+fuzz: elapsed: 0s, gathering baseline coverage: 0/26 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 26/26 completed, now fuzzing with 1 workers
+fuzz: elapsed: 2s, execs: 34369 (16712/sec), new interesting: 0 (total: 26)
+PASS
+ok  	example.com/pluto/internal/tx	2.064s
+exit_code=0
+
+$ go test ./internal/b0state ./internal/b0app ./internal/b0store -run ^$ -bench BenchmarkB0 -benchtime=5x -count=3 -benchmem
+goos: linux
+goarch: amd64
+pkg: example.com/pluto/internal/b0state
+cpu: 12th Gen Intel(R) Core(TM) i7-12700H
+BenchmarkB0StateCost/K=1/Reference/Malformed-20         	       5	       470.4 ns/op	        73.00 logical-bytes/op	     176 B/op	       2 allocs/op
+BenchmarkB0StateCost/K=1/Reference/Malformed-20         	       5	       446.4 ns/op	        73.00 logical-bytes/op	     176 B/op	       2 allocs/op
+BenchmarkB0StateCost/K=1/Reference/Malformed-20         	       5	       426.8 ns/op	        73.00 logical-bytes/op	     176 B/op	       2 allocs/op
+BenchmarkB0StateCost/K=1/Reference/WrongChain-20        	       5	       591.8 ns/op	        73.00 logical-bytes/op	     192 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=1/Reference/WrongChain-20        	       5	       636.8 ns/op	        73.00 logical-bytes/op	     192 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=1/Reference/WrongChain-20        	       5	      4371 ns/op	        73.00 logical-bytes/op	     192 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=1/Reference/ZeroAmount-20        	       5	      1038 ns/op	        73.00 logical-bytes/op	     192 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=1/Reference/ZeroAmount-20        	       5	       559.4 ns/op	        73.00 logical-bytes/op	     192 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=1/Reference/ZeroAmount-20        	       5	       523.6 ns/op	        73.00 logical-bytes/op	     192 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=1/Reference/NoncanonicalScalar-20         	       5	       628.2 ns/op	        73.00 logical-bytes/op	     192 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=1/Reference/NoncanonicalScalar-20         	       5	       524.2 ns/op	        73.00 logical-bytes/op	     192 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=1/Reference/NoncanonicalScalar-20         	       5	      1565 ns/op	        73.00 logical-bytes/op	     192 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=1/Reference/InvalidECDSA-20               	       5	    155133 ns/op	        73.00 logical-bytes/op	    1248 B/op	      22 allocs/op
+BenchmarkB0StateCost/K=1/Reference/InvalidECDSA-20               	       5	    155362 ns/op	        73.00 logical-bytes/op	    1248 B/op	      22 allocs/op
+BenchmarkB0StateCost/K=1/Reference/InvalidECDSA-20               	       5	    156145 ns/op	        73.00 logical-bytes/op	    1248 B/op	      22 allocs/op
+BenchmarkB0StateCost/K=1/Reference/SelfTransfer-20               	       5	    172131 ns/op	        73.00 logical-bytes/op	    1680 B/op	      29 allocs/op
+BenchmarkB0StateCost/K=1/Reference/SelfTransfer-20               	       5	    177431 ns/op	        73.00 logical-bytes/op	    1680 B/op	      29 allocs/op
+BenchmarkB0StateCost/K=1/Reference/SelfTransfer-20               	       5	    168739 ns/op	        73.00 logical-bytes/op	    1680 B/op	      29 allocs/op
+BenchmarkB0StateCost/K=1/Reference/DistinctTransfer-20           	       5	    175297 ns/op	        73.00 logical-bytes/op	    1856 B/op	      30 allocs/op
+BenchmarkB0StateCost/K=1/Reference/DistinctTransfer-20           	       5	    169276 ns/op	        73.00 logical-bytes/op	    1856 B/op	      30 allocs/op
+BenchmarkB0StateCost/K=1/Reference/DistinctTransfer-20           	       5	    167220 ns/op	        73.00 logical-bytes/op	    1856 B/op	      30 allocs/op
+BenchmarkB0StateCost/K=1/Trusted/Malformed-20                    	       5	       192.0 ns/op	        73.00 logical-bytes/op	       0 B/op	       0 allocs/op
+BenchmarkB0StateCost/K=1/Trusted/Malformed-20                    	       5	        96.60 ns/op	        73.00 logical-bytes/op	       0 B/op	       0 allocs/op
+BenchmarkB0StateCost/K=1/Trusted/Malformed-20                    	       5	        83.20 ns/op	        73.00 logical-bytes/op	       0 B/op	       0 allocs/op
+BenchmarkB0StateCost/K=1/Trusted/WrongChain-20                   	       5	       199.8 ns/op	        73.00 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=1/Trusted/WrongChain-20                   	       5	       179.8 ns/op	        73.00 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=1/Trusted/WrongChain-20                   	       5	       235.4 ns/op	        73.00 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=1/Trusted/ZeroAmount-20                   	       5	       558.8 ns/op	        73.00 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=1/Trusted/ZeroAmount-20                   	       5	       211.6 ns/op	        73.00 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=1/Trusted/ZeroAmount-20                   	       5	       243.0 ns/op	        73.00 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=1/Trusted/NoncanonicalScalar-20           	       5	       249.8 ns/op	        73.00 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=1/Trusted/NoncanonicalScalar-20           	       5	       229.8 ns/op	        73.00 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=1/Trusted/NoncanonicalScalar-20           	       5	       204.4 ns/op	        73.00 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=1/Trusted/InvalidECDSA-20                 	       5	    156853 ns/op	        73.00 logical-bytes/op	    1072 B/op	      20 allocs/op
+BenchmarkB0StateCost/K=1/Trusted/InvalidECDSA-20                 	       5	    155223 ns/op	        73.00 logical-bytes/op	    1072 B/op	      20 allocs/op
+BenchmarkB0StateCost/K=1/Trusted/InvalidECDSA-20                 	       5	    156439 ns/op	        73.00 logical-bytes/op	    1072 B/op	      20 allocs/op
+BenchmarkB0StateCost/K=1/Trusted/SelfTransfer-20                 	       5	    163994 ns/op	        73.00 logical-bytes/op	    1504 B/op	      27 allocs/op
+BenchmarkB0StateCost/K=1/Trusted/SelfTransfer-20                 	       5	    174699 ns/op	        73.00 logical-bytes/op	    1504 B/op	      27 allocs/op
+BenchmarkB0StateCost/K=1/Trusted/SelfTransfer-20                 	       5	    164745 ns/op	        73.00 logical-bytes/op	    1504 B/op	      27 allocs/op
+BenchmarkB0StateCost/K=1/Trusted/DistinctTransfer-20             	       5	    189865 ns/op	        73.00 logical-bytes/op	    1680 B/op	      28 allocs/op
+BenchmarkB0StateCost/K=1/Trusted/DistinctTransfer-20             	       5	    171864 ns/op	        73.00 logical-bytes/op	    1680 B/op	      28 allocs/op
+BenchmarkB0StateCost/K=1/Trusted/DistinctTransfer-20             	       5	    173221 ns/op	        73.00 logical-bytes/op	    1680 B/op	      28 allocs/op
+BenchmarkB0StateCost/K=1/EmptyBlock-20                           	       5	      1690 ns/op	        73.00 logical-bytes/op	     352 B/op	       4 allocs/op
+BenchmarkB0StateCost/K=1/EmptyBlock-20                           	       5	      1954 ns/op	        73.00 logical-bytes/op	     352 B/op	       4 allocs/op
+BenchmarkB0StateCost/K=1/EmptyBlock-20                           	       5	      1578 ns/op	        73.00 logical-bytes/op	     352 B/op	       4 allocs/op
+BenchmarkB0StateCost/K=1/SerializeAndHash-20                     	       5	      2010 ns/op	        73.00 logical-bytes/op	     256 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=1/SerializeAndHash-20                     	       5	      1703 ns/op	        73.00 logical-bytes/op	     256 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=1/SerializeAndHash-20                     	       5	      2088 ns/op	        73.00 logical-bytes/op	     256 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=64/Reference/Malformed-20                 	       5	      3905 ns/op	      2341 logical-bytes/op	    5376 B/op	       2 allocs/op
+BenchmarkB0StateCost/K=64/Reference/Malformed-20                 	       5	      3782 ns/op	      2341 logical-bytes/op	    5376 B/op	       2 allocs/op
+BenchmarkB0StateCost/K=64/Reference/Malformed-20                 	       5	      4993 ns/op	      2341 logical-bytes/op	    5376 B/op	       2 allocs/op
+BenchmarkB0StateCost/K=64/Reference/WrongChain-20                	       5	      6135 ns/op	      2341 logical-bytes/op	    5392 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=64/Reference/WrongChain-20                	       5	      3653 ns/op	      2341 logical-bytes/op	    5392 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=64/Reference/WrongChain-20                	       5	      3815 ns/op	      2341 logical-bytes/op	    5392 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=64/Reference/ZeroAmount-20                	       5	      4055 ns/op	      2341 logical-bytes/op	    5392 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=64/Reference/ZeroAmount-20                	       5	      3770 ns/op	      2341 logical-bytes/op	    5392 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=64/Reference/ZeroAmount-20                	       5	      3660 ns/op	      2341 logical-bytes/op	    5392 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=64/Reference/NoncanonicalScalar-20        	       5	      3673 ns/op	      2341 logical-bytes/op	    5392 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=64/Reference/NoncanonicalScalar-20        	       5	      4227 ns/op	      2341 logical-bytes/op	    5392 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=64/Reference/NoncanonicalScalar-20        	       5	      3602 ns/op	      2341 logical-bytes/op	    5392 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=64/Reference/InvalidECDSA-20              	       5	    163867 ns/op	      2341 logical-bytes/op	    6448 B/op	      22 allocs/op
+BenchmarkB0StateCost/K=64/Reference/InvalidECDSA-20              	       5	    159893 ns/op	      2341 logical-bytes/op	    6448 B/op	      22 allocs/op
+BenchmarkB0StateCost/K=64/Reference/InvalidECDSA-20              	       5	    180091 ns/op	      2341 logical-bytes/op	    6448 B/op	      22 allocs/op
+BenchmarkB0StateCost/K=64/Reference/SelfTransfer-20              	       5	    178915 ns/op	      2341 logical-bytes/op	   17360 B/op	      29 allocs/op
+BenchmarkB0StateCost/K=64/Reference/SelfTransfer-20              	       5	    187105 ns/op	      2341 logical-bytes/op	   17360 B/op	      29 allocs/op
+BenchmarkB0StateCost/K=64/Reference/SelfTransfer-20              	       5	    178245 ns/op	      2341 logical-bytes/op	   17360 B/op	      29 allocs/op
+BenchmarkB0StateCost/K=64/Reference/DistinctTransfer-20          	       5	    175986 ns/op	      2341 logical-bytes/op	   17360 B/op	      29 allocs/op
+BenchmarkB0StateCost/K=64/Reference/DistinctTransfer-20          	       5	    180018 ns/op	      2341 logical-bytes/op	   17360 B/op	      29 allocs/op
+BenchmarkB0StateCost/K=64/Reference/DistinctTransfer-20          	       5	    179107 ns/op	      2341 logical-bytes/op	   17360 B/op	      29 allocs/op
+BenchmarkB0StateCost/K=64/Trusted/Malformed-20                   	       5	        94.00 ns/op	      2341 logical-bytes/op	       0 B/op	       0 allocs/op
+BenchmarkB0StateCost/K=64/Trusted/Malformed-20                   	       5	        99.80 ns/op	      2341 logical-bytes/op	       0 B/op	       0 allocs/op
+BenchmarkB0StateCost/K=64/Trusted/Malformed-20                   	       5	        87.40 ns/op	      2341 logical-bytes/op	       0 B/op	       0 allocs/op
+BenchmarkB0StateCost/K=64/Trusted/WrongChain-20                  	       5	       222.2 ns/op	      2341 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=64/Trusted/WrongChain-20                  	       5	       207.4 ns/op	      2341 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=64/Trusted/WrongChain-20                  	       5	       246.6 ns/op	      2341 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=64/Trusted/ZeroAmount-20                  	       5	       235.4 ns/op	      2341 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=64/Trusted/ZeroAmount-20                  	       5	       231.4 ns/op	      2341 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=64/Trusted/ZeroAmount-20                  	       5	       186.8 ns/op	      2341 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=64/Trusted/NoncanonicalScalar-20          	       5	       224.4 ns/op	      2341 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=64/Trusted/NoncanonicalScalar-20          	       5	       221.2 ns/op	      2341 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=64/Trusted/NoncanonicalScalar-20          	       5	       262.6 ns/op	      2341 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=64/Trusted/InvalidECDSA-20                	       5	    164239 ns/op	      2341 logical-bytes/op	    1072 B/op	      20 allocs/op
+BenchmarkB0StateCost/K=64/Trusted/InvalidECDSA-20                	       5	    160818 ns/op	      2341 logical-bytes/op	    1072 B/op	      20 allocs/op
+BenchmarkB0StateCost/K=64/Trusted/InvalidECDSA-20                	       5	    157598 ns/op	      2341 logical-bytes/op	    1072 B/op	      20 allocs/op
+BenchmarkB0StateCost/K=64/Trusted/SelfTransfer-20                	       5	    168668 ns/op	      2341 logical-bytes/op	   11984 B/op	      27 allocs/op
+BenchmarkB0StateCost/K=64/Trusted/SelfTransfer-20                	       5	    173911 ns/op	      2341 logical-bytes/op	   11984 B/op	      27 allocs/op
+BenchmarkB0StateCost/K=64/Trusted/SelfTransfer-20                	       5	    169189 ns/op	      2341 logical-bytes/op	   11984 B/op	      27 allocs/op
+BenchmarkB0StateCost/K=64/Trusted/DistinctTransfer-20            	       5	    177629 ns/op	      2341 logical-bytes/op	   11984 B/op	      27 allocs/op
+BenchmarkB0StateCost/K=64/Trusted/DistinctTransfer-20            	       5	    193245 ns/op	      2341 logical-bytes/op	   11984 B/op	      27 allocs/op
+BenchmarkB0StateCost/K=64/Trusted/DistinctTransfer-20            	       5	    173737 ns/op	      2341 logical-bytes/op	   11984 B/op	      27 allocs/op
+BenchmarkB0StateCost/K=64/EmptyBlock-20                          	       5	     25395 ns/op	      2341 logical-bytes/op	   10752 B/op	       4 allocs/op
+BenchmarkB0StateCost/K=64/EmptyBlock-20                          	       5	      7187 ns/op	      2341 logical-bytes/op	   10752 B/op	       4 allocs/op
+BenchmarkB0StateCost/K=64/EmptyBlock-20                          	       5	      7120 ns/op	      2341 logical-bytes/op	   10752 B/op	       4 allocs/op
+BenchmarkB0StateCost/K=64/SerializeAndHash-20                    	       5	      5469 ns/op	      2341 logical-bytes/op	    8064 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=64/SerializeAndHash-20                    	       5	      5450 ns/op	      2341 logical-bytes/op	    8064 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=64/SerializeAndHash-20                    	       5	      5480 ns/op	      2341 logical-bytes/op	    8064 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=4096/Reference/Malformed-20               	       5	    270351 ns/op	    147493 logical-bytes/op	  311296 B/op	       2 allocs/op
+BenchmarkB0StateCost/K=4096/Reference/Malformed-20               	       5	    202125 ns/op	    147493 logical-bytes/op	  311296 B/op	       2 allocs/op
+BenchmarkB0StateCost/K=4096/Reference/Malformed-20               	       5	    185550 ns/op	    147493 logical-bytes/op	  311296 B/op	       2 allocs/op
+BenchmarkB0StateCost/K=4096/Reference/WrongChain-20              	       5	    200609 ns/op	    147493 logical-bytes/op	  311312 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=4096/Reference/WrongChain-20              	       5	    203063 ns/op	    147493 logical-bytes/op	  311312 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=4096/Reference/WrongChain-20              	       5	    302549 ns/op	    147493 logical-bytes/op	  311312 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=4096/Reference/ZeroAmount-20              	       5	    258701 ns/op	    147493 logical-bytes/op	  311312 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=4096/Reference/ZeroAmount-20              	       5	    247787 ns/op	    147493 logical-bytes/op	  311312 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=4096/Reference/ZeroAmount-20              	       5	    186191 ns/op	    147493 logical-bytes/op	  311312 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=4096/Reference/NoncanonicalScalar-20      	       5	    191741 ns/op	    147493 logical-bytes/op	  311312 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=4096/Reference/NoncanonicalScalar-20      	       5	    277079 ns/op	    147493 logical-bytes/op	  311312 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=4096/Reference/NoncanonicalScalar-20      	       5	    206666 ns/op	    147493 logical-bytes/op	  311312 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=4096/Reference/InvalidECDSA-20            	       5	    383915 ns/op	    147493 logical-bytes/op	  312368 B/op	      22 allocs/op
+BenchmarkB0StateCost/K=4096/Reference/InvalidECDSA-20            	       5	    363748 ns/op	    147493 logical-bytes/op	  312368 B/op	      22 allocs/op
+BenchmarkB0StateCost/K=4096/Reference/InvalidECDSA-20            	       5	    433714 ns/op	    147493 logical-bytes/op	  312368 B/op	      22 allocs/op
+BenchmarkB0StateCost/K=4096/Reference/SelfTransfer-20            	       5	    732982 ns/op	    147493 logical-bytes/op	  951504 B/op	      29 allocs/op
+BenchmarkB0StateCost/K=4096/Reference/SelfTransfer-20            	       5	    746657 ns/op	    147493 logical-bytes/op	  951504 B/op	      29 allocs/op
+BenchmarkB0StateCost/K=4096/Reference/SelfTransfer-20            	       5	    716537 ns/op	    147493 logical-bytes/op	  951523 B/op	      29 allocs/op
+BenchmarkB0StateCost/K=4096/Reference/DistinctTransfer-20        	       5	    718370 ns/op	    147493 logical-bytes/op	  951504 B/op	      29 allocs/op
+BenchmarkB0StateCost/K=4096/Reference/DistinctTransfer-20        	       5	    703677 ns/op	    147493 logical-bytes/op	  951523 B/op	      29 allocs/op
+BenchmarkB0StateCost/K=4096/Reference/DistinctTransfer-20        	       5	    706114 ns/op	    147493 logical-bytes/op	  951523 B/op	      29 allocs/op
+BenchmarkB0StateCost/K=4096/Trusted/Malformed-20                 	       5	        97.60 ns/op	    147493 logical-bytes/op	       0 B/op	       0 allocs/op
+BenchmarkB0StateCost/K=4096/Trusted/Malformed-20                 	       5	        70.20 ns/op	    147493 logical-bytes/op	       0 B/op	       0 allocs/op
+BenchmarkB0StateCost/K=4096/Trusted/Malformed-20                 	       5	        73.40 ns/op	    147493 logical-bytes/op	       0 B/op	       0 allocs/op
+BenchmarkB0StateCost/K=4096/Trusted/WrongChain-20                	       5	       227.6 ns/op	    147493 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=4096/Trusted/WrongChain-20                	       5	       234.8 ns/op	    147493 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=4096/Trusted/WrongChain-20                	       5	       229.4 ns/op	    147493 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=4096/Trusted/ZeroAmount-20                	       5	       231.0 ns/op	    147493 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=4096/Trusted/ZeroAmount-20                	       5	       213.4 ns/op	    147493 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=4096/Trusted/ZeroAmount-20                	       5	       233.6 ns/op	    147493 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=4096/Trusted/NoncanonicalScalar-20        	       5	       606.0 ns/op	    147493 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=4096/Trusted/NoncanonicalScalar-20        	       5	       215.2 ns/op	    147493 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=4096/Trusted/NoncanonicalScalar-20        	       5	       248.2 ns/op	    147493 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=4096/Trusted/InvalidECDSA-20              	       5	    155979 ns/op	    147493 logical-bytes/op	    1072 B/op	      20 allocs/op
+BenchmarkB0StateCost/K=4096/Trusted/InvalidECDSA-20              	       5	    156321 ns/op	    147493 logical-bytes/op	    1072 B/op	      20 allocs/op
+BenchmarkB0StateCost/K=4096/Trusted/InvalidECDSA-20              	       5	    156539 ns/op	    147493 logical-bytes/op	    1072 B/op	      20 allocs/op
+BenchmarkB0StateCost/K=4096/Trusted/SelfTransfer-20              	       5	    530374 ns/op	    147493 logical-bytes/op	  640208 B/op	      27 allocs/op
+BenchmarkB0StateCost/K=4096/Trusted/SelfTransfer-20              	       5	    567096 ns/op	    147493 logical-bytes/op	  640227 B/op	      27 allocs/op
+BenchmarkB0StateCost/K=4096/Trusted/SelfTransfer-20              	       5	    498449 ns/op	    147493 logical-bytes/op	  640227 B/op	      27 allocs/op
+BenchmarkB0StateCost/K=4096/Trusted/DistinctTransfer-20          	       5	    611986 ns/op	    147493 logical-bytes/op	  640208 B/op	      27 allocs/op
+BenchmarkB0StateCost/K=4096/Trusted/DistinctTransfer-20          	       5	    504073 ns/op	    147493 logical-bytes/op	  640208 B/op	      27 allocs/op
+BenchmarkB0StateCost/K=4096/Trusted/DistinctTransfer-20          	       5	    506284 ns/op	    147493 logical-bytes/op	  640208 B/op	      27 allocs/op
+BenchmarkB0StateCost/K=4096/EmptyBlock-20                        	       5	    549950 ns/op	    147493 logical-bytes/op	  622592 B/op	       4 allocs/op
+BenchmarkB0StateCost/K=4096/EmptyBlock-20                        	       5	    525865 ns/op	    147493 logical-bytes/op	  622592 B/op	       4 allocs/op
+BenchmarkB0StateCost/K=4096/EmptyBlock-20                        	       5	    514639 ns/op	    147493 logical-bytes/op	  622592 B/op	       4 allocs/op
+BenchmarkB0StateCost/K=4096/SerializeAndHash-20                  	       5	    326845 ns/op	    147493 logical-bytes/op	  466944 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=4096/SerializeAndHash-20                  	       5	    228365 ns/op	    147493 logical-bytes/op	  466944 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=4096/SerializeAndHash-20                  	       5	    231421 ns/op	    147493 logical-bytes/op	  466944 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=65536/Reference/Malformed-20              	       5	   3640782 ns/op	   2359333 logical-bytes/op	 4734976 B/op	       2 allocs/op
+BenchmarkB0StateCost/K=65536/Reference/Malformed-20              	       5	   3702714 ns/op	   2359333 logical-bytes/op	 4734995 B/op	       2 allocs/op
+BenchmarkB0StateCost/K=65536/Reference/Malformed-20              	       5	   3839786 ns/op	   2359333 logical-bytes/op	 4734976 B/op	       2 allocs/op
+BenchmarkB0StateCost/K=65536/Reference/WrongChain-20             	       5	   3742100 ns/op	   2359333 logical-bytes/op	 4734992 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=65536/Reference/WrongChain-20             	       5	   3757456 ns/op	   2359333 logical-bytes/op	 4734992 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=65536/Reference/WrongChain-20             	       5	   3924258 ns/op	   2359333 logical-bytes/op	 4734992 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=65536/Reference/ZeroAmount-20             	       5	   3804698 ns/op	   2359333 logical-bytes/op	 4735030 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=65536/Reference/ZeroAmount-20             	       5	   3897998 ns/op	   2359333 logical-bytes/op	 4735011 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=65536/Reference/ZeroAmount-20             	       5	   3778985 ns/op	   2359333 logical-bytes/op	 4735011 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=65536/Reference/NoncanonicalScalar-20     	       5	   3817657 ns/op	   2359333 logical-bytes/op	 4734992 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=65536/Reference/NoncanonicalScalar-20     	       5	   4740825 ns/op	   2359333 logical-bytes/op	 4736080 B/op	       4 allocs/op
+BenchmarkB0StateCost/K=65536/Reference/NoncanonicalScalar-20     	       5	   3685223 ns/op	   2359333 logical-bytes/op	 4734992 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=65536/Reference/InvalidECDSA-20           	       5	   4105028 ns/op	   2359333 logical-bytes/op	 4736048 B/op	      22 allocs/op
+BenchmarkB0StateCost/K=65536/Reference/InvalidECDSA-20           	       5	   4367002 ns/op	   2359333 logical-bytes/op	 4736048 B/op	      22 allocs/op
+BenchmarkB0StateCost/K=65536/Reference/InvalidECDSA-20           	       5	   4204185 ns/op	   2359333 logical-bytes/op	 4736048 B/op	      22 allocs/op
+BenchmarkB0StateCost/K=65536/Reference/SelfTransfer-20           	       5	   9911585 ns/op	   2359333 logical-bytes/op	14714064 B/op	      29 allocs/op
+BenchmarkB0StateCost/K=65536/Reference/SelfTransfer-20           	       5	   8962721 ns/op	   2359333 logical-bytes/op	14714083 B/op	      29 allocs/op
+BenchmarkB0StateCost/K=65536/Reference/SelfTransfer-20           	       5	   8697781 ns/op	   2359333 logical-bytes/op	14714064 B/op	      29 allocs/op
+BenchmarkB0StateCost/K=65536/Reference/DistinctTransfer-20       	       5	   8113887 ns/op	   2359333 logical-bytes/op	14714102 B/op	      29 allocs/op
+BenchmarkB0StateCost/K=65536/Reference/DistinctTransfer-20       	       5	   7695368 ns/op	   2359333 logical-bytes/op	14714102 B/op	      29 allocs/op
+BenchmarkB0StateCost/K=65536/Reference/DistinctTransfer-20       	       5	   9235489 ns/op	   2359333 logical-bytes/op	14714064 B/op	      29 allocs/op
+BenchmarkB0StateCost/K=65536/Trusted/Malformed-20                	       5	       201.6 ns/op	   2359333 logical-bytes/op	       0 B/op	       0 allocs/op
+BenchmarkB0StateCost/K=65536/Trusted/Malformed-20                	       5	        83.20 ns/op	   2359333 logical-bytes/op	       0 B/op	       0 allocs/op
+BenchmarkB0StateCost/K=65536/Trusted/Malformed-20                	       5	        97.00 ns/op	   2359333 logical-bytes/op	       0 B/op	       0 allocs/op
+BenchmarkB0StateCost/K=65536/Trusted/WrongChain-20               	       5	       221.4 ns/op	   2359333 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=65536/Trusted/WrongChain-20               	       5	       238.6 ns/op	   2359333 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=65536/Trusted/WrongChain-20               	       5	       235.2 ns/op	   2359333 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=65536/Trusted/ZeroAmount-20               	       5	       235.0 ns/op	   2359333 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=65536/Trusted/ZeroAmount-20               	       5	       236.8 ns/op	   2359333 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=65536/Trusted/ZeroAmount-20               	       5	       234.2 ns/op	   2359333 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=65536/Trusted/NoncanonicalScalar-20       	       5	       236.2 ns/op	   2359333 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=65536/Trusted/NoncanonicalScalar-20       	       5	       246.2 ns/op	   2359333 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=65536/Trusted/NoncanonicalScalar-20       	       5	       275.4 ns/op	   2359333 logical-bytes/op	      16 B/op	       1 allocs/op
+BenchmarkB0StateCost/K=65536/Trusted/InvalidECDSA-20             	       5	    162453 ns/op	   2359333 logical-bytes/op	    1072 B/op	      20 allocs/op
+BenchmarkB0StateCost/K=65536/Trusted/InvalidECDSA-20             	       5	    160568 ns/op	   2359333 logical-bytes/op	    1072 B/op	      20 allocs/op
+BenchmarkB0StateCost/K=65536/Trusted/InvalidECDSA-20             	       5	    156006 ns/op	   2359333 logical-bytes/op	    1072 B/op	      20 allocs/op
+BenchmarkB0StateCost/K=65536/Trusted/SelfTransfer-20             	       5	   4929386 ns/op	   2359333 logical-bytes/op	 9979088 B/op	      27 allocs/op
+BenchmarkB0StateCost/K=65536/Trusted/SelfTransfer-20             	       5	   5559898 ns/op	   2359333 logical-bytes/op	 9979088 B/op	      27 allocs/op
+BenchmarkB0StateCost/K=65536/Trusted/SelfTransfer-20             	       5	   4773006 ns/op	   2359333 logical-bytes/op	 9979088 B/op	      27 allocs/op
+BenchmarkB0StateCost/K=65536/Trusted/DistinctTransfer-20         	       5	   5376618 ns/op	   2359333 logical-bytes/op	 9979088 B/op	      27 allocs/op
+BenchmarkB0StateCost/K=65536/Trusted/DistinctTransfer-20         	       5	   4960836 ns/op	   2359333 logical-bytes/op	 9979088 B/op	      27 allocs/op
+BenchmarkB0StateCost/K=65536/Trusted/DistinctTransfer-20         	       5	   4994946 ns/op	   2359333 logical-bytes/op	 9979107 B/op	      27 allocs/op
+BenchmarkB0StateCost/K=65536/EmptyBlock-20                       	       5	   6752985 ns/op	   2359333 logical-bytes/op	 9469990 B/op	       4 allocs/op
+BenchmarkB0StateCost/K=65536/EmptyBlock-20                       	       5	   6310234 ns/op	   2359333 logical-bytes/op	 9469971 B/op	       4 allocs/op
+BenchmarkB0StateCost/K=65536/EmptyBlock-20                       	       5	   6069740 ns/op	   2359333 logical-bytes/op	 9469971 B/op	       4 allocs/op
+BenchmarkB0StateCost/K=65536/SerializeAndHash-20                 	       5	   4784032 ns/op	   2359333 logical-bytes/op	 7102486 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=65536/SerializeAndHash-20                 	       5	   4332484 ns/op	   2359333 logical-bytes/op	 7102483 B/op	       3 allocs/op
+BenchmarkB0StateCost/K=65536/SerializeAndHash-20                 	       5	   4879093 ns/op	   2359333 logical-bytes/op	 7102521 B/op	       3 allocs/op
+PASS
+ok  	example.com/pluto/internal/b0state	2.036s
+2026/10/24 19:19:30 [JOB 1] WAL file /tmp/BenchmarkB0CheckTxCost3693241041/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/24 19:19:30 [JOB 1] WAL file /tmp/BenchmarkB0CheckTxCost3693241041/001/b0/000005.log with log number 000005 stopped reading at offset: 163; replayed 1 keys in 1 batches
+goos: linux
+goarch: amd64
+pkg: example.com/pluto/internal/b0app
+cpu: 12th Gen Intel(R) Core(TM) i7-12700H
+BenchmarkB0CheckTxCost/K=1/Malformed-20         	       5	       369.2 ns/op	        73.00 state-logical-bytes/op	     128 B/op	       1 allocs/op
+BenchmarkB0CheckTxCost/K=1/Malformed-20         	       5	       487.2 ns/op	        73.00 state-logical-bytes/op	     128 B/op	       1 allocs/op
+BenchmarkB0CheckTxCost/K=1/Malformed-20         	       5	       280.2 ns/op	        73.00 state-logical-bytes/op	     128 B/op	       1 allocs/op
+BenchmarkB0CheckTxCost/K=1/WrongChain-20        	       5	       385.4 ns/op	        73.00 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=1/WrongChain-20        	       5	       380.8 ns/op	        73.00 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=1/WrongChain-20        	       5	       530.6 ns/op	        73.00 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=1/ZeroAmount-20        	       5	       461.0 ns/op	        73.00 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=1/ZeroAmount-20        	       5	       359.4 ns/op	        73.00 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=1/ZeroAmount-20        	       5	      2942 ns/op	        73.00 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=1/NoncanonicalScalar-20         	       5	       853.8 ns/op	        73.00 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=1/NoncanonicalScalar-20         	       5	       359.0 ns/op	        73.00 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=1/NoncanonicalScalar-20         	       5	       702.4 ns/op	        73.00 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=1/InvalidECDSA-20               	       5	    164616 ns/op	        73.00 state-logical-bytes/op	    1200 B/op	      21 allocs/op
+BenchmarkB0CheckTxCost/K=1/InvalidECDSA-20               	       5	    163110 ns/op	        73.00 state-logical-bytes/op	    1200 B/op	      21 allocs/op
+BenchmarkB0CheckTxCost/K=1/InvalidECDSA-20               	       5	    157991 ns/op	        73.00 state-logical-bytes/op	    1200 B/op	      21 allocs/op
+BenchmarkB0CheckTxCost/K=1/SelfTransfer-20               	       5	    172115 ns/op	        73.00 state-logical-bytes/op	    1632 B/op	      28 allocs/op
+BenchmarkB0CheckTxCost/K=1/SelfTransfer-20               	       5	    173896 ns/op	        73.00 state-logical-bytes/op	    1632 B/op	      28 allocs/op
+BenchmarkB0CheckTxCost/K=1/SelfTransfer-20               	       5	    168940 ns/op	        73.00 state-logical-bytes/op	    1632 B/op	      28 allocs/op
+BenchmarkB0CheckTxCost/K=1/DistinctTransfer-20           	       5	    169407 ns/op	        73.00 state-logical-bytes/op	    1808 B/op	      29 allocs/op
+BenchmarkB0CheckTxCost/K=1/DistinctTransfer-20           	       5	    168639 ns/op	        73.00 state-logical-bytes/op	    1808 B/op	      29 allocs/op
+BenchmarkB0CheckTxCost/K=1/DistinctTransfer-20           	       5	    170755 ns/op	        73.00 state-logical-bytes/op	    1808 B/op	      29 allocs/op
+2026/10/24 19:19:30 [JOB 1] WAL file /tmp/BenchmarkB0CheckTxCost3693241041/002/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/24 19:19:30 [JOB 1] WAL file /tmp/BenchmarkB0CheckTxCost3693241041/002/b0/000005.log with log number 000005 stopped reading at offset: 2432; replayed 1 keys in 1 batches
+BenchmarkB0CheckTxCost/K=64/Malformed-20                 	       5	       329.2 ns/op	      2341 state-logical-bytes/op	     128 B/op	       1 allocs/op
+BenchmarkB0CheckTxCost/K=64/Malformed-20                 	       5	       300.2 ns/op	      2341 state-logical-bytes/op	     128 B/op	       1 allocs/op
+BenchmarkB0CheckTxCost/K=64/Malformed-20                 	       5	       269.0 ns/op	      2341 state-logical-bytes/op	     128 B/op	       1 allocs/op
+BenchmarkB0CheckTxCost/K=64/WrongChain-20                	       5	       324.2 ns/op	      2341 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=64/WrongChain-20                	       5	       353.0 ns/op	      2341 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=64/WrongChain-20                	       5	       349.2 ns/op	      2341 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=64/ZeroAmount-20                	       5	       362.4 ns/op	      2341 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=64/ZeroAmount-20                	       5	       371.2 ns/op	      2341 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=64/ZeroAmount-20                	       5	       414.8 ns/op	      2341 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=64/NoncanonicalScalar-20        	       5	       395.8 ns/op	      2341 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=64/NoncanonicalScalar-20        	       5	       376.8 ns/op	      2341 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=64/NoncanonicalScalar-20        	       5	       426.0 ns/op	      2341 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=64/InvalidECDSA-20              	       5	    155615 ns/op	      2341 state-logical-bytes/op	    1200 B/op	      21 allocs/op
+BenchmarkB0CheckTxCost/K=64/InvalidECDSA-20              	       5	    156513 ns/op	      2341 state-logical-bytes/op	    1200 B/op	      21 allocs/op
+BenchmarkB0CheckTxCost/K=64/InvalidECDSA-20              	       5	    155034 ns/op	      2341 state-logical-bytes/op	    1200 B/op	      21 allocs/op
+BenchmarkB0CheckTxCost/K=64/SelfTransfer-20              	       5	    172145 ns/op	      2341 state-logical-bytes/op	   12112 B/op	      28 allocs/op
+BenchmarkB0CheckTxCost/K=64/SelfTransfer-20              	       5	    169116 ns/op	      2341 state-logical-bytes/op	   12112 B/op	      28 allocs/op
+BenchmarkB0CheckTxCost/K=64/SelfTransfer-20              	       5	    176058 ns/op	      2341 state-logical-bytes/op	   12112 B/op	      28 allocs/op
+BenchmarkB0CheckTxCost/K=64/DistinctTransfer-20          	       5	    174380 ns/op	      2341 state-logical-bytes/op	   12112 B/op	      28 allocs/op
+BenchmarkB0CheckTxCost/K=64/DistinctTransfer-20          	       5	    172296 ns/op	      2341 state-logical-bytes/op	   12112 B/op	      28 allocs/op
+BenchmarkB0CheckTxCost/K=64/DistinctTransfer-20          	       5	    193345 ns/op	      2341 state-logical-bytes/op	   12112 B/op	      28 allocs/op
+2026/10/24 19:19:30 [JOB 1] WAL file /tmp/BenchmarkB0CheckTxCost3693241041/003/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/24 19:19:30 [JOB 1] WAL file /tmp/BenchmarkB0CheckTxCost3693241041/003/b0/000005.log with log number 000005 stopped reading at offset: 147629; replayed 1 keys in 1 batches
+BenchmarkB0CheckTxCost/K=4096/Malformed-20               	       5	       342.2 ns/op	    147493 state-logical-bytes/op	     128 B/op	       1 allocs/op
+BenchmarkB0CheckTxCost/K=4096/Malformed-20               	       5	       251.6 ns/op	    147493 state-logical-bytes/op	     128 B/op	       1 allocs/op
+BenchmarkB0CheckTxCost/K=4096/Malformed-20               	       5	       293.2 ns/op	    147493 state-logical-bytes/op	     128 B/op	       1 allocs/op
+BenchmarkB0CheckTxCost/K=4096/WrongChain-20              	       5	       371.4 ns/op	    147493 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=4096/WrongChain-20              	       5	       365.0 ns/op	    147493 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=4096/WrongChain-20              	       5	       319.2 ns/op	    147493 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=4096/ZeroAmount-20              	       5	       375.6 ns/op	    147493 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=4096/ZeroAmount-20              	       5	       348.4 ns/op	    147493 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=4096/ZeroAmount-20              	       5	       350.0 ns/op	    147493 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=4096/NoncanonicalScalar-20      	       5	       389.6 ns/op	    147493 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=4096/NoncanonicalScalar-20      	       5	       386.4 ns/op	    147493 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=4096/NoncanonicalScalar-20      	       5	       400.6 ns/op	    147493 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=4096/InvalidECDSA-20            	       5	    155716 ns/op	    147493 state-logical-bytes/op	    1200 B/op	      21 allocs/op
+BenchmarkB0CheckTxCost/K=4096/InvalidECDSA-20            	       5	    156873 ns/op	    147493 state-logical-bytes/op	    1200 B/op	      21 allocs/op
+BenchmarkB0CheckTxCost/K=4096/InvalidECDSA-20            	       5	    169610 ns/op	    147493 state-logical-bytes/op	    1200 B/op	      21 allocs/op
+BenchmarkB0CheckTxCost/K=4096/SelfTransfer-20            	       5	    646004 ns/op	    147493 state-logical-bytes/op	  640345 B/op	      28 allocs/op
+BenchmarkB0CheckTxCost/K=4096/SelfTransfer-20            	       5	    657077 ns/op	    147493 state-logical-bytes/op	  640345 B/op	      28 allocs/op
+BenchmarkB0CheckTxCost/K=4096/SelfTransfer-20            	       5	    643165 ns/op	    147493 state-logical-bytes/op	  640345 B/op	      28 allocs/op
+BenchmarkB0CheckTxCost/K=4096/DistinctTransfer-20        	       5	    626378 ns/op	    147493 state-logical-bytes/op	  640345 B/op	      28 allocs/op
+BenchmarkB0CheckTxCost/K=4096/DistinctTransfer-20        	       5	    628776 ns/op	    147493 state-logical-bytes/op	  640345 B/op	      28 allocs/op
+BenchmarkB0CheckTxCost/K=4096/DistinctTransfer-20        	       5	    625812 ns/op	    147493 state-logical-bytes/op	  640345 B/op	      28 allocs/op
+2026/10/24 19:19:31 [JOB 1] WAL file /tmp/BenchmarkB0CheckTxCost3693241041/004/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/24 19:19:31 [JOB 1] WAL file /tmp/BenchmarkB0CheckTxCost3693241041/004/b0/000008.log with log number 000008 stopped reading at offset: 0; replayed 0 keys in 0 batches
+BenchmarkB0CheckTxCost/K=65536/Malformed-20              	       5	       295.4 ns/op	   2359333 state-logical-bytes/op	     128 B/op	       1 allocs/op
+BenchmarkB0CheckTxCost/K=65536/Malformed-20              	       5	       295.4 ns/op	   2359333 state-logical-bytes/op	     128 B/op	       1 allocs/op
+BenchmarkB0CheckTxCost/K=65536/Malformed-20              	       5	       225.2 ns/op	   2359333 state-logical-bytes/op	     128 B/op	       1 allocs/op
+BenchmarkB0CheckTxCost/K=65536/WrongChain-20             	       5	       354.0 ns/op	   2359333 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=65536/WrongChain-20             	       5	       360.2 ns/op	   2359333 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=65536/WrongChain-20             	       5	       301.2 ns/op	   2359333 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=65536/ZeroAmount-20             	       5	       390.2 ns/op	   2359333 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=65536/ZeroAmount-20             	       5	       382.6 ns/op	   2359333 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=65536/ZeroAmount-20             	       5	       391.2 ns/op	   2359333 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=65536/NoncanonicalScalar-20     	       5	       383.2 ns/op	   2359333 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=65536/NoncanonicalScalar-20     	       5	       365.8 ns/op	   2359333 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=65536/NoncanonicalScalar-20     	       5	       406.6 ns/op	   2359333 state-logical-bytes/op	     144 B/op	       2 allocs/op
+BenchmarkB0CheckTxCost/K=65536/InvalidECDSA-20           	       5	    156655 ns/op	   2359333 state-logical-bytes/op	    1200 B/op	      21 allocs/op
+BenchmarkB0CheckTxCost/K=65536/InvalidECDSA-20           	       5	    156736 ns/op	   2359333 state-logical-bytes/op	    1200 B/op	      21 allocs/op
+BenchmarkB0CheckTxCost/K=65536/InvalidECDSA-20           	       5	    156655 ns/op	   2359333 state-logical-bytes/op	    1200 B/op	      21 allocs/op
+BenchmarkB0CheckTxCost/K=65536/SelfTransfer-20           	       5	   5254021 ns/op	   2359333 state-logical-bytes/op	 9979264 B/op	      30 allocs/op
+BenchmarkB0CheckTxCost/K=65536/SelfTransfer-20           	       5	   4805315 ns/op	   2359333 state-logical-bytes/op	 9979273 B/op	      29 allocs/op
+BenchmarkB0CheckTxCost/K=65536/SelfTransfer-20           	       5	   5090892 ns/op	   2359333 state-logical-bytes/op	 9979257 B/op	      29 allocs/op
+BenchmarkB0CheckTxCost/K=65536/DistinctTransfer-20       	       5	   5447362 ns/op	   2359333 state-logical-bytes/op	 9979273 B/op	      30 allocs/op
+BenchmarkB0CheckTxCost/K=65536/DistinctTransfer-20       	       5	   4786454 ns/op	   2359333 state-logical-bytes/op	 9979254 B/op	      29 allocs/op
+BenchmarkB0CheckTxCost/K=65536/DistinctTransfer-20       	       5	   5040191 ns/op	   2359333 state-logical-bytes/op	 9979254 B/op	      29 allocs/op
+PASS
+ok  	example.com/pluto/internal/b0app	0.952s
+goos: linux
+goarch: amd64
+pkg: example.com/pluto/internal/b0store
+cpu: 12th Gen Intel(R) Core(TM) i7-12700H
+BenchmarkB0SyncSnapshot/K=1-20         	       5	   2638927 ns/op	       113.0 record-bytes/op	     384 B/op	       4 allocs/op
+BenchmarkB0SyncSnapshot/K=1-20         	       5	   2782481 ns/op	       113.0 record-bytes/op	     384 B/op	       4 allocs/op
+BenchmarkB0SyncSnapshot/K=1-20         	       5	   2215668 ns/op	       113.0 record-bytes/op	     384 B/op	       4 allocs/op
+BenchmarkB0SyncSnapshot/K=64-20        	       5	   3259419 ns/op	      2381 record-bytes/op	   10752 B/op	       4 allocs/op
+BenchmarkB0SyncSnapshot/K=64-20        	       5	   2520520 ns/op	      2381 record-bytes/op	   10752 B/op	       4 allocs/op
+BenchmarkB0SyncSnapshot/K=64-20        	       5	   2297643 ns/op	      2381 record-bytes/op	   10752 B/op	       4 allocs/op
+BenchmarkB0SyncSnapshot/K=4096-20      	       5	   6352498 ns/op	    147533 record-bytes/op	  787380 B/op	      26 allocs/op
+BenchmarkB0SyncSnapshot/K=4096-20      	       5	   5359823 ns/op	    147533 record-bytes/op	  787384 B/op	      27 allocs/op
+BenchmarkB0SyncSnapshot/K=4096-20      	       5	   5681931 ns/op	    147533 record-bytes/op	  734840 B/op	      27 allocs/op
+BenchmarkB0SyncSnapshot/K=65536-20     	       5	  13288628 ns/op	   2359373 record-bytes/op	14685731 B/op	     280 allocs/op
+BenchmarkB0SyncSnapshot/K=65536-20     	       5	  13488966 ns/op	   2359373 record-bytes/op	16649572 B/op	     250 allocs/op
+BenchmarkB0SyncSnapshot/K=65536-20     	       5	  18613752 ns/op	   2359373 record-bytes/op	15988204 B/op	     273 allocs/op
+PASS
+ok  	example.com/pluto/internal/b0store	1.452s
+exit_code=0
+
+$ PLUTO_B0_SYNC_SAMPLES=1 go test ./internal/b0store -run ^TestB0SyncLatencySamples$ -count=1 -v
+=== RUN   TestB0SyncLatencySamples
+    benchmark_test.go:75: sync_sample k=1 trial=0 elapsed_ns=2405029 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=1 elapsed_ns=2354509 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=2 elapsed_ns=4912751 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=3 elapsed_ns=2406387 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=4 elapsed_ns=2725885 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=5 elapsed_ns=4621942 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=6 elapsed_ns=4923441 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=7 elapsed_ns=2566123 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=8 elapsed_ns=2317179 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=9 elapsed_ns=3992969 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=10 elapsed_ns=4715005 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=11 elapsed_ns=3017260 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=12 elapsed_ns=2548995 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=13 elapsed_ns=2402999 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=14 elapsed_ns=2934145 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=15 elapsed_ns=2859647 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=16 elapsed_ns=2207586 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=17 elapsed_ns=2207346 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=18 elapsed_ns=2613746 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=19 elapsed_ns=2021021 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=20 elapsed_ns=2575959 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=21 elapsed_ns=3257744 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=22 elapsed_ns=2374906 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=23 elapsed_ns=3415113 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=24 elapsed_ns=4062148 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=25 elapsed_ns=3378157 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=26 elapsed_ns=2200212 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=27 elapsed_ns=2692758 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=28 elapsed_ns=3649205 record_bytes=113
+    benchmark_test.go:75: sync_sample k=1 trial=29 elapsed_ns=3339632 record_bytes=113
+    benchmark_test.go:75: sync_sample k=64 trial=0 elapsed_ns=3929616 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=1 elapsed_ns=2922244 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=2 elapsed_ns=4113261 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=3 elapsed_ns=2631680 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=4 elapsed_ns=2538074 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=5 elapsed_ns=2399931 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=6 elapsed_ns=2294781 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=7 elapsed_ns=2467845 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=8 elapsed_ns=2713366 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=9 elapsed_ns=3096449 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=10 elapsed_ns=2637094 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=11 elapsed_ns=2312938 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=12 elapsed_ns=5077414 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=13 elapsed_ns=2317905 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=14 elapsed_ns=2441487 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=15 elapsed_ns=2692356 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=16 elapsed_ns=2566329 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=17 elapsed_ns=4274066 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=18 elapsed_ns=2442670 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=19 elapsed_ns=2385184 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=20 elapsed_ns=2613467 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=21 elapsed_ns=2424960 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=22 elapsed_ns=2478206 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=23 elapsed_ns=4280832 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=24 elapsed_ns=2696623 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=25 elapsed_ns=3109544 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=26 elapsed_ns=2364661 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=27 elapsed_ns=6265716 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=28 elapsed_ns=2453816 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=64 trial=29 elapsed_ns=2786752 record_bytes=2381
+    benchmark_test.go:75: sync_sample k=4096 trial=0 elapsed_ns=9281362 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=1 elapsed_ns=5437205 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=2 elapsed_ns=4388526 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=3 elapsed_ns=7998793 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=4 elapsed_ns=5273468 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=5 elapsed_ns=3452926 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=6 elapsed_ns=6228471 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=7 elapsed_ns=6606727 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=8 elapsed_ns=7523516 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=9 elapsed_ns=5455923 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=10 elapsed_ns=12306070 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=11 elapsed_ns=3423769 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=12 elapsed_ns=3954217 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=13 elapsed_ns=5387071 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=14 elapsed_ns=2754043 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=15 elapsed_ns=4695435 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=16 elapsed_ns=3947882 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=17 elapsed_ns=5163023 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=18 elapsed_ns=5949445 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=19 elapsed_ns=3249655 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=20 elapsed_ns=4717819 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=21 elapsed_ns=3682430 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=22 elapsed_ns=7328721 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=23 elapsed_ns=4770144 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=24 elapsed_ns=13244579 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=25 elapsed_ns=5420648 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=26 elapsed_ns=5136205 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=27 elapsed_ns=4193182 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=28 elapsed_ns=5065770 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=4096 trial=29 elapsed_ns=3467071 record_bytes=147533
+    benchmark_test.go:75: sync_sample k=65536 trial=0 elapsed_ns=20364499 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=1 elapsed_ns=13308836 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=2 elapsed_ns=19016241 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=3 elapsed_ns=15240985 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=4 elapsed_ns=11617660 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=5 elapsed_ns=15138232 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=6 elapsed_ns=10775942 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=7 elapsed_ns=15591594 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=8 elapsed_ns=18953339 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=9 elapsed_ns=14228836 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=10 elapsed_ns=12280976 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=11 elapsed_ns=14057344 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=12 elapsed_ns=15652854 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=13 elapsed_ns=15071428 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=14 elapsed_ns=11843834 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=15 elapsed_ns=16465158 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=16 elapsed_ns=13506250 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=17 elapsed_ns=16451816 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=18 elapsed_ns=11328809 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=19 elapsed_ns=16518912 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=20 elapsed_ns=10850261 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=21 elapsed_ns=13897492 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=22 elapsed_ns=15689534 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=23 elapsed_ns=12791339 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=24 elapsed_ns=11091829 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=25 elapsed_ns=17171876 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=26 elapsed_ns=12781742 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=27 elapsed_ns=14780387 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=28 elapsed_ns=12045909 record_bytes=2359373
+    benchmark_test.go:75: sync_sample k=65536 trial=29 elapsed_ns=13144550 record_bytes=2359373
+--- PASS: TestB0SyncLatencySamples (1.18s)
+PASS
+ok  	example.com/pluto/internal/b0store	1.192s
+exit_code=0
+
+$ python3 research/evidence/phase_03d/remaining/summarize_sync.py verification.log
+K=1 n=30 median_ns=2692758 p95_ns=4912751 p99_ns=4923441 min_ns=2021021 max_ns=4923441
+K=64 n=30 median_ns=2613467 p95_ns=5077414 p99_ns=6265716 min_ns=2294781 max_ns=6265716
+K=4096 n=30 median_ns=5136205 p95_ns=12306070 p99_ns=13244579 min_ns=2754043 max_ns=13244579
+K=65536 n=30 median_ns=14057344 p95_ns=19016241 p99_ns=20364499 min_ns=10775942 max_ns=20364499
+exit_code=0
+
+$ go test ./internal/b0state -run ^$ -bench BenchmarkB0StateCost/K=65536/Reference/Malformed -benchtime=100x -cpuprofile reference_malformed.pprof
+goos: linux
+goarch: amd64
+pkg: example.com/pluto/internal/b0state
+cpu: 12th Gen Intel(R) Core(TM) i7-12700H
+BenchmarkB0StateCost/K=65536/Reference/Malformed-20         	     100	   3476578 ns/op	   2359333 logical-bytes/op	 4735166 B/op	       2 allocs/op
+PASS
+ok  	example.com/pluto/internal/b0state	0.565s
+exit_code=0
+
+$ go tool pprof -top reference_malformed.pprof
+File: b0state.test
+Build ID: 6f378e6d762b84285f07d70d801cc684f68f098b
+Type: cpu
+Time: 2026-10-24 19:19:35 +07
+Duration: 510ms, Total samples = 420ms (82.35%)
+Showing nodes accounting for 420ms, 100% of 420ms total
+      flat  flat%   sum%        cum   cum%
+     180ms 42.86% 42.86%      180ms 42.86%  crypto/internal/fips140/sha256.blockSHANI
+      60ms 14.29% 57.14%       60ms 14.29%  cmpbody
+      50ms 11.90% 69.05%       50ms 11.90%  runtime.memmove
+      40ms  9.52% 78.57%      340ms 80.95%  example.com/pluto/internal/b0state.State.Validate
+      20ms  4.76% 83.33%       20ms  4.76%  runtime.memclrNoHeapPointers
+      10ms  2.38% 85.71%       70ms 16.67%  example.com/pluto/internal/b0state.State.marshalLogical
+      10ms  2.38% 88.10%       10ms  2.38%  runtime.(*spanSet).push
+      10ms  2.38% 90.48%       10ms  2.38%  runtime.futex
+      10ms  2.38% 92.86%       10ms  2.38%  runtime.madvise
+      10ms  2.38% 95.24%       10ms  2.38%  runtime.procyield
+      10ms  2.38% 97.62%       10ms  2.38%  runtime.stopTheWorldWithSema
+      10ms  2.38%   100%       10ms  2.38%  runtime.tgkill
+         0     0%   100%       60ms 14.29%  bytes.Compare (inline)
+         0     0%   100%      180ms 42.86%  crypto/internal/fips140/sha256.(*Digest).Write
+         0     0%   100%      180ms 42.86%  crypto/internal/fips140/sha256.block
+         0     0%   100%      180ms 42.86%  crypto/sha256.Sum256
+         0     0%   100%       20ms  4.76%  example.com/pluto/internal/b0state.BenchmarkB0StateCost
+         0     0%   100%      340ms 80.95%  example.com/pluto/internal/b0state.BenchmarkB0StateCost.func1
+         0     0%   100%      340ms 80.95%  example.com/pluto/internal/b0state.Evaluate
+         0     0%   100%       20ms  4.76%  example.com/pluto/internal/b0state.NewState
+         0     0%   100%       20ms  4.76%  example.com/pluto/internal/b0state.benchmarkState
+         0     0%   100%       10ms  2.38%  runtime.(*pageAlloc).scavenge
+         0     0%   100%       10ms  2.38%  runtime.(*pageAlloc).scavenge.func1
+         0     0%   100%       10ms  2.38%  runtime.(*pageAlloc).scavengeOne
+         0     0%   100%       10ms  2.38%  runtime.(*scavengerState).init.func2
+         0     0%   100%       10ms  2.38%  runtime.(*scavengerState).run
+         0     0%   100%       10ms  2.38%  runtime.(*sweepLocked).sweep
+         0     0%   100%       10ms  2.38%  runtime.bgscavenge
+         0     0%   100%       10ms  2.38%  runtime.bgsweep
+         0     0%   100%       10ms  2.38%  runtime.forEachP (inline)
+         0     0%   100%       10ms  2.38%  runtime.forEachPInternal
+         0     0%   100%       10ms  2.38%  runtime.futexwakeup
+         0     0%   100%       30ms  7.14%  runtime.gcBgMarkWorker
+         0     0%   100%       10ms  2.38%  runtime.gcBgMarkWorker.func2
+         0     0%   100%       10ms  2.38%  runtime.gcDrain
+         0     0%   100%       10ms  2.38%  runtime.gcDrainMarkWorkerDedicated (inline)
+         0     0%   100%       20ms  4.76%  runtime.gcMarkDone
+         0     0%   100%       10ms  2.38%  runtime.gcMarkDone.func2
+         0     0%   100%       10ms  2.38%  runtime.gcMarkTermination
+         0     0%   100%       10ms  2.38%  runtime.gcMarkTermination.forEachP.func6
+         0     0%   100%       10ms  2.38%  runtime.gopreempt_m (inline)
+         0     0%   100%       10ms  2.38%  runtime.goschedImpl
+         0     0%   100%       20ms  4.76%  runtime.makeslice
+         0     0%   100%       20ms  4.76%  runtime.mallocgc
+         0     0%   100%       20ms  4.76%  runtime.mallocgcLarge
+         0     0%   100%       10ms  2.38%  runtime.markroot
+         0     0%   100%       10ms  2.38%  runtime.markroot.func1
+         0     0%   100%       20ms  4.76%  runtime.memclrNoHeapPointersChunked
+         0     0%   100%       10ms  2.38%  runtime.morestack
+         0     0%   100%       10ms  2.38%  runtime.newstack
+         0     0%   100%       10ms  2.38%  runtime.notewakeup
+         0     0%   100%       10ms  2.38%  runtime.preemptM (inline)
+         0     0%   100%       10ms  2.38%  runtime.preemptall
+         0     0%   100%       10ms  2.38%  runtime.preemptone
+         0     0%   100%       10ms  2.38%  runtime.signalM
+         0     0%   100%       10ms  2.38%  runtime.startm
+         0     0%   100%       10ms  2.38%  runtime.suspendG
+         0     0%   100%       10ms  2.38%  runtime.sweepone
+         0     0%   100%       10ms  2.38%  runtime.sysUnused (inline)
+         0     0%   100%       10ms  2.38%  runtime.sysUnusedOS
+         0     0%   100%       40ms  9.52%  runtime.systemstack
+         0     0%   100%       10ms  2.38%  runtime.wakep
+         0     0%   100%      340ms 80.95%  testing.(*B).launch
+         0     0%   100%       20ms  4.76%  testing.(*B).run1.func1
+         0     0%   100%      360ms 85.71%  testing.(*B).runN
+exit_code=0
+
+$ go test ./internal/b0state -run ^$ -bench BenchmarkB0StateCost/K=65536/Trusted/Malformed -benchtime=100000x -cpuprofile trusted_malformed.pprof
+goos: linux
+goarch: amd64
+pkg: example.com/pluto/internal/b0state
+cpu: 12th Gen Intel(R) Core(TM) i7-12700H
+BenchmarkB0StateCost/K=65536/Trusted/Malformed-20         	  100000	        32.86 ns/op	   2359333 logical-bytes/op	       0 B/op	       0 allocs/op
+PASS
+ok  	example.com/pluto/internal/b0state	0.262s
+exit_code=0
+
+$ go tool pprof -top trusted_malformed.pprof
+File: b0state.test
+Build ID: 6f378e6d762b84285f07d70d801cc684f68f098b
+Type: cpu
+Time: 2026-10-24 19:19:36 +07
+Duration: 207.89ms, Total samples = 40ms (19.24%)
+Showing nodes accounting for 40ms, 100% of 40ms total
+      flat  flat%   sum%        cum   cum%
+      10ms 25.00% 25.00%       10ms 25.00%  encoding/json.typeFields
+      10ms 25.00% 50.00%       20ms 50.00%  regexp.compile
+      10ms 25.00% 75.00%       10ms 25.00%  regexp.onePassCopy
+      10ms 25.00%   100%       10ms 25.00%  runtime.madvise
+         0     0%   100%       10ms 25.00%  encoding/json.(*decodeState).array
+         0     0%   100%       10ms 25.00%  encoding/json.(*decodeState).object
+         0     0%   100%       10ms 25.00%  encoding/json.(*decodeState).unmarshal
+         0     0%   100%       10ms 25.00%  encoding/json.(*decodeState).value
+         0     0%   100%       10ms 25.00%  encoding/json.Unmarshal
+         0     0%   100%       10ms 25.00%  encoding/json.cachedTypeFields
+         0     0%   100%       20ms 50.00%  example.com/pluto/internal/b0state.BenchmarkB0StateCost
+         0     0%   100%       10ms 25.00%  example.com/pluto/internal/b0state.baseFixture
+         0     0%   100%       10ms 25.00%  main.main
+         0     0%   100%       20ms 50.00%  regexp.Compile (inline)
+         0     0%   100%       10ms 25.00%  regexp.compileOnePass
+         0     0%   100%       10ms 25.00%  runtime.(*pageAlloc).scavenge
+         0     0%   100%       10ms 25.00%  runtime.(*pageAlloc).scavenge.func1
+         0     0%   100%       10ms 25.00%  runtime.(*pageAlloc).scavengeOne
+         0     0%   100%       10ms 25.00%  runtime.(*scavengerState).init.func2
+         0     0%   100%       10ms 25.00%  runtime.(*scavengerState).run
+         0     0%   100%       10ms 25.00%  runtime.bgscavenge
+         0     0%   100%       10ms 25.00%  runtime.main
+         0     0%   100%       10ms 25.00%  runtime.sysUnused (inline)
+         0     0%   100%       10ms 25.00%  runtime.sysUnusedOS
+         0     0%   100%       10ms 25.00%  runtime.systemstack
+         0     0%   100%       10ms 25.00%  testing.(*B).Run
+         0     0%   100%       20ms 50.00%  testing.(*B).run1.func1
+         0     0%   100%       20ms 50.00%  testing.(*B).runN
+         0     0%   100%       10ms 25.00%  testing.(*M).Run
+         0     0%   100%       10ms 25.00%  testing.(*matcher).fullName
+         0     0%   100%       10ms 25.00%  testing.newMatcher
+         0     0%   100%       10ms 25.00%  testing.runTests
+         0     0%   100%       10ms 25.00%  testing.simpleMatch.matches
+         0     0%   100%       10ms 25.00%  testing.simpleMatch.verify
+         0     0%   100%       20ms 50.00%  testing/internal/testdeps.TestDeps.MatchString
+exit_code=0
+
+$ git diff --check
+exit_code=0
+
+$ git diff --cached --check
+exit_code=0
+
+$ accepted source and protocol preservation diff
+exit_code=0
+
+$ source manifest recheck
+.github/workflows/verify.yml: OK
+Makefile: OK
+cmd/plutod/main.go: OK
+cmd/plutod/main_test.go: OK
+go.mod: OK
+go.sum: OK
+internal/app/app.go: OK
+internal/app/app_test.go: OK
+internal/b0app/app.go: OK
+internal/b0app/app_test.go: OK
+internal/b0app/benchmark_test.go: OK
+internal/b0app/transaction_test.go: OK
+internal/b0app/vector_test.go: OK
+internal/b0genesis/transport.go: OK
+internal/b0genesis/transport_test.go: OK
+internal/b0state/benchmark_test.go: OK
+internal/b0state/genesis.go: OK
+internal/b0state/state.go: OK
+internal/b0state/state_test.go: OK
+internal/b0state/transition.go: OK
+internal/b0store/benchmark_test.go: OK
+internal/b0store/store.go: OK
+internal/b0store/store_test.go: OK
+internal/node/b0.go: OK
+internal/node/node.go: OK
+internal/store/pebble.go: OK
+internal/store/pebble_test.go: OK
+internal/store/state.go: OK
+internal/store/state_test.go: OK
+internal/tx/tx.go: OK
+internal/tx/tx_test.go: OK
+internal/version/version.go: OK
+research/specs/B0_ABCI_VALIDITY_SPEC_V1.md: OK
+research/specs/B0_CLASSICAL_TRANSACTION_PROTOCOL_V1.md: OK
+research/specs/B0_STATE_TRANSITION_SPEC_V1.md: OK
+research/specs/B0_TEST_VECTOR_PLAN_V1.md: OK
+test/integration/b0_genesis_test.go: OK
+test/integration/b0_mismatch_test.go: OK
+test/integration/b0_recovery_test.go: OK
+test/integration/b0_transaction_test.go: OK
+test/integration/node_test.go: OK
+exit_code=0
+
+verification_failures=0
+staged tree after checks: 5190ddf0b8522825d1c917f89196c1582fe38605

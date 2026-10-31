@@ -1,0 +1,6 @@
+ok  	example.com/pluto/internal/b0app	45.895s
+ok  	example.com/pluto/internal/b0state	1.751s
+ok  	example.com/pluto/internal/b0store	4.637s
+ok  	example.com/pluto/internal/b0genesis	1.843s
+
+exit_code=0

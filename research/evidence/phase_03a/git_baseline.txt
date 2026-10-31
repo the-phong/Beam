@@ -1,0 +1,13 @@
+# Phase 03A Git baseline observation
+$ git ls-remote origin refs/heads/test-mainet
+ab1d1746fdd70bc0bbf00f20a186663f3cacf2ab	refs/heads/test-mainet
+EXIT_CODE=0
+$ git rev-parse HEAD
+ab1d1746fdd70bc0bbf00f20a186663f3cacf2ab
+EXIT_CODE=0
+$ git branch --show-current
+phase/03a-tx-protocol
+EXIT_CODE=0
+Initial tree was clean on phase/02r-audit-governance before branch creation.
+Working branch was absent locally and remotely before creation.
+No reset, clean, stash, force-push or integration-branch write was used.

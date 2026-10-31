@@ -1,0 +1,13 @@
+Phase 03A first publication observation, 2026-10-23 Asia/Bangkok
+$ git rev-parse HEAD
+exit 0: 62d2e5be18fa6e8bd58c474b1764ad19d56ea7b3
+$ git push -u origin phase/03a-tx-protocol
+exit 0: new branch phase/03a-tx-protocol -> origin/phase/03a-tx-protocol
+$ gh pr create --draft --base test-mainet --head phase/03a-tx-protocol --title 'Phase 03A: proposed B0 classical transaction protocol' --body-file /tmp/pluto-phase-03a-pr-body.md
+exit 0: https://github.com/the-phong/DoS-in-Blockchain-PQC/pull/3
+$ gh pr view 3 --json url,isDraft,baseRefName,headRefName,state,statusCheckRollup
+exit 0: PR open, draft=true, base=test-mainet, head=phase/03a-tx-protocol;
+  push verify run 39835279956 SUCCESS; pull_request verify run 39835312119 SUCCESS.
+  Both jobs ran Verify foundation and Verify real local node and restart.
+No merge or direct push to an integration branch was performed.
+The final HEAD after this evidence update is in the final chat report.

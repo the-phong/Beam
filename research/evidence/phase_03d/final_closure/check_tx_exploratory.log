@@ -1,0 +1,14 @@
+=== RUN   TestB0M7OtherApplicationCallbacks
+=== RUN   TestB0M7OtherApplicationCallbacks/check-new
+2026/10/25 02:10:28 [JOB 1] WAL file /tmp/TestB0M7OtherApplicationCallbackscheck-new4018582834/001/home/data/pluto-b0-v2/000002.log with log number 000002 stopped reading at offset: 489; replayed 3 keys in 3 batches
+    b0_m7_callbacks_test.go:112: M7 check-new: final indexed transaction result Code=0
+    b0_m7_callbacks_test.go:112: M7 check-new: callback reached; SIGKILL app; Comet alive after 1.2s=false exit=<nil> RPC=Get "http://127.0.0.1:43017/status": dial tcp 127.0.0.1:43017: connect: connection refused; before B=2 C=2 A=2 H=c0305de0df961f7bb6b7b379a392fb96c3cb7ee1ca6b48c767bd833570d55ae0 sender=100/0 receiver=absent; actual Comet restart after B=4 C=4 A=4 H=44295da9566bf288667d249e95cd301217abbf9b76b500f594110fd11f9e2ffa sender=75/1 receiver=25/0 found=true; logs=/tmp/TestB0M7OtherApplicationCallbackscheck-new4018582834/001
+=== RUN   TestB0M7OtherApplicationCallbacks/check-recheck
+2026/10/25 02:10:36 [JOB 1] WAL file /tmp/TestB0M7OtherApplicationCallbackscheck-recheck933167524/001/home/data/pluto-b0-v2/000002.log with log number 000002 stopped reading at offset: 652; replayed 4 keys in 4 batches
+    b0_m7_callbacks_test.go:112: M7 check-recheck: final indexed transaction result Code=0
+    b0_m7_callbacks_test.go:112: M7 check-recheck: callback reached; SIGKILL app; Comet alive after 1.2s=false exit=<nil> RPC=Get "http://127.0.0.1:44631/status": dial tcp 127.0.0.1:44631: connect: connection refused; before B=3 C=3 A=3 H=57434e9bf8b6df4fe6c14476a65efe33117efe7b58291158d5e7acf567338c5a sender=100/0 receiver=absent; actual Comet restart after B=5 C=5 A=5 H=ceaf56ac281e653a7ac09ee4d27e6cfd251242def3f14fd5c5f004841a8189b2 sender=75/1 receiver=25/0 found=true; logs=/tmp/TestB0M7OtherApplicationCallbackscheck-recheck933167524/001
+--- PASS: TestB0M7OtherApplicationCallbacks (14.65s)
+    --- PASS: TestB0M7OtherApplicationCallbacks/check-new (6.89s)
+    --- PASS: TestB0M7OtherApplicationCallbacks/check-recheck (7.76s)
+PASS
+ok  	example.com/pluto/test/integration	14.667s

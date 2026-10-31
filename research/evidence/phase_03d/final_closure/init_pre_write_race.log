@@ -1,0 +1,8 @@
+=== RUN   TestB0M7OtherApplicationCallbacks
+=== RUN   TestB0M7OtherApplicationCallbacks/init-pre-write
+    b0_m7_callbacks_test.go:115: M7 init-pre-write: callback reached before B0 genesis write; SIGKILL app; Comet alive after 1.2s=false exit=exit status 1 RPC=Get "http://127.0.0.1:33601/status": dial tcp 127.0.0.1:33601: connect: connection refused; before B=0 C=0 A=absent sender=absent receiver=absent; production restart refused: B0 database is absent while CometBFT state exists; refusing implicit reset
+        ; no tx requested; logs=/tmp/TestB0M7OtherApplicationCallbacksinit-pre-write4126346440/001
+--- PASS: TestB0M7OtherApplicationCallbacks (2.26s)
+    --- PASS: TestB0M7OtherApplicationCallbacks/init-pre-write (2.26s)
+PASS
+ok  	example.com/pluto/test/integration	3.313s

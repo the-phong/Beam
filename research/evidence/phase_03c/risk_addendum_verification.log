@@ -1,0 +1,145 @@
+# Phase 03C risk addendum verification — 2026-10-23 09:54:30 UTC
+Source HEAD: e0704b4533aab522900c7d98584435f4c24021f1
+Branch: phase/03c-b0-state-persistence
+Go: go version go1.24.1 linux/amd64
+OS: Linux 6.18.33.2-microsoft-standard-WSL2 x86_64
+Working directory: /mnt/d/Personal/Search&Develop/Blockchain/system/pluto
+Baseline: e0704b4533aab522900c7d98584435f4c24021f1
+
+$ git diff --check
+EXIT CODE: 0
+
+$ make verify
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=e0704b4" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test ./...
+ok  	example.com/pluto/cmd/plutod	(cached)
+ok  	example.com/pluto/internal/app	(cached)
+ok  	example.com/pluto/internal/b0state	(cached)
+ok  	example.com/pluto/internal/b0store	(cached)
+?   	example.com/pluto/internal/node	[no test files]
+ok  	example.com/pluto/internal/store	(cached)
+ok  	example.com/pluto/internal/tx	(cached)
+?   	example.com/pluto/internal/version	[no test files]
+go vet ./...
+go mod verify
+all modules verified
+./build/plutod version
+plutod 0.2.0-foundation
+Go: go1.24.1
+Platform: linux/amd64
+Revision: e0704b4
+EXIT CODE: 0
+
+$ make test-integration
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=e0704b4" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test -tags integration ./test/integration -timeout 120s -count=1
+ok  	example.com/pluto/test/integration	6.734s
+EXIT CODE: 0
+
+$ git diff --exit-code e0704b4533aab522900c7d98584435f4c24021f1 -- internal cmd test go.mod go.sum Makefile .github research/specs research/evidence/phase_03b
+EXIT CODE: 0
+
+$ git diff --name-only e0704b4533aab522900c7d98584435f4c24021f1
+research/DECISIONS.md
+research/PHASE_REPORTS/PHASE_03C_REPORT.md
+research/PHASE_STATUS.md
+EXIT CODE: 0
+
+# Final documentation verification — 2026-10-23 09:55:21 UTC
+
+$ git diff --check
+EXIT CODE: 0
+
+$ make verify
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=e0704b4" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test ./...
+ok  	example.com/pluto/cmd/plutod	(cached)
+ok  	example.com/pluto/internal/app	(cached)
+ok  	example.com/pluto/internal/b0state	(cached)
+ok  	example.com/pluto/internal/b0store	(cached)
+?   	example.com/pluto/internal/node	[no test files]
+ok  	example.com/pluto/internal/store	(cached)
+ok  	example.com/pluto/internal/tx	(cached)
+?   	example.com/pluto/internal/version	[no test files]
+go vet ./...
+go mod verify
+all modules verified
+./build/plutod version
+plutod 0.2.0-foundation
+Go: go1.24.1
+Platform: linux/amd64
+Revision: e0704b4
+EXIT CODE: 0
+
+$ make test-integration
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=e0704b4" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test -tags integration ./test/integration -timeout 120s -count=1
+ok  	example.com/pluto/test/integration	6.697s
+EXIT CODE: 0
+
+$ git diff --exit-code e0704b4533aab522900c7d98584435f4c24021f1 -- internal cmd test go.mod go.sum Makefile .github research/specs research/evidence/phase_03b
+EXIT CODE: 0
+
+$ gh pr view 6 --json number,isDraft,state,headRefName,baseRefName,url,headRefOid
+Unknown JSON field: "headRefOid"
+Available fields:
+  additions
+  assignees
+  author
+  baseRefName
+  body
+  changedFiles
+  closed
+  closedAt
+  comments
+  commits
+  createdAt
+  deletions
+  files
+  headRefName
+  headRepository
+  headRepositoryOwner
+  id
+  isCrossRepository
+  isDraft
+  labels
+  maintainerCanModify
+  mergeCommit
+  mergeStateStatus
+  mergeable
+  mergedAt
+  mergedBy
+  milestone
+  number
+  potentialMergeCommit
+  projectCards
+  reactionGroups
+  reviewDecision
+  reviewRequests
+  reviews
+  state
+  statusCheckRollup
+  title
+  updatedAt
+  url
+EXIT CODE: 1
+
+$ gh pr view 6 --json number,isDraft,state,headRefName,baseRefName,url
+{"baseRefName":"test-mainet","headRefName":"phase/03c-b0-state-persistence","isDraft":true,"number":6,"state":"OPEN","url":"https://github.com/the-phong/DoS-in-Blockchain-PQC/pull/6"}
+EXIT CODE: 0
+
+$ git ls-remote origin refs/heads/phase/03c-b0-state-persistence refs/heads/test-mainet
+e0704b4533aab522900c7d98584435f4c24021f1	refs/heads/phase/03c-b0-state-persistence
+61bc65fdebf358fb0330cb9ebd4a332ca4a06aca	refs/heads/test-mainet
+EXIT CODE: 0
+
+$ git diff --cached --check
+EXIT CODE: 0

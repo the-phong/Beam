@@ -1,0 +1,163 @@
+# Phase 05 experimental implementation candidate after Owner-merged Phase 04.
+# No Phase 05 experimental result is Controller-accepted until reviewed.
+project:
+  name: Pluto
+  research_title: Evaluation of Resource Cost and Processing Correctness for Hybrid secp256k1–ML-DSA-44 Transactions in a CometBFT-Based Blockchain Application under Deliberately Invalid Input Workloads
+  phase: "05"
+  active_authorization: phase_05_complete_experimental_evaluation_owner_2026_10_26
+  phase_03b_status: completed_controller_accepted_merged
+  phase_03c_implementation_authorized: false
+  phase_03c_was_authorized: true
+  phase_03c_status: completed_controller_owner_accepted_merged
+  phase_03d_implementation_authorized: true
+  phase_03d_checkpoint_scope: D025_closed_D026_implemented_controller_owner_accepted
+  phase_03e_implementation_authorized: true
+  phase_03e_status: owner_accepted_merged_into_test_mainet
+  phase_04_implementation_authorized: true
+  phase_04_status: controller_accepted_owner_merged_PR9
+  phase_04_merge_commit: b861479982b0114be2ad60f1e7727362075a7f73
+  phase_05_status: controller_correction_implementation_candidate_pending_final_verification_and_review
+  phase_05_research_recommendation: no_go_new_dos_mechanism_under_tested_bounded_conditions_broader_risk_inconclusive
+  phase_05_implementation_authorized: true
+  implementation_status: historical_v1_plus_accepted_classical_b0_and_accepted_hybrid_b1_phase05_experiment_candidate
+  phase_03a_specification_authorized: true
+  phase_03b_was_authorized: true
+  evm_decision: D028_no_go_for_current_B1_authentication_experiment
+  hybrid_profile_decision: D029_isolated_genesis_bound_B1_candidate
+  b0_protocol_status: accepted_by_owner_integrated_classical_B0_V2
+  v2_physical_layout_decision: D024_owner_accepted_2026_10_24_experimental_baseline
+  genesis_transport_decision: D025_owner_accepted_2026_10_24_json_base64
+  initialization_lifecycle_decision: D026_owner_accepted_2026_10_25_explicit_H0_creation
+  d026_source_review: R_D026_01_and_02_controller_technically_accepted
+application:
+  version: 0.2.0-foundation
+  state_format_version: 1
+  isolated_b0_state_format_version: 2
+  isolated_b1_genesis_format_version: 3
+  isolated_b1_record_magic: PLUTOS3!
+  b0_runtime_profile: explicit_durable_H0_init_b0_and_strict_existing_state_start
+  module_path: example.com/pluto
+  module_path_status: provisional_migration_required
+source:
+  # Earlier tested/recovery identities below remain historical; the accepted
+  # Phase 03D staged tree is recorded separately in phase_03d_accepted_staged_tree.
+  source_branch: phase/05-b1-experimental-evaluation
+  # Exact implementation commit tested locally. The later documentation-only
+  # closeout commit is recorded in the report and Draft PR.
+  source_commit: fa5c95ba6a2a0f4489796c4248e6265f27cbcc89 # historical Phase 04 tested commit
+  phase_05_base_commit: b861479982b0114be2ad60f1e7727362075a7f73
+  phase_05_implementation_commit: ea5b2ce802dbb315b7b4c6718d83f698a11a112b
+  phase_05_implementation_tree: 97dc21e9dc082ca3399a63b56a10732b5900cbc9
+  phase_05_controller_correction_implementation_commit: 547190a9f6b945cf327f8b6855704b887ad78bda
+  phase_05_controller_correction_implementation_tree: 56adda92a29c845cf221d401e02d5b869ba5305e
+  phase_05_definitive_matrix_staged_tree: fc629192cb046befcdae2058fac675c92d6de1db
+  phase_05_cpu_split_smoke_staged_tree: 118d2bdd4451ad363bcb42027164a146b4fbc615
+  phase_05_final_runner_smoke_staged_tree: 4277e04d851f247dff85f72c81e804fd46248a0e
+  phase_05_corpus_sha256: 242e5c848aa3c97f731a3e70f9ca0876a9ec68bffbbbab2ead8c222c005cd535
+  phase_05_contention_matrix_staged_tree: 29c16ad5f65c08a8922fcdba8448c6e84c0e4ea7
+  phase_05_contention_repair_staged_tree: dfb1d32a821736ad029a7e77790577003186502f
+  phase_05_contention_corpus_sha256: 459148e8d350cecd1509130d88de909b9ce37c2420ef2999d224db9265ec1646
+  phase_04_source_tree: 3045db9db16837687ec2e55c0db4689797900c22
+  phase_04_base_commit: 007e827f740c9c741f47bf1f7a51eec98a79cc5a
+  phase_03e_accepted_implementation_commit: 94cd9ae5cd952d86cf3d89c89546ca516e158578
+  phase_03d_source_commit: b56c81ccce7ea4a0e7f52053c7459c4601c15b38
+  phase_03d_final_tested_staged_tree: fa28e6f7b02b70020899c8294b74af02c7ab51d0
+  phase_03d_source_manifest_sha256: 210be2016048643b05b521dcf2af4925556d909a0a36b4ac660381eea2853ee0
+  phase_03d_recovery_reviewed_source_tree: 87b504853cb0ff98790976879ea8832db92b83e0
+  phase_03d_recovery_source_manifest_sha256: f0146d74ebe11561efbdd3c23f4508caf42a69a2a0456035a72a69213f47355c
+  phase_03d_recovery_bundle_sha256: 94e4c562a1ed43ad92fcf22d65fa5724379e6fc3a74e715be587ac2a6f523916
+  working_branch: phase/05-b1-experimental-evaluation
+  phase_03e_base_commit: c3756843c5e804e3a985d817ab5c83d2dd6798a0
+  phase_03e_base_tree: 39dd15ed276ffa49297cf659b6dcca9f78d942c2
+  phase_03e_controller_initial_review_commit: 03be9b120c5ae495985bfb86e671a9863d9508dd
+  phase_03e_reviewed_implementation_tree: ac2756480ffd2baa7077f9aafec620cf44751e52
+  phase_03e_current_implementation_tree: 5f4cd5afca871982fbb3a823ffd591163ce066a9
+  phase_03e_provisioning_decision: D027_owner_accepted_with_phase_03e_merge
+  phase_03d_accepted_staged_tree: 7f7002496f38cea99cc3e0b7137e452523cc0b94
+  phase_03b_result_commit: 96d395ca0d8218ed3eb52fbf24c9b0cf528ba8b1
+  phase_03b_merge_commit: 8be07c87abed73763d40252e99bbf0573da487b4
+  phase_03b_governance_merge_commit: 61bc65fdebf358fb0330cb9ebd4a332ca4a06aca
+  accepted_protocol_commit: e205a2195d3beb634842cf986e1df5d0ed542dbb
+  reviewed_branch_commit: 3484c0f3a47dffa24ddcc0dbad2d95ca23ce31fc
+  closeout_result_commit: recorded_in_closeout_report_and_draft_pr
+  phase_03c_merge_commit: b56c81ccce7ea4a0e7f52053c7459c4601c15b38
+  phase_01_baseline_manifest: research/evidence/phase_02/BASELINE_SHA256.txt
+  phase_02_source_manifest: research/evidence/phase_02/RESULT_SHA256.txt
+toolchain:
+  go_observed: go1.24.1
+  go_mod_minimum: "1.24.0"
+  platform_observed: linux/amd64
+dependencies:
+  current_third_party: cometbft_pebble_circl_with_transitives
+  cometbft:
+    module: github.com/cometbft/cometbft
+    selected_version: v0.38.26
+    status: pinned_compiled_integrated_single_validator_tested
+  comet_config_parser:
+    module: github.com/spf13/viper
+    selected_version: v1.19.0
+    status: existing_pinned_CometBFT_transitive_promoted_to_direct_for_D026_artifact_verification
+  secp256k1:
+    module: github.com/decred/dcrd/dcrec/secp256k1/v4
+    selected_version: v4.4.1
+    minimum_go: "1.17"
+    status: owner_accepted_D023_pinned_direct_stateless_authentication_only
+  evm:
+    module: github.com/ethereum/go-ethereum
+    candidate_version: v1.16.8
+    status: provisional_module_metadata_checked_integration_unverified
+  storage:
+    module: github.com/cockroachdb/pebble
+    selected_version: v1.1.5
+    status: pinned_v1_runtime_and_isolated_v2_sync_write_restart_tested
+  mldsa44:
+    module: github.com/cloudflare/circl
+    selected_version: v1.6.4
+    go_minimum: "1.24.0"
+    status: pinned_pure_ML_DSA_44_integrated_B1_ACVP_verification_tested
+    module_zip_checksum: "h1:pOXuDTCEYyzydgUpQ0CQz3LsinKjiSk6nNP5Lt5K64U="
+environment:
+  operating_system: WSL2_Ubuntu_linux_amd64
+  docker: unavailable
+  deployment: local_four_validator_same_WSL2_host_tested
+  rpc_default: 127.0.0.1:26657
+  p2p_default: 127.0.0.1:26656
+  abci_default: 127.0.0.1:26658
+  empty_block_interval: 1s
+build:
+  command: make build
+  configuration: standard_go_compiler_with_revision_ldflag
+  binaries: build/plutod_and_build/cometbft
+verification:
+  status: phase_05_matched_rate_matrix_and_22_local_checks_passed_hosted_ci_pending_controller_review
+  phase_05_exploratory_runs: 122_complete_of_122_zero_failed_p99_insufficient
+  phase_05_matched_rate_runs: 78_usable_of_78_with_one_wall_clock_exclusion_and_fresh_replacement
+  phase_05_valid_confirmed: 20400_matched_rate
+  phase_05_invalid_rejected: 77200_matched_rate
+  phase_05_local_verification: 22_command_ledger_all_zero_make_verify_integration_4v_b1_4v_build_unit_vet_mod_verify_corpus_smoke_python_race_fuzz_micro_fmt_diffcheck
+  phase_05_hosted_ci: correction_implementation_547190a_push_40332212464_and_PR_40332222233_success_final_evidence_head_pending
+  phase_05_raw_evidence_root: research/evidence/phase_05/raw/20261026T062154Z-full_local_ignored
+  phase_05_contention_raw_evidence_root: research/evidence/phase_05/raw/20261026T083247Z-contention-full_local_ignored
+  phase_05_contention_repair_raw_evidence_root: research/evidence/phase_05/raw/20261026T131246Z-contention-repair34_local_ignored
+  phase_03c_historical_suite: build_test_vet_fmt_mod_verify_integration_race_coverage_fuzz_oracle
+  closeout_suite: diff_check_make_verify_integration_consistency_source_diff
+  evidence: research/evidence/phase_03d/d025/
+  phase_03c_historical_evidence: research/evidence/phase_03c/
+  risk_addendum: research/evidence/phase_03c/RISK_AND_ACCEPTANCE_ADDENDUM.md
+  b0_v2_cross_store_recovery: M1_to_M12_tested_software_boundaries_accepted_D026_T7_hardware_not_run
+  phase_03b_closeout_evidence: research/evidence/phase_03b_closeout/verification.log
+  phase_03c_closeout_evidence: research/evidence/phase_03c_closeout/verification.log
+  phase_03d_checkpoint_evidence: research/evidence/phase_03d/d025/
+  phase_03e_evidence: research/evidence/phase_03e/
+  phase_03e_integration_target: make_test-integration-4v
+  phase_03e_local_verification: make_verify_make_test_integration_make_test_integration_4v_build_unit_vet_mod_verify_core_M7_D026_race_all_passed_no_mandatory_skips
+  phase_03e_hosted_ci: reviewed_commit_03be9b_two_verify_checks_passed_final_closeout_result_in_controller_handoff
+  phase_04_hybrid_integration_target: make_test-integration-b1-4v
+  phase_04_hosted_ci: initial_source_e0b3375_two_verify_success_doc_PR_40268983466_failed_test_cleanup_corrected_final_checks_pending
+  phase_03d_checkpoint_suite: build_test_vet_fmt_mod_verify_integration_transport_negative_race_golden
+  phase_03d_remaining_evidence: research/evidence/phase_03d/remaining/
+  phase_03d_recovery_closure_evidence: research/evidence/phase_03d/closure/
+  limitations: no_physical_power_loss_no_independent_fault_domains_no_byzantine_attack_proof_no_DoS_resistance_claim_no_EVM_no_FIPS_module_certification
+experiments:
+  status: preliminary_diagnostic_resource_cost_only
+  results: research/evidence/phase_03d/remaining/

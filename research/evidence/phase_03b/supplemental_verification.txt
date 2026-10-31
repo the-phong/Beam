@@ -1,0 +1,15 @@
+Source revision: 54bf720ac4625c17eaa6101a8f398ef7c0663432
+Environment: WSL2 Linux amd64, Go 1.24.1
+
+$ bash -o pipefail -c 'go run research/evidence/phase_03b/generate_vectors.go | cmp - research/evidence/phase_03b/golden_vectors.json'
+Output: (none; regenerated JSON was byte-for-byte identical)
+EXIT CODE: 0
+
+$ python3 -c 'import cryptography,ssl; print("cryptography",cryptography.__version__); print("OpenSSL",ssl.OPENSSL_VERSION)'
+cryptography 3.4.8
+OpenSSL OpenSSL 3.0.2 15 Mar 2022
+EXIT CODE: 0
+
+$ git diff --exit-code 54bf720ac4625c17eaa6101a8f398ef7c0663432 -- research/specs research/PHASE_REPORTS/PHASE_01_REPORT.md research/PHASE_REPORTS/PHASE_02_REPORT.md research/PHASE_REPORTS/PHASE_02R_REPORT.md research/PHASE_REPORTS/PHASE_03A_REPORT.md
+Output: (none; accepted specs and historical reports unchanged)
+EXIT CODE: 0

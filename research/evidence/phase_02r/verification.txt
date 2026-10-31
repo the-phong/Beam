@@ -1,0 +1,90 @@
+# Phase 02R independently observed verification
+UTC start: 2026-10-22 17:57:14 UTC
+Source SHA: 0012ac53666dc3e541fcad431a946005058df1ef
+Branch: phase/02r-audit-governance
+Environment: Linux PhongJunior 6.18.33.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun 18 21:54:43 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+
+$ go version
+go version go1.24.1 linux/amd64
+EXIT_CODE=0
+
+$ go build ./...
+EXIT_CODE=0
+
+$ go test -count=1 ./...
+ok  	example.com/pluto/cmd/plutod	0.016s
+ok  	example.com/pluto/internal/app	0.109s
+?   	example.com/pluto/internal/node	[no test files]
+ok  	example.com/pluto/internal/store	0.050s
+?   	example.com/pluto/internal/version	[no test files]
+EXIT_CODE=0
+
+$ go vet ./...
+EXIT_CODE=0
+
+$ make fmt-check
+EXIT_CODE=0
+
+$ go mod verify
+all modules verified
+EXIT_CODE=0
+
+$ make verify
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=0012ac5" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test ./...
+ok  	example.com/pluto/cmd/plutod	0.017s
+ok  	example.com/pluto/internal/app	0.140s
+?   	example.com/pluto/internal/node	[no test files]
+ok  	example.com/pluto/internal/store	0.077s
+?   	example.com/pluto/internal/version	[no test files]
+go vet ./...
+go mod verify
+all modules verified
+./build/plutod version
+plutod 0.2.0-foundation
+Go: go1.24.1
+Platform: linux/amd64
+Revision: 0012ac5
+EXIT_CODE=0
+
+$ make test-integration
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=0012ac5" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test -tags integration ./test/integration -timeout 120s -count=1
+ok  	example.com/pluto/test/integration	6.675s
+EXIT_CODE=0
+
+$ go test -race ./internal/app ./internal/store
+ok  	example.com/pluto/internal/app	1.168s
+ok  	example.com/pluto/internal/store	1.081s
+EXIT_CODE=0
+
+$ go test -cover ./internal/app ./internal/store
+ok  	example.com/pluto/internal/app	0.145s	coverage: 77.5% of statements
+ok  	example.com/pluto/internal/store	0.083s	coverage: 88.2% of statements
+EXIT_CODE=0
+
+$ go test -tags integration ./test/integration -timeout 120s -count=1 -v
+=== RUN   TestSingleValidatorRestart
+    node_test.go:166: first log: /tmp/TestSingleValidatorRestart1477490852/002/first.log
+    node_test.go:201: first RPC: height=2 header_app_hash=2FEEDFE06A0D35171D8FEC8B7EF7CBDB8899E37A2B7FEB6A1FCDB213E3A4C8A4 application_height=2 application_app_hash_base64=7rQjwkAiR497QXqTRGSoM/yUq/Lh/YWYEE9qNIdvgjI=
+    node_test.go:202: block RPC: height=2 app_hash=2FEEDFE06A0D35171D8FEC8B7EF7CBDB8899E37A2B7FEB6A1FCDB213E3A4C8A4 tx_count=0 validator_count=1
+    node_test.go:223: first node log: I[2026-10-23|00:58:46.386] Completed ABCI Handshake - CometBFT and App are synced module=consensus appHeight=0 appHash=F16021C6994972E7C3F5C401C81C94937DB9CD84D3D8861A87406516C67FFC3A
+    node_test.go:223: first node log: I[2026-10-23|00:58:46.422] Started node                                 module=main nodeInfo="{ProtocolVersion:{P2P:8 Block:11 App:1} DefaultNodeID:e4aa15c833f00aad2e9158c2dee39f2b13f85b91 ListenAddr:tcp://127.0.0.1:33321 Network:pluto-integration Version:0.38.26 Channels:40202122233038606100 Moniker:PhongJunior Other:{TxIndex:on RPCAddress:tcp://127.0.0.1:45751}}"
+    node_test.go:223: first node log: I[2026-10-23|00:58:47.433] finalized block                              module=state height=1 num_txs_res=0 num_val_updates=0 block_app_hash=2FEEDFE06A0D35171D8FEC8B7EF7CBDB8899E37A2B7FEB6A1FCDB213E3A4C8A4
+    node_test.go:166: restart log: /tmp/TestSingleValidatorRestart1477490852/003/restart.log
+    node_test.go:230: restart RPC: height=4 header_app_hash=D45F6AD501507ABF86CB14CE4154DB5CB4E7336E733979FEBCD51DAADEF7BBCE recovered_height=2 recovered_app_hash=eeb423c24022478f7b417a934464a833fc94abf2e1fd8598104f6a34876f8232
+    node_test.go:232: restart node log: I[2026-10-23|00:58:49.298] Completed ABCI Handshake - CometBFT and App are synced module=consensus appHeight=2 appHash=EEB423C24022478F7B417A934464A833FC94ABF2E1FD8598104F6A34876F8232
+    node_test.go:232: restart node log: I[2026-10-23|00:58:49.335] Started node                                 module=main nodeInfo="{ProtocolVersion:{P2P:8 Block:11 App:1} DefaultNodeID:e4aa15c833f00aad2e9158c2dee39f2b13f85b91 ListenAddr:tcp://127.0.0.1:33321 Network:pluto-integration Version:0.38.26 Channels:40202122233038606100 Moniker:PhongJunior Other:{TxIndex:on RPCAddress:tcp://127.0.0.1:45751}}"
+    node_test.go:232: restart node log: I[2026-10-23|00:58:50.350] finalized block                              module=state height=3 num_txs_res=0 num_val_updates=0 block_app_hash=D45F6AD501507ABF86CB14CE4154DB5CB4E7336E733979FEBCD51DAADEF7BBCE
+    node_test.go:237: durable after restart: {ChainID:pluto-integration Version:1 Height:4 AppHash:a8c1f506f3d3e8bc310d38b596040c2b1b954295e80684fff73b9536a3ca6f2a}
+    node_test.go:253: missing application database with existing CometBFT state was rejected
+--- PASS: TestSingleValidatorRestart (6.43s)
+PASS
+ok  	example.com/pluto/test/integration	6.439s
+EXIT_CODE=0
+
+UTC end: 2026-10-22 17:58:51 UTC

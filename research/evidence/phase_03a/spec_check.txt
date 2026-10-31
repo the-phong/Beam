@@ -1,0 +1,9 @@
+# Phase 03A specification arithmetic and scope check
+$ python3 [inline deterministic length/bound assertions]
+magic_lengths=8; secp256k1_p_n_hex_digits=64; wire_bytes=146..195
+isolated_count_limit=6145*146=897170 <= 1048576
+isolated_byte_limit=5378*195=1048710 > 1048576; count=5378 <= 6144
+spec_file_count= 4
+EXIT_CODE=0
+B0_VECTOR_BYTES_GENERATED=NO
+B0_SIGNATURES_EXECUTED=NO

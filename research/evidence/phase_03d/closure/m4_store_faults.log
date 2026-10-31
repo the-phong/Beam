@@ -1,0 +1,16 @@
+=== RUN   TestM4ReturnedWALWriteAndSyncErrors
+=== RUN   TestM4ReturnedWALWriteAndSyncErrors/wal-write
+2026/10/25 01:51:19 [JOB 1] WAL file /tmp/TestM4ReturnedWALWriteAndSyncErrorswal-write3761792684/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:51:19 [JOB 1] WAL file /tmp/TestM4ReturnedWALWriteAndSyncErrorswal-write3761792684/001/b0/000008.log with log number 000008 stopped reading at offset: 0; replayed 0 keys in 0 batches
+    recovery_closure_test.go:209: M4 simulated I/O wal-write reached at "wal-write /tmp/TestM4ReturnedWALWriteAndSyncErrorswal-write3761792684/001/b0/000008.log"; child_exit=exit status 1 output="2026/10/25 01:51:19 [JOB 1] WAL file /tmp/TestM4ReturnedWALWriteAndSyncErrorswal-write3761792684/001/b0/000005.log with log number 000005 stopped reading at offset: 0; replayed 0 keys in 0 batches\n2026/10/25 01:51:19 pebble: fatal commit error: injected error\n"; reopened OLD A=0 hash=e480c8b300c5ac1d662628f90334aae185ad38ed791c59ab14e3aa42abf083da sender=100/0 receiver=absent
+=== RUN   TestM4ReturnedWALWriteAndSyncErrors/wal-sync
+2026/10/25 01:51:19 [JOB 1] WAL file /tmp/TestM4ReturnedWALWriteAndSyncErrorswal-sync4160502889/001/b0/000002.log with log number 000002 stopped reading at offset: 163; replayed 1 keys in 1 batches
+2026/10/25 01:51:19 [JOB 1] WAL file /tmp/TestM4ReturnedWALWriteAndSyncErrorswal-sync4160502889/001/b0/000008.log with log number 000008 stopped reading at offset: 200; replayed 1 keys in 1 batches
+    recovery_closure_test.go:209: M4 simulated I/O wal-sync reached at "SyncData /tmp/TestM4ReturnedWALWriteAndSyncErrorswal-sync4160502889/001/b0/000008.log length=0"; child_exit=exit status 1 output="2026/10/25 01:51:19 [JOB 1] WAL file /tmp/TestM4ReturnedWALWriteAndSyncErrorswal-sync4160502889/001/b0/000005.log with log number 000005 stopped reading at offset: 0; replayed 0 keys in 0 batches\n2026/10/25 01:51:19 pebble: fatal commit error: injected error\n"; reopened NEW A=1 hash=c735447cd853aed15e488a349710e96284640994c9da0158478f19fee293982e sender=75/1 receiver=25/0
+--- PASS: TestM4ReturnedWALWriteAndSyncErrors (0.26s)
+    --- PASS: TestM4ReturnedWALWriteAndSyncErrors/wal-write (0.13s)
+    --- PASS: TestM4ReturnedWALWriteAndSyncErrors/wal-sync (0.12s)
+PASS
+ok  	example.com/pluto/internal/b0store	0.268s
+
+exit_code=0

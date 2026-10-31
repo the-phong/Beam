@@ -1,0 +1,22 @@
+# Phase 01 local baseline, captured 2026-10-15 before Phase 02 source edits.
+# Working directory: /mnt/d/Personal/Search&Develop/Blockchain/system/pluto
+# Reproduce: sha256sum -c research/evidence/phase_02/BASELINE_SHA256.txt
+# Checksums cover all then-existing non-generated project files. Generated
+# build output, .git internals, private keys, secrets, and temp data are absent.
+# The previous Git-commit checkpoint was explicitly superseded by the user.
+0f825f5ae8fc0dfca672fe2173ddcb91e2315aa1431473d825e0273c506ebc6c  .github/workflows/verify.yml
+b99f6da71c1e239d6d197e158156be10daa75b89ece883f139a25a890fa79042  .gitignore
+a03bbdb455974cacba1d170e30a3939efd05d28e6e5c0d188c6a4a0ee5e66056  AGENTS.md
+ec6ce31718d0d519e9979a6aa4f99f7fbce62d06559a679c6afd300989268a75  Makefile
+a2255eae3d751debb83fd43735aa1fbbbe0fadc0a8a4d267f28e2814adc307ec  README.md
+977c06aab96056ad72a56e6971a58795e2a099feda64eaabb7c533508ce3753b  cmd/plutod/main.go
+f0b0fdca1aac2d18ef4ed11596c20989af57e69d8ba709afceab782409eb4f9f  cmd/plutod/main_test.go
+3d310a936869de62efc3e2e384faca1cf3b4482b9c4151b3fd277364cc04f08d  go.mod
+6e869f4a2a80ec2be3fb00fab646c5ecc8e1e6eb9994aedd99633a0d4e3673d0  internal/version/version.go
+a83ecc2a920f4c3e78dd393fc7d61684e5afd4ba34ff0fd2988001a9a702c6d0  research/ARCHITECTURE.md
+696d6b99e02fe3af460cdf09be4f1a9e0c3b97877f719abb5cc5c28b0647dfb3  research/DECISIONS.md
+08647ac059acd8bac92f2e2ef6d3b0e1942c76b7e832dd1e5c611d5e6a3273e2  research/MASTER_PLAN.md
+e3a2bb4b78da69cc932108607f72ad0654f8aed4665e14178710eae0989df077  research/PHASE_REPORTS/PHASE_01_REPORT.md
+14412df2ee60573bcc76ceb4da812437b96eb414748b716984a5d2d8526e964e  research/PHASE_STATUS.md
+a96ff263dce71d4722ddafd2153c3a4915b4891d5e3781bdb09817e430612b6d  research/config/manifest.yaml
+095dccef67101e74ba88f7f7a5ed9577c7c99177d6dec3c6bd07df4cc90e85c3  research/evidence/phase_01_commands.txt

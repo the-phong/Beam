@@ -1,0 +1,155 @@
+# Phase 03C Owner acceptance closeout — 2026-10-24 05:51:44 UTC
+Reviewed HEAD: 3484c0f3a47dffa24ddcc0dbad2d95ca23ce31fc
+Branch: phase/03c-b0-state-persistence
+Integration baseline: 61bc65fdebf358fb0330cb9ebd4a332ca4a06aca
+Go: go version go1.24.1 linux/amd64
+OS: Linux 6.18.33.2-microsoft-standard-WSL2 x86_64
+Working directory: /mnt/d/personal/search&develop/blockchain/system/pluto
+Documentation-only closeout; no fresh crypto, fuzz, power-loss or crash-injection tests.
+
+$ git diff --check
+EXIT CODE: 0
+
+$ make verify
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=3484c0f" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test ./...
+ok  	example.com/pluto/cmd/plutod	0.014s
+ok  	example.com/pluto/internal/app	0.316s
+ok  	example.com/pluto/internal/b0state	0.147s
+ok  	example.com/pluto/internal/b0store	2.325s
+?   	example.com/pluto/internal/node	[no test files]
+ok  	example.com/pluto/internal/store	0.139s
+ok  	example.com/pluto/internal/tx	0.050s
+?   	example.com/pluto/internal/version	[no test files]
+go vet ./...
+go mod verify
+all modules verified
+./build/plutod version
+plutod 0.2.0-foundation
+Go: go1.24.1
+Platform: linux/amd64
+Revision: 3484c0f
+EXIT CODE: 0
+
+$ make test-integration
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=3484c0f" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test -tags integration ./test/integration -timeout 120s -count=1
+ok  	example.com/pluto/test/integration	7.002s
+EXIT CODE: 0
+
+$ python3 research/evidence/phase_03c_closeout/consistency_check.py
+PASS: D-024 Owner acceptance and experimental scope
+PASS: D-024 exact layout and synchronized write
+PASS: Current status accepted but awaiting merge
+PASS: Current governance agrees on no Phase 03D authorization
+PASS: Live runtime remains transaction-free
+PASS: Risk addendum retained without rewritten status
+PASS: All M1–M12 remain NOT RUN
+PASS: All G1–G8 remain future gates
+PASS: R2 and future benchmarks retained
+EXIT CODE: 0
+
+$ git diff --exit-code 3484c0f3a47dffa24ddcc0dbad2d95ca23ce31fc -- internal cmd test go.mod go.sum Makefile .github research/specs research/evidence ':(exclude)research/evidence/phase_03c_closeout'
+EXIT CODE: 0
+
+$ git ls-remote origin refs/heads/phase/03c-b0-state-persistence refs/heads/test-mainet
+3484c0f3a47dffa24ddcc0dbad2d95ca23ce31fc	refs/heads/phase/03c-b0-state-persistence
+61bc65fdebf358fb0330cb9ebd4a332ca4a06aca	refs/heads/test-mainet
+EXIT CODE: 0
+
+$ gh pr view 6 --json number,isDraft,state,headRefName,baseRefName,url,statusCheckRollup
+{"baseRefName":"test-mainet","headRefName":"phase/03c-b0-state-persistence","isDraft":true,"number":6,"state":"OPEN","statusCheckRollup":[{"__typename":"CheckRun","name":"verify","status":"COMPLETED","conclusion":"SUCCESS","startedAt":"2026-10-23T09:56:30Z","completedAt":"2026-10-23T09:57:41Z","detailsUrl":"https://github.com/the-phong/DoS-in-Blockchain-PQC/actions/runs/39935501254/job/120353914608"},{"__typename":"CheckRun","name":"verify","status":"COMPLETED","conclusion":"SUCCESS","startedAt":"2026-10-23T09:56:28Z","completedAt":"2026-10-23T09:57:59Z","detailsUrl":"https://github.com/the-phong/DoS-in-Blockchain-PQC/actions/runs/39935496520/job/120353898696"}],"url":"https://github.com/the-phong/DoS-in-Blockchain-PQC/pull/6"}
+EXIT CODE: 0
+
+$ git diff --cached --check
+EXIT CODE: 0
+
+$ git diff --cached --exit-code 3484c0f3a47dffa24ddcc0dbad2d95ca23ce31fc -- internal cmd test go.mod go.sum Makefile .github research/specs research/evidence ':(exclude)research/evidence/phase_03c_closeout'
+EXIT CODE: 0
+
+$ git diff --cached --name-status
+M	AGENTS.md
+M	README.md
+M	research/ARCHITECTURE.md
+M	research/DECISIONS.md
+M	research/MASTER_PLAN.md
+M	research/PHASE_REPORTS/PHASE_03C_REPORT.md
+M	research/PHASE_STATUS.md
+M	research/config/manifest.yaml
+A	research/evidence/phase_03c_closeout/consistency_check.py
+A	research/evidence/phase_03c_closeout/verification.log
+EXIT CODE: 0
+
+# Final documentation verification — 2026-10-24 05:52:55 UTC
+
+$ git diff --check
+EXIT CODE: 0
+
+$ make verify
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=3484c0f" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test ./...
+ok  	example.com/pluto/cmd/plutod	(cached)
+ok  	example.com/pluto/internal/app	(cached)
+ok  	example.com/pluto/internal/b0state	(cached)
+ok  	example.com/pluto/internal/b0store	(cached)
+?   	example.com/pluto/internal/node	[no test files]
+ok  	example.com/pluto/internal/store	(cached)
+ok  	example.com/pluto/internal/tx	(cached)
+?   	example.com/pluto/internal/version	[no test files]
+go vet ./...
+go mod verify
+all modules verified
+./build/plutod version
+plutod 0.2.0-foundation
+Go: go1.24.1
+Platform: linux/amd64
+Revision: 3484c0f
+EXIT CODE: 0
+
+$ make test-integration
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=3484c0f" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test -tags integration ./test/integration -timeout 120s -count=1
+ok  	example.com/pluto/test/integration	6.453s
+EXIT CODE: 0
+
+$ python3 research/evidence/phase_03c_closeout/consistency_check.py
+PASS: D-024 Owner acceptance and experimental scope
+PASS: D-024 exact layout and synchronized write
+PASS: Current status accepted but awaiting merge
+PASS: Current governance agrees on no Phase 03D authorization
+PASS: Live runtime remains transaction-free
+PASS: Risk addendum retained without rewritten status
+PASS: All M1–M12 remain NOT RUN
+PASS: All G1–G8 remain future gates
+PASS: R2 and future benchmarks retained
+EXIT CODE: 0
+
+$ git diff --exit-code 3484c0f3a47dffa24ddcc0dbad2d95ca23ce31fc -- internal cmd test go.mod go.sum Makefile .github research/specs research/evidence ':(exclude)research/evidence/phase_03c_closeout'
+EXIT CODE: 0
+
+$ git diff --cached --check
+EXIT CODE: 0
+
+$ git diff --cached --exit-code 3484c0f3a47dffa24ddcc0dbad2d95ca23ce31fc -- internal cmd test go.mod go.sum Makefile .github research/specs research/evidence ':(exclude)research/evidence/phase_03c_closeout'
+EXIT CODE: 0
+
+$ git diff --cached --name-status
+M	AGENTS.md
+M	README.md
+M	research/ARCHITECTURE.md
+M	research/DECISIONS.md
+M	research/MASTER_PLAN.md
+M	research/PHASE_REPORTS/PHASE_03C_REPORT.md
+M	research/PHASE_STATUS.md
+M	research/config/manifest.yaml
+A	research/evidence/phase_03c_closeout/consistency_check.py
+A	research/evidence/phase_03c_closeout/verification.log
+EXIT CODE: 0

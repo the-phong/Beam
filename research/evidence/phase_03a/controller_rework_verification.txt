@@ -1,0 +1,71 @@
+Phase 03A controller R1-R5 rework — independently observed, 2026-10-23 Asia/Bangkok
+Reviewed starting HEAD: c6a719aff70b1fd03027b643005732337667128c
+Starting branch and remote head: phase/03a-tx-protocol at c6a719aff70b1fd03027b643005732337667128c
+Starting origin/test-mainet: ab1d1746fdd70bc0bbf00f20a186663f3cacf2ab
+Starting worktree: clean (git status --porcelain=v1 --untracked-files=all produced no lines)
+Existing PR #3: OPEN, DRAFT, head phase/03a-tx-protocol, base test-mainet
+Environment: Linux PhongJunior 6.18.33.2-microsoft-standard-WSL2 x86_64; Go 1.24.1 linux/amd64
+UTC verification window: 2026-10-22 19:07:36–19:08:09 UTC
+
+$ git diff --check
+EXIT_CODE=0
+Relevant output: none
+
+$ git diff --exit-code ab1d1746fdd70bc0bbf00f20a186663f3cacf2ab -- cmd internal test go.mod go.sum Makefile .github/workflows
+EXIT_CODE=0
+Relevant output: none; source, dependencies, tests, build and workflows unchanged from base
+
+$ python3 - <<'PY'
+limits = [(6145,146,1048576),(5378,195,1048576),(5377,195,1048576)]
+for count,size,cap in limits:
+    total=count*size
+    print(f'{count}*{size}={total}; exceeds_byte_cap={total>cap}')
+assert 6145*146==897170 and 897170<1048576
+assert 5378*195==1048710 and 1048710>1048576
+assert 5377*195==1048515 and 1048515<1048576
+print('arithmetic assertions passed')
+PY
+6145*146=897170; exceeds_byte_cap=False
+5378*195=1048710; exceeds_byte_cap=True
+5377*195=1048515; exceeds_byte_cap=False
+arithmetic assertions passed
+EXIT_CODE=0
+
+$ make verify
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=c6a719a" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test ./...
+ok  	example.com/pluto/cmd/plutod	(cached)
+ok  	example.com/pluto/internal/app	(cached)
+?   	example.com/pluto/internal/node	[no test files]
+ok  	example.com/pluto/internal/store	(cached)
+?   	example.com/pluto/internal/version	[no test files]
+go vet ./...
+go mod verify
+all modules verified
+./build/plutod version
+plutod 0.2.0-foundation
+Go: go1.24.1
+Platform: linux/amd64
+Revision: c6a719a
+EXIT_CODE=0
+
+$ make test-integration
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=c6a719a" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test -tags integration ./test/integration -timeout 120s -count=1
+ok  	example.com/pluto/test/integration	7.409s
+EXIT_CODE=0
+
+Source basis for RPC identity: pinned CometBFT v0.38.26 local module
+types/tx.go: Tx.Hash() returns tmhash.Sum(tx)
+crypto/tmhash/hash.go: Sum returns sha256.Sum256(bz)
+rpc/core/tx.go: TxSearch result Hash uses types.Tx(r.Tx).Hash()
+The same pinned upstream source is linked in the normative transaction specification.
+
+Limitations: existing tests target the unchanged Phase 02 empty-block runtime.
+No B0 transaction bytes or valid signatures were generated; no B0 protocol
+vector was executed. Arithmetic assertions verify only the stated sizes, not
+the future signatures, state transitions or four-validator behavior.

@@ -1,0 +1,37 @@
+# Post-documentation verification — 2026-10-23 Asia/Bangkok
+UTC start: 2026-10-22 18:03:23 UTC
+$ git diff --check
+EXIT_CODE=0
+
+$ make verify
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=0012ac5" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test ./...
+ok  	example.com/pluto/cmd/plutod	(cached)
+ok  	example.com/pluto/internal/app	(cached)
+?   	example.com/pluto/internal/node	[no test files]
+ok  	example.com/pluto/internal/store	(cached)
+?   	example.com/pluto/internal/version	[no test files]
+go vet ./...
+go mod verify
+all modules verified
+./build/plutod version
+plutod 0.2.0-foundation
+Go: go1.24.1
+Platform: linux/amd64
+Revision: 0012ac5
+EXIT_CODE=0
+
+$ make test-integration
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=0012ac5" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test -tags integration ./test/integration -timeout 120s -count=1
+ok  	example.com/pluto/test/integration	6.650s
+EXIT_CODE=0
+
+$ git diff --exit-code 0012ac53666dc3e541fcad431a946005058df1ef -- cmd internal test go.mod go.sum Makefile .github/workflows/verify.yml
+EXIT_CODE=0
+
+UTC end: 2026-10-22 18:03:39 UTC

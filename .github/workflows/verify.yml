@@ -1,0 +1,38 @@
+name: Pluto verification
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
+        with:
+          go-version-file: go.mod
+          cache: false
+      - name: Verify foundation
+        run: make verify
+      - name: Verify real local node and restart
+        run: make test-integration
+      - name: Verify real four-validator network
+        run: make test-integration-4v
+        timeout-minutes: 20
+      - name: Verify B1 hybrid four-validator network
+        run: make test-integration-b1-4v
+        timeout-minutes: 20
+      - name: Verify Phase 05 public corpus and correctness oracle
+        run: make benchmark-corpus
+        timeout-minutes: 5
+      - name: Verify Phase 05 result analysis
+        run: python3 -m unittest discover research/benchmarks/phase05 -p 'test_*.py' -v
+        timeout-minutes: 2
+      - name: Verify Phase 05 real four-validator workload smoke
+        run: make benchmark-smoke
+        timeout-minutes: 8
+      - name: Verify Phase 05 matched-rate contention smoke
+        run: make benchmark-contention-smoke
+        timeout-minutes: 8

@@ -1,0 +1,45 @@
+UTC start: 2026-10-23 03:07:19
+Verified integration baseline: 8be07c87abed73763d40252e99bbf0573da487b4
+Working HEAD: 8be07c87abed73763d40252e99bbf0573da487b4
+Branch: governance/03b-acceptance-closeout
+OS: Linux PhongJunior 6.18.33.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun 18 21:54:43 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+
+$ go version
+go version go1.24.1 linux/amd64
+EXIT CODE: 0
+
+$ git diff --check
+EXIT CODE: 0
+
+$ make verify
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=8be07c8" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test ./...
+ok  	example.com/pluto/cmd/plutod	(cached)
+ok  	example.com/pluto/internal/app	(cached)
+?   	example.com/pluto/internal/node	[no test files]
+ok  	example.com/pluto/internal/store	(cached)
+ok  	example.com/pluto/internal/tx	(cached)
+?   	example.com/pluto/internal/version	[no test files]
+go vet ./...
+go mod verify
+all modules verified
+./build/plutod version
+plutod 0.2.0-foundation
+Go: go1.24.1
+Platform: linux/amd64
+Revision: 8be07c8
+EXIT CODE: 0
+
+$ make test-integration
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=8be07c8" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test -tags integration ./test/integration -timeout 120s -count=1
+ok  	example.com/pluto/test/integration	6.740s
+EXIT CODE: 0
+
+$ git diff --exit-code 8be07c87abed73763d40252e99bbf0573da487b4 -- cmd internal test go.mod go.sum Makefile .github research/specs research/evidence/phase_03b/golden_vectors.json
+EXIT CODE: 0
+UTC end: 2026-10-23 03:07:44

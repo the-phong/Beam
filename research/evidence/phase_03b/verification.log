@@ -1,0 +1,119 @@
+UTC start: 2026-10-23 02:46:52
+Source baseline: 54bf720ac4625c17eaa6101a8f398ef7c0663432
+Working HEAD: 54bf720ac4625c17eaa6101a8f398ef7c0663432
+OS: Linux PhongJunior 6.18.33.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun 18 21:54:43 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+
+$ go version
+go version go1.24.1 linux/amd64
+EXIT CODE: 0
+
+$ go build ./...
+EXIT CODE: 0
+
+$ go test -count=1 ./...
+ok  	example.com/pluto/cmd/plutod	0.018s
+ok  	example.com/pluto/internal/app	0.224s
+?   	example.com/pluto/internal/node	[no test files]
+ok  	example.com/pluto/internal/store	0.127s
+ok  	example.com/pluto/internal/tx	0.024s
+?   	example.com/pluto/internal/version	[no test files]
+EXIT CODE: 0
+
+$ go vet ./...
+EXIT CODE: 0
+
+$ make fmt-check
+EXIT CODE: 0
+
+$ go mod verify
+all modules verified
+EXIT CODE: 0
+
+$ make verify
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=54bf720" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test ./...
+ok  	example.com/pluto/cmd/plutod	(cached)
+ok  	example.com/pluto/internal/app	(cached)
+?   	example.com/pluto/internal/node	[no test files]
+ok  	example.com/pluto/internal/store	(cached)
+ok  	example.com/pluto/internal/tx	0.025s
+?   	example.com/pluto/internal/version	[no test files]
+go vet ./...
+go mod verify
+all modules verified
+./build/plutod version
+plutod 0.2.0-foundation
+Go: go1.24.1
+Platform: linux/amd64
+Revision: 54bf720
+EXIT CODE: 0
+
+$ make test-integration
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=54bf720" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test -tags integration ./test/integration -timeout 120s -count=1
+ok  	example.com/pluto/test/integration	6.553s
+EXIT CODE: 0
+
+$ go test -race -count=1 ./internal/tx
+ok  	example.com/pluto/internal/tx	1.202s
+EXIT CODE: 0
+
+$ go test -coverprofile=research/evidence/phase_03b/coverage.out ./internal/tx
+ok  	example.com/pluto/internal/tx	0.022s	coverage: 96.7% of statements
+EXIT CODE: 0
+
+$ go tool cover -func=research/evidence/phase_03b/coverage.out
+example.com/pluto/internal/tx/tx.go:54:		validChainID		100.0%
+example.com/pluto/internal/tx/tx.go:70:		Parse			100.0%
+example.com/pluto/internal/tx/tx.go:92:		Encode			100.0%
+example.com/pluto/internal/tx/tx.go:113:	SigningPreimage		88.9%
+example.com/pluto/internal/tx/tx.go:126:	SigningDigest		75.0%
+example.com/pluto/internal/tx/tx.go:136:	SenderAddress		83.3%
+example.com/pluto/internal/tx/tx.go:148:	TxID			100.0%
+example.com/pluto/internal/tx/tx.go:162:	CometHash		100.0%
+example.com/pluto/internal/tx/tx.go:164:	parseKey		100.0%
+example.com/pluto/internal/tx/tx.go:175:	canonicalScalars	100.0%
+example.com/pluto/internal/tx/tx.go:183:	Validate		100.0%
+total:						(statements)		96.7%
+EXIT CODE: 0
+
+$ go test ./internal/tx -run \^\$ -fuzz \^FuzzParse\$ -fuzztime 10s -parallel 2
+fuzz: elapsed: 0s, gathering baseline coverage: 0/31 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 31/31 completed, now fuzzing with 2 workers
+fuzz: elapsed: 3s, execs: 101765 (33921/sec), new interesting: 4 (total: 35)
+fuzz: elapsed: 6s, execs: 234883 (44372/sec), new interesting: 10 (total: 41)
+fuzz: elapsed: 9s, execs: 348892 (38001/sec), new interesting: 16 (total: 47)
+fuzz: elapsed: 10s, execs: 407953 (45599/sec), new interesting: 19 (total: 50)
+PASS
+ok  	example.com/pluto/internal/tx	10.323s
+EXIT CODE: 0
+
+$ go test ./internal/tx -run \^\$ -fuzz \^FuzzCodec\$ -fuzztime 10s -parallel 2
+fuzz: elapsed: 0s, gathering baseline coverage: 0/26 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 26/26 completed, now fuzzing with 2 workers
+fuzz: elapsed: 3s, execs: 121440 (40474/sec), new interesting: 0 (total: 26)
+fuzz: elapsed: 6s, execs: 246857 (41800/sec), new interesting: 0 (total: 26)
+fuzz: elapsed: 9s, execs: 372895 (42016/sec), new interesting: 0 (total: 26)
+fuzz: elapsed: 10s, execs: 416469 (39710/sec), new interesting: 0 (total: 26)
+PASS
+ok  	example.com/pluto/internal/tx	10.108s
+EXIT CODE: 0
+
+$ python3 research/evidence/phase_03b/reference_oracle.py
+V01: PASS length=156 code=0
+V11: PASS length=156 code=5
+boundary-min-chain: PASS length=146 code=0
+boundary-max-chain: PASS length=195 code=0
+independent vectors verified: 4
+EXIT CODE: 0
+
+$ git diff --check
+EXIT CODE: 0
+
+$ git diff --exit-code 54bf720ac4625c17eaa6101a8f398ef7c0663432 -- cmd internal/app internal/node internal/store test .github Makefile
+EXIT CODE: 0
+UTC end: 2026-10-23 02:47:47

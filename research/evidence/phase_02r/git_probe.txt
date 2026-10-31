@@ -1,0 +1,17 @@
+Phase 02R Git and repository-rule probes, 2026-10-23 Asia/Bangkok
+Source repository: https://github.com/the-phong/DoS-in-Blockchain-PQC
+$ git ls-remote origin refs/heads/test-mainet
+exit 0: 0012ac53666dc3e541fcad431a946005058df1ef refs/heads/test-mainet
+$ git status --porcelain=v1 --untracked-files=all
+exit 0: [no output before Phase 02R edits]
+$ git show-ref --verify --quiet refs/heads/phase/02r-audit-governance
+exit 1 before branch creation: branch absent locally
+$ git ls-remote --heads origin phase/02r-audit-governance
+exit 0 before branch creation: [no output; branch absent remotely]
+$ gh auth status
+exit 0: authenticated as the-phong for github.com; token omitted
+$ gh api user (identity match check)
+exit 0: authenticated login and public email match the existing source commit author; email omitted here
+$ gh api repos/the-phong/DoS-in-Blockchain-PQC/branches/test-mainet/protection
+exit 1: HTTP 404, Branch not protected
+No repository administration setting was changed.

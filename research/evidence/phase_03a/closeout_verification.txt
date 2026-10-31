@@ -1,0 +1,85 @@
+Phase 03A Owner-acceptance documentation closeout — independently observed
+Local date: 2026-10-23 Asia/Bangkok
+UTC verification window: 2026-10-23 02:10:36–02:11:46 UTC
+Environment: Linux PhongJunior 6.18.33.2-microsoft-standard-WSL2 x86_64; Go 1.24.1 linux/amd64
+Starting branch: phase/03a-tx-protocol
+Starting local and origin branch HEAD: e205a2195d3beb634842cf986e1df5d0ed542dbb
+Starting origin/test-mainet: ab1d1746fdd70bc0bbf00f20a186663f3cacf2ab
+Starting worktree: clean (git status --porcelain=v1 --untracked-files=all had no output)
+Existing PR #3: OPEN, DRAFT, head phase/03a-tx-protocol, base test-mainet
+Owner decision: accepted Phase 03A B0 V1 protocol and D-020–D-022 after Controller rework, relayed in the 2026-10-23 closeout instruction. Phase 03B not authorized.
+
+$ go version
+go version go1.24.1 linux/amd64
+EXIT_CODE=0
+
+$ git diff --check
+(no output)
+EXIT_CODE=0
+
+$ git diff --exit-code ab1d1746fdd70bc0bbf00f20a186663f3cacf2ab -- cmd internal test go.mod go.sum Makefile .github/workflows
+(no output; runtime, dependencies, tests, build and workflows unchanged from base)
+EXIT_CODE=0
+
+$ make verify
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=e205a21" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test ./...
+ok  	example.com/pluto/cmd/plutod	(cached)
+ok  	example.com/pluto/internal/app	(cached)
+?   	example.com/pluto/internal/node	[no test files]
+ok  	example.com/pluto/internal/store	(cached)
+?   	example.com/pluto/internal/version	[no test files]
+go vet ./...
+go mod verify
+all modules verified
+./build/plutod version
+plutod 0.2.0-foundation
+Go: go1.24.1
+Platform: linux/amd64
+Revision: e205a21
+EXIT_CODE=0
+
+$ make test-integration
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=e205a21" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test -tags integration ./test/integration -timeout 120s -count=1
+ok  	example.com/pluto/test/integration	6.322s
+EXIT_CODE=0
+
+$ python3 - <<'PY'
+from pathlib import Path
+import subprocess
+base='e205a2195d3beb634842cf986e1df5d0ed542dbb'
+checks=[
+ ('research/specs/B0_CLASSICAL_TRANSACTION_PROTOCOL_V1.md','## 2. Exact wire encoding','## 6. Implementation follow-ups and references','## 6. Review questions and references'),
+ ('research/specs/B0_STATE_TRANSITION_SPEC_V1.md','## 3. Sequential transfer function','## 6. Implementation follow-ups','## 6. Review questions'),
+ ('research/specs/B0_TEST_VECTOR_PLAN_V1.md','| ID | Construct / starting fixture |','A recipient-credit','A recipient-credit'),
+]
+for path,start,new_end,old_end in checks:
+ old=subprocess.check_output(['git','show',f'{base}:{path}'],text=True)
+ new=Path(path).read_text()
+ assert old[old.index(start):old.index(old_end)]==new[new.index(start):new.index(new_end)],path
+ print(f'UNCHANGED: {path}: {start} through before {new_end}')
+path='research/specs/B0_ABCI_VALIDITY_SPEC_V1.md'
+old=subprocess.check_output(['git','show',f'{base}:{path}'],text=True)
+new=Path(path).read_text()
+start='| Code | Exact `Log` | Meaning |'
+end='No gas, fee, validator update'
+assert old[old.index(start):old.index(end)]==new[new.index(start):new.index(end)]
+print('UNCHANGED: ABCI exact result-code table')
+print('normative content comparison passed')
+PY
+UNCHANGED: research/specs/B0_CLASSICAL_TRANSACTION_PROTOCOL_V1.md: ## 2. Exact wire encoding through before ## 6. Implementation follow-ups and references
+UNCHANGED: research/specs/B0_STATE_TRANSITION_SPEC_V1.md: ## 3. Sequential transfer function through before ## 6. Implementation follow-ups
+UNCHANGED: research/specs/B0_TEST_VECTOR_PLAN_V1.md: | ID | Construct / starting fixture | through before A recipient-credit
+UNCHANGED: ABCI exact result-code table
+normative content comparison passed
+EXIT_CODE=0
+
+Limitations: existing checks exercise the unchanged Phase 02 empty-block
+application. The accepted B0 transaction protocol, ECDSA verification,
+account state, V2 AppHash and all planned vectors remain unimplemented and
+unexecuted. Passing checks do not authorize Phase 03B or the PR merge.

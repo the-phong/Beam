@@ -1,0 +1,170 @@
+UTC start: 2026-10-23T07:06:00Z
+Host: Linux PhongJunior 6.18.33.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun 18 21:54:43 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+Git HEAD before commit: 61bc65fdebf358fb0330cb9ebd4a332ca4a06aca
+Branch: phase/03c-b0-state-persistence
+
+$ go version
+go version go1.24.1 linux/amd64
+EXIT CODE: 0
+
+$ python3 --version
+Python 3.10.12
+EXIT CODE: 0
+
+$ go build ./...
+EXIT CODE: 0
+
+$ go test -count=1 ./...
+ok  	example.com/pluto/cmd/plutod	0.019s
+ok  	example.com/pluto/internal/app	0.182s
+ok  	example.com/pluto/internal/b0state	0.094s
+ok  	example.com/pluto/internal/b0store	1.574s
+?   	example.com/pluto/internal/node	[no test files]
+ok  	example.com/pluto/internal/store	0.076s
+ok  	example.com/pluto/internal/tx	0.021s
+?   	example.com/pluto/internal/version	[no test files]
+EXIT CODE: 0
+
+$ go vet ./...
+EXIT CODE: 0
+
+$ make fmt-check
+EXIT CODE: 0
+
+$ go mod verify
+all modules verified
+EXIT CODE: 0
+
+$ make verify
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=61bc65f" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test ./...
+ok  	example.com/pluto/cmd/plutod	(cached)
+ok  	example.com/pluto/internal/app	(cached)
+ok  	example.com/pluto/internal/b0state	(cached)
+ok  	example.com/pluto/internal/b0store	1.640s
+?   	example.com/pluto/internal/node	[no test files]
+ok  	example.com/pluto/internal/store	(cached)
+ok  	example.com/pluto/internal/tx	(cached)
+?   	example.com/pluto/internal/version	[no test files]
+go vet ./...
+go mod verify
+all modules verified
+./build/plutod version
+plutod 0.2.0-foundation
+Go: go1.24.1
+Platform: linux/amd64
+Revision: 61bc65f
+EXIT CODE: 0
+
+$ make test-integration
+mkdir -p build
+go build -ldflags "-X example.com/pluto/internal/version.Revision=61bc65f" -o build/plutod ./cmd/plutod
+go build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+go test -tags integration ./test/integration -timeout 120s -count=1
+ok  	example.com/pluto/test/integration	6.874s
+EXIT CODE: 0
+
+$ go test -race -count=1 ./internal/b0state ./internal/b0store
+ok  	example.com/pluto/internal/b0state	1.621s
+ok  	example.com/pluto/internal/b0store	3.052s
+EXIT CODE: 0
+
+$ go test -coverprofile=research/evidence/phase_03c/state.coverage.profile ./internal/b0state
+ok  	example.com/pluto/internal/b0state	0.097s	coverage: 92.2% of statements
+EXIT CODE: 0
+
+$ go tool cover -func=research/evidence/phase_03c/state.coverage.profile
+example.com/pluto/internal/b0state/genesis.go:15:	EncodeGenesis	100.0%
+example.com/pluto/internal/b0state/genesis.go:47:	ParseGenesis	96.4%
+example.com/pluto/internal/b0state/state.go:45:		validChainID	100.0%
+example.com/pluto/internal/b0state/state.go:61:		NewState	86.7%
+example.com/pluto/internal/b0state/state.go:84:		ChainID		100.0%
+example.com/pluto/internal/b0state/state.go:85:		Height		100.0%
+example.com/pluto/internal/b0state/state.go:86:		TotalSupply	100.0%
+example.com/pluto/internal/b0state/state.go:87:		AppHash		100.0%
+example.com/pluto/internal/b0state/state.go:88:		Accounts	100.0%
+example.com/pluto/internal/b0state/state.go:89:		Account		75.0%
+example.com/pluto/internal/b0state/state.go:96:		lookup		100.0%
+example.com/pluto/internal/b0state/state.go:111:	LogicalBytes	66.7%
+example.com/pluto/internal/b0state/state.go:118:	marshalLogical	100.0%
+example.com/pluto/internal/b0state/state.go:143:	Validate	66.7%
+example.com/pluto/internal/b0state/state.go:165:	DecodeLogical	96.9%
+example.com/pluto/internal/b0state/state.go:208:	AdvanceBlock	87.5%
+example.com/pluto/internal/b0state/transition.go:19:	Evaluate	91.1%
+example.com/pluto/internal/b0state/transition.go:83:	SimulateOrdered	81.8%
+total:							(statements)	92.2%
+EXIT CODE: 0
+
+$ go test -coverprofile=research/evidence/phase_03c/store.coverage.profile ./internal/b0store
+ok  	example.com/pluto/internal/b0store	1.497s	coverage: 92.9% of statements
+EXIT CODE: 0
+
+$ go tool cover -func=research/evidence/phase_03c/store.coverage.profile
+example.com/pluto/internal/b0store/store.go:56:		Create			79.2%
+example.com/pluto/internal/b0store/store.go:90:		OpenExisting		100.0%
+example.com/pluto/internal/b0store/store.go:96:		OpenExistingWithOptions	100.0%
+example.com/pluto/internal/b0store/store.go:112:	load			77.8%
+example.com/pluto/internal/b0store/store.go:139:	encodeRecord		100.0%
+example.com/pluto/internal/b0store/store.go:152:	decodeRecord		100.0%
+example.com/pluto/internal/b0store/store.go:161:	Committed		100.0%
+example.com/pluto/internal/b0store/store.go:170:	Pending			100.0%
+example.com/pluto/internal/b0store/store.go:184:	Prepare			100.0%
+example.com/pluto/internal/b0store/store.go:211:	Commit			100.0%
+example.com/pluto/internal/b0store/store.go:247:	Close			100.0%
+total:							(statements)		92.9%
+EXIT CODE: 0
+
+$ go test -run \^\$ -fuzz \^FuzzGenesis\$ -fuzztime=5s -parallel=2 ./internal/b0state
+fuzz: elapsed: 0s, gathering baseline coverage: 0/22 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 22/22 completed, now fuzzing with 2 workers
+fuzz: elapsed: 3s, execs: 126941 (42302/sec), new interesting: 0 (total: 22)
+fuzz: elapsed: 5s, execs: 220396 (44578/sec), new interesting: 0 (total: 22)
+PASS
+ok  	example.com/pluto/internal/b0state	5.108s
+EXIT CODE: 0
+
+$ go test -run \^\$ -fuzz \^FuzzLogical\$ -fuzztime=5s -parallel=2 ./internal/b0state
+fuzz: elapsed: 0s, gathering baseline coverage: 0/23 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 23/23 completed, now fuzzing with 2 workers
+fuzz: elapsed: 3s, execs: 132919 (44306/sec), new interesting: 2 (total: 25)
+fuzz: elapsed: 5s, execs: 220778 (42917/sec), new interesting: 2 (total: 25)
+PASS
+ok  	example.com/pluto/internal/b0state	5.058s
+EXIT CODE: 0
+
+$ go test -run \^\$ -fuzz \^FuzzRecord\$ -fuzztime=5s -parallel=2 ./internal/b0store
+fuzz: elapsed: 0s, gathering baseline coverage: 0/6 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 6/6 completed, now fuzzing with 2 workers
+fuzz: elapsed: 3s, execs: 41287 (13762/sec), new interesting: 0 (total: 6)
+fuzz: elapsed: 5s, execs: 70283 (14026/sec), new interesting: 0 (total: 6)
+PASS
+ok  	example.com/pluto/internal/b0store	5.083s
+EXIT CODE: 0
+
+$ bash -c go\ run\ research/evidence/phase_03c/generate_vectors.go\ \|\ cmp\ -\ research/evidence/phase_03c/state_vectors.json
+EXIT CODE: 0
+
+$ sha256sum research/evidence/phase_03c/state_vectors.json
+3d8491b174f44ae51c99796d48c4001ba56e86e008c5dbd08f7d1b68007d69f7  research/evidence/phase_03c/state_vectors.json
+EXIT CODE: 0
+
+$ python3 research/evidence/phase_03c/reference_oracle.py
+genesis: e480c8b300c5ac1d662628f90334aae185ad38ed791c59ab14e3aa42abf083da PASS
+min_chain_genesis: d6c802d654b16be9a8a1d7ef92206c3b0e8f7b77595f4321248c189e97f65b01 PASS
+max_chain_genesis: 5df773851ea3aa65afc4235fd07fc501b6d2cf08e601a01a90a5414dfb20d488 PASS
+post_transfer: c735447cd853aed15e488a349710e96284640994c9da0158478f19fee293982e PASS
+post_self_transfer: 9e512d901ea0137a89bfab07a5b03505540f98bf5fe7fc86a680ae90b4f7caec PASS
+post_empty_block: 7822225ce3300e3be2e954828c6f7944c669b16f16ecc4ddc149108e75fad024 PASS
+oracle PASS; Python 3.10.12; cryptography 3.4.8
+EXIT CODE: 0
+
+$ git diff --check
+EXIT CODE: 0
+
+$ git diff --exit-code 61bc65fdebf358fb0330cb9ebd4a332ca4a06aca -- internal/app internal/node internal/store cmd test go.mod go.sum Makefile .github research/specs
+EXIT CODE: 0
+
+UTC end: 2026-10-23T07:07:16Z
+FAILURES: 0

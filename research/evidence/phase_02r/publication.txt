@@ -1,0 +1,13 @@
+Phase 02R first publication observation, 2026-10-23 Asia/Bangkok
+$ git rev-parse HEAD
+exit 0: 587a5164fba8847e2b7e03bf56fa7c6919faba9f
+$ git push -u origin phase/02r-audit-governance
+exit 0: new branch phase/02r-audit-governance -> origin/phase/02r-audit-governance
+$ gh pr create --draft --base test-mainet --head phase/02r-audit-governance --title 'Phase 02R: independent foundation audit and governance transition' --body-file /tmp/pluto-phase-02r-pr-body.md
+exit 0: https://github.com/the-phong/DoS-in-Blockchain-PQC/pull/2
+$ gh pr view 2 --json url,isDraft,baseRefName,headRefName,state,statusCheckRollup
+exit 0: PR open, draft=true, base=test-mainet, head=phase/02r-audit-governance;
+  push verify run 39828232612 SUCCESS; pull_request verify run 39828261836 SUCCESS.
+  Both jobs ran Verify foundation and Verify real local node and restart.
+No merge or direct push to an integration branch was performed.
+The final HEAD after this evidence update is in the final chat report.

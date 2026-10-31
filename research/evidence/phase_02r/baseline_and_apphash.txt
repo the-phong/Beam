@@ -1,0 +1,13 @@
+Command: python3 independent SHA-256 verifier against source Git objects and preserved files
+Source SHA: 0012ac53666dc3e541fcad431a946005058df1ef
+Phase 02 final manifest entries: 23
+Phase 02 source snapshot mismatches: []
+Historical preservation: research/PHASE_REPORTS/PHASE_01_REPORT.md e3a2bb4b78da69cc932108607f72ad0654f8aed4665e14178710eae0989df077 MATCH
+Historical preservation: research/evidence/phase_01_commands.txt 095dccef67101e74ba88f7f7a5ed9577c7c99177d6dec3c6bd07df4cc90e85c3 MATCH
+Historical Phase 02 EXECUTION_LOG.md transcribes the phase_01_commands.txt checksum incorrectly; the baseline manifest is correct.
+Independent AppHash: 0 f16021c6994972e7c3f5c401c81c94937db9cd84d3d8861a87406516c67ffc3a
+Independent AppHash: 1 2feedfe06a0d35171d8fec8b7ef7cbdb8899e37a2b7feb6a1fcdb213e3a4c8a4
+Independent AppHash: 2 eeb423c24022478f7b417a934464a833fc94abf2e1fd8598104f6a34876f8232
+Independent AppHash: 3 d45f6ad501507abf86cb14ce4154db5cb4e7336e733979febcd51daadef7bbce
+Independent AppHash: 4 a8c1f506f3d3e8bc310d38b596040c2b1b954295e80684fff73b9536a3ca6f2a
+EXIT_CODE=0
