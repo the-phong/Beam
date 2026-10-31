@@ -14,8 +14,8 @@ import (
 	"testing"
 	"time"
 
-	"example.com/pluto/internal/b0app"
-	"example.com/pluto/internal/b0state"
+	b0app "example.com/pluto/internal/classical/app"
+	b0state "example.com/pluto/internal/classical/state"
 	"github.com/cockroachdb/pebble"
 	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"

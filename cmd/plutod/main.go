@@ -13,8 +13,8 @@ import (
 	"runtime"
 	"syscall"
 
-	"example.com/pluto/internal/b0genesis"
-	"example.com/pluto/internal/b1genesis"
+	b0genesis "example.com/pluto/internal/classical/genesis"
+	b1genesis "example.com/pluto/internal/hybrid/genesis"
 	"example.com/pluto/internal/node"
 	"example.com/pluto/internal/version"
 )
@@ -25,7 +25,7 @@ func main() {
 
 func run(args []string, stdout, stderr io.Writer) int {
 	if len(args) == 0 {
-		fmt.Fprintln(stdout, "Pluto: use init for the historical Phase 02 profile or init-b0 to create the B0 Genesis H0 snapshot.")
+		fmt.Fprintln(stdout, "Pluto: use init for the legacy empty-block profile or init-b0 for classical transfers.")
 		usage(stdout)
 		return 0
 	}
@@ -205,7 +205,7 @@ func run(args []string, stdout, stderr io.Writer) int {
 
 func usage(w io.Writer) {
 	fmt.Fprintln(w, "Usage: plutod [init|init-b0|init-b0-4v|init-b1-4v|start|state|help|version] [flags]")
-	fmt.Fprintln(w, "init selects Phase 02; init-b0 initializes one B0 validator; init-b0-4v and init-b1-4v initialize independent four-validator networks.")
+	fmt.Fprintln(w, "init selects the legacy empty-block profile; init-b0 initializes one classical validator; init-b0-4v and init-b1-4v initialize independent four-validator networks.")
 }
 
 func cometBinary() string {

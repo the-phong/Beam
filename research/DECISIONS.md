@@ -123,10 +123,10 @@ commit, push, merge or Phase 03E.
 
 | Prior requirement | D-026 replacement | Affected implementation | Required verification |
 |---|---|---|---|
-| B0 D-022 `InitChain` durably creates H0 on first start | `init-b0` creates and verifies H0 before success | `internal/node.InitB0`, `internal/b0store` existing Create API | Fresh-home H0, failure windows, duplicate `init-b0` refusal |
-| B0 D-022 `InitChain` accepts identical H0 retry | Keep retry, but validate only; never create or rewrite | `internal/b0app.InitChain` | Exact H0 response, retry byte equality, conflicting/missing/H>0 rejection |
-| D-025 transport is decoded before H0 creation inside `InitChain` | Keep transport bytes and strict decoding; validate during `init-b0` and again at `InitChain` | `internal/b0genesis`, `internal/node`, `internal/b0app` | Canonical JSON/Base64 vectors and real Comet handshake |
-| `start` could allow missing B0 when Comet data was absent | `start` requires a valid existing snapshot regardless of Comet data | `internal/node.runB0`, `internal/b0app.Open` | Missing/incomplete/corrupt home rejection and existing H0/H>0 compatibility |
+| B0 D-022 `InitChain` durably creates H0 on first start | `init-b0` creates and verifies H0 before success | `internal/node.InitB0`, `internal/classical/store` existing Create API | Fresh-home H0, failure windows, duplicate `init-b0` refusal |
+| B0 D-022 `InitChain` accepts identical H0 retry | Keep retry, but validate only; never create or rewrite | `internal/classical/app.InitChain` | Exact H0 response, retry byte equality, conflicting/missing/H>0 rejection |
+| D-025 transport is decoded before H0 creation inside `InitChain` | Keep transport bytes and strict decoding; validate during `init-b0` and again at `InitChain` | `internal/classical/genesis`, `internal/node`, `internal/classical/app` | Canonical JSON/Base64 vectors and real Comet handshake |
+| `start` could allow missing B0 when Comet data was absent | `start` requires a valid existing snapshot regardless of Comet data | `internal/node.runB0`, `internal/classical/app.Open` | Missing/incomplete/corrupt home rejection and existing H0/H>0 compatibility |
 
 The [D-026 decision document](decisions/D-026_EXPLICIT_B0_INITIALIZATION_PROPOSAL.md)
 records crash windows, alternatives, compatibility and operator recovery.

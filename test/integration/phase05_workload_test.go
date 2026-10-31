@@ -21,9 +21,9 @@ import (
 	"testing"
 	"time"
 
-	"example.com/pluto/internal/b0state"
+	b0state "example.com/pluto/internal/classical/state"
+	"example.com/pluto/internal/experiment/corpus"
 	"example.com/pluto/internal/node"
-	"example.com/pluto/internal/phase05/corpus"
 )
 
 type phase05Config struct {

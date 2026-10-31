@@ -10,8 +10,8 @@ traffic experiment, use the new public corpus and separate commands:
 make benchmark-contention-corpus
 make benchmark-contention-smoke
 make benchmark-contention-full
-PHASE05_RUN_ROOT=research/evidence/phase_05/raw/<UTC-run-id>-contention-full make benchmark-contention-analyze
-python3 -m unittest discover research/benchmarks/phase05 -p 'test_*.py' -v
+EXPERIMENT_RUN_ROOT=research/evidence/phase_05/raw/<UTC-run-id>-contention-full make benchmark-contention-analyze
+python3 -m unittest discover research/benchmarks -p 'test_*.py' -v
 ```
 
 `benchmark-contention-full` schedules 78 independent fresh networks. The
@@ -52,9 +52,9 @@ never relabeled successful.
 
 If a run has a wall-clock discontinuity, retain its original ledger, result
 and log. Rerun the exact condition in a new root with
-`python3 research/benchmarks/phase05/run_contention.py --mode repair34` for
+`python3 research/benchmarks/run_contention.py --mode repair34` for
 the identified B0 secondary baseline case. Pass that new root as
-`PHASE05_REPAIR_ROOT` to `benchmark-contention-analyze`. The analyzer verifies
+`EXPERIMENT_REPAIR_ROOT` to `benchmark-contention-analyze`. The analyzer verifies
 both ledgers and hashes, records the original in `excluded_runs.json`, and
 uses the replacement only for the matching condition. The repaired Go harness
 measures inclusion and elapsed duration with monotonic time; Unix timestamps
@@ -78,10 +78,10 @@ make benchmark-corpus
 make benchmark-smoke
 make benchmark-micro > research/evidence/phase_05/raw/micro-five.log 2>&1
 make benchmark-full > research/evidence/phase_05/raw/full-matrix.log 2>&1
-PHASE05_RUN_ROOT=research/evidence/phase_05/raw/<UTC-run-id>-full make benchmark-analyze
-python3 research/benchmarks/phase05/analyze_micro.py research/evidence/phase_05/raw/micro-five.log research/evidence/phase_05/raw/micro-summary.json
-python3 research/benchmarks/phase05/render_tables.py research/evidence/phase_05/raw/<UTC-run-id>-full/analysis research/evidence/phase_05/raw/micro-summary.json research/evidence/phase_05/raw/summary-tables.md
-python3 -m unittest discover research/benchmarks/phase05 -p 'test_*.py' -v
+EXPERIMENT_RUN_ROOT=research/evidence/phase_05/raw/<UTC-run-id>-full make benchmark-analyze
+python3 research/benchmarks/analyze_micro.py research/evidence/phase_05/raw/micro-five.log research/evidence/phase_05/raw/micro-summary.json
+python3 research/benchmarks/render_tables.py research/evidence/phase_05/raw/<UTC-run-id>-full/analysis research/evidence/phase_05/raw/micro-summary.json research/evidence/phase_05/raw/summary-tables.md
+python3 -m unittest discover research/benchmarks -p 'test_*.py' -v
 ```
 
 `benchmark-b1` runs the same prescribed primary, secondary and focused

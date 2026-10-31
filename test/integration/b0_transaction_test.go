@@ -18,8 +18,8 @@ import (
 	"testing"
 	"time"
 
-	"example.com/pluto/internal/b0state"
-	"example.com/pluto/internal/tx"
+	b0state "example.com/pluto/internal/classical/state"
+	"example.com/pluto/internal/classical/tx"
 	"github.com/decred/dcrd/dcrec/secp256k1/v4"
 	"github.com/decred/dcrd/dcrec/secp256k1/v4/ecdsa"
 )
