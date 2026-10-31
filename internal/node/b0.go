@@ -17,10 +17,10 @@ import (
 	"github.com/cometbft/cometbft/abci/server"
 	"github.com/cometbft/cometbft/types"
 
-	"example.com/pluto/internal/b0app"
-	"example.com/pluto/internal/b0genesis"
-	"example.com/pluto/internal/b0state"
-	"example.com/pluto/internal/b0store"
+	b0app "example.com/pluto/internal/classical/app"
+	b0genesis "example.com/pluto/internal/classical/genesis"
+	b0state "example.com/pluto/internal/classical/state"
+	b0store "example.com/pluto/internal/classical/store"
 )
 
 // runB0 is an explicit genesis-only profile. It keeps the Phase 02 runtime

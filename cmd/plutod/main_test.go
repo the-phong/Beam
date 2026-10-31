@@ -14,7 +14,7 @@ func TestRun(t *testing.T) {
 		wantStdout string
 		wantStderr string
 	}{
-		{name: "default status", wantCode: 0, wantStdout: "Phase 02"},
+		{name: "default status", wantCode: 0, wantStdout: "legacy empty-block"},
 		{name: "help", args: []string{"--help"}, wantCode: 0, wantStdout: "Usage: plutod"},
 		{name: "version", args: []string{"version"}, wantCode: 0, wantStdout: "plutod 0.2.0-foundation"},
 		{name: "unknown command", args: []string{"bogus"}, wantCode: 2, wantStderr: "unknown command: bogus"},

@@ -2,6 +2,8 @@
 
 GO ?= go
 REVISION := $(shell git rev-parse --short HEAD 2>/dev/null || printf unavailable)
+EXPERIMENT_RUN_ROOT ?= $(PHASE05_RUN_ROOT)
+EXPERIMENT_REPAIR_ROOT ?= $(PHASE05_REPAIR_ROOT)
 
 build:
 	mkdir -p build
@@ -31,33 +33,33 @@ verify: build test vet fmt-check
 	./build/plutod version
 
 benchmark-corpus:
-	$(GO) run ./cmd/phase05-corpus -mode verify -file research/corpus/phase_05/public_corpus.json
+	$(GO) run ./cmd/corpus -mode verify -file research/corpus/phase_05/public_corpus.json
 
 benchmark-smoke: build benchmark-corpus
-	python3 research/benchmarks/phase05/run_matrix.py --mode smoke
+	python3 research/benchmarks/run_matrix.py --mode smoke
 
 benchmark-micro:
-	$(GO) test ./internal/phase05/bench -run '^$$' -bench '^BenchmarkPhase05' -benchmem -count=5 -benchtime=200x
+	$(GO) test ./internal/experiment/bench -run '^$$' -bench '^BenchmarkPhase05' -benchmem -count=5 -benchtime=200x
 
 benchmark-b1: build benchmark-corpus
-	python3 research/benchmarks/phase05/run_matrix.py --mode b1
+	python3 research/benchmarks/run_matrix.py --mode b1
 
 benchmark-full: build benchmark-corpus
-	python3 research/benchmarks/phase05/run_matrix.py --mode full
+	python3 research/benchmarks/run_matrix.py --mode full
 
 benchmark-analyze:
-	@test -n "$(PHASE05_RUN_ROOT)" || { echo 'set PHASE05_RUN_ROOT to a completed raw run directory'; exit 2; }
-	python3 research/benchmarks/phase05/analyze.py "$(PHASE05_RUN_ROOT)" "$(PHASE05_RUN_ROOT)/analysis" --require-complete
+	@test -n "$(EXPERIMENT_RUN_ROOT)" || { echo 'set EXPERIMENT_RUN_ROOT to a completed raw run directory'; exit 2; }
+	python3 research/benchmarks/analyze.py "$(EXPERIMENT_RUN_ROOT)" "$(EXPERIMENT_RUN_ROOT)/analysis" --require-complete
 
 benchmark-contention-corpus:
-	$(GO) run ./cmd/phase05-corpus -mode verify -file research/corpus/phase_05/public_corpus_contention.json
+	$(GO) run ./cmd/corpus -mode verify -file research/corpus/phase_05/public_corpus_contention.json
 
 benchmark-contention-smoke: build benchmark-contention-corpus
-	python3 research/benchmarks/phase05/run_contention.py --mode smoke
+	python3 research/benchmarks/run_contention.py --mode smoke
 
 benchmark-contention-full: build benchmark-contention-corpus
-	python3 research/benchmarks/phase05/run_contention.py --mode full
+	python3 research/benchmarks/run_contention.py --mode full
 
 benchmark-contention-analyze:
-	@test -n "$(PHASE05_RUN_ROOT)" || { echo 'set PHASE05_RUN_ROOT to a completed raw run directory'; exit 2; }
-	python3 research/benchmarks/phase05/analyze_contention.py "$(PHASE05_RUN_ROOT)" "$(PHASE05_RUN_ROOT)/analysis" --require-complete $(if $(PHASE05_REPAIR_ROOT),--repair-root "$(PHASE05_REPAIR_ROOT)",)
+	@test -n "$(EXPERIMENT_RUN_ROOT)" || { echo 'set EXPERIMENT_RUN_ROOT to a completed raw run directory'; exit 2; }
+	python3 research/benchmarks/analyze_contention.py "$(EXPERIMENT_RUN_ROOT)" "$(EXPERIMENT_RUN_ROOT)/analysis" --require-complete $(if $(EXPERIMENT_REPAIR_ROOT),--repair-root "$(EXPERIMENT_REPAIR_ROOT)",)

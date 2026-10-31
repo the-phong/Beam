@@ -1,167 +1,96 @@
 # Pluto
 
-Pluto has two explicit local **single-validator CometBFT v0.38.26** profiles.
-The historical Phase 02 profile produces empty blocks and rejects all
-transactions. The Phase 03D B0 V2 profile now admits and executes canonical
-classical transfers with durable Pebble v1.1.5 account state. The Controller
-technically accepted and the Owner formally accepted this Phase 03D classical
-single-validator baseline. It is not a production, EVM, hybrid or
-multi-validator chain.
+Pluto is a local CometBFT ABCI++ research application. It has three explicit
+profiles: a transaction-free legacy chain, classical B0 transfers, and B1
+transfers that require secp256k1 and ML-DSA-44 signatures. B0 and B1 are
+protocol identifiers and remain part of the canonical transaction and state
+formats. The project is experimental; it has no EVM or admission optimization.
 
-## Prerequisites and build
+## Architecture
 
-On Linux/WSL2, install Go 1.24.x or newer and GNU Make. Network access is
-needed on first build to download exact pinned Go modules. Docker is not
-required. From this directory:
+```text
+cmd/plutod                 CLI and node lifecycle
+    ↓
+internal/node              CometBFT process, localhost ABCI and profile selection
+    ↓
+internal/legacy            empty-block application and V1 Pebble state
+internal/classical         B0 transaction → state → store → ABCI application
+internal/hybrid            B1 transaction → state → store → ABCI application
+    ↑
+internal/experiment        public corpus, correctness oracle and measurements
+```
+
+Each active transaction profile has `tx`, `genesis`, `state`, `store` and `app`
+packages. The hybrid profile also has `testutil` fixtures. `internal/version`
+contains build metadata. `cmd/corpus` verifies or generates public test data;
+`research/benchmarks` contains the experiment runners and analyzers;
+`test/integration` exercises real localhost nodes. See the
+[current architecture](ARCHITECTURE.md) for ownership and data flow.
+
+CometBFT owns consensus, P2P and its mempool. Pluto owns transaction
+validation, account state, persistence and AppHash. `CheckTx` filters local
+admission; proposal validation independently checks transactions. `Commit`
+performs the synced state write. Every profile has separate on-disk records;
+node startup checks that a home matches its selected profile.
+
+## Build and verify
+
+Use Linux or WSL2 with Go 1.24.x or newer, Python 3 and GNU Make. The first
+build downloads pinned Go modules.
 
 ```bash
 make build
-./build/plutod version
-./build/cometbft version
+make verify
+make test-integration
+make test-integration-4v
+make test-integration-b1-4v
+python3 -m unittest discover research/benchmarks -p 'test_*.py' -v
 ```
 
-`make build` creates **both** executables together under ignored `build/`.
-`plutod` requires its adjacent pinned `cometbft` executable for `init` and
-`start`; do not replace it with an arbitrary system-installed binary.
+`make build` creates adjacent `build/plutod` and pinned `build/cometbft`
+executables. `make verify` runs Go tests, vet, formatting and module checks.
+The integration targets create disposable localhost homes. The four-validator
+suites run four processes on one host, so they do not test independent
+physical fault domains or Byzantine behavior.
 
-## Initialize, run, inspect and restart
+## Run a local node
 
-Choose a private node home; the default `.pluto` is ignored by Git. Run from
-one terminal:
+The legacy empty-block profile needs no transaction genesis:
 
 ```bash
 ./build/plutod init --home .pluto --chain-id pluto-dev-1
 ./build/plutod start --home .pluto
 ```
 
-`init` creates CometBFT genesis, validator/node keys, local ports and Pluto
-metadata. It refuses an existing home and never resets one. The default RPC,
-P2P and ABCI ports are 26657, 26656 and 26658, bound to `127.0.0.1`; override
-all three at init with `--rpc-port`, `--p2p-port`, `--abci-port` for another
-local test. Empty blocks are configured every second. Protect files under
-`.pluto/config/`, especially private validator and node keys; never publish
-them or expose the development RPC/validator publicly.
-Protect `config.toml` as well: startup does not recheck its listener and proxy
-addresses against the localhost metadata written by `init`.
-
-From another terminal, inspect real CometBFT RPC responses:
-
-```bash
-curl -fsS http://127.0.0.1:26657/status
-curl -fsS 'http://127.0.0.1:26657/block?height=2'
-curl -fsS http://127.0.0.1:26657/abci_info
-```
-
-Wait for at least height 2. `/status` gives the consensus height; `/abci_info`
-gives the latest committed Pluto state height and base64 AppHash. A block
-header's `app_hash` corresponds to the **previous** committed state height,
-not the same-numbered `/abci_info` height. Stop with Ctrl-C; then inspect the
-durable Pluto record and restart from the **same home**:
-
-```bash
-./build/plutod state --home .pluto
-./build/plutod start --home .pluto
-```
-
-Do not run `state` while the node is active: Pebble enforces exclusive writable
-access. On restart, CometBFT logs its ABCI handshake/replay and continues block
-production. If `init` fails because a home exists, use the existing home with
-`start` or select a *new* directory; never delete a node directory just to
-make the command pass. If startup fails, check local port collisions, the
-adjacent CometBFT binary, genesis/Pluto metadata mismatch, database lock and
-key-file permissions. Partial initialization is not automatically cleaned up.
-
-## Verification and research records
-
-```bash
-go build ./...
-go test ./...
-go vet ./...
-make verify
-make test-integration
-go test -race ./internal/app ./internal/store
-```
-
-`make verify` builds both executables, runs unit/ABCI tests, vet, a read-only
-format check, module checksum verification and CLI version check.
-`make test-integration` runs a bounded real-node test in a dedicated temporary
-home: init, RPC-observed blocks, graceful stop, independent state reload,
-restart and further blocks. It only cleans up its own processes/directories.
-Actual Phase 02 results and limitations are in
-[the Phase 02 report](research/PHASE_REPORTS/PHASE_02_REPORT.md), with local
-Phase 01 baseline checksums in
-[BASELINE_SHA256.txt](research/evidence/phase_02/BASELINE_SHA256.txt).
-[Architecture](research/ARCHITECTURE.md), [decisions](research/DECISIONS.md),
-[phase status](research/PHASE_STATUS.md) and the
-[manifest](research/config/manifest.yaml) are the current governance records.
-The [Phase 02R independent review](research/PHASE_REPORTS/PHASE_02R_REPORT.md)
-records fresh checks and limitations. The 14-phase [master plan](research/MASTER_PLAN.md)
-now places minimal B0-Core before a conditional Phase 04 EVM decision.
-Phase 03B is completed, Controller-accepted and merged through PR #4 at
-`8be07c87abed73763d40252e99bbf0573da487b4`; the Owner accepted D-023.
-Phase 03C was merged into `test-mainet` at
-`b56c81ccce7ea4a0e7f52053c7459c4601c15b38`. D-024 accepts its
-single-record V2 Pebble layout only as an experimental, correctness-oriented
-baseline. The Owner accepted D-025 for Phase 03D's Genesis V2 transport.
-The Owner closed the D-025 checkpoint and subsequently formally accepted
-Phase 03D after Controller technical acceptance of D-026 and its source
-review corrections. The explicit B0 profile executes signed transfers and
-supports latest committed-state account queries. Local real-node replay and
-software-fault tests cover selected failure boundaries; physical power loss,
-four-validator BFT, hosted CI, PQC/hybrid authentication and DoS resistance
-remain unverified or unimplemented. The [Phase 03D report](research/PHASE_REPORTS/PHASE_03D_REPORT.md)
-records the earlier implementation evidence. See the earlier
-[risk addendum](research/evidence/phase_03c/RISK_AND_ACCEPTANCE_ADDENDUM.md)
-for the original M1–M12 obligations.
-Phase 03E and later work are not authorized. D-018 governs new work:
-one approved phase per branch, Draft PRs to `test-mainet`, and owner-controlled
-merges. The Phase 02 local-only Git exception remains in historical records.
-
-## Phase 03A accepted protocol specification
-
-The owner authorized and accepted the specification-only Phase 03A B0 V1
-protocol and decisions D-020–D-022 after Controller rework. The accepted
-[B0 transaction format](research/specs/B0_CLASSICAL_TRANSACTION_PROTOCOL_V1.md),
-[account transitions and AppHash V2](research/specs/B0_STATE_TRANSITION_SPEC_V1.md),
-[ABCI validity policy](research/specs/B0_ABCI_VALIDITY_SPEC_V1.md) and
-[test-vector plan](research/specs/B0_TEST_VECTOR_PLAN_V1.md) are protocol and
-test requirements. Phase 03A PR #3 was merged into `test-mainet` at
-`54bf720ac4625c17eaa6101a8f398ef7c0663432`. Phase 03B now implements a
-standalone `internal/tx` library; the historical Phase 02 profile still
-rejects all transactions. Phase 03B PR #4 is merged. Phase 03C adds a
-`internal/b0state` transition engine and `internal/b0store` V2 persistence
-adapter; neither is connected to the historical Phase 02 ABCI application.
-The explicit Phase 03D B0 profile connects them for genesis and classical
-transfer execution. See the
-[Phase 03C report](research/PHASE_REPORTS/PHASE_03C_REPORT.md) for verification
-and limitations.
-
-## Explicit B0 V2 profile (local research only)
-
-`plutod init` selects the historical Phase 02 profile. `plutod init-b0`
-explicitly selects the B0 V2 profile and requires an existing
-canonical binary Genesis V2 file. For a disposable test chain, the public
-nonproduction fixture can be written with:
+For a disposable classical chain, derive the public canonical Genesis V2
+fixture and initialize a fresh home:
 
 ```bash
 python3 -c 'import json,pathlib; v=json.loads(pathlib.Path("research/evidence/phase_03c/state_vectors.json").read_text()); pathlib.Path("/tmp/pluto-b0-genesis.bin").write_bytes(bytes.fromhex(v["genesis_wire_hex"]))'
-make build
 ./build/plutod init-b0 --home .pluto-b0 --chain-id pluto-b0-v1 --genesis-file /tmp/pluto-b0-genesis.bin
 ./build/plutod start --home .pluto-b0
 ```
 
-Use a fresh home and protect the generated validator/node keys. The CLI
-validates the binary, stores only its canonical JSON/Base64 representation in
-CometBFT `genesis.json`, and records a digest in Pluto metadata. On startup,
-the B0 application decodes the transport, validates the original binary and
-uses a separate `data/pluto-b0-v2` database. Restart never reconstructs a
-missing database from genesis. The historical `state` command remains V1-only.
-The B0 profile accepts only the Owner-approved signed transaction wire
-format. `CheckTx` uses committed state, proposals are checked independently,
-and `FinalizeBlock` advances pending state before a synchronized `Commit`.
-The account query path is `b0/account/v1` with a 20-byte address, latest
-height only and no proof. The public test-only transaction in
-`research/evidence/phase_03b/golden_vectors.json` can be submitted on a
-fresh fixture chain; its sender begins with 100 units in the example
-genesis. The [Phase 03D tests](test/integration/b0_transaction_test.go)
-show exact RPC calls, result codes, hash alignment and restart checks.
+`init-b0-4v` and `init-b1-4v` initialize fresh four-validator roots from their
+respective canonical binary genesis files. `start` runs one initialized home;
+operators start each validator separately. RPC, P2P and ABCI bind to localhost
+by default. Stop with Ctrl-C before inspecting or restarting a home.
+`plutod state` inspects only the stopped legacy profile. Never publish node
+homes, validator keys or last-sign state. The default `.pluto` homes, build
+outputs, process logs and private raw experiments are ignored by Git.
+
+## Experiments and historical records
+
+The public corpus is in `research/corpus/phase_05/`; the folder name is a
+historical dataset identifier. `make benchmark-corpus` verifies it against
+the correctness oracle. `make benchmark-smoke` runs a bounded local workload;
+`make benchmark-contention-smoke` runs the matched-rate smoke workload.
+Reproduction details are in the [experiment guide](research/specs/PHASE_05_REPRODUCIBILITY.md).
+Raw runs stay in the ignored `research/evidence/phase_05/raw/` directory.
+
+`research/specs`, `research/PHASE_REPORTS`, `research/evidence` and
+`research/decisions` retain accepted specifications and dated engineering
+records. Their historical names and evidence paths are preserved. The
+[decision record](research/DECISIONS.md), [status](research/PHASE_STATUS.md),
+[manifest](research/config/manifest.yaml) and [execution contract](AGENTS.md)
+document governance and experimental limits.

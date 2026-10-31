@@ -16,9 +16,9 @@ import (
 	"testing"
 	"time"
 
-	"example.com/pluto/internal/b0app"
-	"example.com/pluto/internal/b0state"
-	"example.com/pluto/internal/b0store"
+	b0app "example.com/pluto/internal/classical/app"
+	b0state "example.com/pluto/internal/classical/state"
+	b0store "example.com/pluto/internal/classical/store"
 	"example.com/pluto/internal/node"
 	"github.com/cockroachdb/pebble/vfs"
 	"github.com/cockroachdb/pebble/vfs/errorfs"

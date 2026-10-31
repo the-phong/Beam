@@ -14,25 +14,25 @@ jobs:
         with:
           go-version-file: go.mod
           cache: false
-      - name: Verify foundation
+      - name: Verify Go source and build
         run: make verify
       - name: Verify real local node and restart
         run: make test-integration
       - name: Verify real four-validator network
         run: make test-integration-4v
         timeout-minutes: 20
-      - name: Verify B1 hybrid four-validator network
+      - name: Verify hybrid four-validator network
         run: make test-integration-b1-4v
         timeout-minutes: 20
-      - name: Verify Phase 05 public corpus and correctness oracle
+      - name: Verify public corpus and correctness oracle
         run: make benchmark-corpus
         timeout-minutes: 5
-      - name: Verify Phase 05 result analysis
-        run: python3 -m unittest discover research/benchmarks/phase05 -p 'test_*.py' -v
+      - name: Verify result analysis
+        run: python3 -m unittest discover research/benchmarks -p 'test_*.py' -v
         timeout-minutes: 2
-      - name: Verify Phase 05 real four-validator workload smoke
+      - name: Verify real four-validator workload smoke
         run: make benchmark-smoke
         timeout-minutes: 8
-      - name: Verify Phase 05 matched-rate contention smoke
+      - name: Verify matched-rate contention smoke
         run: make benchmark-contention-smoke
         timeout-minutes: 8

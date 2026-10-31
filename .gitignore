@@ -1,16 +1,48 @@
+# Local build, run and benchmark output
 /build/
-/.pluto/
 /results/
+/tmp/
+/run/
+/.pluto/
+/.pluto-*/
+*.pid
+*.sock
+core
+core.[0-9]*
+
+# Node and validator secrets, including homes created outside the repo root
 priv_validator_key.json
 priv_validator_state.json
 node_key.json
+
+# Go test and profiling output
 *.test
 *.out
+*.prof
+*.pprof
 coverage*.txt
+*.coverprofile
+
+# Python benchmark and test caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local environment and editor files
 .env
+.env.local
+.env.*.local
 .DS_Store
+*.swp
+*~
+
+# Private research process logs and raw node output
+/research/evidence/phase_03d/d026/*.log
+/research/evidence/phase_03d/d026/raw*/
+/research/evidence/phase_03d/d026/verification_pass1/
+/research/evidence/phase_03d/d026_review/*.log
+/research/evidence/phase_03d/d026_review/raw*/
 /research/evidence/phase_03e/*.log
 /research/evidence/phase_03e/*_raw/
 /research/evidence/phase_04/raw/
 /research/evidence/phase_05/raw/
-/research/benchmarks/phase05/__pycache__/
