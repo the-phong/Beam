@@ -13,7 +13,7 @@
 | S02.1 | [`RESEARCH_PROTOCOL.md`](../../protocol/RESEARCH_PROTOCOL.md#research-questions-and-falsifiable-decisions) | Exactly RQ1, RQ2, RQ3; primary contrast, H0/H1, reject/falsify/inconclusive criteria, independent-run inference and study-specific numeric thresholds. |
 | S02.2 | [`THREAT_MODEL.md`](../../protocol/THREAT_MODEL.md#mechanisms-that-must-remain-separate) | Rejected verification work, actual accepted-list bytes/count and measured P2P relay each require distinct observation; rejection count alone is insufficient. |
 | S02.3 | [`THREAT_MODEL.md`](../../protocol/THREAT_MODEL.md#actor-capabilities) | Actors A/B/C have feasible permissions and limitations; benign high/burst demand and accidental client errors remain possible. |
-| S02.4 | [`RESEARCH_PROTOCOL.md`](../../protocol/RESEARCH_PROTOCOL.md#four-controlled-authentication-profiles) | C, CP, P and H share an intended transfer/state/consensus path; CP is valid canonical authenticated padding exactly size matched to H; S03 must prove this implementation property. |
+| S02.4 | [`RESEARCH_PROTOCOL.md`](../../protocol/RESEARCH_PROTOCOL.md#four-controlled-authentication-profiles) | C, CP, P and H share an intended transfer/state/consensus path; CP is valid canonical zero padding exactly size matched to H, excluded from its secp digest like H's ML proof; S03 must prove this implementation property. |
 | S02.5 | [`MEASUREMENT_CONTRACT.md`](../../protocol/MEASUREMENT_CONTRACT.md) | Controls, measurement point and first availability for each metric, early alert/no-future rule, correctness/QC, FPR/cost limits and isolated-network safety stops are explicit. |
 
 ## Repeatable document checks
@@ -24,7 +24,7 @@ At the S01 source commit and current S02 working tree, `make verify` exited **0*
 
 ```text
 403fb8ba968612686108a154080c06af891c629bba906456291c0e9544dc63fa  research-v2/protocol/MEASUREMENT_CONTRACT.md
-19f6cbbc794151a173f504c3663159155b931bb2edee73b18a7dc8705ca018fe  research-v2/protocol/RESEARCH_PROTOCOL.md
+e2481fd23f67934dc0480cfca72cb8e4feb52a1ec9056635e6e893942dac88de  research-v2/protocol/RESEARCH_PROTOCOL.md
 1d3981c325e836b26be73abf5c9ea2a66d341519b9f35a269b1882c193afde96  research-v2/protocol/THREAT_MODEL.md
 ```
 

@@ -9,7 +9,9 @@ The Owner authorized S02 after the bounded S01 technical gate. The proposed
 define RQ1–RQ3, actor capabilities, four controlled profiles, observation
 points, alert timing, QC and safety limits. CP is a valid transaction padded
 to H's exact wire length; all profiles use a new common transfer/state path
-and genesis-bound public keys. The primary RQ1 H–CP comparison concerns
+and genesis-bound public keys. CP padding has one canonical all-zero encoding
+and is excluded from the signed-intent digest, as H's ML proof is excluded
+from its secp digest; S03 must test this exact policy. The primary RQ1 H–CP comparison concerns
 CheckTx service time at equal bytes, not a B0/B1 historical delta. The 80%
 early-recall and 1% FPR thresholds, detector cost caps and calibration
 procedure are study design choices. S03 must prove codec/profile equivalence;
