@@ -1,6 +1,22 @@
-# Phase status — 2026-10-26
+# Phase status — 2026-11-07
 
-## Active Phase 05 experimental implementation candidate
+## Current `test-mainet` baseline and new research program
+
+Phase 05 PR #10 is merged into `test-mainet` at
+`0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`. The Phase 05 B0/B1
+corpus, four-validator localhost runner, analysis and bounded NO-GO
+recommendation are historical evidence. Their 78 usable corrected conditions
+and earlier exploratory matrix do not answer the new four-profile RQ1–RQ3
+contract. The Owner requested the new checklist program on 2026-11-07;
+implementation and review are ongoing on `research/reproducible-testbed`.
+The [S01 baseline audit](../research-v2/evidence/s01/BASELINE_AUDIT.md) fixes
+the source tree, records the reruns, and marks the bounded local technical
+Gate S01 OK. S02 research-contract work has not started; no scientific gate
+or new research result is accepted. Multi-host trials, CP/P profiles, stage
+telemetry and detector comparisons remain open. The paragraphs below record
+historical authorization and candidate status at their original dates.
+
+## Historical Phase 05 experimental implementation candidate
 
 The Owner technically accepted and merged Phase 04 PR #9 at
 `b861479982b0114be2ad60f1e7727362075a7f73`. Accepted B1 hybrid
@@ -94,8 +110,8 @@ explicit B0 initialization lifecycle for implementation within Phase 03D.
 The local candidate now has `init-b0` create and verify H0, `start` require a
 complete existing snapshot, and B0 `InitChain` validate identical persisted
 H0 without a write. D-024 record bytes and D-025 transport remain frozen.
-Software-fault evidence is recorded in the
-[D-026 implementation report](PHASE_REPORTS/PHASE_03D_D026_IMPLEMENTATION_REPORT.md).
+Software-fault evidence is summarized in the
+[Phase 03D report](PHASE_REPORTS/PHASE_03D_REPORT.md).
 This is implementation evidence, not Controller acceptance. Hardware power
 loss remains unverified; Phase 03D remains PARTIAL pending review. Phase 03E
 remains unauthorized. See [D-026](DECISIONS.md) and its

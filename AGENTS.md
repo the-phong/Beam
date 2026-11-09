@@ -1,6 +1,23 @@
 # Pluto agent execution contract
 
-## Current authority — Phase 05 B1 experimental evaluation (2026-10-26)
+## Current authority — research-v2 experimental checklist (2026-11-07)
+
+The Owner requested completion of the separate
+`research-v2/checklists/01_CHECKLIST_CHUAN_HOA_MO_RONG_REPO_THUC_NGHIEM.md`
+program, with each item checked only after verifiable completion. Work from
+the merged `test-mainet` baseline `0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`
+on `research/reproducible-testbed`, preserve unrelated local work, and seek
+review through a PR targeting `test-mainet` (the existing branch matching the
+Owner's “main-test” wording). The Owner controls merge. Keep historical
+evidence separate from new RQ1–RQ3 runs; use isolated test networks only;
+never publish private keys, runtime homes, or unsanitized raw logs. An item
+marked complete requires a reproducible artifact and test evidence. Scientific
+contract, experiment and final-result gates still require independent review;
+the agent cannot self-approve them. No EVM or admission/DoS mechanism is
+inferred from this checklist request. The older authority sections below are
+historical.
+
+## Historical authority — Phase 05 B1 experimental evaluation (2026-10-26)
 
 The Owner technically accepted and merged Phase 04 PR #9 into `test-mainet`
 at `b861479982b0114be2ad60f1e7727362075a7f73` and authorized one complete
@@ -13,7 +30,7 @@ and stop for Controller review. No DoS mechanism, admission optimization,
 EVM, protected-branch change, merge or subsequent phase is authorized. The
 older authority sections below are historical.
 
-## Current authority — Phase 04 B1 hybrid authentication (2026-10-26)
+## Historical authority — Phase 04 B1 hybrid authentication (2026-10-26)
 
 The Owner merged accepted Phase 03E PR #8 into `test-mainet` at
 `007e827f740c9c741f47bf1f7a51eec98a79cc5a` and authorized one complete
@@ -27,7 +44,7 @@ change protected branches, start another phase, or claim DoS/Byzantine/
 physical-power-loss results. The older authority sections below are
 historical.
 
-## Current authority — Phase 03E (2026-10-25)
+## Historical authority — Phase 03E (2026-10-25)
 
 The Owner merged accepted Phase 03D into `test-mainet` at
 `c3756843c5e804e3a985d817ab5c83d2dd6798a0` and authorized the complete
@@ -40,7 +57,7 @@ runtime homes; do not merge, change protected branches, start Phase 04, or
 claim unsupported PQC, DoS, Byzantine or power-loss results. The older
 Phase 03D and earlier authority paragraphs below are historical.
 
-## Current authority — Phase 03D Git closeout (2026-10-25)
+## Historical authority — Phase 03D Git closeout (2026-10-25)
 
 The Controller technically accepted and the Owner formally accepted the
 Phase 03D classical B0 ABCI++ implementation at staged tree

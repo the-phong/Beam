@@ -5,6 +5,7 @@ package integration
 import (
 	"bytes"
 	"encoding/hex"
+	"errors"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -170,10 +171,13 @@ func TestB0M6CometPostCommitAckFailpoint(t *testing.T) {
 	for {
 		var status statusResponse
 		if err := rpcGet(t, rpc, "/status", &status); err == nil {
-			break
+			height, heightErr := strconv.ParseInt(status.Result.SyncInfo.LatestBlockHeight, 10, 64)
+			if heightErr == nil && height == beforeB && status.Result.NodeInfo.Network == "pluto-b0-v1" {
+				break
+			}
 		}
 		if time.Now().After(deadline) {
-			t.Fatal("restart RPC not ready")
+			t.Fatal("restart RPC did not expose the expected chain and block height")
 		}
 		time.Sleep(100 * time.Millisecond)
 	}
@@ -181,7 +185,16 @@ func TestB0M6CometPostCommitAckFailpoint(t *testing.T) {
 		t.Fatal(err)
 	}
 	if err := restart.Wait(); err != nil {
-		t.Fatal(err)
+		var exitErr *exec.ExitError
+		if !errors.As(err, &exitErr) {
+			t.Fatal(err)
+		}
+		status, ok := exitErr.Sys().(syscall.WaitStatus)
+		if !ok || !status.Signaled() || status.Signal() != syscall.SIGTERM {
+			t.Fatal(err)
+		}
+		// RPC can become ready before CometBFT installs its SIGTERM trap.
+		// A direct SIGTERM exit is acceptable; replayed state is checked below.
 	}
 	after, _, err := a.Committed()
 	if err != nil {

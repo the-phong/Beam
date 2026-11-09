@@ -1,6 +1,15 @@
 # Pluto research master plan
 
-**Active Phase 05 experimental authority (2026-10-26):** The Owner technically
+**Current status (2026-11-07):** Phase 05 PR #10 is merged into `test-mainet`
+at `0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`. The Owner requested a
+new, separately evidenced RQ1–RQ3 program in the
+[`research-v2` checklist](../research-v2/checklists/01_CHECKLIST_CHUAN_HOA_MO_RONG_REPO_THUC_NGHIEM.md).
+Its four-profile controls, multi-host measurements and detector comparison
+are not yet complete. D-031 records provenance. Earlier phase schedules and
+authority paragraphs below are historical and do not establish checklist
+completion.
+
+**Historical Phase 05 experimental authority (2026-10-26):** The Owner technically
 accepted Phase 04 B1, merged PR #9 at
 `b861479982b0114be2ad60f1e7727362075a7f73`, and authorized one complete
 adversarial-corpus, correctness-oracle, benchmark and research-decision
@@ -40,7 +49,7 @@ to that investigation? No finding or publication
 outcome is presumed. Every phase requires a separate human authorization;
 finishing one phase does not authorize the next.
 
-**Current execution authority (2026-10-25):** Phase 03C is merged at
+**Historical execution authority (2026-10-25):** Phase 03C is merged at
 `b56c81ccce7ea4a0e7f52053c7459c4601c15b38`. The Controller technically
 accepted Phase 03D, and the Owner formally accepted its classical B0 ABCI++
 implementation at staged tree `7f7002496f38cea99cc3e0b7137e452523cc0b94`.

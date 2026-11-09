@@ -1,0 +1,13 @@
+origin/HEAD 5af503cf22cf47a0cde9cc6cc764b338cda2cae6
+origin/governance/03b-acceptance-closeout 982ba19b11f7352c39fbcc738d0a3df6ffd2a9b1
+origin/master 5af503cf22cf47a0cde9cc6cc764b338cda2cae6
+origin/phase/02r-audit-governance 0a12db5c3b46542c9551a26db0a4f1fbdc0408cf
+origin/phase/03a-tx-protocol cc00f4c8492f27e0af3686c580b51b6a3c421982
+origin/phase/03b-classical-tx-crypto 96d395ca0d8218ed3eb52fbf24c9b0cf528ba8b1
+origin/phase/03c-b0-state-persistence a6df46c7ba84151f3ae902b34cce41a67344ae48
+origin/phase/03d-b0-abci-integration de6ab2267b1feddbaa7e8c3251907bf41028209d
+origin/phase/03e-four-validator-bft 94cd9ae5cd952d86cf3d89c89546ca516e158578
+origin/phase/04-b1-hybrid-authentication ff7b95db68e14c4342448ebe3291eeee6006b593
+origin/phase/05-b1-experimental-evaluation a3b8d6d3db3f0a2150e2a82f4cd1c4ca7f856b3a
+origin/refactor/unified-architecture 97c35a1d65aa659089ed91c09a5bcba3e7948de0
+origin/test-mainet 0bdd869f2c6b3ed59b0ae825954d8667b3c7481e

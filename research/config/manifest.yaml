@@ -1,10 +1,13 @@
-# Phase 05 experimental implementation candidate after Owner-merged Phase 04.
-# No Phase 05 experimental result is Controller-accepted until reviewed.
+# Phase 05 history and the in-progress research-v2 inventory. The merged
+# Phase 05 measurements are historical, not new four-profile RQ1–RQ3 evidence.
 project:
   name: Pluto
   research_title: Evaluation of Resource Cost and Processing Correctness for Hybrid secp256k1–ML-DSA-44 Transactions in a CometBFT-Based Blockchain Application under Deliberately Invalid Input Workloads
-  phase: "05"
-  active_authorization: phase_05_complete_experimental_evaluation_owner_2026_10_26
+  phase: "research-v2-in-progress"
+  active_authorization: owner_requested_research_v2_checklist_2026_11_07
+  baseline_branch: test-mainet
+  baseline_commit: 0bdd869f2c6b3ed59b0ae825954d8667b3c7481e
+  baseline_tree: 09c24280590aee51d97b53b18c5d9e193dbe6dbe
   phase_03b_status: completed_controller_accepted_merged
   phase_03c_implementation_authorized: false
   phase_03c_was_authorized: true
@@ -16,10 +19,11 @@ project:
   phase_04_implementation_authorized: true
   phase_04_status: controller_accepted_owner_merged_PR9
   phase_04_merge_commit: b861479982b0114be2ad60f1e7727362075a7f73
-  phase_05_status: controller_correction_implementation_candidate_pending_final_verification_and_review
+  phase_05_status: merged_into_test_mainet_PR10_historical_bounded_evidence
+  phase_05_merge_commit: 0bdd869f2c6b3ed59b0ae825954d8667b3c7481e
   phase_05_research_recommendation: no_go_new_dos_mechanism_under_tested_bounded_conditions_broader_risk_inconclusive
   phase_05_implementation_authorized: true
-  implementation_status: historical_v1_plus_accepted_classical_b0_and_accepted_hybrid_b1_phase05_experiment_candidate
+  implementation_status: phase02_plus_accepted_classical_b0_and_hybrid_b1_phase05_merged_research_v2_in_progress
   phase_03a_specification_authorized: true
   phase_03b_was_authorized: true
   evm_decision: D028_no_go_for_current_B1_authentication_experiment
@@ -41,10 +45,9 @@ application:
 source:
   # Earlier tested/recovery identities below remain historical; the accepted
   # Phase 03D staged tree is recorded separately in phase_03d_accepted_staged_tree.
-  source_branch: phase/05-b1-experimental-evaluation
-  # Exact implementation commit tested locally. The later documentation-only
-  # closeout commit is recorded in the report and Draft PR.
-  source_commit: fa5c95ba6a2a0f4489796c4248e6265f27cbcc89 # historical Phase 04 tested commit
+  source_branch: test-mainet
+  source_commit: 0bdd869f2c6b3ed59b0ae825954d8667b3c7481e
+  # Earlier implementation and tested revisions below remain historical.
   phase_05_base_commit: b861479982b0114be2ad60f1e7727362075a7f73
   phase_05_implementation_commit: ea5b2ce802dbb315b7b4c6718d83f698a11a112b
   phase_05_implementation_tree: 97dc21e9dc082ca3399a63b56a10732b5900cbc9
@@ -66,7 +69,7 @@ source:
   phase_03d_recovery_reviewed_source_tree: 87b504853cb0ff98790976879ea8832db92b83e0
   phase_03d_recovery_source_manifest_sha256: f0146d74ebe11561efbdd3c23f4508caf42a69a2a0456035a72a69213f47355c
   phase_03d_recovery_bundle_sha256: 94e4c562a1ed43ad92fcf22d65fa5724379e6fc3a74e715be587ac2a6f523916
-  working_branch: phase/05-b1-experimental-evaluation
+  working_branch: research/reproducible-testbed
   phase_03e_base_commit: c3756843c5e804e3a985d817ab5c83d2dd6798a0
   phase_03e_base_tree: 39dd15ed276ffa49297cf659b6dcca9f78d942c2
   phase_03e_controller_initial_review_commit: 03be9b120c5ae495985bfb86e671a9863d9508dd
@@ -87,6 +90,13 @@ toolchain:
   go_observed: go1.24.1
   go_mod_minimum: "1.24.0"
   platform_observed: linux/amd64
+security_tools:
+  gitleaks:
+    source: https://github.com/gitleaks/gitleaks/releases/tag/v8.30.1
+    version: v8.30.1
+    linux_x64_archive_sha256: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
+    purpose: scan_proposed_commits_for_known_secret_patterns
+    status: local_baseline_and_worktree_scans_passed_ci_pending
 dependencies:
   current_third_party: cometbft_pebble_circl_with_transitives
   cometbft:

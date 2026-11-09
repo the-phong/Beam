@@ -1,0 +1,99 @@
+?   	example.com/pluto/cmd/phase05-corpus	[no test files]
+TestRun
+ok  	example.com/pluto/cmd/plutod	0.031s
+TestLifecycleAndDeterministicReplay
+TestFinalizeWithoutCommitAndFailure
+ok  	example.com/pluto/internal/app	0.020s
+TestInitializeDurableIdempotentAndReproducible
+TestInitConflictAndInterruptedDirectory
+TestMalformedTransactionDoesNotChangeCommittedState
+TestFinalizeBlockHeightAndPendingOrder
+TestConcurrentDuplicateFinalizeBlock
+TestFinalizeCommitCallbackInterleaving
+TestEmptyBlockCheckpointRejectsDifferentGenesisAfterHeightZero
+TestGenesisProcessKilledAfterSyncBeforeResponse
+TestABCIPathsFailClosedAfterUncertainCommit
+TestB0ABCITransactionLifecycle
+TestB0ProposalBudgetAndLimitFallback
+TestB0QueryAndNonceBoundary
+TestB0AcceptedSingleTransactionVectors
+TestB0AcceptedSyntheticBoundaryVectors
+TestB0AcceptedOrderedVectors
+TestB0V18GenesisSupplyOverflowAndV23CorruptRecord
+BenchmarkB0CheckTxCost
+ok  	example.com/pluto/internal/b0app	0.026s
+TestGoldenTransportAndState
+TestTransportRejectsAlternates
+TestMalformedBinaryThroughTransport
+TestMaximumLengthCalculation
+TestSmallTransportWhitespaceBoundary
+ok  	example.com/pluto/internal/b0genesis	0.013s
+TestTrustedEvaluatorMatchesPhase03CReference
+TestGenesisCanonicalAndBoundaries
+TestIndependentGoldenVectors
+TestGenesisRejections
+TestGenesisMaximumAccountCount
+TestTransfersSequentialAndReplay
+TestTransitionBoundaries
+TestAccountCapAndCorruptLogical
+BenchmarkB0StateCost
+FuzzGenesis
+FuzzLogical
+ok  	example.com/pluto/internal/b0state	0.012s
+TestB0SyncLatencySamples
+TestM4ReturnedWALWriteAndSyncErrors
+TestM11GenesisCreationFaultBoundaries
+TestCreateCommitRestartAndIsolation
+TestFaultBoundaries
+TestConcurrentCommittedReadsDuringCandidateLifecycle
+TestConcurrentReadersFailClosedOnUncertainCommit
+TestProcessKillRecovery
+TestCorruptPhysicalRecordsFailClosed
+TestPhysicalOrderingOverflowAndHeight
+TestLifecycleAndStorageErrorBranches
+BenchmarkB0SyncSnapshot
+FuzzRecord
+ok  	example.com/pluto/internal/b0store	0.014s
+TestHybridABCIProposalAndCommit
+TestHybridPostSyncResponseLoss
+ok  	example.com/pluto/internal/b1app	0.029s
+TestB1CanonicalGenesisTransport
+ok  	example.com/pluto/internal/b1genesis	0.012s
+TestHybridPublicGoldenVector
+TestHybridH01ToH18
+TestHybridGenesisAndRecordIdentity
+FuzzHybridDecode
+FuzzHybridEvaluate
+ok  	example.com/pluto/internal/b1state	0.012s
+TestB1StoreFailClosedAndRecovery
+ok  	example.com/pluto/internal/b1store	0.017s
+?   	example.com/pluto/internal/b1test	[no test files]
+TestHybridEnvelopeBounds
+ok  	example.com/pluto/internal/b1tx	0.012s
+?   	example.com/pluto/internal/node	[no test files]
+TestMeasurementDoesNotChangeB1Result
+TestRecorderDropsOnlySamples
+BenchmarkPhase05Crypto
+BenchmarkPhase05Application
+BenchmarkPhase05FinalizeCommit
+BenchmarkPhase05RecorderOverhead
+BenchmarkPhase05InvalidClasses
+ok  	example.com/pluto/internal/phase05/bench	0.026s
+TestContentionCorpusOracleAndNonceSequence
+TestPublicCorpusOracle
+TestCorpusIntegrityAndNoOverwrite
+FuzzCorpusDecoder
+ok  	example.com/pluto/internal/phase05/corpus	0.032s
+TestDurableReloadAndExclusiveOpen
+TestCanonicalCommitmentAndEncoding
+TestInvalidState
+ok  	example.com/pluto/internal/store	0.014s
+TestRoundTripAndIdentity
+TestGoldenVectors
+TestValidationPrecedenceAndTxID
+TestBoundariesAndSignedFields
+TestHighSMalleabilityAndDoubleHash
+FuzzParse
+FuzzCodec
+ok  	example.com/pluto/internal/tx	0.012s
+?   	example.com/pluto/internal/version	[no test files]

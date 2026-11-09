@@ -1,4 +1,12 @@
-# Pluto architecture — implemented Phase 02 baseline and Phase 02R review
+# Pluto architecture — current profiles and historical design record
+
+At `test-mainet` baseline `0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`,
+Phase 02, B0 and B1 are selectable local profiles. B0 and B1 have tested
+four-validator localhost configurations. Phase 05's evaluation is merged but
+bounded; the new four-profile research program is tracked separately in
+[`research-v2/checklists/01_CHECKLIST_CHUAN_HOA_MO_RONG_REPO_THUC_NGHIEM.md`](../research-v2/checklists/01_CHECKLIST_CHUAN_HOA_MO_RONG_REPO_THUC_NGHIEM.md).
+The historical candidate/authorization wording below describes prior review
+points and must not be read as current implementation status.
 
 ## Phase 05 experimental measurement boundary
 
@@ -16,7 +24,7 @@ consensus validity nor install a DoS admission mechanism. Exact boundaries,
 confounders and hypotheses are in
 [`PHASE_05_EXPERIMENT.md`](specs/PHASE_05_EXPERIMENT.md).
 
-## Phase 04 B1 hybrid candidate
+## Historical Phase 04 B1 hybrid design
 
 A separately selected B1 profile uses the existing pinned CometBFT consensus
 engine with a new `internal/b1app` ABCI adapter. `init-b1-4v` exclusively
@@ -41,7 +49,7 @@ are four processes but one physical fault domain. The exact binary profile,
 error taxonomy and threat assumptions are in
 [`specs/B1_HYBRID_AUTHENTICATION.md`](specs/B1_HYBRID_AUTHENTICATION.md).
 
-## Phase 03E local four-validator extension (candidate)
+## Historical Phase 03E local four-validator extension
 
 `init-b0-4v` creates four independent D-026 homes under one fresh root. It
 generates four validator and four P2P identities, writes one shared CometBFT

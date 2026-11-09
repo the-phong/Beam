@@ -1,12 +1,16 @@
 # Pluto
 
-Pluto has two explicit local **single-validator CometBFT v0.38.26** profiles.
-The historical Phase 02 profile produces empty blocks and rejects all
-transactions. The Phase 03D B0 V2 profile now admits and executes canonical
-classical transfers with durable Pebble v1.1.5 account state. The Controller
-technically accepted and the Owner formally accepted this Phase 03D classical
-single-validator baseline. It is not a production, EVM, hybrid or
-multi-validator chain.
+Pluto is a local CometBFT v0.38.26 research application with three selectable
+profiles. The historical Phase 02 profile rejects transactions; B0 executes
+classical secp256k1 transfers; B1 executes genesis-bound secp256k1 and
+ML-DSA-44 hybrid transfers. B0 and B1 have four-validator localhost test
+networks. The Phase 05 evaluation was merged into `test-mainet` at
+`0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`. Its bounded results do not
+establish DoS, an EVM, multi-host independence, or a useful ML detector.
+
+The [new experimental checklist](research-v2/checklists/01_CHECKLIST_CHUAN_HOA_MO_RONG_REPO_THUC_NGHIEM.md)
+is a separate, unaccepted research program. Checked items link to new evidence;
+the historical Phase 05 results are not its RQ1–RQ3 results.
 
 ## Prerequisites and build
 
@@ -95,8 +99,9 @@ Phase 01 baseline checksums in
 [phase status](research/PHASE_STATUS.md) and the
 [manifest](research/config/manifest.yaml) are the current governance records.
 The [Phase 02R independent review](research/PHASE_REPORTS/PHASE_02R_REPORT.md)
-records fresh checks and limitations. The 14-phase [master plan](research/MASTER_PLAN.md)
-now places minimal B0-Core before a conditional Phase 04 EVM decision.
+records its historical checks and limitations. The historical 14-phase
+[master plan](research/MASTER_PLAN.md) placed minimal B0-Core before the
+Phase 04 EVM decision; D-028 recorded EVM NO-GO for the B1 experiment.
 Phase 03B is completed, Controller-accepted and merged through PR #4 at
 `8be07c87abed73763d40252e99bbf0573da487b4`; the Owner accepted D-023.
 Phase 03C was merged into `test-mainet` at
@@ -107,15 +112,18 @@ The Owner closed the D-025 checkpoint and subsequently formally accepted
 Phase 03D after Controller technical acceptance of D-026 and its source
 review corrections. The explicit B0 profile executes signed transfers and
 supports latest committed-state account queries. Local real-node replay and
-software-fault tests cover selected failure boundaries; physical power loss,
-four-validator BFT, hosted CI, PQC/hybrid authentication and DoS resistance
-remain unverified or unimplemented. The [Phase 03D report](research/PHASE_REPORTS/PHASE_03D_REPORT.md)
-records the earlier implementation evidence. See the earlier
+software-fault tests cover selected failure boundaries; physical power loss
+and DoS resistance remain unverified. Subsequent phases added localhost
+four-validator B0/B1 tests and hybrid authentication. The
+[Phase 03D report](research/PHASE_REPORTS/PHASE_03D_REPORT.md) records the
+earlier implementation evidence. See the earlier
 [risk addendum](research/evidence/phase_03c/RISK_AND_ACCEPTANCE_ADDENDUM.md)
 for the original M1–M12 obligations.
-Phase 03E and later work are not authorized. D-018 governs new work:
-one approved phase per branch, Draft PRs to `test-mainet`, and owner-controlled
-merges. The Phase 02 local-only Git exception remains in historical records.
+Phase 03E, 04 and 05 have since merged into `test-mainet`. The
+[Phase 05 decision](research/PHASE_REPORTS/PHASE_05_RESEARCH_DECISION.md)
+recommends no new DoS mechanism on its bounded evidence and explicitly leaves
+broader susceptibility unresolved. D-018's branch and Owner-controlled merge
+rules remain in force. The Phase 02 local-only Git exception is historical.
 
 ## Phase 03A accepted protocol specification
 
