@@ -1,6 +1,22 @@
 # Architectural decision log
 
-## D-032 — S02 scientific contract candidate (2026-11-09; pending independent review)
+## D-033 — S03 four-profile implementation (2026-11-09; technical review candidate)
+
+The Owner confirmed S02's gate and merge of PR #12 into `test-mainet` at
+`2a3dcbceb52b996425d911dde87b691317f56efd`, then authorized S03. The
+new `internal/researchv2` transaction/state path and `internal/researchv2app`
+direct ABCI++ application select C, CP, P or H while keeping one genesis,
+account registry, logical transfer, state commitment and callback path. CP
+uses canonical zero padding of the ML proof's 2,420-byte size and is accepted
+as a valid transfer. Public keys stay in genesis; each profile signs a
+profile-separated canonical intent. No accepted B0/B1 behavior or dependency
+version changes. The direct S03 app holds state only in memory; durable
+storage, real CometBFT node wiring and four-validator proof belong to S04.
+The [equivalence report](../research-v2/protocol/PROFILE_EQUIVALENCE.md) and
+public vectors record implementation details and limits. This is an S03
+engineering candidate for PR review, not a new RQ result or high-load approval.
+
+## D-032 — S02 scientific contract (Owner-confirmed 2026-11-09)
 
 The Owner authorized S02 after the bounded S01 technical gate. The proposed
 [`RESEARCH_PROTOCOL.md`](../research-v2/protocol/RESEARCH_PROTOCOL.md),
@@ -16,9 +32,12 @@ CheckTx service time at equal bytes, not a B0/B1 historical delta. The 80%
 early-recall and 1% FPR thresholds, detector cost caps and calibration
 procedure are study design choices. S03 must prove codec/profile equivalence;
 S05–S07 must implement and verify instrumentation and reproducibility.
-This is a **candidate contract**, not an accepted scientific decision or
-permission to run high-load experiments. Independent review of Gate S02 is
-pending; accepted B0/B1 semantics and D-020–D-030 are unchanged.
+The Owner confirmed Gate S02 after merging PR #12 into `test-mainet` at
+`2a3dcbceb52b996425d911dde87b691317f56efd` and authorized S03. No
+separate GitHub review/comment is visible; the Owner's confirmation in the
+session is the recorded acceptance source. This acceptance does not authorize
+high-load experiments or imply RQ1–RQ3 results. Accepted B0/B1 semantics and
+D-020–D-030 are unchanged.
 
 ## D-031 — New experimental checklist provenance (2026-11-07; in progress)
 

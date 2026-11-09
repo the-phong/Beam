@@ -5,8 +5,8 @@ project:
   research_title: Evaluation of Resource Cost and Processing Correctness for Hybrid secp256k1–ML-DSA-44 Transactions in a CometBFT-Based Blockchain Application under Deliberately Invalid Input Workloads
   phase: "research-v2-in-progress"
   research_v2_s01_gate: local_technical_ok_pending_pr_review
-  research_v2_s02_status: five_drafting_items_complete_independent_gate_review_pending
-  research_v2_s03_status: unopened
+  research_v2_s02_status: owner_confirmed_ok_merged_pr12_2a3dcbce
+  research_v2_s03_status: local_direct_abci_technical_gate_ok_pr_review_pending
   active_authorization: owner_requested_research_v2_checklist_2026_11_07
   baseline_branch: test-mainet
   baseline_commit: 0bdd869f2c6b3ed59b0ae825954d8667b3c7481e
@@ -72,7 +72,9 @@ source:
   phase_03d_recovery_reviewed_source_tree: 87b504853cb0ff98790976879ea8832db92b83e0
   phase_03d_recovery_source_manifest_sha256: f0146d74ebe11561efbdd3c23f4508caf42a69a2a0456035a72a69213f47355c
   phase_03d_recovery_bundle_sha256: 94e4c562a1ed43ad92fcf22d65fa5724379e6fc3a74e715be587ac2a6f523916
-  working_branch: research/reproducible-testbed
+  working_branch: research/s03-controlled-profiles
+  research_v2_s02_merge_commit: 2a3dcbceb52b996425d911dde87b691317f56efd
+  research_v2_s03_base_commit: 2a3dcbceb52b996425d911dde87b691317f56efd
   phase_03e_base_commit: c3756843c5e804e3a985d817ab5c83d2dd6798a0
   phase_03e_base_tree: 39dd15ed276ffa49297cf659b6dcca9f78d942c2
   phase_03e_controller_initial_review_commit: 03be9b120c5ae495985bfb86e671a9863d9508dd

@@ -1,11 +1,14 @@
 # Pluto research master plan
 
-**Current status (2026-11-07):** Phase 05 PR #10 is merged into `test-mainet`
+**Current status (2026-11-09):** Phase 05 PR #10 is merged into `test-mainet`
 at `0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`. The Owner requested a
 new, separately evidenced RQ1–RQ3 program in the
 [`research-v2` checklist](../research-v2/checklists/01_CHECKLIST_CHUAN_HOA_MO_RONG_REPO_THUC_NGHIEM.md).
-Its four-profile controls, multi-host measurements and detector comparison
-are not yet complete. D-031 records provenance. Earlier phase schedules and
+S01 and S02 are accepted; S03 four-profile source and direct-ABCI tests have
+a bounded local technical Gate OK on a separate branch, pending PR review.
+Multi-host measurements and
+detector comparison are not yet complete. D-031–D-033 record provenance and
+decisions. Earlier phase schedules and
 authority paragraphs below are historical and do not establish checklist
 completion.
 

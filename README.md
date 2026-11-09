@@ -9,8 +9,11 @@ networks. The Phase 05 evaluation was merged into `test-mainet` at
 establish DoS, an EVM, multi-host independence, or a useful ML detector.
 
 The [new experimental checklist](research-v2/checklists/01_CHECKLIST_CHUAN_HOA_MO_RONG_REPO_THUC_NGHIEM.md)
-is a separate, unaccepted research program. Checked items link to new evidence;
-the historical Phase 05 results are not its RQ1–RQ3 results.
+tracks a separate RQ1–RQ3 program. S01 and S02 are accepted; S03 adds an
+isolated direct-ABCI four-profile implementation candidate in
+`internal/researchv2` and `internal/researchv2app`. It is not wired into the
+normal `plutod` node yet. Checked items link to new evidence; historical
+Phase 05 results are not new RQ1–RQ3 results.
 
 ## Prerequisites and build
 
