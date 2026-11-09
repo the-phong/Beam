@@ -6,9 +6,14 @@ The Owner merged S03 PR #14 into `test-mainet` at
 `1c8084207adb5da787e34e230dd0dc6d9a3de05f` (tree
 `9903377fba8b4babbdce170bd9f53c621b7a0667`) and authorized S04.
 This implementation is on `research/s04-bft-correctness` in the original
-`pluto` folder. It changes no accepted B0/B1 protocol or dependency version.
-The S04 candidate is for independent Controller review; Owner acceptance and
-merge are separate. No S05 or loaded performance experiment was run.
+`pluto` folder. Result source commit
+`b8ccd7cf8c500fe2495143a21c76606d41c558d2`, tree
+`0c3c331e2929e576a2d5bf133be3624ca107087c`, is in
+[Draft PR #15](https://github.com/the-phong/DoS-in-Blockchain-PQC/pull/15)
+against `test-mainet`. It changes no accepted B0/B1 protocol or dependency
+version. The S04 candidate is for independent Controller review; Owner
+acceptance and merge are separate. No S05 or loaded performance experiment
+was run.
 
 ## Artifacts and oracle
 
@@ -71,6 +76,7 @@ Git-ignored local paths and are not published.
 | `go test ./internal/researchv2app ./internal/researchv2store -run S04 -count=1` | 0; direct corpus, persistence and duplicate tests |
 | `make test-s04-4v` | 0; four profile subtests PASS, 70.67 seconds; raw log SHA-256 `172181e7d16fa18b006513a3dfcfeda81326768d5b8d6aaf9a366b16c081a002`; published summary SHA-256 `45c663fa22ced6e142a0a89c514053db228bdaf9ef27def59c0f44b9b1a6c3bd` |
 | `make verify` | 0 on the final source tree; build, `go test ./...`, `go vet ./...`, `go mod verify` and version command; raw log SHA-256 `a66cf7c805f087282acc5cc20952832347e5273f016ef323ba1096f42c016ac3` |
+| `make verify` after implementation commit `b8ccd7c` | 0; binary reports the result revision; raw log SHA-256 `0d64b569c197abdb5a80a0a274976649e6ab47e62e1f480b131a9ee131790a94` |
 | `go test -race -count=1 ./internal/researchv2 ./internal/researchv2app ./internal/researchv2store ./internal/researchv2corpus ./internal/researchv2genesis` | 0; raw log SHA-256 `c1171729a67f7ea445afda644f527437909be1648fa758c97c743ae66d80035d` |
 
 The first four-validator trial incorrectly required four votes in one commit;
@@ -84,8 +90,8 @@ fixed-corpus run, not an inferred benchmark.
 The run used Go 1.24.1 on WSL2 Ubuntu linux/amd64, 20 reported vCPUs on
 Intel Core i7-12700H. Comet, Pebble, CIRCL and secp256k1 versions remain
 pinned in `go.mod`; `make verify` confirms all modules. The pre-commit
-`plutod version` line reports base revision `1c80842`; the result commit
-and its hosted CI are identified in the PR closeout. Runtime homes and four
+`plutod version` line reports base revision `1c80842`; the post-commit
+verification reports `b8ccd7c`. Hosted CI is checked separately. Runtime homes and four
 generated validator/node identities are disposable. This is one
 physical host and failure domain, not four VMs or multi-host BFT. The
 integration harness runs ABCI servers in the test process and Comet in four

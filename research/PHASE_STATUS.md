@@ -24,7 +24,10 @@ recorder used only for oracle checks, a profile/genesis-bound Pebble snapshot,
 and a real four-validator localhost test harness. The
 [correctness report](../research-v2/evidence/s04/CORRECTNESS_REPORT.md)
 records the bounded result and verification. S04 review and Owner acceptance
-remain separate; S05 telemetry and S06–S07 loaded experiments are closed.
+remain separate; [Draft PR #15](https://github.com/the-phong/DoS-in-Blockchain-PQC/pull/15)
+targets `test-mainet` from implementation commit
+`b8ccd7cf8c500fe2495143a21c76606d41c558d2`. S05 telemetry and
+S06–S07 loaded experiments are closed.
 No new RQ1–RQ3 result is accepted. The paragraphs below record historical
 authorization and candidate status at their original dates.
 

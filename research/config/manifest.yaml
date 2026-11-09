@@ -78,6 +78,9 @@ source:
   working_branch: research/s04-bft-correctness
   research_v2_s03_merge_commit: 1c8084207adb5da787e34e230dd0dc6d9a3de05f
   research_v2_s04_base_commit: 1c8084207adb5da787e34e230dd0dc6d9a3de05f
+  research_v2_s04_implementation_commit: b8ccd7cf8c500fe2495143a21c76606d41c558d2
+  research_v2_s04_implementation_tree: 0c3c331e2929e576a2d5bf133be3624ca107087c
+  research_v2_s04_draft_pr: https://github.com/the-phong/DoS-in-Blockchain-PQC/pull/15
   research_v2_s04_corpus_sha256: d0f4bfaea4c541ee6f71547e44c30aef588704051459e57e04d6478c83
   research_v2_s02_merge_commit: 2a3dcbceb52b996425d911dde87b691317f56efd
   research_v2_s03_base_commit: 2a3dcbceb52b996425d911dde87b691317f56efd

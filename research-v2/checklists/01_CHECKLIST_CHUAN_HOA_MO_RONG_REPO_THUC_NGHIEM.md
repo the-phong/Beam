@@ -67,6 +67,8 @@
 
 **Trạng thái Gate S04: OK kỹ thuật cục bộ, chờ Controller/Owner review.** `make verify`, race test và `make test-s04-4v` exit 0; [CORRECTNESS_REPORT](../evidence/s04/CORRECTNESS_REPORT.md) ghi lệnh, hash, 34 oracle case, kết quả bốn profile và giới hạn. S05 chưa được giao, không chạy phép đo tải hay tuyên bố DoS.
 
+**Checkpoint S04 2026-11-09:** source commit `b8ccd7cf8c500fe2495143a21c76606d41c558d2`, tree `0c3c331e2929e576a2d5bf133be3624ca107087c`, trên `research/s04-bft-correctness` trong folder gốc `pluto`; [Draft PR #15](https://github.com/the-phong/DoS-in-Blockchain-PQC/pull/15) nhắm `test-mainet`. `make verify` sau commit exit 0, log SHA-256 `0d64b569c197abdb5a80a0a274976649e6ab47e62e1f480b131a9ee131790a94`. Controller/Owner chưa chấp nhận hoặc merge PR #15.
+
 ---
 
 ## S05 — Bổ sung telemetry đúng vị trí [CHỈ SAU S04]
