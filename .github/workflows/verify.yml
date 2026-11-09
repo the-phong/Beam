@@ -24,6 +24,9 @@ jobs:
       - name: Verify B1 hybrid four-validator network
         run: make test-integration-b1-4v
         timeout-minutes: 20
+      - name: Verify S04 controlled-profile four-validator correctness
+        run: make test-s04-4v
+        timeout-minutes: 10
       - name: Verify Phase 05 public corpus and correctness oracle
         run: make benchmark-corpus
         timeout-minutes: 5

@@ -79,6 +79,10 @@ Git-ignored local paths and are not published.
 | `make verify` after implementation commit `b8ccd7c` | 0; binary reports the result revision; raw log SHA-256 `0d64b569c197abdb5a80a0a274976649e6ab47e62e1f480b131a9ee131790a94` |
 | `go test -race -count=1 ./internal/researchv2 ./internal/researchv2app ./internal/researchv2store ./internal/researchv2corpus ./internal/researchv2genesis` | 0; raw log SHA-256 `c1171729a67f7ea445afda644f527437909be1648fa758c97c743ae66d80035d` |
 
+The PR verification workflow also invokes `make test-s04-4v` so hosted CI
+checks this new network path, in addition to the existing B0/B1 gates. Its
+hosted outcome is tracked on Draft PR #15 and is not inferred from local tests.
+
 The first four-validator trial incorrectly required four votes in one commit;
 CometBFT validly finalized with three. The next trial passed that check but
 expected a `CheckTx` nonce code on replay, while Comet rejected the bytes
