@@ -6,7 +6,7 @@
 >
 > **Repo đầu vào:** `the-phong/DoS-in-Blockchain-PQC`; giữ lại các thành phần đã đúng, sửa/thay thế phần không đạt. **Không xóa hoặc ghi đè chứng cứ lịch sử.** Toàn bộ workload gây tải chỉ chạy trong testbed cô lập và có cơ chế dừng an toàn.
 
-> **Cập nhật kiểm kê 2026-11-09:** Bản V2 này là checklist điều hành hiện hành; các dấu tích từ V1 không được tự động chuyển sang. **S01 đạt 4/4 task, Gate S01: OK; S02 đạt 5/5 mục soạn thảo, Gate S02 chờ duyệt độc lập.** S03–S07 chưa mở. Mã nguồn được đối chiếu tại `origin/test-mainet` commit `0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`, tree `09c24280590aee51d97b53b18c5d9e193dbe6dbe`, trong worktree riêng `pluto-research-v2` trên nhánh `research/reproducible-testbed`; worktree `pluto` đang có sửa đổi riêng và không bị ghi đè. Bằng chứng S01: [BASELINE_AUDIT](../evidence/s01/BASELINE_AUDIT.md), [PIPELINE_MAP](../evidence/s01/PIPELINE_MAP.md), [hash manifest](../evidence/m01/baseline_manifest.json), [B0/B1 inventory](../evidence/m01/LEGACY_INVENTORY.md), [security audit](../evidence/m01/SECURITY_AUDIT.md). Bundle sao lưu và log gốc chỉ lưu cục bộ trong `pluto-research-v2/research-v2/artifacts/private-baseline/` (được Git ignore), vì chứa lịch sử hoặc dữ liệu chạy thử chưa duyệt để công bố.
+> **Cập nhật kiểm kê 2026-11-09:** Bản V2 này là checklist điều hành hiện hành; các dấu tích từ V1 không được tự động chuyển sang. **S01 đạt 4/4 task, Gate S01: OK; S02 đạt 5/5 mục soạn thảo, Gate S02: OK theo xác nhận Owner sau merge PR #12.** S03 đạt 4/4 mục và Gate S03: OK trong phạm vi source/direct-ABCI; S04–S07 chưa mở. Mã nguồn được đối chiếu tại `origin/test-mainet` commit `0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`, tree `09c24280590aee51d97b53b18c5d9e193dbe6dbe`, S01/S02 trước đây dùng worktree nghiên cứu; hiện S03 chỉ làm trong folder gốc `pluto` trên nhánh `research/s03-controlled-profiles` từ merge commit `2a3dcbce`; trạng thái refactor cũ được giữ trong stash cục bộ `7ec52bd`. Bằng chứng S01: [BASELINE_AUDIT](../evidence/s01/BASELINE_AUDIT.md), [PIPELINE_MAP](../evidence/s01/PIPELINE_MAP.md), [hash manifest](../evidence/m01/baseline_manifest.json), [B0/B1 inventory](../evidence/m01/LEGACY_INVENTORY.md), [security audit](../evidence/m01/SECURITY_AUDIT.md). Bundle sao lưu và log gốc chỉ lưu cục bộ trong `pluto/research-v2/artifacts/private-baseline/` (được Git ignore), vì chứa lịch sử hoặc dữ liệu chạy thử chưa duyệt để công bố.
 
 ## S01 — Đóng băng bản gốc và kiểm kê đường xử lý [BẮT BUỘC ĐẦU TIÊN]
 
@@ -35,20 +35,22 @@
 
 **GATE S02 — OK:** Người khác đọc tài liệu có thể nói rõ **đo cái gì, đo tại đâu, dùng đối chứng nào, thế nào là tấn công/quá tải** mà không cần suy đoán.
 
-**Trạng thái Gate S02: CHỜ DUYỆT ĐỘC LẬP.** Năm mục soạn thảo trên đã có tài liệu và [kiểm tra đối chiếu](../evidence/s02/CONTRACT_AUDIT.md); dấu tích xác nhận **bản thiết kế và tự kiểm tra**, không thay thế sự chấp thuận khoa học. Theo `AGENTS.md`, agent không tự phê duyệt Gate hợp đồng khoa học. Controller/Owner cần đọc bản trên [Draft PR #12](https://github.com/the-phong/DoS-in-Blockchain-PQC/pull/12) và quyết định `OK` hoặc yêu cầu sửa. S03 chưa mở; chưa chạy tải hay kết luận RQ1–RQ3.
+**Trạng thái Gate S02: OK (Owner xác nhận 2026-11-09).** PR #12 đã merge vào `test-mainet` tại `2a3dcbceb52b996425d911dde87b691317f56efd`; Owner xác nhận S02 đã được xem xét và cho phép tiếp tục S03. GitHub PR không có review/comment riêng, nên nguồn quyết định gate là lời xác nhận của Owner trong phiên làm việc, không phải một review GitHub được suy diễn. S03 bắt đầu trên nhánh riêng từ merge commit này.
 
 ---
 
 ## S03 — Xây bốn profile so sánh C / CP / P / H [CHỈ SAU S02]
 
-- [ ] **S03.1** Chuẩn hóa **một đường xử lý nghiệp vụ/state/consensus chung**; chỉ thay đổi yếu tố crypto và kích thước theo thiết kế đối chứng, tránh lấy toàn bộ B0/B1 delta làm “chi phí ML-DSA”.
-- [ ] **S03.2** Hoàn thiện **C, CP, P, H**; CP phải là giao dịch **được chấp nhận hợp lệ**, có kích thước khớp H theo chính sách định trước (không bị reject vì padding).
-- [ ] **S03.3** Chuẩn hóa canonical signed intent, nonce/balance, khóa và binding, thứ tự xác minh/dừng sớm; định nghĩa chính sách public key on-wire hoặc genesis và giữ biến này được kiểm soát.
-- [ ] **S03.4** Viết test từng profile: valid, malformed, wrong chain, wrong signature, wrong binding, wrong nonce, duplicate; đo chính xác kích thước wire và đường xác minh đạt tới.
+- [x] **S03.1** Chuẩn hóa **một đường xử lý nghiệp vụ/state/consensus chung**; chỉ thay đổi yếu tố crypto và kích thước theo thiết kế đối chứng, tránh lấy toàn bộ B0/B1 delta làm “chi phí ML-DSA”. **Bằng chứng:** [PROFILE_EQUIVALENCE](../protocol/PROFILE_EQUIVALENCE.md), `internal/researchv2app/app.go`, `TestOneABCIPathForFourProfiles`; cùng genesis, transfer, AppHash và callbacks. App trực tiếp trong bộ nhớ; chạy node thật thuộc S04.
+- [x] **S03.2** Hoàn thiện **C, CP, P, H**; CP phải là giao dịch **được chấp nhận hợp lệ**, có kích thước khớp H theo chính sách định trước (không bị reject vì padding). **Bằng chứng:** [public vectors](../../internal/researchv2/testdata/public_vectors.json), `TestFourProfilesSameTransferAndExactSize`, `TestCPAndHExactBytesAcrossChainIDBounds`; CP/H 2.565 byte với chain ID vector, cả hai được chấp nhận.
+- [x] **S03.3** Chuẩn hóa canonical signed intent, nonce/balance, khóa và binding, thứ tự xác minh/dừng sớm; định nghĩa chính sách public key on-wire hoặc genesis và giữ biến này được kiểm soát. **Bằng chứng:** [PROFILE_EQUIVALENCE](../protocol/PROFILE_EQUIVALENCE.md#canonical-wire-and-authentication), `internal/researchv2/{tx,state}.go`; khóa ở genesis, profile tách domain, secp→ML→state, từ chối không đổi state.
+- [x] **S03.4** Viết test từng profile: valid, malformed, wrong chain, wrong signature, wrong binding, wrong nonce, duplicate; đo chính xác kích thước wire và đường xác minh đạt tới. **Bằng chứng:** [PROFILE_AUDIT](../evidence/s03/PROFILE_AUDIT.md), `internal/researchv2/{profile,vector}_test.go`, `internal/researchv2app/app_test.go`; `make verify` và race test exit 0.
 
 **Bàn giao:** Source bốn profile, `PROFILE_EQUIVALENCE.md`, golden vectors và unit tests.
 
 **GATE S03 — OK:** Bốn profile làm cùng một tác vụ chuyển tiền; **C vs CP** cô lập kích thước, **CP vs H** kiểm soát kích thước để khảo sát phần chi phí xử lý còn lại; tất cả test profile đạt.
+
+**Trạng thái Gate S03: OK ở phạm vi source và direct-ABCI.** Bốn profile có cùng trạng thái sau transfer; CP là giao dịch hợp lệ và dài bằng H; unit/direct-ABCI/race tests đạt. [Báo cáo đối chứng](../protocol/PROFILE_EQUIVALENCE.md) và [audit](../evidence/s03/PROFILE_AUDIT.md) ghi lệnh, kết quả, hash và giới hạn. PR/CI của commit kết quả cần xác nhận riêng; S04 chưa mở và không có claim mạng bốn validator cho app mới.
 
 ---
 

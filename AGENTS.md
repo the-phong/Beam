@@ -1,5 +1,19 @@
 # Pluto agent execution contract
 
+## Current authority — S03 controlled profiles (2026-11-09)
+
+The Owner confirmed S02 review/acceptance and merged PR #12 into
+`test-mainet` at `2a3dcbceb52b996425d911dde87b691317f56efd`, then
+authorized S03. Work only in the original `pluto` project folder on
+`research/s03-controlled-profiles`, based on that merge commit. Do not create
+a new sibling folder or worktree per checklist stage. Preserve the local
+preexisting refactor state in stash commit `7ec52bd` and the copied historical
+private artifacts; never publish them. Complete S03 with verified C/CP/P/H
+source, equivalence report, public vectors and tests; update the outside and
+repo checklist item by item. Push only this research branch and open a Draft
+PR into `test-mainet`; the Owner controls merge. S04 and later stages remain
+closed until S03's own gate and subsequent authorization.
+
 ## Current authority — research-v2 experimental checklist (2026-11-07)
 
 The Owner requested completion of the separate

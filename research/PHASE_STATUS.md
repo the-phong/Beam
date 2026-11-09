@@ -8,16 +8,20 @@ corpus, four-validator localhost runner, analysis and bounded NO-GO
 recommendation are historical evidence. Their 78 usable corrected conditions
 and earlier exploratory matrix do not answer the new four-profile RQ1–RQ3
 contract. The Owner requested the new checklist program on 2026-11-07;
-implementation and review are ongoing on `research/reproducible-testbed`.
+implementation and review now continue on `research/s03-controlled-profiles`
+in the single original `pluto` folder.
 The [S01 baseline audit](../research-v2/evidence/s01/BASELINE_AUDIT.md) fixes
 the source tree, records the reruns, and marks the bounded local technical
-Gate S01 OK. S02 has three proposed contract documents and a
-[self-audit](../research-v2/evidence/s02/CONTRACT_AUDIT.md); its five drafting
-items are complete, but **Gate S02 awaits independent Controller/Owner review**
-under `AGENTS.md`. S03 is unopened. No scientific result is accepted.
-Multi-host trials, CP/P profiles, stage telemetry and detector comparisons
-remain open. The paragraphs below record historical authorization and
-candidate status at their original dates.
+Gate S01 OK. The Owner confirmed Gate S02 after PR #12 merged into
+`test-mainet` at `2a3dcbceb52b996425d911dde87b691317f56efd`. S03 has
+a bounded local technical Gate OK for the four-profile source and direct
+ABCI++ tests, with [equivalence documentation](../research-v2/protocol/PROFILE_EQUIVALENCE.md)
+and [audit evidence](../research-v2/evidence/s03/PROFILE_AUDIT.md). Draft PR
+review and hosted CI remain separate from that local result.
+Real four-validator trials, durable S03-app storage, loaded network telemetry
+and detector comparisons remain open for S04–S07. No new RQ1–RQ3 result is
+accepted. The paragraphs below record historical authorization and candidate
+status at their original dates.
 
 ## Historical Phase 05 experimental implementation candidate
 
