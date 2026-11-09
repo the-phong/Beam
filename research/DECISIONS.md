@@ -1,5 +1,52 @@
 # Architectural decision log
 
+## D-032 — S02 scientific contract candidate (2026-11-09; pending independent review)
+
+The Owner authorized S02 after the bounded S01 technical gate. The proposed
+[`RESEARCH_PROTOCOL.md`](../research-v2/protocol/RESEARCH_PROTOCOL.md),
+[`THREAT_MODEL.md`](../research-v2/protocol/THREAT_MODEL.md) and
+[`MEASUREMENT_CONTRACT.md`](../research-v2/protocol/MEASUREMENT_CONTRACT.md)
+define RQ1–RQ3, actor capabilities, four controlled profiles, observation
+points, alert timing, QC and safety limits. CP is a valid transaction padded
+to H's exact wire length; all profiles use a new common transfer/state path
+and genesis-bound public keys. CP padding has one canonical all-zero encoding
+and is excluded from the signed-intent digest, as H's ML proof is excluded
+from its secp digest; S03 must test this exact policy. The primary RQ1 H–CP comparison concerns
+CheckTx service time at equal bytes, not a B0/B1 historical delta. The 80%
+early-recall and 1% FPR thresholds, detector cost caps and calibration
+procedure are study design choices. S03 must prove codec/profile equivalence;
+S05–S07 must implement and verify instrumentation and reproducibility.
+This is a **candidate contract**, not an accepted scientific decision or
+permission to run high-load experiments. Independent review of Gate S02 is
+pending; accepted B0/B1 semantics and D-020–D-030 are unchanged.
+
+## D-031 — New experimental checklist provenance (2026-11-07; in progress)
+
+The Owner requested implementation of the separate reproducible RQ1–RQ3
+checklist on a review branch, with only evidenced items checked. The fixed
+source baseline is merged `test-mainet` commit
+`0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`, tree
+`09c24280590aee51d97b53b18c5d9e193dbe6dbe`. Historical Phase 05
+measurements remain historical and are not promoted to the new four-profile
+study. `research-v2` carries the checklist copy, source/evidence inventory,
+and future preregistration and runs. This decision records provenance and
+work separation; it does not accept the new research contract, select a
+causal endpoint, claim CP/P implementation, or approve a detector. Changes to
+accepted B0/B1 behavior require their own explicit decision and tests.
+The Owner controls acceptance and merge of the new branch.
+
+Security tooling for D-031: the official `gitleaks/gitleaks` v8.30.1 Linux
+x64 release is pinned in CI by archive SHA-256
+`551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb`.
+Its source release `go.mod` declares Go 1.24.11, but the executable is used
+as a separate CI binary and is not imported into Pluto's Go module. It scans
+proposed Git commits for known secret patterns; it cannot establish that all
+historical logs are privacy safe or replace a publication review. The same
+release scanned baseline ancestry and the current worktree locally with no
+findings. The full-ref scan found one generic-key false positive in prose on
+the unrelated `refactor/unified-architecture` branch; no history rewrite or
+automatic allowlist was applied.
+
 ## Phase 05 experimental-methodology decision (Owner-authorized 2026-10-26)
 
 **D-030 — Public signed corpus and run-level comparison without production

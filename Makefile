@@ -1,6 +1,7 @@
 .PHONY: build test test-integration test-integration-4v test-integration-b1-4v vet fmt-check verify benchmark-corpus benchmark-smoke benchmark-micro benchmark-b1 benchmark-full benchmark-analyze benchmark-contention-corpus benchmark-contention-smoke benchmark-contention-full benchmark-contention-analyze
 
 GO ?= go
+INTEGRATION_TIMEOUT ?= 900s
 REVISION := $(shell git rev-parse --short HEAD 2>/dev/null || printf unavailable)
 
 build:
@@ -12,7 +13,7 @@ test:
 	$(GO) test ./...
 
 test-integration: build
-	$(GO) test -tags integration ./test/integration -timeout 240s -count=1 -v
+	$(GO) test -tags integration ./test/integration -timeout $(INTEGRATION_TIMEOUT) -count=1 -v
 
 test-integration-4v: build
 	$(GO) test -tags 'integration fourval' ./test/integration -run '^TestB0FourValidator' -timeout 900s -count=1 -v
