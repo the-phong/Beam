@@ -4,11 +4,13 @@
 at `0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`. The Owner requested a
 new, separately evidenced RQ1–RQ3 program in the
 [`research-v2` checklist](../research-v2/checklists/01_CHECKLIST_CHUAN_HOA_MO_RONG_REPO_THUC_NGHIEM.md).
-S01 and S02 are accepted; S03 four-profile source and direct-ABCI tests have
-a bounded local technical Gate OK on a separate branch, pending PR review.
-Multi-host measurements and
-detector comparison are not yet complete. D-031–D-033 record provenance and
-decisions. Earlier phase schedules and
+S01 and S02 are accepted; S03 four-profile source and direct-ABCI work was
+merged in PR #14 at `1c8084207adb5da787e34e230dd0dc6d9a3de05f`.
+The Owner authorized S04 correctness testing on
+`research/s04-bft-correctness`; its bounded technical evidence is in the
+[S04 report](../research-v2/evidence/s04/CORRECTNESS_REPORT.md). S05–S07,
+multi-host measurements and detector comparison are not yet authorized or
+complete. D-031–D-034 record provenance and decisions. Earlier phase schedules and
 authority paragraphs below are historical and do not establish checklist
 completion.
 

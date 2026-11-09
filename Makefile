@@ -1,4 +1,4 @@
-.PHONY: build test test-integration test-integration-4v test-integration-b1-4v vet fmt-check verify benchmark-corpus benchmark-smoke benchmark-micro benchmark-b1 benchmark-full benchmark-analyze benchmark-contention-corpus benchmark-contention-smoke benchmark-contention-full benchmark-contention-analyze
+.PHONY: build test test-integration test-integration-4v test-integration-b1-4v test-s04-4v corpus-s04-verify vet fmt-check verify benchmark-corpus benchmark-smoke benchmark-micro benchmark-b1 benchmark-full benchmark-analyze benchmark-contention-corpus benchmark-contention-smoke benchmark-contention-full benchmark-contention-analyze
 
 GO ?= go
 INTEGRATION_TIMEOUT ?= 900s
@@ -20,6 +20,12 @@ test-integration-4v: build
 
 test-integration-b1-4v: build
 	$(GO) test -tags 'integration fourval' ./test/integration -run '^TestB1Hybrid' -timeout 900s -count=1 -v
+
+test-s04-4v: build corpus-s04-verify
+	$(GO) test -tags 'integration fourval' ./test/integration -run '^TestS04FourValidatorProfiles$$' -timeout 600s -count=1 -v
+
+corpus-s04-verify:
+	$(GO) run ./cmd/s04-corpus verify research-v2/corpus/s04_public_corpus.json
 
 vet:
 	$(GO) vet ./...

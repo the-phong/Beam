@@ -133,6 +133,7 @@ func (s State) Validate() error {
 	return nil
 }
 func (s State) ChainID() string                                   { return s.base.ChainID() }
+func (s State) Base() b0state.State                               { return s.base }
 func (s State) Height() int64                                     { return s.base.Height() }
 func (s State) TotalSupply() uint64                               { return s.base.TotalSupply() }
 func (s State) AppHash() [32]byte                                 { return s.hash }
@@ -281,22 +282,39 @@ func ParseGenesis(raw []byte, chainID string) (State, error) {
 // EvaluateTrusted is deterministic for the same immutable state, profile and
 // bytes. Invalid input returns the original state without mutation.
 func EvaluateTrusted(s State, profile Profile, raw []byte) (State, Result, error) {
+	return EvaluateTrustedRecorded(s, profile, raw, nil)
+}
+
+// EvaluateTrustedRecorded observes stage entry without influencing validation.
+// A nil recorder is the ordinary S03 path; the hook exists for S04 correctness
+// tests and is not an admission or consensus input.
+func EvaluateTrustedRecorded(s State, profile Profile, raw []byte, record func(Stage)) (State, Result, error) {
 	if !s.trusted || !profile.Valid() {
 		return State{}, Result{}, ErrState
 	}
+	visit := func(stage Stage) {
+		if record != nil {
+			record(stage)
+		}
+	}
+	visit(StageStructural)
 	t, err := Parse(raw)
 	if err != nil {
 		return s, Result{CodeMalformed, StageStructural}, nil
 	}
+	visit(StageProfile)
 	if t.Profile != profile {
 		return s, Result{CodeWrongProfile, StageProfile}, nil
 	}
+	visit(StageChain)
 	if t.ChainID != s.ChainID() {
 		return s, Result{CodeWrongChain, StageChain}, nil
 	}
+	visit(StageAmount)
 	if t.Amount == 0 {
 		return s, Result{CodeZeroAmount, StageAmount}, nil
 	}
+	visit(StageBinding)
 	sender, found := s.lookup(b0state.Address(t.Sender))
 	if !found {
 		return s, Result{CodeBadBinding, StageBinding}, nil
@@ -309,15 +327,18 @@ func EvaluateTrusted(s State, profile Profile, raw []byte) (State, Result, error
 		return State{}, Result{}, err
 	}
 	if profile.UsesSecp() {
+		visit(StageSecp)
 		if code := verifySecp(sender.SecpKey, t.SecpSignature, digest); code != CodeOK {
 			return s, Result{code, StageSecp}, nil
 		}
 	}
 	if profile.UsesML() {
+		visit(StageML)
 		if code := verifyML(sender.MLKey, t.MLSignature, digest); code != CodeOK {
 			return s, Result{code, StageML}, nil
 		}
 	}
+	visit(StageState)
 	base, code, err := b0state.ApplyAuthenticatedTrusted(s.base, b0state.Address(t.Sender), b0state.Address(t.Receiver), t.Amount, t.Nonce)
 	if err != nil {
 		return State{}, Result{}, err
@@ -329,6 +350,7 @@ func EvaluateTrusted(s State, profile Profile, raw []byte) (State, Result, error
 	if err != nil {
 		return State{}, Result{}, err
 	}
+	visit(StageAccepted)
 	return next, Result{CodeOK, StageAccepted}, nil
 }
 func Evaluate(s State, profile Profile, raw []byte) (State, Result, error) {

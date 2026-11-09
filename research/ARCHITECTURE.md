@@ -8,7 +8,7 @@ bounded; the new four-profile research program is tracked separately in
 The historical candidate/authorization wording below describes prior review
 points and must not be read as current implementation status.
 
-## Research-v2 S03 profile boundary
+## Research-v2 S03/S04 profile and correctness boundary
 
 The S03 candidate in `internal/researchv2` has one profile-selected canonical
 transaction parser, one genesis-bound account/key registry, one transfer
@@ -17,8 +17,16 @@ transition and one AppHash rule for C, CP, P and H. The direct-ABCI
 accepts exactly 2,420 zero padding bytes and matches H's full wire size for
 the same chain ID; the padding is excluded from the signed intent. The
 [equivalence report](../research-v2/protocol/PROFILE_EQUIVALENCE.md) records
-the codec and tests. This in-memory app is not a durable, node-wired or
-four-validator result; those are S04 obligations. B0/B1 code remains intact.
+the codec and tests. S04 adds an optional isolated Pebble snapshot to this
+same ABCI++ app, canonical JSON/Base64 genesis transport, and a public
+correctness corpus. The integration harness starts four CometBFT processes
+with distinct validator/P2P identities, four ABCI servers in the test process
+and four separate stores on localhost. It checks a transaction against the
+corpus oracle, block/AppHash equality at matching heights, four participating
+voter identities across commits, account balances/nonces and replay cache.
+The [S04 report](../research-v2/evidence/s04/CORRECTNESS_REPORT.md) records
+the exact scope. The ordinary `plutod` CLI has no research-v2 profile; the
+test harness is the S04 node wiring. B0/B1 code remains intact.
 
 ## Phase 05 experimental measurement boundary
 

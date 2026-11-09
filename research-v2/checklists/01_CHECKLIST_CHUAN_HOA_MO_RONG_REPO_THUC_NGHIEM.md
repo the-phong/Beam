@@ -6,7 +6,7 @@
 >
 > **Repo đầu vào:** `the-phong/DoS-in-Blockchain-PQC`; giữ lại các thành phần đã đúng, sửa/thay thế phần không đạt. **Không xóa hoặc ghi đè chứng cứ lịch sử.** Toàn bộ workload gây tải chỉ chạy trong testbed cô lập và có cơ chế dừng an toàn.
 
-> **Cập nhật kiểm kê 2026-11-09:** Bản V2 này là checklist điều hành hiện hành; các dấu tích từ V1 không được tự động chuyển sang. **S01 đạt 4/4 task, Gate S01: OK; S02 đạt 5/5 mục soạn thảo, Gate S02: OK theo xác nhận Owner sau merge PR #12.** S03 đạt 4/4 mục và Gate S03: OK trong phạm vi source/direct-ABCI; S04–S07 chưa mở. Mã nguồn được đối chiếu tại `origin/test-mainet` commit `0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`, tree `09c24280590aee51d97b53b18c5d9e193dbe6dbe`, S01/S02 trước đây dùng worktree nghiên cứu; hiện S03 chỉ làm trong folder gốc `pluto` trên nhánh `research/s03-controlled-profiles` từ merge commit `2a3dcbce`; trạng thái refactor cũ được giữ trong stash cục bộ `7ec52bd`. Bằng chứng S01: [BASELINE_AUDIT](../evidence/s01/BASELINE_AUDIT.md), [PIPELINE_MAP](../evidence/s01/PIPELINE_MAP.md), [hash manifest](../evidence/m01/baseline_manifest.json), [B0/B1 inventory](../evidence/m01/LEGACY_INVENTORY.md), [security audit](../evidence/m01/SECURITY_AUDIT.md). Bundle sao lưu và log gốc chỉ lưu cục bộ trong `pluto/research-v2/artifacts/private-baseline/` (được Git ignore), vì chứa lịch sử hoặc dữ liệu chạy thử chưa duyệt để công bố.
+> **Cập nhật kiểm kê 2026-11-09:** Bản V2 này là checklist điều hành hiện hành; các dấu tích từ V1 không được tự động chuyển sang. **S01 đạt 4/4 task, Gate S01: OK; S02 đạt 5/5 mục soạn thảo, Gate S02: OK theo xác nhận Owner sau merge PR #12. S03 đạt 4/4 mục và đã merge PR #14; S04 đạt 4/4 mục với Gate kỹ thuật cục bộ OK, chờ Controller/Owner review; S05–S07 chưa mở.** S01 cố định baseline lịch sử `0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`; S04 xuất phát từ `test-mainet` merge commit `1c8084207adb5da787e34e230dd0dc6d9a3de05f` trên nhánh `research/s04-bft-correctness`, chỉ trong folder gốc `pluto`. Trạng thái refactor cũ giữ trong stash cục bộ `7ec52bd`. Bằng chứng S01: [BASELINE_AUDIT](../evidence/s01/BASELINE_AUDIT.md), [PIPELINE_MAP](../evidence/s01/PIPELINE_MAP.md), [hash manifest](../evidence/m01/baseline_manifest.json), [B0/B1 inventory](../evidence/m01/LEGACY_INVENTORY.md), [security audit](../evidence/m01/SECURITY_AUDIT.md). Bundle sao lưu và log gốc chỉ lưu cục bộ trong `pluto/research-v2/artifacts/private-baseline/` (được Git ignore), vì chứa lịch sử hoặc dữ liệu chạy thử chưa duyệt để công bố.
 
 ## S01 — Đóng băng bản gốc và kiểm kê đường xử lý [BẮT BUỘC ĐẦU TIÊN]
 
@@ -50,20 +50,22 @@
 
 **GATE S03 — OK:** Bốn profile làm cùng một tác vụ chuyển tiền; **C vs CP** cô lập kích thước, **CP vs H** kiểm soát kích thước để khảo sát phần chi phí xử lý còn lại; tất cả test profile đạt.
 
-**Trạng thái Gate S03: OK ở phạm vi source và direct-ABCI.** Bốn profile có cùng trạng thái sau transfer; CP là giao dịch hợp lệ và dài bằng H; unit/direct-ABCI/race tests đạt. [Báo cáo đối chứng](../protocol/PROFILE_EQUIVALENCE.md) và [audit](../evidence/s03/PROFILE_AUDIT.md) ghi lệnh, kết quả, hash và giới hạn. PR/CI của commit kết quả cần xác nhận riêng; S04 chưa mở và không có claim mạng bốn validator cho app mới.
+**Trạng thái Gate S03: OK ở phạm vi source và direct-ABCI.** Bốn profile có cùng trạng thái sau transfer; CP là giao dịch hợp lệ và dài bằng H; unit/direct-ABCI/race tests đạt. [Báo cáo đối chứng](../protocol/PROFILE_EQUIVALENCE.md) và [audit](../evidence/s03/PROFILE_AUDIT.md) ghi lệnh, kết quả, hash và giới hạn. Owner đã merge PR #14 vào `test-mainet` tại `1c8084207adb5da787e34e230dd0dc6d9a3de05f` và giao S04 ngày 2026-11-09.
 
 ---
 
 ## S04 — Xác minh tính đúng trên mạng BFT [CHỈ SAU S03]
 
-- [ ] **S04.1** Tạo corpus kiểm tra cho cả bốn profile; mỗi case có `case_id`, bytes/hash, expected code, stage, actor capability và điều kiện tiên quyết.
-- [ ] **S04.2** Kiểm thử trực tiếp `CheckTx`, `ProcessProposal`, `FinalizeBlock` và đường commit; xác nhận lỗi không làm biến đổi state.
-- [ ] **S04.3** Chạy bốn validator trên testbed cô lập; kiểm tra các giao dịch hợp lệ được commit đúng một lần và block/AppHash/nonce/balance khớp ở cùng height.
-- [ ] **S04.4** Kiểm tra cache/dedup/recheck và xác thực việc lỗi sớm không đi tới phép verify đắt đỏ; recorder tắt/bật không đổi quyết định xác minh.
+- [x] **S04.1** Tạo corpus kiểm tra cho cả bốn profile; mỗi case có `case_id`, bytes/hash, expected code, stage, actor capability và điều kiện tiên quyết. **Bằng chứng:** [corpus công khai](../corpus/s04_public_corpus.json) 34 case, SHA-256 `d0f4bfaea4c541ee6f71547e44c30aef588704051459e57e04d6478c83`; generator/validator `cmd/s04-corpus`, oracle `TestS04CorpusABCIOracle`.
+- [x] **S04.2** Kiểm thử trực tiếp `CheckTx`, `ProcessProposal`, `FinalizeBlock` và đường commit; xác nhận lỗi không làm biến đổi state. **Bằng chứng:** [CORRECTNESS_REPORT](../evidence/s04/CORRECTNESS_REPORT.md), `TestS04CorpusABCIOracle`, `TestS04ProposalDuplicateAndRecheck`; rejected input không đổi balance/nonce/supply, block height vẫn tăng khi finalize.
+- [x] **S04.3** Chạy bốn validator trên testbed cô lập; kiểm tra các giao dịch hợp lệ được commit đúng một lần và block/AppHash/nonce/balance khớp ở cùng height. **Bằng chứng:** [log bốn validator đã lọc](../evidence/s04/four_validator_summary.log), `TestS04FourValidatorProfiles`; C/CP/P/H đều PASS, bốn danh tính tham gia, AppHash hậu transfer giống nhau tại H3. Bốn validator cùng một host WSL2.
+- [x] **S04.4** Kiểm tra cache/dedup/recheck và xác thực việc lỗi sớm không đi tới phép verify đắt đỏ; recorder tắt/bật không đổi quyết định xác minh. **Bằng chứng:** Comet cache chặn replay qua RPC; oracle thử dedup trong proposal/FinalizeBlock và gọi `CheckTxType_Recheck` trực tiếp; recorder ON/OFF cùng code/state cho 34 case, reject sớm không vào secp/ML. Comet-driven recheck với tx còn trong mempool chưa được cưỡng bức riêng; giới hạn ghi trong [report](../evidence/s04/CORRECTNESS_REPORT.md).
 
 **Bàn giao:** `CORRECTNESS_REPORT.md`, corpus + oracle + log 4-validator.
 
 **GATE S04 — OK:** Không có divergence hoặc state mutation do input bị từ chối; các lớp workload thực sự đi qua stage dự kiến. **Chưa đúng thì không đo hiệu năng.**
+
+**Trạng thái Gate S04: OK kỹ thuật cục bộ, chờ Controller/Owner review.** `make verify`, race test và `make test-s04-4v` exit 0; [CORRECTNESS_REPORT](../evidence/s04/CORRECTNESS_REPORT.md) ghi lệnh, hash, 34 oracle case, kết quả bốn profile và giới hạn. S05 chưa được giao, không chạy phép đo tải hay tuyên bố DoS.
 
 ---
 

@@ -6,8 +6,9 @@ project:
   phase: "research-v2-in-progress"
   research_v2_s01_gate: local_technical_ok_pending_pr_review
   research_v2_s02_status: owner_confirmed_ok_merged_pr12_2a3dcbce
-  research_v2_s03_status: local_direct_abci_technical_gate_ok_pr_review_pending
-  active_authorization: owner_requested_research_v2_checklist_2026_11_07
+  research_v2_s03_status: owner_merged_pr14_1c808420_source_direct_abci_gate_ok
+  research_v2_s04_status: local_technical_gate_ok_controller_owner_review_pending
+  active_authorization: owner_authorized_s04_2026_11_09
   baseline_branch: test-mainet
   baseline_commit: 0bdd869f2c6b3ed59b0ae825954d8667b3c7481e
   baseline_tree: 09c24280590aee51d97b53b18c5d9e193dbe6dbe
@@ -42,6 +43,8 @@ application:
   isolated_b0_state_format_version: 2
   isolated_b1_genesis_format_version: 3
   isolated_b1_record_magic: PLUTOS3!
+  isolated_research_v2_record_magic: PLUTOS4!
+  isolated_research_v2_runtime: four_validator_integration_harness_only
   b0_runtime_profile: explicit_durable_H0_init_b0_and_strict_existing_state_start
   module_path: example.com/pluto
   module_path_status: provisional_migration_required
@@ -72,7 +75,10 @@ source:
   phase_03d_recovery_reviewed_source_tree: 87b504853cb0ff98790976879ea8832db92b83e0
   phase_03d_recovery_source_manifest_sha256: f0146d74ebe11561efbdd3c23f4508caf42a69a2a0456035a72a69213f47355c
   phase_03d_recovery_bundle_sha256: 94e4c562a1ed43ad92fcf22d65fa5724379e6fc3a74e715be587ac2a6f523916
-  working_branch: research/s03-controlled-profiles
+  working_branch: research/s04-bft-correctness
+  research_v2_s03_merge_commit: 1c8084207adb5da787e34e230dd0dc6d9a3de05f
+  research_v2_s04_base_commit: 1c8084207adb5da787e34e230dd0dc6d9a3de05f
+  research_v2_s04_corpus_sha256: d0f4bfaea4c541ee6f71547e44c30aef588704051459e57e04d6478c83
   research_v2_s02_merge_commit: 2a3dcbceb52b996425d911dde87b691317f56efd
   research_v2_s03_base_commit: 2a3dcbceb52b996425d911dde87b691317f56efd
   phase_03e_base_commit: c3756843c5e804e3a985d817ab5c83d2dd6798a0

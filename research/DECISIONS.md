@@ -1,5 +1,34 @@
 # Architectural decision log
 
+## D-034 — S04 bounded correctness network (2026-11-09; technical review candidate)
+
+After the Owner merged S03 PR #14 into `test-mainet` at
+`1c8084207adb5da787e34e230dd0dc6d9a3de05f`, the Owner authorized S04
+in the original `pluto` folder on `research/s04-bft-correctness`. The S04
+testbed runs four independent CometBFT v0.38.26 validator processes and
+four separate Pebble v1.1.5 research-v2 snapshots on localhost. The
+ABCI++ servers run in the integration test process and use the same
+`researchv2app` callback implementation for C, CP, P and H. The public
+corpus supplies the signed bytes and common Genesis V4; ephemeral Comet
+validator and P2P keys remain in disposable homes. This is an isolated
+correctness testbed, not a deployable `plutod` profile or a multi-host trial.
+
+The research-v2 store uses its own key/record magic, binds profile and
+SHA-256 of canonical genesis, validates the state hash on reopen, and fails
+closed after an uncertain sync response. `FinalizeBlock` prepares a pending
+candidate; `Commit` performs a Pebble synced write. Rejected transactions
+do not alter account balances or nonces. The optional stage recorder
+observes validation steps but supplies no consensus input. The CometBFT
+mempool cache can reject replayed bytes before ABCI `CheckTx`; the direct
+oracle independently checks nonce/recheck and proposal behavior.
+
+This choice leaves accepted B0/B1 runtime semantics and pinned dependencies
+unchanged. Evidence is in the
+[S04 correctness report](../research-v2/evidence/s04/CORRECTNESS_REPORT.md).
+One WSL2 host is a common failure and resource domain. No loaded relay,
+DoS, performance, Byzantine fault, physical power-loss, EVM or S05 result
+follows from S04. Controller review and Owner acceptance remain open.
+
 ## D-033 — S03 four-profile implementation (2026-11-09; technical review candidate)
 
 The Owner confirmed S02's gate and merge of PR #12 into `test-mainet` at

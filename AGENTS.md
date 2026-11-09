@@ -1,5 +1,19 @@
 # Pluto agent execution contract
 
+## Current authority — S04 four-validator correctness (2026-11-09)
+
+The Owner merged S03 PR #14 into `test-mainet` at
+`1c8084207adb5da787e34e230dd0dc6d9a3de05f` and explicitly authorized
+S04. Work in the original `pluto` folder only, on
+`research/s04-bft-correctness` from that merge commit. Complete S04.1–S04.4
+with a public four-profile correctness corpus, direct ABCI oracle, real
+isolated four-validator evidence, cache/dedup/recheck and recorder ON/OFF
+checks. Tick only evidenced items and record the bounded gate. Preserve
+accepted B0/B1/S03 behavior, the local refactor stash and ignored private
+artifacts. Commit/push only the S04 branch, open a Draft PR against
+`test-mainet` and stop for Owner review. Do not start S05, make resource/DoS
+claims, merge or touch protected branches.
+
 ## Current authority — S03 controlled profiles (2026-11-09)
 
 The Owner confirmed S02 review/acceptance and merged PR #12 into

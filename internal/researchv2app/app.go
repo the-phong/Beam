@@ -1,5 +1,5 @@
 // Package researchv2app exposes one direct ABCI++ application path for all
-// four research profiles. S04 will add durable storage and real node wiring.
+// four research profiles, in memory or backed by one durable snapshot.
 package researchv2app
 
 import (
@@ -14,6 +14,8 @@ import (
 
 	"example.com/pluto/internal/b0state"
 	"example.com/pluto/internal/researchv2"
+	"example.com/pluto/internal/researchv2genesis"
+	"example.com/pluto/internal/researchv2store"
 	"example.com/pluto/internal/version"
 )
 
@@ -33,6 +35,7 @@ type App struct {
 	initialHash [32]byte
 	committed   researchv2.State
 	pending     *researchv2.State
+	store       *researchv2store.Store
 }
 
 var _ abci.Application = (*App)(nil)
@@ -47,41 +50,103 @@ func New(genesis []byte, chainID string, profile researchv2.Profile) (*App, erro
 	}
 	return &App{chainID: chainID, profile: profile, genesis: bytes.Clone(genesis), initialHash: s.AppHash(), committed: s}, nil
 }
-func (a *App) Committed() researchv2.State { a.mu.RLock(); defer a.mu.RUnlock(); return a.committed }
+func Open(dbDir string, genesis []byte, chainID string, profile researchv2.Profile) (*App, error) {
+	a, err := New(genesis, chainID, profile)
+	if err != nil {
+		return nil, err
+	}
+	s, err := researchv2store.OpenExisting(dbDir, chainID, genesis, profile)
+	if err != nil {
+		return nil, err
+	}
+	a.store = s
+	return a, nil
+}
+func (a *App) Close() error {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	if a.store != nil {
+		return a.store.Close()
+	}
+	return nil
+}
+func (a *App) stateLocked() (researchv2.State, error) {
+	if a.store != nil {
+		return a.store.Committed()
+	}
+	return a.committed, nil
+}
+func (a *App) pendingLocked() (bool, error) {
+	if a.store != nil {
+		_, pending, err := a.store.Pending()
+		return pending, err
+	}
+	return a.pending != nil, nil
+}
+func (a *App) CommittedChecked() (researchv2.State, error) {
+	a.mu.RLock()
+	defer a.mu.RUnlock()
+	return a.stateLocked()
+}
+
+// Committed is retained for direct S03 callers. Node callbacks use the
+// checked getter so an uncertain disk commit fails closed.
+func (a *App) Committed() researchv2.State { s, _ := a.CommittedChecked(); return s }
 func (a *App) Profile() researchv2.Profile { return a.profile }
 
 func (a *App) Info(context.Context, *abci.RequestInfo) (*abci.ResponseInfo, error) {
-	s := a.Committed()
+	s, err := a.CommittedChecked()
+	if err != nil {
+		return nil, err
+	}
 	hash := s.AppHash()
 	return &abci.ResponseInfo{Data: "Pluto research-v2 four-profile app", Version: version.Number, AppVersion: 4, LastBlockHeight: s.Height(), LastBlockAppHash: append([]byte(nil), hash[:]...)}, nil
 }
 func (a *App) InitChain(_ context.Context, req *abci.RequestInitChain) (*abci.ResponseInitChain, error) {
-	if req == nil || req.InitialHeight != 1 || req.ChainId != a.chainID || !bytes.Equal(req.AppStateBytes, a.genesis) {
+	if req == nil || req.InitialHeight != 1 || req.ChainId != a.chainID {
 		return nil, ErrState
+	}
+	if !bytes.Equal(req.AppStateBytes, a.genesis) {
+		binary, _, err := researchv2genesis.Decode(req.AppStateBytes, a.chainID)
+		if err != nil || !bytes.Equal(binary, a.genesis) {
+			return nil, ErrState
+		}
 	}
 	a.mu.RLock()
 	defer a.mu.RUnlock()
-	if a.committed.Height() != 0 || a.pending != nil || a.committed.AppHash() != a.initialHash {
+	s, err := a.stateLocked()
+	if err != nil {
+		return nil, err
+	}
+	pending, err := a.pendingLocked()
+	if err != nil {
+		return nil, err
+	}
+	if s.Height() != 0 || pending || s.AppHash() != a.initialHash {
 		return nil, ErrState
 	}
-	h := a.committed.AppHash()
+	h := s.AppHash()
 	return &abci.ResponseInitChain{AppHash: append([]byte(nil), h[:]...)}, nil
 }
 func (a *App) CheckTx(_ context.Context, req *abci.RequestCheckTx) (*abci.ResponseCheckTx, error) {
 	a.mu.RLock()
 	defer a.mu.RUnlock()
+	s, err := a.stateLocked()
+	if err != nil {
+		return nil, err
+	}
 	var raw []byte
 	if req != nil {
 		raw = req.Tx
 	}
-	_, result, err := researchv2.EvaluateTrusted(a.committed, a.profile, raw)
+	_, result, err := researchv2.EvaluateTrusted(s, a.profile, raw)
 	if err != nil {
 		return nil, err
 	}
 	return &abci.ResponseCheckTx{Code: uint32(result.Code), Log: string(result.LastStage), Codespace: codespace}, nil
 }
-func (a *App) nextHeight(height int64) error {
-	if a.committed.Height() == math.MaxInt64 || height != a.committed.Height()+1 {
+func (a *App) nextHeight(s researchv2.State, height int64) error {
+	if s.Height() == math.MaxInt64 || height != s.Height()+1 {
 		return ErrState
 	}
 	return nil
@@ -105,7 +170,15 @@ func (a *App) PrepareProposal(_ context.Context, req *abci.RequestPrepareProposa
 	}
 	a.mu.RLock()
 	defer a.mu.RUnlock()
-	if a.pending != nil || a.nextHeight(req.Height) != nil {
+	s, err := a.stateLocked()
+	if err != nil {
+		return nil, err
+	}
+	pending, err := a.pendingLocked()
+	if err != nil {
+		return nil, err
+	}
+	if pending || a.nextHeight(s, req.Height) != nil {
 		return nil, ErrState
 	}
 	resp := &abci.ResponsePrepareProposal{}
@@ -116,7 +189,7 @@ func (a *App) PrepareProposal(_ context.Context, req *abci.RequestPrepareProposa
 	if budget > maxBlockBytes {
 		budget = maxBlockBytes
 	}
-	candidate := a.committed
+	candidate := s
 	var used uint64
 	for _, raw := range req.Txs {
 		if len(resp.Txs) == maxBlockTxs {
@@ -144,13 +217,21 @@ func (a *App) ProcessProposal(_ context.Context, req *abci.RequestProcessProposa
 	}
 	a.mu.RLock()
 	defer a.mu.RUnlock()
-	if a.pending != nil || a.nextHeight(req.Height) != nil {
+	s, err := a.stateLocked()
+	if err != nil {
+		return nil, err
+	}
+	pending, err := a.pendingLocked()
+	if err != nil {
+		return nil, err
+	}
+	if pending || a.nextHeight(s, req.Height) != nil {
 		return nil, ErrState
 	}
 	if blockOverLimit(req.Txs) {
 		return &abci.ResponseProcessProposal{Status: abci.ResponseProcessProposal_REJECT}, nil
 	}
-	candidate := a.committed
+	candidate := s
 	for _, raw := range req.Txs {
 		next, result, err := researchv2.EvaluateTrusted(candidate, a.profile, raw)
 		if err != nil {
@@ -169,13 +250,32 @@ func (a *App) FinalizeBlock(_ context.Context, req *abci.RequestFinalizeBlock) (
 	}
 	a.mu.Lock()
 	defer a.mu.Unlock()
-	if a.pending != nil || a.nextHeight(req.Height) != nil {
+	s, err := a.stateLocked()
+	if err != nil {
+		return nil, err
+	}
+	pending, err := a.pendingLocked()
+	if err != nil {
+		return nil, err
+	}
+	if pending || a.nextHeight(s, req.Height) != nil {
 		return nil, ErrState
 	}
 	if blockOverLimit(req.Txs) {
 		return nil, ErrState
 	}
-	candidate, results, err := researchv2.SimulateOrderedTrusted(a.committed, a.profile, req.Txs)
+	if a.store != nil {
+		results, hash, err := a.store.PrepareTrusted(req.Txs, false)
+		if err != nil {
+			return nil, err
+		}
+		resp := &abci.ResponseFinalizeBlock{AppHash: append([]byte(nil), hash[:]...), TxResults: make([]*abci.ExecTxResult, len(results))}
+		for i, r := range results {
+			resp.TxResults[i] = &abci.ExecTxResult{Code: uint32(r.Code), Log: string(r.LastStage), Codespace: codespace}
+		}
+		return resp, nil
+	}
+	candidate, results, err := researchv2.SimulateOrderedTrusted(s, a.profile, req.Txs)
 	if err != nil {
 		return nil, err
 	}
@@ -194,6 +294,12 @@ func (a *App) FinalizeBlock(_ context.Context, req *abci.RequestFinalizeBlock) (
 func (a *App) Commit(context.Context, *abci.RequestCommit) (*abci.ResponseCommit, error) {
 	a.mu.Lock()
 	defer a.mu.Unlock()
+	if a.store != nil {
+		if err := a.store.Commit(); err != nil {
+			return nil, err
+		}
+		return &abci.ResponseCommit{}, nil
+	}
 	if a.pending == nil {
 		return nil, ErrState
 	}
@@ -204,12 +310,16 @@ func (a *App) Commit(context.Context, *abci.RequestCommit) (*abci.ResponseCommit
 func (a *App) Query(_ context.Context, req *abci.RequestQuery) (*abci.ResponseQuery, error) {
 	a.mu.RLock()
 	defer a.mu.RUnlock()
+	s, err := a.stateLocked()
+	if err != nil {
+		return nil, err
+	}
 	if req == nil || req.Path != "rv2/account/v1" || len(req.Data) != 20 || req.Height != 0 || req.Prove {
 		return &abci.ResponseQuery{Code: 1, Codespace: codespace, Log: "unsupported_query"}, nil
 	}
 	var address b0state.Address
 	copy(address[:], req.Data)
-	account, found := a.committed.Account(address)
+	account, found := s.Account(address)
 	value := []byte{0}
 	if found {
 		value = make([]byte, 17)
@@ -217,7 +327,7 @@ func (a *App) Query(_ context.Context, req *abci.RequestQuery) (*abci.ResponseQu
 		binary.BigEndian.PutUint64(value[1:9], account.Balance)
 		binary.BigEndian.PutUint64(value[9:17], account.Nonce)
 	}
-	return &abci.ResponseQuery{Code: 0, Height: a.committed.Height(), Value: value}, nil
+	return &abci.ResponseQuery{Code: 0, Height: s.Height(), Value: value}, nil
 }
 func (*App) ExtendVote(context.Context, *abci.RequestExtendVote) (*abci.ResponseExtendVote, error) {
 	return nil, errors.New("vote extensions are disabled")
