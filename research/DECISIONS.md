@@ -1,5 +1,23 @@
 # Architectural decision log
 
+## D-032 — S02 scientific contract candidate (2026-11-09; pending independent review)
+
+The Owner authorized S02 after the bounded S01 technical gate. The proposed
+[`RESEARCH_PROTOCOL.md`](../research-v2/protocol/RESEARCH_PROTOCOL.md),
+[`THREAT_MODEL.md`](../research-v2/protocol/THREAT_MODEL.md) and
+[`MEASUREMENT_CONTRACT.md`](../research-v2/protocol/MEASUREMENT_CONTRACT.md)
+define RQ1–RQ3, actor capabilities, four controlled profiles, observation
+points, alert timing, QC and safety limits. CP is a valid transaction padded
+to H's exact wire length; all profiles use a new common transfer/state path
+and genesis-bound public keys. The primary RQ1 H–CP comparison concerns
+CheckTx service time at equal bytes, not a B0/B1 historical delta. The 80%
+early-recall and 1% FPR thresholds, detector cost caps and calibration
+procedure are study design choices. S03 must prove codec/profile equivalence;
+S05–S07 must implement and verify instrumentation and reproducibility.
+This is a **candidate contract**, not an accepted scientific decision or
+permission to run high-load experiments. Independent review of Gate S02 is
+pending; accepted B0/B1 semantics and D-020–D-030 are unchanged.
+
 ## D-031 — New experimental checklist provenance (2026-11-07; in progress)
 
 The Owner requested implementation of the separate reproducible RQ1–RQ3

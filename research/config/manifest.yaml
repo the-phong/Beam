@@ -4,6 +4,9 @@ project:
   name: Pluto
   research_title: Evaluation of Resource Cost and Processing Correctness for Hybrid secp256k1–ML-DSA-44 Transactions in a CometBFT-Based Blockchain Application under Deliberately Invalid Input Workloads
   phase: "research-v2-in-progress"
+  research_v2_s01_gate: local_technical_ok_pending_pr_review
+  research_v2_s02_status: five_drafting_items_complete_independent_gate_review_pending
+  research_v2_s03_status: unopened
   active_authorization: owner_requested_research_v2_checklist_2026_11_07
   baseline_branch: test-mainet
   baseline_commit: 0bdd869f2c6b3ed59b0ae825954d8667b3c7481e

@@ -6,7 +6,7 @@
 >
 > **Repo đầu vào:** `the-phong/DoS-in-Blockchain-PQC`; giữ lại các thành phần đã đúng, sửa/thay thế phần không đạt. **Không xóa hoặc ghi đè chứng cứ lịch sử.** Toàn bộ workload gây tải chỉ chạy trong testbed cô lập và có cơ chế dừng an toàn.
 
-> **Cập nhật kiểm kê 2026-11-09:** Bản V2 này là checklist điều hành hiện hành; các dấu tích từ V1 không được tự động chuyển sang. **S01 đã đạt 4/4 task, Gate S01: OK; S02 được phép bắt đầu ở lượt việc riêng.** S03–S07 chưa mở. Mã nguồn được đối chiếu tại `origin/test-mainet` commit `0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`, tree `09c24280590aee51d97b53b18c5d9e193dbe6dbe`, trong worktree riêng `pluto-research-v2` trên nhánh `research/reproducible-testbed`; worktree `pluto` đang có sửa đổi riêng và không bị ghi đè. Bằng chứng S01: [BASELINE_AUDIT](../evidence/s01/BASELINE_AUDIT.md), [PIPELINE_MAP](../evidence/s01/PIPELINE_MAP.md), [hash manifest](../evidence/m01/baseline_manifest.json), [B0/B1 inventory](../evidence/m01/LEGACY_INVENTORY.md), [security audit](../evidence/m01/SECURITY_AUDIT.md). Bundle sao lưu và log gốc chỉ lưu cục bộ trong `pluto-research-v2/research-v2/artifacts/private-baseline/` (được Git ignore), vì chứa lịch sử hoặc dữ liệu chạy thử chưa duyệt để công bố.
+> **Cập nhật kiểm kê 2026-11-09:** Bản V2 này là checklist điều hành hiện hành; các dấu tích từ V1 không được tự động chuyển sang. **S01 đạt 4/4 task, Gate S01: OK; S02 đạt 5/5 mục soạn thảo, Gate S02 chờ duyệt độc lập.** S03–S07 chưa mở. Mã nguồn được đối chiếu tại `origin/test-mainet` commit `0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`, tree `09c24280590aee51d97b53b18c5d9e193dbe6dbe`, trong worktree riêng `pluto-research-v2` trên nhánh `research/reproducible-testbed`; worktree `pluto` đang có sửa đổi riêng và không bị ghi đè. Bằng chứng S01: [BASELINE_AUDIT](../evidence/s01/BASELINE_AUDIT.md), [PIPELINE_MAP](../evidence/s01/PIPELINE_MAP.md), [hash manifest](../evidence/m01/baseline_manifest.json), [B0/B1 inventory](../evidence/m01/LEGACY_INVENTORY.md), [security audit](../evidence/m01/SECURITY_AUDIT.md). Bundle sao lưu và log gốc chỉ lưu cục bộ trong `pluto-research-v2/research-v2/artifacts/private-baseline/` (được Git ignore), vì chứa lịch sử hoặc dữ liệu chạy thử chưa duyệt để công bố.
 
 ## S01 — Đóng băng bản gốc và kiểm kê đường xử lý [BẮT BUỘC ĐẦU TIÊN]
 
@@ -25,15 +25,17 @@
 
 ## S02 — Khóa bài toán và hợp đồng thực nghiệm [CHỈ SAU S01]
 
-- [ ] **S02.1** Chốt đúng ba RQ: **RQ1 Resource Impact**, **RQ2 Detectability**, **RQ3 Baseline Gap**; ghi H0/H1 và điều kiện bác bỏ từng RQ.
-- [ ] **S02.2** Chốt phạm vi phân biệt: **pre-admission verification exhaustion**, **accepted-mempool byte/count pressure**, **P2P relay congestion**; không gọi mọi rejection là “tràn mempool”.
-- [ ] **S02.3** Chốt threat model A/B/C: người gửi tùy ý, người sửa giao dịch đã ký, chủ khóa hợp lệ; định nghĩa nhóm tải hợp lệ cao và lỗi client là **benign** khi phù hợp.
-- [ ] **S02.4** Chốt bốn cấu hình đối chứng **C (ECDSA)**, **CP (ECDSA + padding hợp lệ)**, **P (ML-DSA-44)**, **H (ECDSA + ML-DSA-44)**; cùng intent, nghiệp vụ, trạng thái và điều kiện tải.
-- [ ] **S02.5** Chốt biến kiểm soát, chỉ số chính (legitimate goodput, latency, CPU, mempool bytes, relay bytes), định nghĩa thời điểm cảnh báo và quy tắc không rò rỉ thông tin tương lai; định nghĩa tiêu chí dừng an toàn.
+- [x] **S02.1** Chốt đúng ba RQ: **RQ1 Resource Impact**, **RQ2 Detectability**, **RQ3 Baseline Gap**; ghi H0/H1 và điều kiện bác bỏ từng RQ. **Bằng chứng soạn thảo:** [Research protocol](../protocol/RESEARCH_PROTOCOL.md#research-questions-and-falsifiable-decisions); ngưỡng đề xuất chờ duyệt độc lập.
+- [x] **S02.2** Chốt phạm vi phân biệt: **pre-admission verification exhaustion**, **accepted-mempool byte/count pressure**, **P2P relay congestion**; không gọi mọi rejection là “tràn mempool”. **Bằng chứng soạn thảo:** [Threat model](../protocol/THREAT_MODEL.md#mechanisms-that-must-remain-separate).
+- [x] **S02.3** Chốt threat model A/B/C: người gửi tùy ý, người sửa giao dịch đã ký, chủ khóa hợp lệ; định nghĩa nhóm tải hợp lệ cao và lỗi client là **benign** khi phù hợp. **Bằng chứng soạn thảo:** [Actor capabilities và workload labels](../protocol/THREAT_MODEL.md#actor-capabilities).
+- [x] **S02.4** Chốt bốn cấu hình đối chứng **C (ECDSA)**, **CP (ECDSA + padding hợp lệ)**, **P (ML-DSA-44)**, **H (ECDSA + ML-DSA-44)**; cùng intent, nghiệp vụ, trạng thái và điều kiện tải. **Bằng chứng soạn thảo:** [Four controlled profiles](../protocol/RESEARCH_PROTOCOL.md#four-controlled-authentication-profiles); tính tương đương cần được thử ở S03.
+- [x] **S02.5** Chốt biến kiểm soát, chỉ số chính (legitimate goodput, latency, CPU, mempool bytes, relay bytes), định nghĩa thời điểm cảnh báo và quy tắc không rò rỉ thông tin tương lai; định nghĩa tiêu chí dừng an toàn. **Bằng chứng soạn thảo:** [Measurement contract](../protocol/MEASUREMENT_CONTRACT.md); telemetry cần được cài và thử ở S05–S07.
 
 **Bàn giao:** `RESEARCH_PROTOCOL.md`, `THREAT_MODEL.md`, `MEASUREMENT_CONTRACT.md`.
 
 **GATE S02 — OK:** Người khác đọc tài liệu có thể nói rõ **đo cái gì, đo tại đâu, dùng đối chứng nào, thế nào là tấn công/quá tải** mà không cần suy đoán.
+
+**Trạng thái Gate S02: CHỜ DUYỆT ĐỘC LẬP.** Năm mục soạn thảo trên đã có tài liệu và [kiểm tra đối chiếu](../evidence/s02/CONTRACT_AUDIT.md); dấu tích xác nhận **bản thiết kế và tự kiểm tra**, không thay thế sự chấp thuận khoa học. Theo `AGENTS.md`, agent không tự phê duyệt Gate hợp đồng khoa học. Controller/Owner cần đọc bản trên [Draft PR #12](https://github.com/the-phong/DoS-in-Blockchain-PQC/pull/12) và quyết định `OK` hoặc yêu cầu sửa. S03 chưa mở; chưa chạy tải hay kết luận RQ1–RQ3.
 
 ---
 

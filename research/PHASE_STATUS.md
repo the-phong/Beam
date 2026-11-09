@@ -1,4 +1,4 @@
-# Phase status — 2026-11-07
+# Phase status — 2026-11-09
 
 ## Current `test-mainet` baseline and new research program
 
@@ -11,10 +11,13 @@ contract. The Owner requested the new checklist program on 2026-11-07;
 implementation and review are ongoing on `research/reproducible-testbed`.
 The [S01 baseline audit](../research-v2/evidence/s01/BASELINE_AUDIT.md) fixes
 the source tree, records the reruns, and marks the bounded local technical
-Gate S01 OK. S02 research-contract work has not started; no scientific gate
-or new research result is accepted. Multi-host trials, CP/P profiles, stage
-telemetry and detector comparisons remain open. The paragraphs below record
-historical authorization and candidate status at their original dates.
+Gate S01 OK. S02 has three proposed contract documents and a
+[self-audit](../research-v2/evidence/s02/CONTRACT_AUDIT.md); its five drafting
+items are complete, but **Gate S02 awaits independent Controller/Owner review**
+under `AGENTS.md`. S03 is unopened. No scientific result is accepted.
+Multi-host trials, CP/P profiles, stage telemetry and detector comparisons
+remain open. The paragraphs below record historical authorization and
+candidate status at their original dates.
 
 ## Historical Phase 05 experimental implementation candidate
 
