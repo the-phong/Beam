@@ -15,12 +15,25 @@ classifies only known response reasons. A process sampler reads native
 Comet accepted-mempool RPC, Prometheus mempool and P2P `0x30` channel
 counters, and Linux `/proc` CPU/RSS. This avoids treating rejected CheckTx
 traffic as accepted occupancy and avoids conflating RPC with P2P relay.
-The pinned Comet binary does not expose per-transaction enqueue timestamps
-or exact P2P transaction receive counts, so these remain `NOT MEASURED`.
-No subtraction of proxy and application spans may be called queue wait.
+For S05 only, a source-checked, disposable copy of pinned CometBFT v0.38.26
+adds aggregate decoded P2P transaction count/bytes at `Reactor.Receive` and
+a monotonic CheckTx socket-client enqueue-to-writer-dequeue histogram. The
+normal Comet build and its protocol path remain unchanged; the patch adds
+only Prometheus observations and uses a temporary modfile under ignored
+`build/`. The script fails closed if any of its three pinned source files
+changes. The socket queue component ends before transport and the app
+callback. Total Comet enqueue-to-app wait and P2P propagation latency remain
+`NOT MEASURED`; no subtraction of proxy and application spans is used.
+The already pinned Prometheus client v1.21.0 (module minimum Go 1.21) is
+promoted from indirect to direct for the hook benchmark and the temporary
+Comet build. No version changed; `go mod tidy -diff`, `make verify` and the
+four-validator S05 test verify the dependency path. Its cost is measured
+only as isolated metric calls, not whole-node overhead.
 The [metric dictionary](protocol/METRICS_DICTIONARY.md) records units,
 availability, quality, dropped samples, privacy and reproducible commands.
-S05's incomplete capture points hold its gate open; S06 remains closed.
+The five S05 checklist items have local technical evidence, subject to
+independent review on the Draft PR. This is not Owner acceptance or S06
+authorization; S06 remains closed.
 
 ## D-034 — S04 bounded correctness network (2026-11-09; technical review candidate)
 

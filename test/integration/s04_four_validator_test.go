@@ -97,6 +97,9 @@ func TestS05FourValidatorTelemetry(t *testing.T) {
 
 func runFourProfileCorrectness(t *testing.T, observe bool) {
 	comet, _ := filepath.Abs("../../build/cometbft")
+	if observe {
+		comet, _ = filepath.Abs("../../build/cometbft-s05")
+	}
 	if info, err := os.Stat(comet); err != nil || !info.Mode().IsRegular() {
 		t.Fatalf("build CometBFT first: %v", err)
 	}
@@ -378,7 +381,8 @@ func runFourProfileCorrectness(t *testing.T, observe bool) {
 				if len(proxyEvents) != 2 || proxyDrops != 0 || proxyEvents[0].Reason != "app_reject" || proxyEvents[1].Reason != "duplicate_cache" {
 					t.Fatalf("real RPC proxy event mismatch: %+v drops=%d", proxyEvents, proxyDrops)
 				}
-				var sawRelay bool
+				var sawRelay, sawP2PIngress, sawSocketQueue bool
+				var ingressTxs, ingressBytes, queueCount, queueSeconds float64
 				for i := range n.nodes {
 					collector, err := telemetry.NewCollector(fmt.Sprintf("http://127.0.0.1:%d", n.nodes[i].ports.RPC), fmt.Sprintf("http://127.0.0.1:%d", metricsPorts[i]), n.nodes[i].pid, os.Getpid())
 					if err != nil {
@@ -390,6 +394,24 @@ func runFourProfileCorrectness(t *testing.T, observe bool) {
 					}
 					if sample.RelaySendEnvelopeBytes != nil && *sample.RelaySendEnvelopeBytes > 0 && sample.RelayReceiveEnvelopeBytes != nil && *sample.RelayReceiveEnvelopeBytes > 0 {
 						sawRelay = true
+					}
+					if sample.P2PIngressTxTotal != nil && *sample.P2PIngressTxTotal > 0 && sample.P2PIngressTxBytesTotal != nil && *sample.P2PIngressTxBytesTotal >= float64(len(raw)) {
+						sawP2PIngress = true
+					}
+					if sample.P2PIngressTxTotal != nil {
+						ingressTxs += *sample.P2PIngressTxTotal
+					}
+					if sample.P2PIngressTxBytesTotal != nil {
+						ingressBytes += *sample.P2PIngressTxBytesTotal
+					}
+					if sample.CheckTxSocketQueueCount != nil && *sample.CheckTxSocketQueueCount > 0 && sample.CheckTxSocketQueueSeconds != nil && *sample.CheckTxSocketQueueSeconds > 0 {
+						sawSocketQueue = true
+					}
+					if sample.CheckTxSocketQueueCount != nil {
+						queueCount += *sample.CheckTxSocketQueueCount
+					}
+					if sample.CheckTxSocketQueueSeconds != nil {
+						queueSeconds += *sample.CheckTxSocketQueueSeconds
 					}
 					events, dropped := recorders[i].Drain()
 					if dropped != 0 || len(events) == 0 {
@@ -408,6 +430,10 @@ func runFourProfileCorrectness(t *testing.T, observe bool) {
 				if !sawRelay {
 					t.Fatal("no direct mempool-channel P2P bytes observed")
 				}
+				if !sawP2PIngress || !sawSocketQueue {
+					t.Fatalf("missing direct P2P transaction ingress or Comet CheckTx socket queue: p2p=%t queue=%t", sawP2PIngress, sawSocketQueue)
+				}
+				t.Logf("telemetry profile=%d p2p_ingress_txs=%.0f p2p_ingress_tx_bytes=%.0f checktx_socket_queue_count=%.0f checktx_socket_queue_seconds=%.9f", profile, ingressTxs, ingressBytes, queueCount, queueSeconds)
 			}
 			var postBlock string
 			for i := range n.nodes {

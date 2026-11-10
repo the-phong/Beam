@@ -57,9 +57,12 @@ observability:
   app_checktx_recorder: internal/telemetry
   accepted_mempool_source: comet_rpc_num_unconfirmed_txs
   relay_byte_source: comet_prometheus_p2p_channel_0x30
+  s05_comet_source: pinned_cometbft_v0.38.26_source_checked_disposable_build
+  s05_comet_build: build/cometbft-s05
+  p2p_transaction_ingress: instrumented_mempool_reactor_decoded_tx_count_and_bytes
+  comet_checktx_socket_queue_wait: instrumented_abci_socket_enqueue_to_writer_dequeue_histogram
   process_source: linux_proc_stat_statm
-  comet_checktx_queue_wait: NOT_MEASURED
-  p2p_transaction_ingress: NOT_MEASURED
+  comet_total_enqueue_to_app_wait: NOT_MEASURED
   p2p_propagation_latency: NOT_MEASURED
   raw_output_policy: ignored_research_artifacts_only
 source:
@@ -133,6 +136,11 @@ dependencies:
     module: github.com/cometbft/cometbft
     selected_version: v0.38.26
     status: pinned_compiled_integrated_single_validator_tested
+  prometheus_s05:
+    module: github.com/prometheus/client_golang
+    selected_version: v1.21.0
+    minimum_go: "1.21"
+    status: existing_pinned_comet_transitive_promoted_to_direct_for_S05_hook_benchmark_and_disposable_comet_build
   comet_config_parser:
     module: github.com/spf13/viper
     selected_version: v1.19.0

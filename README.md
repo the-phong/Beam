@@ -11,9 +11,9 @@ establish DoS, an EVM, multi-host independence, or a useful ML detector.
 The [current experimental checklist](research/checklists/01_CHECKLIST_CHUAN_HOA_MO_RONG_REPO_THUC_NGHIEM.md)
 tracks a separate RQ1–RQ3 program. S01–S04 are closed after the Owner merged
 [PR #15](https://github.com/the-phong/DoS-in-Blockchain-PQC/pull/15).
-S05 telemetry is in progress with a bounded
-[metric dictionary](research/protocol/METRICS_DICTIONARY.md); its full gate
-remains open. The C/CP/P/H application has a four-validator localhost
+S05.1–S05.5 now have bounded local technical evidence and a
+[metric dictionary](research/protocol/METRICS_DICTIONARY.md); independent
+review and Owner acceptance remain pending. The C/CP/P/H application has a four-validator localhost
 integration harness; it is not a selectable profile in the normal `plutod`
 CLI. Checked items link to new evidence. Historical Phase 05 results are not
 new RQ1–RQ3 results.

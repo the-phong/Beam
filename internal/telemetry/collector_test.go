@@ -6,10 +6,12 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"sync/atomic"
 	"testing"
 )
 
 func TestCollectorKeepsAcceptedOccupancySeparateFromFailuresAndRelay(t *testing.T) {
+	var delta atomic.Int64
 	rpc := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/num_unconfirmed_txs" {
 			t.Fatal("unexpected RPC path")
@@ -22,6 +24,8 @@ func TestCollectorKeepsAcceptedOccupancySeparateFromFailuresAndRelay(t *testing.
 		fmt.Fprint(w, "cometbft_p2p_peer_send_bytes_total{peer_id=\"a\",chID=\"0x30\"} 100\n")
 		fmt.Fprint(w, "cometbft_p2p_peer_send_bytes_total{peer_id=\"b\",chID=\"0x20\"} 800\n")
 		fmt.Fprint(w, "cometbft_p2p_peer_receive_bytes_total{peer_id=\"b\",chID=\"0x30\"} 200\n")
+		fmt.Fprintf(w, "pluto_comet_p2p_ingress_txs_total %d\npluto_comet_p2p_ingress_tx_bytes_total %d\n", 4+delta.Load(), 321+100*delta.Load())
+		fmt.Fprint(w, "pluto_comet_checktx_socket_queue_seconds_count 5\npluto_comet_checktx_socket_queue_seconds_sum 0.025\n")
 	}))
 	defer metrics.Close()
 	c, err := NewCollector(rpc.URL, metrics.URL, os.Getpid(), os.Getpid())
@@ -29,8 +33,21 @@ func TestCollectorKeepsAcceptedOccupancySeparateFromFailuresAndRelay(t *testing.
 		t.Fatal(err)
 	}
 	s := c.Sample(context.Background())
-	if s.SampleStartedUTC == "" || s.ObservedUTC == "" || s.SampleDurationNS < 0 || s.AcceptedMempoolCount == nil || *s.AcceptedMempoolCount != 2 || s.AcceptedMempoolBytes == nil || *s.AcceptedMempoolBytes != 2575 || s.FailedTxTotal == nil || *s.FailedTxTotal != 7 || s.ResourceRejectedTxTotal == nil || *s.ResourceRejectedTxTotal != 3 || s.RelaySendEnvelopeBytes == nil || *s.RelaySendEnvelopeBytes != 100 || s.RelayReceiveEnvelopeBytes == nil || *s.RelayReceiveEnvelopeBytes != 200 || s.Comet == nil || s.Application == nil || len(s.Unavailable) != 0 || s.DroppedSamples != 0 {
+	if s.SampleStartedUTC == "" || s.ObservedUTC == "" || s.SampleDurationNS < 0 || s.AcceptedMempoolCount == nil || *s.AcceptedMempoolCount != 2 || s.AcceptedMempoolBytes == nil || *s.AcceptedMempoolBytes != 2575 || s.FailedTxTotal == nil || *s.FailedTxTotal != 7 || s.ResourceRejectedTxTotal == nil || *s.ResourceRejectedTxTotal != 3 || s.RelaySendEnvelopeBytes == nil || *s.RelaySendEnvelopeBytes != 100 || s.RelayReceiveEnvelopeBytes == nil || *s.RelayReceiveEnvelopeBytes != 200 || s.P2PIngressTxTotal == nil || *s.P2PIngressTxTotal != 4 || s.P2PIngressTxBytesTotal == nil || *s.P2PIngressTxBytesTotal != 321 || s.CheckTxSocketQueueCount == nil || *s.CheckTxSocketQueueCount != 5 || s.CheckTxSocketQueueSeconds == nil || *s.CheckTxSocketQueueSeconds != 0.025 || s.Comet == nil || s.Application == nil || len(s.Unavailable) != 0 || s.DroppedSamples != 0 {
 		t.Fatalf("incorrect sample: %+v", s)
+	}
+	if s.P2PIngressTxPerSecond != nil || s.P2PIngressBytesPerSecond != nil {
+		t.Fatal("first sample cannot have a rate")
+	}
+	delta.Store(2)
+	s = c.Sample(context.Background())
+	if s.P2PIngressTxPerSecond == nil || *s.P2PIngressTxPerSecond <= 0 || s.P2PIngressBytesPerSecond == nil || *s.P2PIngressBytesPerSecond <= 0 {
+		t.Fatalf("missing positive same-process P2P rates: %+v", s)
+	}
+	delta.Store(-3)
+	s = c.Sample(context.Background())
+	if s.P2PIngressTxPerSecond != nil || s.P2PIngressBytesPerSecond != nil {
+		t.Fatalf("counter reset must make rates unavailable: %+v", s)
 	}
 	rpc.Close()
 	s = c.Sample(context.Background())

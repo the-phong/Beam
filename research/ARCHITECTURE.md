@@ -17,11 +17,14 @@ bounded recorder is reached only from `CheckTx`; stage timings are emitted
 after verification and never enter consensus decisions. A localhost RPC
 proxy records controlled RPC ingress and response classification. A separate
 sampler reads Comet's accepted mempool snapshot, Prometheus counters for
-the mempool P2P channel `0x30`, and process CPU/RSS. The
+the mempool P2P channel `0x30`, S05-only decoded P2P ingress and CheckTx
+socket queue metrics, and process CPU/RSS. The instrumented Comet binary is
+generated from source-checked v0.38.26 into ignored `build/` with a temporary
+modfile; the normal S04 binary stays separate. The
 [metric dictionary](protocol/METRICS_DICTIONARY.md) defines null and
-quality rules. Comet queue wait and exact P2P transaction ingress are still
-unobserved in the pinned build. S05 therefore cannot be used for a loaded
-RQ1–RQ3 comparison until its remaining gate conditions are met.
+quality rules. Total Comet enqueue-to-app wait and P2P propagation latency
+remain unobserved; the measured socket queue ends before transport. S05
+is an observability gate candidate, not a loaded RQ1–RQ3 comparison.
 
 ## S03/S04 profile and correctness boundary
 

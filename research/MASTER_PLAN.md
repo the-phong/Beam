@@ -8,9 +8,11 @@ S01 and S02 are accepted; S03 four-profile source and direct-ABCI work was
 merged in PR #14 at `1c8084207adb5da787e34e230dd0dc6d9a3de05f`.
 The Owner merged S04 PR #15 at
 `630f2d8c81398f84073796747108c30ab9dee3c8` and authorized S05 on
-`research/s05-observability`. Its bounded implementation and missing capture
-points are in the [metric dictionary](protocol/METRICS_DICTIONARY.md).
-S05's gate is not yet complete; S06–S07, multi-host measurements and detector
+`research/s05-observability`. Its bounded implementation, directly measured
+socket queue component and remaining quality limits are in the
+[metric dictionary](protocol/METRICS_DICTIONARY.md).
+S05.1–S05.5 have local technical evidence awaiting independent review and
+Owner acceptance; S06–S07, multi-host measurements and detector
 comparison are not authorized. D-031–D-035 record provenance and decisions. Earlier phase schedules and
 authority paragraphs below are historical and do not establish checklist
 completion.

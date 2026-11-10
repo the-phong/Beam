@@ -26,8 +26,11 @@ and a real four-validator localhost test harness. The
 records the bounded result and verification. The Owner merged
 [PR #15](https://github.com/the-phong/DoS-in-Blockchain-PQC/pull/15) and
 authorized S05 telemetry. The [S05 metric dictionary](protocol/METRICS_DICTIONARY.md)
-records directly observed and unavailable fields. S05's full gate remains
-open; S06–S07 loaded experiments are closed.
+records directly observed and unavailable fields. S05.1–S05.5 have bounded
+local technical evidence, including an S05-only source-checked Comet build
+for P2P ingress and CheckTx socket queue. The S05 technical gate is a
+review candidate; independent review and Owner acceptance remain pending.
+S06–S07 loaded experiments are closed.
 No new RQ1–RQ3 result is accepted. The paragraphs below record historical
 authorization and candidate status at their original dates.
 

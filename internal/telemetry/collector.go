@@ -42,6 +42,12 @@ type NodeSample struct {
 	RecheckTotal              *float64       `json:"recheck_total"`
 	RelayReceiveEnvelopeBytes *float64       `json:"relay_receive_envelope_bytes"`
 	RelaySendEnvelopeBytes    *float64       `json:"relay_send_envelope_bytes"`
+	P2PIngressTxTotal         *float64       `json:"p2p_ingress_tx_total"`
+	P2PIngressTxBytesTotal    *float64       `json:"p2p_ingress_tx_bytes_total"`
+	P2PIngressTxPerSecond     *float64       `json:"p2p_ingress_tx_per_second"`
+	P2PIngressBytesPerSecond  *float64       `json:"p2p_ingress_bytes_per_second"`
+	CheckTxSocketQueueCount   *float64       `json:"checktx_socket_queue_count"`
+	CheckTxSocketQueueSeconds *float64       `json:"checktx_socket_queue_seconds"`
 	Comet                     *ProcessSample `json:"comet_process"`
 	Application               *ProcessSample `json:"application_process"`
 	Unavailable               []string       `json:"unavailable,omitempty"`
@@ -49,13 +55,17 @@ type NodeSample struct {
 }
 
 type Collector struct {
-	client     *http.Client
-	rpcURL     string
-	metricsURL string
-	cometPID   int
-	appPID     int
-	clockTicks uint64
-	dropped    uint64
+	client              *http.Client
+	rpcURL              string
+	metricsURL          string
+	cometPID            int
+	appPID              int
+	clockTicks          uint64
+	dropped             uint64
+	lastP2PAt           time.Time
+	lastP2PTx           float64
+	lastP2PBytes        float64
+	lastCometStartTicks uint64
 }
 
 func NewCollector(rpcURL, metricsURL string, cometPID, appPID int) (*Collector, error) {
@@ -119,8 +129,27 @@ func (c *Collector) Sample(ctx context.Context) NodeSample {
 		c.dropped++
 	}
 	s.DroppedSamples = c.dropped
-	s.SampleDurationNS = time.Since(started).Nanoseconds()
-	s.ObservedUTC = time.Now().UTC().Format(time.RFC3339Nano)
+	completed := time.Now()
+	if s.Comet != nil && s.P2PIngressTxTotal != nil && s.P2PIngressTxBytesTotal != nil {
+		if !c.lastP2PAt.IsZero() && c.lastCometStartTicks == s.Comet.StartTicks &&
+			*s.P2PIngressTxTotal >= c.lastP2PTx && *s.P2PIngressTxBytesTotal >= c.lastP2PBytes {
+			elapsed := completed.Sub(c.lastP2PAt).Seconds()
+			if elapsed > 0 {
+				txRate := (*s.P2PIngressTxTotal - c.lastP2PTx) / elapsed
+				byteRate := (*s.P2PIngressTxBytesTotal - c.lastP2PBytes) / elapsed
+				s.P2PIngressTxPerSecond = &txRate
+				s.P2PIngressBytesPerSecond = &byteRate
+			}
+		}
+		c.lastP2PAt = completed
+		c.lastP2PTx = *s.P2PIngressTxTotal
+		c.lastP2PBytes = *s.P2PIngressTxBytesTotal
+		c.lastCometStartTicks = s.Comet.StartTicks
+	} else {
+		c.lastP2PAt = time.Time{}
+	}
+	s.SampleDurationNS = completed.Sub(started).Nanoseconds()
+	s.ObservedUTC = completed.UTC().Format(time.RFC3339Nano)
 	return s
 }
 
@@ -181,11 +210,15 @@ func (c *Collector) prometheus(ctx context.Context, s *NodeSample) error {
 	if err != nil || len(raw) > 4<<20 {
 		return errors.New("invalid bounded metrics response")
 	}
-	var failed, rejected, recheck *float64
+	var failed, rejected, recheck, p2pTxs, p2pBytes, queueCount, queueSeconds *float64
 	values := map[string]**float64{
-		"cometbft_mempool_failed_txs":    &failed,
-		"cometbft_mempool_rejected_txs":  &rejected,
-		"cometbft_mempool_recheck_times": &recheck,
+		"cometbft_mempool_failed_txs":                    &failed,
+		"cometbft_mempool_rejected_txs":                  &rejected,
+		"cometbft_mempool_recheck_times":                 &recheck,
+		"pluto_comet_p2p_ingress_txs_total":              &p2pTxs,
+		"pluto_comet_p2p_ingress_tx_bytes_total":         &p2pBytes,
+		"pluto_comet_checktx_socket_queue_seconds_count": &queueCount,
+		"pluto_comet_checktx_socket_queue_seconds_sum":   &queueSeconds,
 	}
 	scanner := bufio.NewScanner(bytes.NewReader(raw))
 	scanner.Buffer(make([]byte, 4096), 1<<20)
@@ -224,6 +257,8 @@ func (c *Collector) prometheus(ctx context.Context, s *NodeSample) error {
 		return err
 	}
 	s.FailedTxTotal, s.ResourceRejectedTxTotal, s.RecheckTotal = failed, rejected, recheck
+	s.P2PIngressTxTotal, s.P2PIngressTxBytesTotal = p2pTxs, p2pBytes
+	s.CheckTxSocketQueueCount, s.CheckTxSocketQueueSeconds = queueCount, queueSeconds
 	if sendSeen {
 		s.RelaySendEnvelopeBytes = &send
 	}
