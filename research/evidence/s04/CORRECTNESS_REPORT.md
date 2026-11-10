@@ -29,7 +29,7 @@ committed bytes and file SHA-256, not a pseudo-random seed. Corpus SHA-256:
 `go run ./cmd/s04-corpus verify research-v2/corpus/s04_public_corpus.json`
 rechecks every byte hash, expected code/stage and rejected-state neutrality.
 The command above records the original S04 run. After the directory
-consolidation, use `go run ./cmd/s04-corpus verify research/corpus/s04_public_corpus.json`;
+consolidation, use `go run ./cmd/profile-corpus verify research/corpus/s04_public_corpus.json`;
 the corpus bytes and SHA-256 are unchanged.
 
 `TestS04CorpusABCIOracle` executes every case through `CheckTx` New and
@@ -90,6 +90,21 @@ byte-identically to `research/corpus/s04_public_corpus.json` (SHA-256
 subtests passed in 65.93 seconds; the common post-transfer AppHash was
 `2C4252A230A13A397BE9A094097BB90513E5F4ACB46BF76E1123A4D4E528E4DC`.
 This rerun checks the path migration only and does not expand the S04 gate.
+
+Code-folder consolidation rerun (2026-11-10): `go run ./cmd/profile-corpus
+verify research/corpus/s04_public_corpus.json`, `go test -race -count=1
+./internal/profiles/...`, `make verify` and `make test-s04-4v` each exited
+**0** with the versionless source folders. All four profile subtests passed
+in 67.03 seconds with the same post-transfer AppHash. The B0/B1 public
+corpora retained SHA-256 `242e5c848aa3c97f731a3e70f9ca0876a9ec68bffbbbab2ead8c222c005cd535`
+and `459148e8d350cecd1509130d88de909b9ce37c2420ef2999d224db9265ec1646`;
+both corpus verifiers, Python analysis tests, and the two B0/B1 smoke runs
+exited **0**. This verifies folder relocation, not new scientific results.
+The ignored local smoke ledgers are
+`research/artifacts/b0b1-runs/20261110T034758Z-smoke/execution.jsonl`
+(SHA-256 `284bac58b300ecbeb46bfde63fcb6dc60d4f7f359bea1e59583cbffc278f8d07`)
+and `research/artifacts/b0b1-runs/20261110T034832Z-contention-smoke/execution.jsonl`
+(SHA-256 `25b34e9d91097dc9900aeb8013c29a43f892b95272d8daa0f3ee3a8d4f0abb02`).
 
 The PR verification workflow also invokes `make test-s04-4v` so hosted CI
 checks this new network path, in addition to the existing B0/B1 gates. Its

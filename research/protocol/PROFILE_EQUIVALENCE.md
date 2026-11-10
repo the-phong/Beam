@@ -1,6 +1,6 @@
 # S03 four-profile equivalence — implementation candidate
 
-Status: S03 source and direct-ABCI test candidate, 2026-11-09. Base: merged S02 `test-mainet` commit `2a3dcbceb52b996425d911dde87b691317f56efd`. Branch: `research/s03-controlled-profiles`. This report concerns the new `internal/researchv2` and `internal/researchv2app` packages only. Accepted B0/B1 wire formats, accounts, stores and nodes are unchanged. Real four-validator correctness, durable restart and loaded P2P behavior are S04–S07 gates, not S03 claims.
+Status: S03 source and direct-ABCI test candidate, 2026-11-09. Base: merged S02 `test-mainet` commit `2a3dcbceb52b996425d911dde87b691317f56efd`. Branch: `research/s03-controlled-profiles`. This report concerns the new `internal/profiles` and `internal/profiles/app` packages only. Accepted B0/B1 wire formats, accounts, stores and nodes are unchanged. Real four-validator correctness, durable restart and loaded P2P behavior are S04–S07 gates, not S03 claims.
 
 ## One logical task and one application path
 
@@ -25,6 +25,6 @@ The signed digest is SHA-256 over a research-v2 domain plus the versioned canoni
 
 ## Verification and public vectors
 
-`internal/researchv2/testdata/public_vectors.json` contains one synthetic, valid signed transaction for each profile, public genesis bytes, wire size, SHA-256, signing digest, transaction ID and post-transfer AppHash. It contains no private key or signing seed. `go run ./cmd/rv2-vectors` creates a fresh set of public vectors with ephemeral in-memory keys; randomness means it will not reproduce the checked-in bytes, while the checked-in file is independently reverified by `TestPublicGoldenVectors`.
+`internal/profiles/testdata/public_vectors.json` contains one synthetic, valid signed transaction for each profile, public genesis bytes, wire size, SHA-256, signing digest, transaction ID and post-transfer AppHash. It contains no private key or signing seed. `go run ./cmd/profile-vectors` creates a fresh set of public vectors with ephemeral in-memory keys; randomness means it will not reproduce the checked-in bytes, while the checked-in file is independently reverified by `TestPublicGoldenVectors`.
 
 `TestFourProfilesSameTransferAndExactSize` verifies canonical encode/parse, exact sizes, valid transfer, identical sender/receiver balances, nonce, total supply and AppHash. `TestProfileNegativeBoundariesAndReachedStages` checks malformed/trailing input, chain, zero amount, unknown sender, unregistered signing key, nonce, balance, bad secp/ML proof, bad CP padding and wrong profile for all applicable profiles. `TestOneABCIPathForFourProfiles` checks admission, proposal, pending finalization and commit via the same callbacks. These tests use fresh ephemeral accounts and direct ABCI calls. The S04 oracle must extend them to four real validators, cache/recheck and fault boundaries.

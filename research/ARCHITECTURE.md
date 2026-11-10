@@ -10,10 +10,10 @@ points and must not be read as current implementation status.
 
 ## S03/S04 profile and correctness boundary
 
-The S03 candidate in `internal/researchv2` has one profile-selected canonical
+The S03 candidate in `internal/profiles` has one profile-selected canonical
 transaction parser, one genesis-bound account/key registry, one transfer
 transition and one AppHash rule for C, CP, P and H. The direct-ABCI
-`internal/researchv2app` applies the same callbacks for each profile. CP
+`internal/profiles/app` applies the same callbacks for each profile. CP
 accepts exactly 2,420 zero padding bytes and matches H's full wire size for
 the same chain ID; the padding is excluded from the signed intent. The
 [equivalence report](protocol/PROFILE_EQUIVALENCE.md) records
@@ -30,11 +30,11 @@ test harness is the S04 node wiring. B0/B1 code remains intact.
 
 ## Phase 05 experimental measurement boundary
 
-`internal/phase05/corpus` holds public, hash-checked B0/B1 transaction and
+`internal/benchmarks/corpus` holds public, hash-checked B0/B1 transaction and
 genesis fixtures. The generator uses ephemeral signing keys and publishes
 only signed bytes and public bindings. The oracle runs accepted state
 evaluators and real ABCI CheckTx/ProcessProposal against disposable stores.
-`internal/phase05/bench` contains research-only stage/callback timers and Go
+`internal/benchmarks/bench` contains research-only stage/callback timers and Go
 microbenchmarks; no production application imports it. The four-validator
 benchmark test provisions four fresh homes with the accepted B0/B1 node APIs,
 uses localhost RPC/P2P, records per-process diagnostics and checks matched

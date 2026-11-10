@@ -20,7 +20,7 @@ new RQ1–RQ3 results.
 
 | Path | Purpose |
 |---|---|
-| `cmd/`, `internal/`, `test/integration/` | Executables, application packages and tests. The controlled-profile packages and S04 test are separate from accepted B0/B1 runtime code. |
+| `cmd/`, `internal/`, `test/integration/` | Executables, application packages and tests. Current C/CP/P/H code is under `internal/profiles/`; B0/B1 corpus and benchmark code is under `internal/benchmarks/`. |
 | [`research/`](research/README.md) | One home for historical Phase 01–05 records and the current RQ1–RQ3 protocol, checklist, corpus and S01–S04 evidence. Repeated historical raw logs can represent distinct fault cases and are retained for their manifests. |
 | `research/artifacts/`, `build/` | Ignored local backups, raw logs, generated keys/homes and build outputs. Rebuild binaries with `make build`. |
 

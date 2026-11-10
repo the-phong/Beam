@@ -6,6 +6,10 @@ The Owner requested one research directory with no separate versioned tree.
 Keep the S01–S04 checklist, protocol, corpus, evidence and ignored private
 artifacts under `research/` in the original `pluto` folder. Historical reports
 may retain their original command spelling; use the current paths for reruns.
+Current C/CP/P/H code lives under `internal/profiles/`; its command folders
+are `cmd/profile-corpus/` and `cmd/profile-vectors/`.
+Historical B0/B1 experiment code is grouped by purpose under
+`internal/benchmarks/`, `cmd/b0b1-corpus/` and `research/benchmarks/b0b1/`.
 Preserve corpus, manifest and raw-log bytes, the local refactor stash and
 unrelated D026 files; document any report link repairs.
 This organization does not approve S05 or change S04's independent review

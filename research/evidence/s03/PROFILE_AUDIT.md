@@ -1,5 +1,9 @@
 # S03 profile implementation audit — 2026-11-09
 
+Directory note (2026-11-10): the original package and command paths in this
+report are preserved as the executed S03 ledger. Current code is under
+`internal/profiles/`; current vector tooling is `cmd/profile-vectors/`.
+
 ## Scope and provenance
 
 - Base: `test-mainet` merge commit `2a3dcbceb52b996425d911dde87b691317f56efd` (PR #12); S02 Gate OK by explicit Owner confirmation in the work session. Branch: `research/s03-controlled-profiles` in the original `pluto` folder.

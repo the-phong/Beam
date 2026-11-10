@@ -33,7 +33,7 @@ follows from S04. Controller review and Owner acceptance remain open.
 
 The Owner confirmed S02's gate and merge of PR #12 into `test-mainet` at
 `2a3dcbceb52b996425d911dde87b691317f56efd`, then authorized S03. The
-new `internal/researchv2` transaction/state path and `internal/researchv2app`
+new `internal/profiles` transaction/state path and `internal/profiles/app`
 direct ABCI++ application select C, CP, P or H while keeping one genesis,
 account registry, logical transfer, state commitment and callback path. CP
 uses canonical zero padding of the ML proof's 2,420-byte size and is accepted

@@ -28,11 +28,11 @@ import (
 	cmttypes "github.com/cometbft/cometbft/types"
 
 	"example.com/pluto/internal/b0state"
-	"example.com/pluto/internal/researchv2"
-	"example.com/pluto/internal/researchv2app"
-	"example.com/pluto/internal/researchv2corpus"
-	"example.com/pluto/internal/researchv2genesis"
-	"example.com/pluto/internal/researchv2store"
+	"example.com/pluto/internal/profiles"
+	"example.com/pluto/internal/profiles/app"
+	"example.com/pluto/internal/profiles/corpus"
+	"example.com/pluto/internal/profiles/genesis"
+	"example.com/pluto/internal/profiles/store"
 )
 
 func s04Account(t *testing.T, n *fourNetwork, i int, address b0state.Address) (uint64, uint64) {
@@ -209,7 +209,7 @@ func TestS04FourValidatorProfiles(t *testing.T) {
 				}
 				cfg.P2P.PersistentPeers = strings.Join(peers, ",")
 				config.WriteConfigFile(filepath.Join(home, "config", "config.toml"), cfg)
-				dir := filepath.Join(home, "data", "pluto-rv2-v1")
+				dir := filepath.Join(home, "data", "pluto-profiles")
 				store, err := researchv2store.Create(dir, binaryGenesis, corpus.ChainID, profile)
 				if err != nil {
 					t.Fatal(err)

@@ -1,5 +1,9 @@
 # Phase 05 local reproduction
 
+Paths in this guide use the consolidated B0/B1 folders as of 2026-11-10.
+The historical report and source manifests keep the paths used at the time;
+the public corpus bytes and recorded SHA-256 digests are unchanged.
+
 ## Supplementary matched-rate contention correction
 
 The previous 122-run, 12-request experiment below remains a historical
@@ -10,8 +14,8 @@ traffic experiment, use the new public corpus and separate commands:
 make benchmark-contention-corpus
 make benchmark-contention-smoke
 make benchmark-contention-full
-PHASE05_RUN_ROOT=research/evidence/phase_05/raw/<UTC-run-id>-contention-full make benchmark-contention-analyze
-python3 -m unittest discover research/benchmarks/phase05 -p 'test_*.py' -v
+PHASE05_RUN_ROOT=research/artifacts/b0b1-runs/<UTC-run-id>-contention-full make benchmark-contention-analyze
+python3 -m unittest discover research/benchmarks/b0b1 -p 'test_*.py' -v
 ```
 
 `benchmark-contention-full` schedules 78 independent fresh networks. The
@@ -26,7 +30,7 @@ on the shared host. A full run requires several hours and must retain the
 exact `execution.jsonl`, raw JSON, command logs and validator logs locally.
 
 The contention corpus is
-`research/corpus/phase_05/public_corpus_contention.json`. It contains 384
+`research/corpus/b0b1/public_corpus_contention.json`. It contains 384
 sequenced valid signed transactions per profile, using 64 public senders and
 nonce layers 0–5. Generator signing keys remain ephemeral. Verifying the
 committed public bytes needs no private key. Re-running generation creates
@@ -52,7 +56,7 @@ never relabeled successful.
 
 If a run has a wall-clock discontinuity, retain its original ledger, result
 and log. Rerun the exact condition in a new root with
-`python3 research/benchmarks/phase05/run_contention.py --mode repair34` for
+`python3 research/benchmarks/b0b1/run_contention.py --mode repair34` for
 the identified B0 secondary baseline case. Pass that new root as
 `PHASE05_REPAIR_ROOT` to `benchmark-contention-analyze`. The analyzer verifies
 both ledgers and hashes, records the original in `excluded_runs.json`, and
@@ -76,19 +80,20 @@ make test-integration-4v
 make test-integration-b1-4v
 make benchmark-corpus
 make benchmark-smoke
-make benchmark-micro > research/evidence/phase_05/raw/micro-five.log 2>&1
-make benchmark-full > research/evidence/phase_05/raw/full-matrix.log 2>&1
-PHASE05_RUN_ROOT=research/evidence/phase_05/raw/<UTC-run-id>-full make benchmark-analyze
-python3 research/benchmarks/phase05/analyze_micro.py research/evidence/phase_05/raw/micro-five.log research/evidence/phase_05/raw/micro-summary.json
-python3 research/benchmarks/phase05/render_tables.py research/evidence/phase_05/raw/<UTC-run-id>-full/analysis research/evidence/phase_05/raw/micro-summary.json research/evidence/phase_05/raw/summary-tables.md
-python3 -m unittest discover research/benchmarks/phase05 -p 'test_*.py' -v
+mkdir -p -- research/artifacts/b0b1-runs
+make benchmark-micro > research/artifacts/b0b1-runs/micro-five.log 2>&1
+make benchmark-full > research/artifacts/b0b1-runs/full-matrix.log 2>&1
+PHASE05_RUN_ROOT=research/artifacts/b0b1-runs/<UTC-run-id>-full make benchmark-analyze
+python3 research/benchmarks/b0b1/analyze_micro.py research/artifacts/b0b1-runs/micro-five.log research/artifacts/b0b1-runs/micro-summary.json
+python3 research/benchmarks/b0b1/render_tables.py research/artifacts/b0b1-runs/<UTC-run-id>-full/analysis research/artifacts/b0b1-runs/micro-summary.json research/artifacts/b0b1-runs/summary-tables.md
+python3 -m unittest discover research/benchmarks/b0b1 -p 'test_*.py' -v
 ```
 
 `benchmark-b1` runs the same prescribed primary, secondary and focused
 conditions for B1 only. `benchmark-full` runs both profiles, 122 fresh
 networks. The smoke runs one 12-request B1 condition, then verifies inclusion,
 ordered block history, matching AppHashes, all accounts and supply. Every
-new command has an executable smoke form. `phase05-corpus -mode verify` checks
+new command has an executable smoke form. `b0b1-corpus -mode verify` checks
 the public file hashes, runs its oracle against disposable B0/B1 stores and
 directly sends invalid candidate proposals to ProcessProposal. Corpus replay
 uses no private signing key. Generation is deliberately an exclusive-create
@@ -96,7 +101,7 @@ operation and gives a different corpus digest because signing identities are
 fresh; never claim a regenerated file is byte-identical to the committed
 corpus.
 
-The public corpus lives at `research/corpus/phase_05/public_corpus.json`.
+The public corpus lives at `research/corpus/b0b1/public_corpus.json`.
 `valid_pool` contains 64 independently signed transfer bytes per profile.
 `cases` hold exact hex bytes or a bounded zero-repeat recipe for oversized
 input. Every case has a digest, size, attacker capability, expected code,
@@ -106,7 +111,7 @@ Metadata and signed transactions are public; no secret key appears in the
 file. The original generation process discards ephemeral keys.
 
 The matrix driver writes a unique ignored directory under
-`research/evidence/phase_05/raw/` with one raw JSON record, one exact command
+`research/artifacts/b0b1-runs/` with one raw JSON record, one exact command
 log, per-validator process logs and an append-only execution ledger per run.
 It refuses to overwrite a run ID. Failed runs remain there, marked
 `complete=false` or missing data and with nonzero ledger exit. The analyzer
