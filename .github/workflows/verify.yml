@@ -27,6 +27,9 @@ jobs:
       - name: Verify S04 controlled-profile four-validator correctness
         run: make test-s04-4v
         timeout-minutes: 10
+      - name: Verify S05 controlled-profile telemetry
+        run: make test-s05-telemetry
+        timeout-minutes: 10
       - name: Verify Phase 05 public corpus and correctness oracle
         run: make benchmark-corpus
         timeout-minutes: 5

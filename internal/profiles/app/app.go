@@ -9,6 +9,8 @@ import (
 	"errors"
 	"math"
 	"sync"
+	"sync/atomic"
+	"time"
 
 	abci "github.com/cometbft/cometbft/abci/types"
 
@@ -16,6 +18,7 @@ import (
 	"example.com/pluto/internal/profiles"
 	"example.com/pluto/internal/profiles/genesis"
 	"example.com/pluto/internal/profiles/store"
+	"example.com/pluto/internal/telemetry"
 	"example.com/pluto/internal/version"
 )
 
@@ -36,6 +39,7 @@ type App struct {
 	committed   researchv2.State
 	pending     *researchv2.State
 	store       *researchv2store.Store
+	recorder    atomic.Pointer[telemetry.Recorder]
 }
 
 var _ abci.Application = (*App)(nil)
@@ -94,6 +98,10 @@ func (a *App) CommittedChecked() (researchv2.State, error) {
 func (a *App) Committed() researchv2.State { s, _ := a.CommittedChecked(); return s }
 func (a *App) Profile() researchv2.Profile { return a.profile }
 
+// SetRecorder may be called while the node is running. Disabling it restores
+// the unobserved CheckTx path; neither mode changes the validation result.
+func (a *App) SetRecorder(r *telemetry.Recorder) { a.recorder.Store(r) }
+
 func (a *App) Info(context.Context, *abci.RequestInfo) (*abci.ResponseInfo, error) {
 	s, err := a.CommittedChecked()
 	if err != nil {
@@ -129,8 +137,17 @@ func (a *App) InitChain(_ context.Context, req *abci.RequestInitChain) (*abci.Re
 	return &abci.ResponseInitChain{AppHash: append([]byte(nil), h[:]...)}, nil
 }
 func (a *App) CheckTx(_ context.Context, req *abci.RequestCheckTx) (*abci.ResponseCheckTx, error) {
+	recorder := a.recorder.Load()
+	var started time.Time
+	if recorder != nil {
+		started = time.Now()
+	}
 	a.mu.RLock()
 	defer a.mu.RUnlock()
+	var lockWait time.Duration
+	if recorder != nil {
+		lockWait = time.Since(started)
+	}
 	s, err := a.stateLocked()
 	if err != nil {
 		return nil, err
@@ -139,7 +156,29 @@ func (a *App) CheckTx(_ context.Context, req *abci.RequestCheckTx) (*abci.Respon
 	if req != nil {
 		raw = req.Tx
 	}
-	_, result, err := researchv2.EvaluateTrusted(s, a.profile, raw)
+	var result researchv2.Result
+	if recorder == nil {
+		_, result, err = researchv2.EvaluateTrusted(s, a.profile, raw)
+	} else {
+		spans := make([]telemetry.Span, 0, 3)
+		_, result, err = researchv2.EvaluateTrustedObserved(s, a.profile, raw, nil, func(stage researchv2.Stage, elapsed time.Duration) {
+			spans = append(spans, telemetry.Span{Stage: string(stage), DurationNS: elapsed.Nanoseconds()})
+		})
+		if err == nil {
+			checkType := "new"
+			if req == nil {
+				checkType = "unknown"
+			} else if req.Type == abci.CheckTxType_Recheck {
+				checkType = "recheck"
+			}
+			recorder.Record(telemetry.CheckTxEvent{
+				Profile: uint8(a.profile), CheckType: checkType, WireBytes: len(raw),
+				Code: uint32(result.Code), LastStage: string(result.LastStage),
+				ServiceNS:     (time.Since(started) - lockWait).Nanoseconds(),
+				AppLockWaitNS: lockWait.Nanoseconds(), Spans: spans,
+			})
+		}
+	}
 	if err != nil {
 		return nil, err
 	}

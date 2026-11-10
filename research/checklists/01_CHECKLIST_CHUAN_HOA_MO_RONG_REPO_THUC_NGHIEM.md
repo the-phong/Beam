@@ -6,7 +6,9 @@
 >
 > **Repo đầu vào:** `the-phong/DoS-in-Blockchain-PQC`; giữ lại các thành phần đã đúng, sửa/thay thế phần không đạt. **Không xóa hoặc ghi đè chứng cứ lịch sử.** Toàn bộ workload gây tải chỉ chạy trong testbed cô lập và có cơ chế dừng an toàn.
 
-> **Cập nhật kiểm kê 2026-11-09:** Checklist này là bản điều hành hiện hành; các dấu tích từ V1 không được tự động chuyển sang. **S01 đạt 4/4 task, Gate S01: OK; S02 đạt 5/5 mục soạn thảo, Gate S02: OK theo xác nhận Owner sau merge PR #12. S03 đạt 4/4 mục và đã merge PR #14; S04 đạt 4/4 mục với Gate kỹ thuật cục bộ OK, chờ Controller/Owner review; S05–S07 chưa mở.** S01 cố định baseline lịch sử `0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`; S04 xuất phát từ `test-mainet` merge commit `1c8084207adb5da787e34e230dd0dc6d9a3de05f` trên nhánh `research/s04-bft-correctness`, chỉ trong folder gốc `pluto`. Trạng thái refactor cũ giữ trong stash cục bộ `7ec52bd`. Bằng chứng S01: [BASELINE_AUDIT](../evidence/s01/BASELINE_AUDIT.md), [PIPELINE_MAP](../evidence/s01/PIPELINE_MAP.md), [hash manifest](../evidence/s01/baseline_manifest.json), [B0/B1 inventory](../evidence/s01/LEGACY_INVENTORY.md), [security audit](../evidence/s01/SECURITY_AUDIT.md). Bundle sao lưu và log gốc chỉ lưu cục bộ trong `pluto/research/artifacts/private-baseline/` (được Git ignore), vì chứa lịch sử hoặc dữ liệu chạy thử chưa duyệt để công bố.
+> **Cập nhật kiểm kê 2026-11-09 (lịch sử):** Checklist này là bản điều hành hiện hành; các dấu tích từ V1 không được tự động chuyển sang. S01 đạt 4/4 task, Gate S01: OK; S02 đạt 5/5 mục soạn thảo, Gate S02: OK theo xác nhận Owner sau merge PR #12. S03 đạt 4/4 mục và đã merge PR #14; S04 đạt 4/4 mục với Gate kỹ thuật cục bộ OK ở thời điểm ghi. S01 cố định baseline lịch sử `0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`; S04 xuất phát từ `test-mainet` merge commit `1c8084207adb5da787e34e230dd0dc6d9a3de05f` trên nhánh `research/s04-bft-correctness`, chỉ trong folder gốc `pluto`. Trạng thái refactor cũ giữ trong stash cục bộ `7ec52bd`. Bằng chứng S01: [BASELINE_AUDIT](../evidence/s01/BASELINE_AUDIT.md), [PIPELINE_MAP](../evidence/s01/PIPELINE_MAP.md), [hash manifest](../evidence/s01/baseline_manifest.json), [B0/B1 inventory](../evidence/s01/LEGACY_INVENTORY.md), [security audit](../evidence/s01/SECURITY_AUDIT.md). Bundle sao lưu và log gốc chỉ lưu cục bộ trong `pluto/research/artifacts/private-baseline/` (được Git ignore), vì chứa lịch sử hoặc dữ liệu chạy thử chưa duyệt để công bố.
+
+> **Tiến độ 2026-11-10:** Owner đã merge [PR #15](https://github.com/the-phong/DoS-in-Blockchain-PQC/pull/15) vào `test-mainet` tại `630f2d8c81398f84073796747108c30ab9dee3c8` và giao S05. Nhánh hiện hành `research/s05-observability` trong đúng folder `pluto`. S05 có bằng chứng cho 3/5 mục; S05.1 và S05.4 còn thiếu điểm đo trực tiếp trong Comet, Gate S05 **CHƯA OK**. S06–S07 chưa mở.
 
 > **Sắp xếp thư mục 2026-11-10:** Chỉ còn một cây `research/`. Checklist, protocol, corpus, evidence và artifacts đã được chuyển vào đây; hồ sơ M01 được đặt cùng S01. Đường dẫn bằng chứng đã cập nhật. Không thay đổi dấu tích hoặc trạng thái Gate; S04 vẫn chờ Controller/Owner review, S05 chưa mở.
 
@@ -71,21 +73,25 @@
 
 **Trạng thái Gate S04: OK kỹ thuật cục bộ, chờ Controller/Owner review.** `make verify`, race test và `make test-s04-4v` exit 0; [CORRECTNESS_REPORT](../evidence/s04/CORRECTNESS_REPORT.md) ghi lệnh, hash, 34 oracle case, kết quả bốn profile và giới hạn. S05 chưa được giao, không chạy phép đo tải hay tuyên bố DoS.
 
+**Đóng S04 sau merge:** Owner merge PR #15 vào `test-mainet` tại `630f2d8c81398f84073796747108c30ab9dee3c8` ngày 2026-11-10 và giao S05. Câu trạng thái phía trên là checkpoint trước merge.
+
 **Checkpoint S04 2026-11-09:** source commit `b8ccd7cf8c500fe2495143a21c76606d41c558d2`, tree `0c3c331e2929e576a2d5bf133be3624ca107087c`, trên `research/s04-bft-correctness` trong folder gốc `pluto`; [Draft PR #15](https://github.com/the-phong/DoS-in-Blockchain-PQC/pull/15) nhắm `test-mainet`. `make verify` sau commit exit 0, log SHA-256 `0d64b569c197abdb5a80a0a274976649e6ab47e62e1f480b131a9ee131790a94`. Controller/Owner chưa chấp nhận hoặc merge PR #15.
 
 ---
 
 ## S05 — Bổ sung telemetry đúng vị trí [CHỈ SAU S04]
 
-- [ ] **S05.1** Instrument riêng: ingress (tx/s, bytes/s, RPC/P2P), precheck/reject reason, CheckTx queue/service, ECDSA verify, ML-DSA verify và state check.
-- [ ] **S05.2** Đo mempool **accepted count + accepted bytes**, từ chối trước mempool, duplicate/cache; không cộng giao dịch invalid bị `CheckTx` loại vào occupancy.
-- [ ] **S05.3** Đo P2P relay (ingress/egress bytes, latency/queue khi quan sát được); nếu chưa instrument được thì gắn nhãn `NOT MEASURED`, không suy diễn từ RPC.
-- [ ] **S05.4** Đo per-process CPU/RSS cùng profiler cho crypto hotspot; tách client RPC latency, thời gian chờ và thời gian xử lý; đồng hồ monotonic cho duration.
-- [ ] **S05.5** Kiểm thử metrics ON/OFF: cùng quyết định/state; đo overhead instrumentation, dropped samples, schema/timestamp và bảo vệ bí mật.
+- [ ] **S05.1** Instrument riêng: ingress (tx/s, bytes/s, RPC/P2P), precheck/reject reason, CheckTx queue/service, ECDSA verify, ML-DSA verify và state check. **Đang làm:** proxy RPC, code/stage và span secp/ML/state đã có; thiếu đếm giao dịch P2P và timestamp enqueue của Comet để đo queue wait. [Từ điển](../protocol/METRICS_DICTIONARY.md) ghi `NOT MEASURED`; không tích khi thiếu.
+- [x] **S05.2** Đo mempool **accepted count + accepted bytes**, từ chối trước mempool, duplicate/cache; không cộng giao dịch invalid bị `CheckTx` loại vào occupancy. **Bằng chứng:** native `num_unconfirmed_txs` count/bytes, proxy phân loại `app_reject`/`duplicate_cache`; test mạng thật xác nhận giao dịch lỗi không vào occupancy, fixture kiểm tra count 2/bytes 2575. [Report](../evidence/s05/TELEMETRY_REPORT.md) ghi giới hạn chưa bắt được đỉnh occupancy dương trên mạng thật.
+- [x] **S05.3** Đo P2P relay (ingress/egress bytes, latency/queue khi quan sát được); nếu chưa instrument được thì gắn nhãn `NOT MEASURED`, không suy diễn từ RPC. **Bằng chứng:** Comet Prometheus `p2p_peer_{send,receive}_bytes_total` kênh mempool `0x30` có giá trị dương trong test bốn validator; propagation latency và hàng đợi riêng kênh là `NOT MEASURED`, không lấy từ RPC.
+- [ ] **S05.4** Đo per-process CPU/RSS cùng profiler cho crypto hotspot; tách client RPC latency, thời gian chờ và thời gian xử lý; đồng hồ monotonic cho duration. **Đang làm:** sampler CPU/RSS từng PID, CPU profile, client RPC/proxy/app service đã tách; Comet queue wait chưa có điểm đo trực tiếp nên chưa tích.
+- [x] **S05.5** Kiểm thử metrics ON/OFF: cùng quyết định/state; đo overhead instrumentation, dropped samples, schema/timestamp và bảo vệ bí mật. **Bằng chứng:** 34 case New/Recheck ON/OFF và hai lượt mạng bốn profile có cùng AppHash; benchmark 5 lần CP/H, test drop/schema/localhost/privacy đạt. [Report](../evidence/s05/TELEMETRY_REPORT.md) ghi hash log, kết quả và nhiễu phép đo.
 
 **Bàn giao:** `METRICS_DICTIONARY.md`, collector/structured logs, kiểm thử ON/OFF.
 
 **GATE S05 — OK:** Mỗi chỉ số có **định nghĩa, vị trí, đơn vị, thời điểm có sẵn và chất lượng phép đo**; không nhầm CPU process với CPU riêng PQC, RPC với relay.
+
+**Trạng thái Gate S05: CHƯA OK (3/5 mục có bằng chứng).** [METRICS_DICTIONARY](../protocol/METRICS_DICTIONARY.md) và [TELEMETRY_REPORT](../evidence/s05/TELEMETRY_REPORT.md) ghi các tín hiệu đo được và `NOT MEASURED`. Còn thiếu Comet CheckTx queue wait và P2P transaction ingress đúng nghĩa; S06 chưa được phép bắt đầu. Chờ bổ sung điểm đo rồi chạy lại gate và review độc lập.
 
 ---
 

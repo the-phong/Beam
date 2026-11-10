@@ -1,5 +1,27 @@
 # Architectural decision log
 
+## D-035 — S05 bounded telemetry without consensus inputs (2026-11-10; review candidate)
+
+The Owner merged S04 PR #15 into `test-mainet` at
+`630f2d8c81398f84073796747108c30ab9dee3c8` and authorized S05. The
+four-profile application gains an optional bounded recorder for `CheckTx`
+result/stage and monotonic secp, ML and state spans. The OFF path invokes
+the accepted evaluator without a clock read in the state machine. The ON
+path never feeds timing, buffer state or local process measurements into
+validation or AppHash. No B0/B1 or CometBFT protocol source changes.
+
+A separate loopback-only proxy observes controlled RPC submissions and
+classifies only known response reasons. A process sampler reads native
+Comet accepted-mempool RPC, Prometheus mempool and P2P `0x30` channel
+counters, and Linux `/proc` CPU/RSS. This avoids treating rejected CheckTx
+traffic as accepted occupancy and avoids conflating RPC with P2P relay.
+The pinned Comet binary does not expose per-transaction enqueue timestamps
+or exact P2P transaction receive counts, so these remain `NOT MEASURED`.
+No subtraction of proxy and application spans may be called queue wait.
+The [metric dictionary](protocol/METRICS_DICTIONARY.md) records units,
+availability, quality, dropped samples, privacy and reproducible commands.
+S05's incomplete capture points hold its gate open; S06 remains closed.
+
 ## D-034 — S04 bounded correctness network (2026-11-09; technical review candidate)
 
 After the Owner merged S03 PR #14 into `test-mainet` at
