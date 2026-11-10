@@ -11,18 +11,18 @@ contract. The Owner requested the new checklist program on 2026-11-07;
 implementation and review now continue on `research/s04-bft-correctness`
 in the single original `pluto` folder from the S03 merge commit
 `1c8084207adb5da787e34e230dd0dc6d9a3de05f`.
-The [S01 baseline audit](../research-v2/evidence/s01/BASELINE_AUDIT.md) fixes
+The [S01 baseline audit](evidence/s01/BASELINE_AUDIT.md) fixes
 the source tree, records the reruns, and marks the bounded local technical
 Gate S01 OK. The Owner confirmed Gate S02 after PR #12 merged into
 `test-mainet` at `2a3dcbceb52b996425d911dde87b691317f56efd`. S03 has
 a bounded local technical Gate OK for the four-profile source and direct
-ABCI++ tests, with [equivalence documentation](../research-v2/protocol/PROFILE_EQUIVALENCE.md)
-and [audit evidence](../research-v2/evidence/s03/PROFILE_AUDIT.md). PR #14
+ABCI++ tests, with [equivalence documentation](protocol/PROFILE_EQUIVALENCE.md)
+and [audit evidence](evidence/s03/PROFILE_AUDIT.md). PR #14
 was merged by the Owner on 2026-11-09. The Owner then authorized S04.
 The S04 candidate adds a public four-profile correctness corpus, a stage
 recorder used only for oracle checks, a profile/genesis-bound Pebble snapshot,
 and a real four-validator localhost test harness. The
-[correctness report](../research-v2/evidence/s04/CORRECTNESS_REPORT.md)
+[correctness report](evidence/s04/CORRECTNESS_REPORT.md)
 records the bounded result and verification. S04 review and Owner acceptance
 remain separate; [Draft PR #15](https://github.com/the-phong/DoS-in-Blockchain-PQC/pull/15)
 targets `test-mainet` from implementation commit

@@ -1,5 +1,17 @@
 # Pluto agent execution contract
 
+## Current directory authority — one research tree (2026-11-10)
+
+The Owner requested one research directory with no separate versioned tree.
+Keep the S01–S04 checklist, protocol, corpus, evidence and ignored private
+artifacts under `research/` in the original `pluto` folder. Historical reports
+may retain their original command spelling; use the current paths for reruns.
+Preserve corpus, manifest and raw-log bytes, the local refactor stash and
+unrelated D026 files; document any report link repairs.
+This organization does not approve S05 or change S04's independent review
+gate. Continue to commit and push only `research/s04-bft-correctness` and leave
+Draft PR #15 for the Owner; do not merge or touch protected branches.
+
 ## Current authority — S04 four-validator correctness (2026-11-09)
 
 The Owner merged S03 PR #14 into `test-mainet` at
@@ -31,7 +43,7 @@ closed until S03's own gate and subsequent authorization.
 ## Current authority — research-v2 experimental checklist (2026-11-07)
 
 The Owner requested completion of the separate
-`research-v2/checklists/01_CHECKLIST_CHUAN_HOA_MO_RONG_REPO_THUC_NGHIEM.md`
+`research/checklists/01_CHECKLIST_CHUAN_HOA_MO_RONG_REPO_THUC_NGHIEM.md`
 program, with each item checked only after verifiable completion. Work from
 the merged `test-mainet` baseline `0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`
 on `research/reproducible-testbed`, preserve unrelated local work, and seek

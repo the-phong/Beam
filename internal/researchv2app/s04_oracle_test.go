@@ -17,7 +17,7 @@ import (
 )
 
 func TestS04CorpusABCIOracle(t *testing.T) {
-	path := filepath.Join("..", "..", "research-v2", "corpus", "s04_public_corpus.json")
+	path := filepath.Join("..", "..", "research", "corpus", "s04_public_corpus.json")
 	c, err := researchv2corpus.Read(path)
 	if err != nil {
 		t.Fatal(err)
@@ -126,7 +126,7 @@ func TestS04CorpusABCIOracle(t *testing.T) {
 }
 
 func TestS04PersistentRestartAndUncertainCommit(t *testing.T) {
-	c, err := researchv2corpus.Read(filepath.Join("..", "..", "research-v2", "corpus", "s04_public_corpus.json"))
+	c, err := researchv2corpus.Read(filepath.Join("..", "..", "research", "corpus", "s04_public_corpus.json"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -175,7 +175,7 @@ func TestS04PersistentRestartAndUncertainCommit(t *testing.T) {
 }
 
 func TestS04ProposalDuplicateAndRecheck(t *testing.T) {
-	c, err := researchv2corpus.Read(filepath.Join("..", "..", "research-v2", "corpus", "s04_public_corpus.json"))
+	c, err := researchv2corpus.Read(filepath.Join("..", "..", "research", "corpus", "s04_public_corpus.json"))
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -89,7 +89,7 @@ func TestS04FourValidatorProfiles(t *testing.T) {
 	if info, err := os.Stat(comet); err != nil || !info.Mode().IsRegular() {
 		t.Fatalf("build CometBFT first: %v", err)
 	}
-	corpus, err := researchv2corpus.Read(filepath.Join("..", "..", "research-v2", "corpus", "s04_public_corpus.json"))
+	corpus, err := researchv2corpus.Read(filepath.Join("..", "..", "research", "corpus", "s04_public_corpus.json"))
 	if err != nil {
 		t.Fatal(err)
 	}

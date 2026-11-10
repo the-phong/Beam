@@ -24,7 +24,7 @@ oracle independently checks nonce/recheck and proposal behavior.
 
 This choice leaves accepted B0/B1 runtime semantics and pinned dependencies
 unchanged. Evidence is in the
-[S04 correctness report](../research-v2/evidence/s04/CORRECTNESS_REPORT.md).
+[S04 correctness report](evidence/s04/CORRECTNESS_REPORT.md).
 One WSL2 host is a common failure and resource domain. No loaded relay,
 DoS, performance, Byzantine fault, physical power-loss, EVM or S05 result
 follows from S04. Controller review and Owner acceptance remain open.
@@ -41,16 +41,16 @@ as a valid transfer. Public keys stay in genesis; each profile signs a
 profile-separated canonical intent. No accepted B0/B1 behavior or dependency
 version changes. The direct S03 app holds state only in memory; durable
 storage, real CometBFT node wiring and four-validator proof belong to S04.
-The [equivalence report](../research-v2/protocol/PROFILE_EQUIVALENCE.md) and
+The [equivalence report](protocol/PROFILE_EQUIVALENCE.md) and
 public vectors record implementation details and limits. This is an S03
 engineering candidate for PR review, not a new RQ result or high-load approval.
 
 ## D-032 — S02 scientific contract (Owner-confirmed 2026-11-09)
 
 The Owner authorized S02 after the bounded S01 technical gate. The proposed
-[`RESEARCH_PROTOCOL.md`](../research-v2/protocol/RESEARCH_PROTOCOL.md),
-[`THREAT_MODEL.md`](../research-v2/protocol/THREAT_MODEL.md) and
-[`MEASUREMENT_CONTRACT.md`](../research-v2/protocol/MEASUREMENT_CONTRACT.md)
+[`RESEARCH_PROTOCOL.md`](protocol/RESEARCH_PROTOCOL.md),
+[`THREAT_MODEL.md`](protocol/THREAT_MODEL.md) and
+[`MEASUREMENT_CONTRACT.md`](protocol/MEASUREMENT_CONTRACT.md)
 define RQ1–RQ3, actor capabilities, four controlled profiles, observation
 points, alert timing, QC and safety limits. CP is a valid transaction padded
 to H's exact wire length; all profiles use a new common transfer/state path

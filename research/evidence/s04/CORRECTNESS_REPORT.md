@@ -28,6 +28,9 @@ committed bytes and file SHA-256, not a pseudo-random seed. Corpus SHA-256:
 `d0f4bfaea4c541ee6f71547e44c30aef588704051459e57e04d6478c83`.
 `go run ./cmd/s04-corpus verify research-v2/corpus/s04_public_corpus.json`
 rechecks every byte hash, expected code/stage and rejected-state neutrality.
+The command above records the original S04 run. After the directory
+consolidation, use `go run ./cmd/s04-corpus verify research/corpus/s04_public_corpus.json`;
+the corpus bytes and SHA-256 are unchanged.
 
 `TestS04CorpusABCIOracle` executes every case through `CheckTx` New and
 Recheck, `ProcessProposal`, `FinalizeBlock` and `Commit`. For rejected
@@ -78,6 +81,15 @@ Git-ignored local paths and are not published.
 | `make verify` | 0 on the final source tree; build, `go test ./...`, `go vet ./...`, `go mod verify` and version command; raw log SHA-256 `a66cf7c805f087282acc5cc20952832347e5273f016ef323ba1096f42c016ac3` |
 | `make verify` after implementation commit `b8ccd7c` | 0; binary reports the result revision; raw log SHA-256 `0d64b569c197abdb5a80a0a274976649e6ab47e62e1f480b131a9ee131790a94` |
 | `go test -race -count=1 ./internal/researchv2 ./internal/researchv2app ./internal/researchv2store ./internal/researchv2corpus ./internal/researchv2genesis` | 0; raw log SHA-256 `c1171729a67f7ea445afda644f527437909be1648fa758c97c743ae66d80035d` |
+
+Directory consolidation rerun (2026-11-10): the public corpus was moved
+byte-identically to `research/corpus/s04_public_corpus.json` (SHA-256
+`d0f4bfaea4c541ee6f71547b6ea47e44c30aef588704051459e57e04d6478c83`).
+`go run ./cmd/s04-corpus verify research/corpus/s04_public_corpus.json`,
+`make verify`, and `make test-s04-4v` each exited **0**. All four profile
+subtests passed in 65.93 seconds; the common post-transfer AppHash was
+`2C4252A230A13A397BE9A094097BB90513E5F4ACB46BF76E1123A4D4E528E4DC`.
+This rerun checks the path migration only and does not expand the S04 gate.
 
 The PR verification workflow also invokes `make test-s04-4v` so hosted CI
 checks this new network path, in addition to the existing B0/B1 gates. Its

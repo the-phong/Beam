@@ -15,7 +15,7 @@ coverage*.txt
 /research/evidence/phase_05/raw/
 __pycache__/
 *.py[cod]
-/research-v2/artifacts/
-/research-v2/evidence/private/
-/research-v2/**/raw/
+/research/artifacts/
+/research/evidence/private/
+/research/**/raw/
 /.gitleaks/

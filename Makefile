@@ -31,7 +31,7 @@ test-s04-4v: build corpus-s04-verify
 	$(GO) test -tags 'integration fourval' ./test/integration -run '^TestS04FourValidatorProfiles$$' -timeout 600s -count=1 -v
 
 corpus-s04-verify:
-	$(GO) run ./cmd/s04-corpus verify research-v2/corpus/s04_public_corpus.json
+	$(GO) run ./cmd/s04-corpus verify research/corpus/s04_public_corpus.json
 
 vet:
 	$(GO) vet ./...

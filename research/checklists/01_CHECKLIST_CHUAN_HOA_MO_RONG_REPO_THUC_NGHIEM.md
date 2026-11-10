@@ -1,4 +1,4 @@
-# CHECKLIST 01 (V2) — CHUẨN HÓA REPO THỰC NGHIỆM THEO THỨ TỰ BẮT BUỘC
+# CHECKLIST 01 — CHUẨN HÓA REPO THỰC NGHIỆM THEO THỨ TỰ BẮT BUỘC
 
 > **Mục tiêu:** Chuẩn bị một testbed đủ đúng, đủ công bằng và đủ quan sát để **File 02** kiểm chứng lần lượt **RQ1 (PQC/hybrid có tạo tác động tài nguyên khác biệt?) → RQ2 (có tín hiệu bất thường phát hiện được đủ sớm?) → RQ3 (ML có hơn cơ chế đơn giản?)**.
 >
@@ -6,7 +6,9 @@
 >
 > **Repo đầu vào:** `the-phong/DoS-in-Blockchain-PQC`; giữ lại các thành phần đã đúng, sửa/thay thế phần không đạt. **Không xóa hoặc ghi đè chứng cứ lịch sử.** Toàn bộ workload gây tải chỉ chạy trong testbed cô lập và có cơ chế dừng an toàn.
 
-> **Cập nhật kiểm kê 2026-11-09:** Bản V2 này là checklist điều hành hiện hành; các dấu tích từ V1 không được tự động chuyển sang. **S01 đạt 4/4 task, Gate S01: OK; S02 đạt 5/5 mục soạn thảo, Gate S02: OK theo xác nhận Owner sau merge PR #12. S03 đạt 4/4 mục và đã merge PR #14; S04 đạt 4/4 mục với Gate kỹ thuật cục bộ OK, chờ Controller/Owner review; S05–S07 chưa mở.** S01 cố định baseline lịch sử `0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`; S04 xuất phát từ `test-mainet` merge commit `1c8084207adb5da787e34e230dd0dc6d9a3de05f` trên nhánh `research/s04-bft-correctness`, chỉ trong folder gốc `pluto`. Trạng thái refactor cũ giữ trong stash cục bộ `7ec52bd`. Bằng chứng S01: [BASELINE_AUDIT](../evidence/s01/BASELINE_AUDIT.md), [PIPELINE_MAP](../evidence/s01/PIPELINE_MAP.md), [hash manifest](../evidence/m01/baseline_manifest.json), [B0/B1 inventory](../evidence/m01/LEGACY_INVENTORY.md), [security audit](../evidence/m01/SECURITY_AUDIT.md). Bundle sao lưu và log gốc chỉ lưu cục bộ trong `pluto/research-v2/artifacts/private-baseline/` (được Git ignore), vì chứa lịch sử hoặc dữ liệu chạy thử chưa duyệt để công bố.
+> **Cập nhật kiểm kê 2026-11-09:** Checklist này là bản điều hành hiện hành; các dấu tích từ V1 không được tự động chuyển sang. **S01 đạt 4/4 task, Gate S01: OK; S02 đạt 5/5 mục soạn thảo, Gate S02: OK theo xác nhận Owner sau merge PR #12. S03 đạt 4/4 mục và đã merge PR #14; S04 đạt 4/4 mục với Gate kỹ thuật cục bộ OK, chờ Controller/Owner review; S05–S07 chưa mở.** S01 cố định baseline lịch sử `0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`; S04 xuất phát từ `test-mainet` merge commit `1c8084207adb5da787e34e230dd0dc6d9a3de05f` trên nhánh `research/s04-bft-correctness`, chỉ trong folder gốc `pluto`. Trạng thái refactor cũ giữ trong stash cục bộ `7ec52bd`. Bằng chứng S01: [BASELINE_AUDIT](../evidence/s01/BASELINE_AUDIT.md), [PIPELINE_MAP](../evidence/s01/PIPELINE_MAP.md), [hash manifest](../evidence/s01/baseline_manifest.json), [B0/B1 inventory](../evidence/s01/LEGACY_INVENTORY.md), [security audit](../evidence/s01/SECURITY_AUDIT.md). Bundle sao lưu và log gốc chỉ lưu cục bộ trong `pluto/research/artifacts/private-baseline/` (được Git ignore), vì chứa lịch sử hoặc dữ liệu chạy thử chưa duyệt để công bố.
+
+> **Sắp xếp thư mục 2026-11-10:** Chỉ còn một cây `research/`. Checklist, protocol, corpus, evidence và artifacts đã được chuyển vào đây; hồ sơ M01 được đặt cùng S01. Đường dẫn bằng chứng đã cập nhật. Không thay đổi dấu tích hoặc trạng thái Gate; S04 vẫn chờ Controller/Owner review, S05 chưa mở.
 
 ## S01 — Đóng băng bản gốc và kiểm kê đường xử lý [BẮT BUỘC ĐẦU TIÊN]
 

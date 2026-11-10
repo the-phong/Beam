@@ -1,6 +1,10 @@
 # S01 baseline audit — 2026-11-09
 
-This audit checks the existing source before any new RQ1–RQ3 experiment. Historical Phase 05 measurements are not reused as results for the new protocol. See the detailed `../m01/BASELINE.md`, `../m01/LEGACY_INVENTORY.md`, `../m01/SECURITY_AUDIT.md`, and `PIPELINE_MAP.md`.
+Directory note (2026-11-10): the M01 inventory files now sit beside this
+report in `research/evidence/s01/`. Commands and raw-log paths below retain
+their original execution spelling; current files are under `research/`.
+
+This audit checks the existing source before any new RQ1–RQ3 experiment. Historical Phase 05 measurements are not reused as results for the new protocol. See the detailed `BASELINE.md`, `LEGACY_INVENTORY.md`, `SECURITY_AUDIT.md`, and `PIPELINE_MAP.md`.
 
 ## Immutable source and backup
 
@@ -13,7 +17,7 @@ This audit checks the existing source before any new RQ1–RQ3 experiment. Histo
 | Pinned modules | CometBFT v0.38.26; CIRCL v1.6.4 (ML-DSA-44); secp256k1/v4 v4.4.1; Pebble v1.1.5 |
 | Base `go.mod` SHA-256 | `6a70b6804672b3c1d4865bb9da32872c430a1c13f396ca7f9c9894cdc07bb8f8` (`git show 0bdd869:go.mod`) |
 | Base `research/config/manifest.yaml` SHA-256 | `46a75bc5669944e877f1819b4567d1bddc974da76cdb3f9fb0b5a3320ba83e4a` (`git show 0bdd869:research/config/manifest.yaml`) |
-| Source hash manifest | `../m01/baseline_manifest.json`, 148 selected source/spec/public-summary digests, SHA-256 `2aafada7f216984e9c8cb75bdbc41f9734bbfc58aa1679d7188f08e180a644de` |
+| Source hash manifest | `baseline_manifest.json`, 148 selected source/spec/public-summary digests, SHA-256 `2aafada7f216984e9c8cb75bdbc41f9734bbfc58aa1679d7188f08e180a644de` |
 | Full-history backup | `research-v2/artifacts/private-baseline/test-mainet-0bdd869.bundle`, 4,084,006 bytes; SHA-256 `0310c9738e001c11e010bb69c7d85fcb5a2a1f3933ab684a4680d746c2f6fd42` |
 
 `git bundle create research-v2/artifacts/private-baseline/test-mainet-0bdd869.bundle origin/test-mainet` exited 0. `git bundle verify` exited 0, reported a complete history and the expected remote ref at the source commit. The bundle is local and ignored: historical ancestry contains raw evidence, so it must not be published with the review branch. The public hash manifest selects only source, specifications, and sanitized historical summaries; it does not pretend to be a privacy approval for all baseline history.
@@ -26,11 +30,11 @@ The manifest was regenerated from the same commit with `freeze_baseline.py` into
 
 ## Re-execution and classification
 
-`make verify` exited 0 on this working branch at the fixed source commit. It built Pluto and Comet, ran all default Go tests, `go vet`, formatting check and `go mod verify`, then reported `plutod 0.2.0-foundation`, Go 1.24.1 and revision `0bdd869`. The private log is `research-v2/artifacts/private-baseline/make_verify.log`, SHA-256 `0fac6e44d6fd4841c05377c8a37bf4bf060677a16afbc0ddcd6b771f60688cc0`. The working tree includes a new integration test and documentation, so this run establishes reproducibility of the fixed source plus those additions; the earlier untouched-baseline `make verify` is separately recorded in `../m01/BASELINE.md`.
+`make verify` exited 0 on this working branch at the fixed source commit. It built Pluto and Comet, ran all default Go tests, `go vet`, formatting check and `go mod verify`, then reported `plutod 0.2.0-foundation`, Go 1.24.1 and revision `0bdd869`. The private log is `research-v2/artifacts/private-baseline/make_verify.log`, SHA-256 `0fac6e44d6fd4841c05377c8a37bf4bf060677a16afbc0ddcd6b771f60688cc0`. The working tree includes a new integration test and documentation, so this run establishes reproducibility of the fixed source plus those additions; the earlier untouched-baseline `make verify` is separately recorded in `BASELINE.md`.
 
 After the S01 test-harness rework, `make verify` again exited 0; private log SHA-256 `a16fe85d47ef4a914a1a8b680e487fc107aeb7aa5c59f5f04ec7656b509b18bb`. `TestResearchV2M01P2PRelayBoundary` was also rerun with the `integration fourval` build tags and exited 0 in 4.141 seconds; private log SHA-256 `cbbbd1070fe69a986ed2cbad5b1b6ccba56817999ca1129058a0e16ff1a1c825`.
 
-The prior S01 code audit reran `TestB1HybridFourValidator` in three fresh four-validator localhost networks (exit 0) and `TestResearchV2M01P2PRelayBoundary` (exit 0), as described in `../m01/CODE_PATH_AUDIT.md`. The first checks B1 valid commit, bad-ML rejection and state agreement; the second checks accepted relay into a peer mempool before block inclusion. They are functional smoke evidence, not resource or attack results.
+The prior S01 code audit reran `TestB1HybridFourValidator` in three fresh four-validator localhost networks (exit 0) and `TestResearchV2M01P2PRelayBoundary` (exit 0), as described in `CODE_PATH_AUDIT.md`. The first checks B1 valid commit, bad-ML rejection and state agreement; the second checks accepted relay into a peer mempool before block inclusion. They are functional smoke evidence, not resource or attack results.
 
 The first `make test-integration` run exited 2. Its private log SHA-256 is `6103d85d5e2ef0965b314525116e6c2f163768ae785fa38c18fbc329f85b1dc6`: M6 returned `signal: terminated` from `restart.Wait()`, and the suite then hit its 240-second deadline in a B0 restart/hash case. An immediate one-off M6 rerun passed (exit 0; SHA-256 `50346f9fb1f513901e0b0e36b37809e364b971c2380ee0f60eb782a638175a1a`). A full direct run with `go test -tags integration ./test/integration -timeout 900s -count=1 -v` passed all 13 tests in 221.355 seconds (exit 0; SHA-256 `90c3d35ca4f10175c94aa59f143c4a4490efa8698d944f01acdc166e7e96a323`).
 
@@ -44,9 +48,9 @@ The original `make test-integration` target had a fixed 240-second timeout. A po
 
 `make test-integration-b1-4v` exited 0 on the current worktree. All four B1 hybrid test groups passed, including three fresh four-validator networks, crash boundary, initialization refusals and CLI setup; private log SHA-256 `cdc9a500b209116dde8436b9bcfa97fc6cb309761b935d4cb35331c9039917ad`. The package took 172.694 seconds. Again, this is single-host functional evidence only.
 
-Historical reports and Phase 05 result tables are **report-only** for the new RQ1–RQ3 contract; prior exploratory and excluded runs stay classified as such. No four-profile C/CP/P/H equivalence, byte-matched CP, multi-host relay/resource result or new detector result exists at this baseline. `../m01/LEGACY_INVENTORY.md` records the classification and B0/B1 differences in wire size, signed intent, genesis keys and registry, state policy, persistence, verification order, AppHash and mempool cache. These differences make a direct B0/B1 cost delta unsuitable as an isolated ML-DSA cost.
+Historical reports and Phase 05 result tables are **report-only** for the new RQ1–RQ3 contract; prior exploratory and excluded runs stay classified as such. No four-profile C/CP/P/H equivalence, byte-matched CP, multi-host relay/resource result or new detector result exists at this baseline. `LEGACY_INVENTORY.md` records the classification and B0/B1 differences in wire size, signed intent, genesis keys and registry, state policy, persistence, verification order, AppHash and mempool cache. These differences make a direct B0/B1 cost delta unsuitable as an isolated ML-DSA cost.
 
-`../m01/SECURITY_AUDIT.md` records pinned Gitleaks v8.30.1 scans and a filename audit. Baseline history and current worktree scans had no findings; an all-ref scan found one manually triaged prose false positive in an unrelated branch. The scan is bounded evidence and does not certify unreviewed raw historical logs. New private logs and the bundle remain under the ignored `research-v2/artifacts/` path.
+`SECURITY_AUDIT.md` records pinned Gitleaks v8.30.1 scans and a filename audit. Baseline history and current worktree scans had no findings; an all-ref scan found one manually triaged prose false positive in an unrelated branch. The scan is bounded evidence and does not certify unreviewed raw historical logs. New private logs and the bundle remain under the ignored `research-v2/artifacts/` path.
 
 After S01 rework, the same pinned Gitleaks v8.30.1 binary scanned the current worktree with `gitleaks dir --redact=100 --no-banner --report-format json --report-path research-v2/artifacts/private-baseline/gitleaks_final.json .` (exit 0, about 15.93 MB scanned, no findings). The redacted output and empty JSON report stay private; log SHA-256 `e32178a63ba66f33df698e7e8d4147d36063dd5bea364ba3dd38fab881cae78c`. `git check-ignore -v` confirmed both the full-history bundle and final raw integration log match `/research-v2/artifacts/`.
 
@@ -55,9 +59,9 @@ After S01 rework, the same pinned Gitleaks v8.30.1 binary scanned the current wo
 | Item | Evidence | Result |
 |---|---|---|
 | S01.1 freeze and trace | Fixed source commit/tree, pinned dependencies/config, full-history bundle verified twice, 148-entry manifest regenerated byte-identically | PASS |
-| S01.2 re-execution and classification | Final `make verify` 0; final `make test-integration` 0 (13/13); B0 four-validator 0 (7/7); B1 four-validator 0 (4/4); P2P relay smoke 0; historical results classified separately in `../m01/LEGACY_INVENTORY.md` | PASS |
-| S01.3 code path | `PIPELINE_MAP.md` and `../m01/CODE_PATH_AUDIT.md` trace RPC/P2P, precheck, CheckTx, verification, accepted mempool, relay, proposal/commit, reject/cache/recheck with pinned source and bounded runtime tests | PASS |
-| S01.4 B0/B1 and privacy | `../m01/LEGACY_INVENTORY.md` enumerates wire, keys, genesis, registry, state, persistence, verify order and AppHash; `../m01/SECURITY_AUDIT.md` records the bounded secret/history audit; new raw logs and bundle are Git-ignored | PASS |
+| S01.2 re-execution and classification | Final `make verify` 0; final `make test-integration` 0 (13/13); B0 four-validator 0 (7/7); B1 four-validator 0 (4/4); P2P relay smoke 0; historical results classified separately in `LEGACY_INVENTORY.md` | PASS |
+| S01.3 code path | `PIPELINE_MAP.md` and `CODE_PATH_AUDIT.md` trace RPC/P2P, precheck, CheckTx, verification, accepted mempool, relay, proposal/commit, reject/cache/recheck with pinned source and bounded runtime tests | PASS |
+| S01.4 B0/B1 and privacy | `LEGACY_INVENTORY.md` enumerates wire, keys, genesis, registry, state, persistence, verify order and AppHash; `SECURITY_AUDIT.md` records the bounded secret/history audit; new raw logs and bundle are Git-ignored | PASS |
 
 **Gate S01: OK for the bounded source and localhost functional audit.** S02 research-contract work may begin separately. This gate does not establish a four-profile experiment, attack effect, multi-host result or detector quality.
 
