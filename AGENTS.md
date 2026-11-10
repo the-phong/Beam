@@ -1,5 +1,35 @@
 # Pluto agent execution contract
 
+## Current directory authority — one research tree (2026-11-10)
+
+The Owner requested one research directory with no separate versioned tree.
+Keep the S01–S04 checklist, protocol, corpus, evidence and ignored private
+artifacts under `research/` in the original `pluto` folder. Historical reports
+may retain their original command spelling; use the current paths for reruns.
+Current C/CP/P/H code lives under `internal/profiles/`; its command folders
+are `cmd/profile-corpus/` and `cmd/profile-vectors/`.
+Historical B0/B1 experiment code is grouped by purpose under
+`internal/benchmarks/`, `cmd/b0b1-corpus/` and `research/benchmarks/b0b1/`.
+Preserve corpus, manifest and raw-log bytes, the local refactor stash and
+unrelated D026 files; document any report link repairs.
+This organization does not approve S05 or change S04's independent review
+gate. Continue to commit and push only `research/s04-bft-correctness` and leave
+Draft PR #15 for the Owner; do not merge or touch protected branches.
+
+## Current authority — S04 four-validator correctness (2026-11-09)
+
+The Owner merged S03 PR #14 into `test-mainet` at
+`1c8084207adb5da787e34e230dd0dc6d9a3de05f` and explicitly authorized
+S04. Work in the original `pluto` folder only, on
+`research/s04-bft-correctness` from that merge commit. Complete S04.1–S04.4
+with a public four-profile correctness corpus, direct ABCI oracle, real
+isolated four-validator evidence, cache/dedup/recheck and recorder ON/OFF
+checks. Tick only evidenced items and record the bounded gate. Preserve
+accepted B0/B1/S03 behavior, the local refactor stash and ignored private
+artifacts. Commit/push only the S04 branch, open a Draft PR against
+`test-mainet` and stop for Owner review. Do not start S05, make resource/DoS
+claims, merge or touch protected branches.
+
 ## Current authority — S03 controlled profiles (2026-11-09)
 
 The Owner confirmed S02 review/acceptance and merged PR #12 into
@@ -17,7 +47,7 @@ closed until S03's own gate and subsequent authorization.
 ## Current authority — research-v2 experimental checklist (2026-11-07)
 
 The Owner requested completion of the separate
-`research-v2/checklists/01_CHECKLIST_CHUAN_HOA_MO_RONG_REPO_THUC_NGHIEM.md`
+`research/checklists/01_CHECKLIST_CHUAN_HOA_MO_RONG_REPO_THUC_NGHIEM.md`
 program, with each item checked only after verifiable completion. Work from
 the merged `test-mainet` baseline `0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`
 on `research/reproducible-testbed`, preserve unrelated local work, and seek

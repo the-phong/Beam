@@ -1,5 +1,12 @@
 # PLUTO Phase 05 — adversarial workload and resource-cost evaluation
 
+Directory note (2026-11-10): command paths in this historical report record
+the original Phase 05 execution. Current B0/B1 corpus code is under
+`internal/benchmarks/` and `cmd/b0b1-corpus/`; current scripts and public
+corpora are under `research/benchmarks/b0b1/` and `research/corpus/b0b1/`.
+The [reproduction guide](../specs/PHASE_05_REPRODUCIBILITY.md) uses current
+paths. Historical source manifests and log hashes are unchanged.
+
 > **Controller correction implementation candidate:** The original 122-run
 > dataset is exploratory. Its 12-request runs have insufficient per-run p99,
 > and changing invalid percentage also changed legitimate offered traffic.
@@ -174,7 +181,7 @@ hypotheses were recorded before the final matrix in
 [`PHASE_05_EXPERIMENT.md`](../specs/PHASE_05_EXPERIMENT.md).
 
 The immutable public corpus is
-[`public_corpus.json`](../corpus/phase_05/public_corpus.json), version
+[`public_corpus.json`](../corpus/b0b1/public_corpus.json), version
 `pluto-phase05-corpus-v2`, SHA-256
 `242e5c848aa3c97f731a3e70f9ca0876a9ec68bffbbbab2ead8c222c005cd535`.
 It has 64 signed valid transfers per profile, 25 B0 negative/control cases,

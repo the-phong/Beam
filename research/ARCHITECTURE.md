@@ -4,29 +4,37 @@ At `test-mainet` baseline `0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`,
 Phase 02, B0 and B1 are selectable local profiles. B0 and B1 have tested
 four-validator localhost configurations. Phase 05's evaluation is merged but
 bounded; the new four-profile research program is tracked separately in
-[`research-v2/checklists/01_CHECKLIST_CHUAN_HOA_MO_RONG_REPO_THUC_NGHIEM.md`](../research-v2/checklists/01_CHECKLIST_CHUAN_HOA_MO_RONG_REPO_THUC_NGHIEM.md).
+[`research/checklists/01_CHECKLIST_CHUAN_HOA_MO_RONG_REPO_THUC_NGHIEM.md`](checklists/01_CHECKLIST_CHUAN_HOA_MO_RONG_REPO_THUC_NGHIEM.md).
 The historical candidate/authorization wording below describes prior review
 points and must not be read as current implementation status.
 
-## Research-v2 S03 profile boundary
+## S03/S04 profile and correctness boundary
 
-The S03 candidate in `internal/researchv2` has one profile-selected canonical
+The S03 candidate in `internal/profiles` has one profile-selected canonical
 transaction parser, one genesis-bound account/key registry, one transfer
 transition and one AppHash rule for C, CP, P and H. The direct-ABCI
-`internal/researchv2app` applies the same callbacks for each profile. CP
+`internal/profiles/app` applies the same callbacks for each profile. CP
 accepts exactly 2,420 zero padding bytes and matches H's full wire size for
 the same chain ID; the padding is excluded from the signed intent. The
-[equivalence report](../research-v2/protocol/PROFILE_EQUIVALENCE.md) records
-the codec and tests. This in-memory app is not a durable, node-wired or
-four-validator result; those are S04 obligations. B0/B1 code remains intact.
+[equivalence report](protocol/PROFILE_EQUIVALENCE.md) records
+the codec and tests. S04 adds an optional isolated Pebble snapshot to this
+same ABCI++ app, canonical JSON/Base64 genesis transport, and a public
+correctness corpus. The integration harness starts four CometBFT processes
+with distinct validator/P2P identities, four ABCI servers in the test process
+and four separate stores on localhost. It checks a transaction against the
+corpus oracle, block/AppHash equality at matching heights, four participating
+voter identities across commits, account balances/nonces and replay cache.
+The [S04 report](evidence/s04/CORRECTNESS_REPORT.md) records
+the exact scope. The ordinary `plutod` CLI has no four-profile research selection; the
+test harness is the S04 node wiring. B0/B1 code remains intact.
 
 ## Phase 05 experimental measurement boundary
 
-`internal/phase05/corpus` holds public, hash-checked B0/B1 transaction and
+`internal/benchmarks/corpus` holds public, hash-checked B0/B1 transaction and
 genesis fixtures. The generator uses ephemeral signing keys and publishes
 only signed bytes and public bindings. The oracle runs accepted state
 evaluators and real ABCI CheckTx/ProcessProposal against disposable stores.
-`internal/phase05/bench` contains research-only stage/callback timers and Go
+`internal/benchmarks/bench` contains research-only stage/callback timers and Go
 microbenchmarks; no production application imports it. The four-validator
 benchmark test provisions four fresh homes with the accepted B0/B1 node APIs,
 uses localhost RPC/P2P, records per-process diagnostics and checks matched

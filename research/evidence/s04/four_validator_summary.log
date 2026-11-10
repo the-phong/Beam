@@ -1,0 +1,11 @@
+    s04_four_validator_test.go:327: profile=1 tx_height=3 block_hash=B554A6C058856BB9DFFB4412E0918752215169DD550F862F505CFD46FE2A629B app_hash=2C4252A230A13A397BE9A094097BB90513E5F4ACB46BF76E1123A4D4E528E4DC voter_identities=4 sender=93/1 receiver=7/0 duplicate=comet_cache
+    s04_four_validator_test.go:327: profile=2 tx_height=3 block_hash=2DC0C0F2F881CA6C0B058174F94B15C202ADEBAC0FD1C51C48510FEF2768E55C app_hash=2C4252A230A13A397BE9A094097BB90513E5F4ACB46BF76E1123A4D4E528E4DC voter_identities=4 sender=93/1 receiver=7/0 duplicate=comet_cache
+    s04_four_validator_test.go:327: profile=3 tx_height=3 block_hash=1D201A71F1C3FEDAFA4819EB6509C87D51BB8E5EE6686C38F5DA07F8BE383F66 app_hash=2C4252A230A13A397BE9A094097BB90513E5F4ACB46BF76E1123A4D4E528E4DC voter_identities=4 sender=93/1 receiver=7/0 duplicate=comet_cache
+    s04_four_validator_test.go:327: profile=4 tx_height=3 block_hash=AFD490FE56A90BCBF77C6DEE21C38832EF6889BAAB45AA54B4AE4A88EEF8F0AD app_hash=2C4252A230A13A397BE9A094097BB90513E5F4ACB46BF76E1123A4D4E528E4DC voter_identities=4 sender=93/1 receiver=7/0 duplicate=comet_cache
+--- PASS: TestS04FourValidatorProfiles (70.67s)
+    --- PASS: TestS04FourValidatorProfiles/profile-1 (16.31s)
+    --- PASS: TestS04FourValidatorProfiles/profile-2 (16.64s)
+    --- PASS: TestS04FourValidatorProfiles/profile-3 (18.93s)
+    --- PASS: TestS04FourValidatorProfiles/profile-4 (18.76s)
+PASS
+ok  	example.com/pluto/test/integration	70.690s

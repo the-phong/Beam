@@ -1,10 +1,39 @@
 # Architectural decision log
 
+## D-034 — S04 bounded correctness network (2026-11-09; technical review candidate)
+
+After the Owner merged S03 PR #14 into `test-mainet` at
+`1c8084207adb5da787e34e230dd0dc6d9a3de05f`, the Owner authorized S04
+in the original `pluto` folder on `research/s04-bft-correctness`. The S04
+testbed runs four independent CometBFT v0.38.26 validator processes and
+four separate Pebble v1.1.5 research-v2 snapshots on localhost. The
+ABCI++ servers run in the integration test process and use the same
+`researchv2app` callback implementation for C, CP, P and H. The public
+corpus supplies the signed bytes and common Genesis V4; ephemeral Comet
+validator and P2P keys remain in disposable homes. This is an isolated
+correctness testbed, not a deployable `plutod` profile or a multi-host trial.
+
+The research-v2 store uses its own key/record magic, binds profile and
+SHA-256 of canonical genesis, validates the state hash on reopen, and fails
+closed after an uncertain sync response. `FinalizeBlock` prepares a pending
+candidate; `Commit` performs a Pebble synced write. Rejected transactions
+do not alter account balances or nonces. The optional stage recorder
+observes validation steps but supplies no consensus input. The CometBFT
+mempool cache can reject replayed bytes before ABCI `CheckTx`; the direct
+oracle independently checks nonce/recheck and proposal behavior.
+
+This choice leaves accepted B0/B1 runtime semantics and pinned dependencies
+unchanged. Evidence is in the
+[S04 correctness report](evidence/s04/CORRECTNESS_REPORT.md).
+One WSL2 host is a common failure and resource domain. No loaded relay,
+DoS, performance, Byzantine fault, physical power-loss, EVM or S05 result
+follows from S04. Controller review and Owner acceptance remain open.
+
 ## D-033 — S03 four-profile implementation (2026-11-09; technical review candidate)
 
 The Owner confirmed S02's gate and merge of PR #12 into `test-mainet` at
 `2a3dcbceb52b996425d911dde87b691317f56efd`, then authorized S03. The
-new `internal/researchv2` transaction/state path and `internal/researchv2app`
+new `internal/profiles` transaction/state path and `internal/profiles/app`
 direct ABCI++ application select C, CP, P or H while keeping one genesis,
 account registry, logical transfer, state commitment and callback path. CP
 uses canonical zero padding of the ML proof's 2,420-byte size and is accepted
@@ -12,16 +41,16 @@ as a valid transfer. Public keys stay in genesis; each profile signs a
 profile-separated canonical intent. No accepted B0/B1 behavior or dependency
 version changes. The direct S03 app holds state only in memory; durable
 storage, real CometBFT node wiring and four-validator proof belong to S04.
-The [equivalence report](../research-v2/protocol/PROFILE_EQUIVALENCE.md) and
+The [equivalence report](protocol/PROFILE_EQUIVALENCE.md) and
 public vectors record implementation details and limits. This is an S03
 engineering candidate for PR review, not a new RQ result or high-load approval.
 
 ## D-032 — S02 scientific contract (Owner-confirmed 2026-11-09)
 
 The Owner authorized S02 after the bounded S01 technical gate. The proposed
-[`RESEARCH_PROTOCOL.md`](../research-v2/protocol/RESEARCH_PROTOCOL.md),
-[`THREAT_MODEL.md`](../research-v2/protocol/THREAT_MODEL.md) and
-[`MEASUREMENT_CONTRACT.md`](../research-v2/protocol/MEASUREMENT_CONTRACT.md)
+[`RESEARCH_PROTOCOL.md`](protocol/RESEARCH_PROTOCOL.md),
+[`THREAT_MODEL.md`](protocol/THREAT_MODEL.md) and
+[`MEASUREMENT_CONTRACT.md`](protocol/MEASUREMENT_CONTRACT.md)
 define RQ1–RQ3, actor capabilities, four controlled profiles, observation
 points, alert timing, QC and safety limits. CP is a valid transaction padded
 to H's exact wire length; all profiles use a new common transfer/state path

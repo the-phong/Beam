@@ -8,20 +8,28 @@ corpus, four-validator localhost runner, analysis and bounded NO-GO
 recommendation are historical evidence. Their 78 usable corrected conditions
 and earlier exploratory matrix do not answer the new four-profile RQ1–RQ3
 contract. The Owner requested the new checklist program on 2026-11-07;
-implementation and review now continue on `research/s03-controlled-profiles`
-in the single original `pluto` folder.
-The [S01 baseline audit](../research-v2/evidence/s01/BASELINE_AUDIT.md) fixes
+implementation and review now continue on `research/s04-bft-correctness`
+in the single original `pluto` folder from the S03 merge commit
+`1c8084207adb5da787e34e230dd0dc6d9a3de05f`.
+The [S01 baseline audit](evidence/s01/BASELINE_AUDIT.md) fixes
 the source tree, records the reruns, and marks the bounded local technical
 Gate S01 OK. The Owner confirmed Gate S02 after PR #12 merged into
 `test-mainet` at `2a3dcbceb52b996425d911dde87b691317f56efd`. S03 has
 a bounded local technical Gate OK for the four-profile source and direct
-ABCI++ tests, with [equivalence documentation](../research-v2/protocol/PROFILE_EQUIVALENCE.md)
-and [audit evidence](../research-v2/evidence/s03/PROFILE_AUDIT.md). Draft PR
-review and hosted CI remain separate from that local result.
-Real four-validator trials, durable S03-app storage, loaded network telemetry
-and detector comparisons remain open for S04–S07. No new RQ1–RQ3 result is
-accepted. The paragraphs below record historical authorization and candidate
-status at their original dates.
+ABCI++ tests, with [equivalence documentation](protocol/PROFILE_EQUIVALENCE.md)
+and [audit evidence](evidence/s03/PROFILE_AUDIT.md). PR #14
+was merged by the Owner on 2026-11-09. The Owner then authorized S04.
+The S04 candidate adds a public four-profile correctness corpus, a stage
+recorder used only for oracle checks, a profile/genesis-bound Pebble snapshot,
+and a real four-validator localhost test harness. The
+[correctness report](evidence/s04/CORRECTNESS_REPORT.md)
+records the bounded result and verification. S04 review and Owner acceptance
+remain separate; [Draft PR #15](https://github.com/the-phong/DoS-in-Blockchain-PQC/pull/15)
+targets `test-mainet` from implementation commit
+`b8ccd7cf8c500fe2495143a21c76606d41c558d2`. S05 telemetry and
+S06–S07 loaded experiments are closed.
+No new RQ1–RQ3 result is accepted. The paragraphs below record historical
+authorization and candidate status at their original dates.
 
 ## Historical Phase 05 experimental implementation candidate
 

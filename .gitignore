@@ -13,8 +13,9 @@ coverage*.txt
 /research/evidence/phase_03e/*_raw/
 /research/evidence/phase_04/raw/
 /research/evidence/phase_05/raw/
-/research/benchmarks/phase05/__pycache__/
-/research-v2/artifacts/
-/research-v2/evidence/private/
-/research-v2/**/raw/
+__pycache__/
+*.py[cod]
+/research/artifacts/
+/research/evidence/private/
+/research/**/raw/
 /.gitleaks/

@@ -8,12 +8,28 @@ networks. The Phase 05 evaluation was merged into `test-mainet` at
 `0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`. Its bounded results do not
 establish DoS, an EVM, multi-host independence, or a useful ML detector.
 
-The [new experimental checklist](research-v2/checklists/01_CHECKLIST_CHUAN_HOA_MO_RONG_REPO_THUC_NGHIEM.md)
-tracks a separate RQ1–RQ3 program. S01 and S02 are accepted; S03 adds an
-isolated direct-ABCI four-profile implementation candidate in
-`internal/researchv2` and `internal/researchv2app`. It is not wired into the
-normal `plutod` node yet. Checked items link to new evidence; historical
-Phase 05 results are not new RQ1–RQ3 results.
+The [current experimental checklist](research/checklists/01_CHECKLIST_CHUAN_HOA_MO_RONG_REPO_THUC_NGHIEM.md)
+tracks a separate RQ1–RQ3 program. S01–S03 are closed; S04 has a bounded
+local correctness gate and [Draft PR #15](https://github.com/the-phong/DoS-in-Blockchain-PQC/pull/15)
+for review. The C/CP/P/H application has a four-validator localhost
+integration harness; it is not a selectable profile in the normal `plutod`
+CLI. Checked items link to new evidence. Historical Phase 05 results are not
+new RQ1–RQ3 results.
+
+## Directory map
+
+| Path | Purpose |
+|---|---|
+| `cmd/`, `internal/`, `test/integration/` | Executables, application packages and tests. Current C/CP/P/H code is under `internal/profiles/`; B0/B1 corpus and benchmark code is under `internal/benchmarks/`. |
+| [`research/`](research/README.md) | One home for historical Phase 01–05 records and the current RQ1–RQ3 protocol, checklist, corpus and S01–S04 evidence. Repeated historical raw logs can represent distinct fault cases and are retained for their manifests. |
+| `research/artifacts/`, `build/` | Ignored local backups, raw logs, generated keys/homes and build outputs. Rebuild binaries with `make build`. |
+
+The operator's checklist 01 and checklist 02 also live one directory above
+`pluto`. Checklist 01 there is the local progress copy; the tracked copy
+under `research/checklists/` travels with the PR. The V1 history and an
+exact duplicate of checklist 02 were moved into the ignored local archive
+`research/artifacts/private-baseline/checklists/`; the parent checklist 02
+remains available. Do not treat that older V1 plan as the current gate.
 
 ## Prerequisites and build
 
@@ -30,6 +46,9 @@ make build
 `make build` creates **both** executables together under ignored `build/`.
 `plutod` requires its adjacent pinned `cometbft` executable for `init` and
 `start`; do not replace it with an arbitrary system-installed binary.
+`make clean` removes only generated binaries, root-level Go test binaries and
+Python bytecode caches under `research/benchmarks/`. It leaves node homes,
+research evidence and the ignored local archive intact.
 
 ## Initialize, run, inspect and restart
 
@@ -86,6 +105,7 @@ go test ./...
 go vet ./...
 make verify
 make test-integration
+make test-s04-4v
 go test -race ./internal/app ./internal/store
 ```
 
