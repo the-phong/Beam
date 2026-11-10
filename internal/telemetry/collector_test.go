@@ -36,17 +36,17 @@ func TestCollectorKeepsAcceptedOccupancySeparateFromFailuresAndRelay(t *testing.
 	if s.SampleStartedUTC == "" || s.ObservedUTC == "" || s.SampleDurationNS < 0 || s.AcceptedMempoolCount == nil || *s.AcceptedMempoolCount != 2 || s.AcceptedMempoolBytes == nil || *s.AcceptedMempoolBytes != 2575 || s.FailedTxTotal == nil || *s.FailedTxTotal != 7 || s.ResourceRejectedTxTotal == nil || *s.ResourceRejectedTxTotal != 3 || s.RelaySendEnvelopeBytes == nil || *s.RelaySendEnvelopeBytes != 100 || s.RelayReceiveEnvelopeBytes == nil || *s.RelayReceiveEnvelopeBytes != 200 || s.P2PIngressTxTotal == nil || *s.P2PIngressTxTotal != 4 || s.P2PIngressTxBytesTotal == nil || *s.P2PIngressTxBytesTotal != 321 || s.CheckTxSocketQueueCount == nil || *s.CheckTxSocketQueueCount != 5 || s.CheckTxSocketQueueSeconds == nil || *s.CheckTxSocketQueueSeconds != 0.025 || s.Comet == nil || s.Application == nil || len(s.Unavailable) != 0 || s.DroppedSamples != 0 {
 		t.Fatalf("incorrect sample: %+v", s)
 	}
-	if s.P2PIngressTxPerSecond != nil || s.P2PIngressBytesPerSecond != nil {
+	if s.P2PTxRate != nil || s.P2PByteRate != nil {
 		t.Fatal("first sample cannot have a rate")
 	}
 	delta.Store(2)
 	s = c.Sample(context.Background())
-	if s.P2PIngressTxPerSecond == nil || *s.P2PIngressTxPerSecond <= 0 || s.P2PIngressBytesPerSecond == nil || *s.P2PIngressBytesPerSecond <= 0 {
+	if s.P2PTxRate == nil || *s.P2PTxRate <= 0 || s.P2PByteRate == nil || *s.P2PByteRate <= 0 {
 		t.Fatalf("missing positive same-process P2P rates: %+v", s)
 	}
 	delta.Store(-3)
 	s = c.Sample(context.Background())
-	if s.P2PIngressTxPerSecond != nil || s.P2PIngressBytesPerSecond != nil {
+	if s.P2PTxRate != nil || s.P2PByteRate != nil {
 		t.Fatalf("counter reset must make rates unavailable: %+v", s)
 	}
 	rpc.Close()

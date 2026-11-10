@@ -44,8 +44,8 @@ type NodeSample struct {
 	RelaySendEnvelopeBytes    *float64       `json:"relay_send_envelope_bytes"`
 	P2PIngressTxTotal         *float64       `json:"p2p_ingress_tx_total"`
 	P2PIngressTxBytesTotal    *float64       `json:"p2p_ingress_tx_bytes_total"`
-	P2PIngressTxPerSecond     *float64       `json:"p2p_ingress_tx_per_second"`
-	P2PIngressBytesPerSecond  *float64       `json:"p2p_ingress_bytes_per_second"`
+	P2PTxRate                 *float64       `json:"p2p_ingress_tx_per_second"`
+	P2PByteRate               *float64       `json:"p2p_ingress_bytes_per_second"`
 	CheckTxSocketQueueCount   *float64       `json:"checktx_socket_queue_count"`
 	CheckTxSocketQueueSeconds *float64       `json:"checktx_socket_queue_seconds"`
 	Comet                     *ProcessSample `json:"comet_process"`
@@ -137,8 +137,8 @@ func (c *Collector) Sample(ctx context.Context) NodeSample {
 			if elapsed > 0 {
 				txRate := (*s.P2PIngressTxTotal - c.lastP2PTx) / elapsed
 				byteRate := (*s.P2PIngressTxBytesTotal - c.lastP2PBytes) / elapsed
-				s.P2PIngressTxPerSecond = &txRate
-				s.P2PIngressBytesPerSecond = &byteRate
+				s.P2PTxRate = &txRate
+				s.P2PByteRate = &byteRate
 			}
 		}
 		c.lastP2PAt = completed

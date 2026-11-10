@@ -47,6 +47,7 @@ quality.
 |---|---|
 | `make verify` | exit 0; build, Go tests, vet, format, modules and version; `17466d740145ede6d9c4061d50975bd3b99f9f5ec69b02d94cf70971ca22d733` |
 | `make verify` (final S05 source) | exit 0; ignored log SHA-256 `8d34461584783792fff8b009452e96ae029cb44d7c94020257291a27420d4912` |
+| `make verify` (scanner identifier follow-up) | exit 0; ignored log SHA-256 `ff43a2c111fd4ed8e89ac47d7a7fa18a9375b53d8849b4616064d471230b35cc` |
 | `go test -race -count=1 ./internal/telemetry ./internal/profiles/...` | exit 0; `abc53fbc88c8c77ded509bcdb8d6d1fb905e44cc3a64c26c19b1a44b8da5d008` |
 | `go test -race -count=1 ./internal/telemetry ./internal/profiles/...` (final S05 source) | exit 0; ignored log SHA-256 `b5bf5ba14cc9b51fe341fd8fa4b945764123bcb2df76e1c81e72c9d13f52de51` |
 | `make test-s04-4v` | exit 0; OFF, four profiles and 4 distinct validator identities each; `df89bb4bff8ee4bb98fb5a1308b570eed9fed836d447075da4e35c0351cf9c82` |
@@ -58,6 +59,7 @@ quality.
 | `go test ./internal/telemetry -run '^$' -bench '^BenchmarkS05CometHooks$' -benchtime=500ms -count=5 -benchmem` | exit 0; isolated Prometheus call cost, ignored log SHA-256 `3d57960a2974d564381448eb811e317fa68f1448e8a10716a42a37b629f36f1b` |
 | `go test ./internal/profiles/app -run '^$' -bench '^BenchmarkS05CheckTx$' -benchtime=500ms -count=5 -benchmem` | exit 0; private output `f2e1133378d187777e721dd4434302782c04ace34a665b02d749ca5ac551cddb` |
 | `go test ./internal/profiles/app -run '^$' -bench '^BenchmarkS05CheckTx/H/ON$' -benchtime=2s -cpuprofile ...` and `go tool pprof -top` | exit 0; private CPU profile `6ffb9510f29db5ebe966a4d4d08b16c1424e4c654820f09fdc35daf6934b9c7b`, top summary `aaf9218d550a83139ed931452a3559f5df39254f9bfbddab7a187da63ef4c778` |
+| `./build/gitleaks git --no-banner --redact=100 --log-opts='origin/test-mainet..HEAD' .` | exit 0 after an exact-fingerprint false-positive correction; ignored log SHA-256 `9f12a886d21e482d0bc51e124c137aef18aa10a673f3c4566b4eef4bfbd76695` |
 
 The OFF and ON four-validator runs each committed the same logical transfer
 at height 3, agreed within each profile, reached sender `93/1` and receiver
@@ -111,6 +113,16 @@ Comet's `failed_txs` series on all validators. Comet emits that series only
 after a local failure. The assertion was corrected to require it only on the
 validator that received the invalid probe; all four profile subtests then
 passed. This is a test expectation correction, not a protocol change.
+
+The first CI scan on commit `7988130` exited 1 with five Gitleaks
+`vault-service-token` findings. Local inspection of the redacted finding
+metadata and source showed the scanner matched only a long Go P2P rate field
+access, including two matches on one test line; no
+credential or value was present. The identifier was shortened without
+changing the JSON schema. `.gitleaksignore` contains only the four unique
+fingerprints from that immutable historical commit; the full proposed-commit
+scan then exited 0 locally. The exception does not suppress other rules,
+files, lines or future commits.
 
 ## Gate and remaining work
 
