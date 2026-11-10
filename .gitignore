@@ -13,7 +13,8 @@ coverage*.txt
 /research/evidence/phase_03e/*_raw/
 /research/evidence/phase_04/raw/
 /research/evidence/phase_05/raw/
-/research/benchmarks/phase05/__pycache__/
+__pycache__/
+*.py[cod]
 /research-v2/artifacts/
 /research-v2/evidence/private/
 /research-v2/**/raw/

@@ -1,4 +1,4 @@
-.PHONY: build test test-integration test-integration-4v test-integration-b1-4v test-s04-4v corpus-s04-verify vet fmt-check verify benchmark-corpus benchmark-smoke benchmark-micro benchmark-b1 benchmark-full benchmark-analyze benchmark-contention-corpus benchmark-contention-smoke benchmark-contention-full benchmark-contention-analyze
+.PHONY: build clean test test-integration test-integration-4v test-integration-b1-4v test-s04-4v corpus-s04-verify vet fmt-check verify benchmark-corpus benchmark-smoke benchmark-micro benchmark-b1 benchmark-full benchmark-analyze benchmark-contention-corpus benchmark-contention-smoke benchmark-contention-full benchmark-contention-analyze
 
 GO ?= go
 INTEGRATION_TIMEOUT ?= 900s
@@ -8,6 +8,12 @@ build:
 	mkdir -p build
 	$(GO) build -ldflags "-X example.com/pluto/internal/version.Revision=$(REVISION)" -o build/plutod ./cmd/plutod
 	$(GO) build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+
+# Remove only disposable local outputs; runtime homes and research evidence
+# deliberately have no clean target.
+clean:
+	rm -rf -- build research/benchmarks/__pycache__ research/benchmarks/phase05/__pycache__
+	rm -f -- ./*.test
 
 test:
 	$(GO) test ./...
