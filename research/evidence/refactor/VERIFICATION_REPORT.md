@@ -16,7 +16,7 @@ All commands ran from repository root. Each listed command exited **0** after th
 | `go test ./internal/legacy/... ./internal/classical/... ./internal/hybrid/...` | 0; domain group after move |
 | `go test ./internal/experiment/...` | 0; profiles, corpus, load, telemetry and benchmark group after move |
 | `go test -tags 'integration fourval' ./test/integration -run '^$'` | 0; all integration imports/selectors compile |
-| `make build corpus-s04-verify corpus-s06-verify benchmark-corpus benchmark-contention-corpus` | 0; five built binaries and four public corpus verifiers |
+| `make build corpus-s04-verify corpus-s06-verify benchmark-corpus benchmark-contention-corpus` | 0; six built binaries and four public corpus verifiers |
 | `go build ./...`, `go test ./...`, `go vet ./...`, `go mod tidy -diff` | 0 each; tidy diff empty |
 | `make verify` | 0; final local gate |
 | `make test-integration` | 0; real single-validator, replay and recovery suite (281.7 s) |
@@ -33,6 +33,7 @@ All commands ran from repository root. Each listed command exited **0** after th
 | `python3 research/tools/verify_refactor.py` | 0; 108 Go files have only expected path/import/format changes; 445 tracked corpus/evidence/testdata files byte-identical |
 | `git diff --check` and local Markdown link audit | 0; no whitespace faults or broken links in active tracked docs |
 | `git diff --cached --binary | gitleaks stdin --no-banner --redact=100` | 0; pinned Gitleaks v8.30.1 found no secret in staged changes |
+| `make verify`, normalized source/data audit and pinned Gitleaks commit-range scan after implementation commit `3c71074f6fe6ff327e56cac0f4227ec326c790f9` | 0 each; version output now names the committed revision, 108/445 equivalence holds, and no leak found |
 
 The first domain-unit run failed because a B1 test referred to `../b1tx/testdata`; the fixture was moved intact and the relative path was corrected to `../tx/testdata`. The first experiment-unit runs exposed old `internal/profiles/*` imports and a corpus path in moved profile tests; only those paths were corrected. The first `make verify` after movement stopped at `fmt-check` for reordered import blocks; `gofmt` resolved it. No assertion was removed or weakened.
 
