@@ -26,12 +26,12 @@ import (
 	"github.com/cometbft/cometbft/privval"
 	cmttypes "github.com/cometbft/cometbft/types"
 
-	researchv2 "example.com/pluto/internal/profiles"
-	researchv2app "example.com/pluto/internal/profiles/app"
-	researchv2genesis "example.com/pluto/internal/profiles/genesis"
-	"example.com/pluto/internal/profiles/load"
-	researchv2store "example.com/pluto/internal/profiles/store"
-	"example.com/pluto/internal/telemetry"
+	"example.com/pluto/internal/experiment/load"
+	researchv2 "example.com/pluto/internal/experiment/profiles"
+	researchv2app "example.com/pluto/internal/experiment/profiles/app"
+	researchv2genesis "example.com/pluto/internal/experiment/profiles/genesis"
+	researchv2store "example.com/pluto/internal/experiment/profiles/store"
+	"example.com/pluto/internal/experiment/telemetry"
 )
 
 type s06Network struct {

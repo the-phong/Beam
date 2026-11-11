@@ -1,16 +1,20 @@
 # Pluto architecture — current profiles and historical design record
 
-At `test-mainet` baseline `0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`,
+Current source locations are indexed in [`docs/ARCHITECTURE.md`](../docs/ARCHITECTURE.md)
+and the [refactor mapping](../docs/REFACTOR_MAPPING.md). Historical sections
+below retain the names and review status from their original checkpoints.
+
+At the refactor source baseline `test-mainet` `ed6bc8f474c13ed709d5ab5f57b3856edcbf602a`,
 Phase 02, B0 and B1 are selectable local profiles. B0 and B1 have tested
-four-validator localhost configurations. Phase 05's evaluation is merged but
-bounded; the new four-profile research program is tracked separately in
+four-validator localhost configurations. Phase 05's evaluation and the bounded
+S06 pilot are merged; the four-profile research program is tracked separately in
 [`research/checklists/01_CHECKLIST_CHUAN_HOA_MO_RONG_REPO_THUC_NGHIEM.md`](checklists/01_CHECKLIST_CHUAN_HOA_MO_RONG_REPO_THUC_NGHIEM.md).
 The historical candidate/authorization wording below describes prior review
 points and must not be read as current implementation status.
 
 ## S06 isolated offered-load boundary
 
-`internal/profiles/load` validates a pinned private plan, schedules unique
+`internal/experiment/load` validates a pinned private plan, schedules unique
 pre-signed transactions on absolute monotonic deadlines, submits through a
 loopback-only RPC client and records actual socket-write times. It has no
 validator signing keys or consensus role. The standalone `profile-load`
@@ -27,7 +31,7 @@ independence and confirmatory RQ1–RQ3 inference.
 
 After the Owner merged S04 PR #15 at
 `630f2d8c81398f84073796747108c30ab9dee3c8`, S05 adds optional
-`internal/telemetry` observation to the same C/CP/P/H application. The
+`internal/experiment/telemetry` observation to the same C/CP/P/H application. The
 bounded recorder is reached only from `CheckTx`; stage timings are emitted
 after verification and never enter consensus decisions. A localhost RPC
 proxy records controlled RPC ingress and response classification. A separate
@@ -43,10 +47,10 @@ is an observability gate candidate, not a loaded RQ1–RQ3 comparison.
 
 ## S03/S04 profile and correctness boundary
 
-The S03 candidate in `internal/profiles` has one profile-selected canonical
+The S03 candidate in `internal/experiment/profiles` has one profile-selected canonical
 transaction parser, one genesis-bound account/key registry, one transfer
 transition and one AppHash rule for C, CP, P and H. The direct-ABCI
-`internal/profiles/app` applies the same callbacks for each profile. CP
+`internal/experiment/profiles/app` applies the same callbacks for each profile. CP
 accepts exactly 2,420 zero padding bytes and matches H's full wire size for
 the same chain ID; the padding is excluded from the signed intent. The
 [equivalence report](protocol/PROFILE_EQUIVALENCE.md) records
@@ -63,11 +67,11 @@ test harness is the S04 node wiring. B0/B1 code remains intact.
 
 ## Phase 05 experimental measurement boundary
 
-`internal/benchmarks/corpus` holds public, hash-checked B0/B1 transaction and
+`internal/experiment/corpus/b0b1` holds public, hash-checked B0/B1 transaction and
 genesis fixtures. The generator uses ephemeral signing keys and publishes
 only signed bytes and public bindings. The oracle runs accepted state
 evaluators and real ABCI CheckTx/ProcessProposal against disposable stores.
-`internal/benchmarks/bench` contains research-only stage/callback timers and Go
+`internal/experiment/benchmark` contains research-only stage/callback timers and Go
 microbenchmarks; no production application imports it. The four-validator
 benchmark test provisions four fresh homes with the accepted B0/B1 node APIs,
 uses localhost RPC/P2P, records per-process diagnostics and checks matched
@@ -80,18 +84,18 @@ confounders and hypotheses are in
 ## Historical Phase 04 B1 hybrid design
 
 A separately selected B1 profile uses the existing pinned CometBFT consensus
-engine with a new `internal/b1app` ABCI adapter. `init-b1-4v` exclusively
+engine with a new `internal/hybrid/app` ABCI adapter. `init-b1-4v` exclusively
 claims a fresh root, generates four independent Comet validator/P2P
 identities, installs one canonical Genesis V3 in every home, and writes one
 independent B1 H0 Pebble snapshot per validator. `start` validates the B1
 record and genesis before launching CometBFT. B0 and Phase 02 stores are
 rejected in B1 homes; no migration or fallback exists.
 
-`internal/b1tx` owns bounded canonical transaction decoding, the common
+`internal/hybrid/tx` owns bounded canonical transaction decoding, the common
 domain-separated signed digest, and the two independent signature checks.
-`internal/b1state` binds sender/public keys to an immutable genesis registry
+`internal/hybrid/state` binds sender/public keys to an immutable genesis registry
 and invokes the accepted B0 balance/nonce transition only after both proofs
-pass. `internal/b1store` persists the B1 registry-bound AppHash under a
+pass. `internal/hybrid/store` persists the B1 registry-bound AppHash under a
 separate key and record magic. `CheckTx` reads committed state;
 `PrepareProposal` and `ProcessProposal` independently simulate ordered
 candidate state; `FinalizeBlock` prepares a pending candidate and `Commit`

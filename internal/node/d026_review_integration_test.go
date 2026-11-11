@@ -16,8 +16,8 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"example.com/pluto/internal/b0state"
-	"example.com/pluto/internal/b0store"
+	"example.com/pluto/internal/classical/state"
+	"example.com/pluto/internal/classical/store"
 )
 
 func d026ReviewFixture(t *testing.T) (string, []byte) {

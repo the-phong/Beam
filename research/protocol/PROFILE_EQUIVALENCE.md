@@ -1,5 +1,10 @@
 # S03 four-profile equivalence — implementation candidate
 
+Source-path note (2026-11-11): the controlled-profile implementation now
+lives at `internal/experiment/profiles/`; its app and testdata moved with it.
+The S03 checkpoint text below retains its original source-path spelling.
+See the [refactor mapping](../../docs/REFACTOR_MAPPING.md) for current paths.
+
 Status: S03 source and direct-ABCI test candidate, 2026-11-09. Base: merged S02 `test-mainet` commit `2a3dcbceb52b996425d911dde87b691317f56efd`. Branch: `research/s03-controlled-profiles`. This report concerns the new `internal/profiles` and `internal/profiles/app` packages only. Accepted B0/B1 wire formats, accounts, stores and nodes are unchanged. Real four-validator correctness, durable restart and loaded P2P behavior are S04–S07 gates, not S03 claims.
 
 ## One logical task and one application path

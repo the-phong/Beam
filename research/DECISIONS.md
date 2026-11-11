@@ -1,5 +1,21 @@
 # Architectural decision log
 
+## D-037 — Domain-oriented source layout (2026-11-11; proposed for Controller/Owner review)
+
+The Owner requested one architecture-first structural refactor from the S06
+merged `test-mainet` commit `ed6bc8f474c13ed709d5ab5f57b3856edcbf602a`.
+The work is isolated on `refactor/domain-oriented-architecture` and a Draft PR;
+it does not authorize a research stage, protocol change or merge. Source is
+grouped into legacy, classical B0, hybrid B1, experimental profiles/load/
+telemetry/corpus/benchmark, and functional CLI entrypoints. The existing
+Go package identifiers and executable flags remain to minimize semantic risk.
+`docs/REFACTOR_MAPPING.md` records old and new paths and verification. Frozen
+corpus and historical evidence bytes remain unchanged; old path spellings in
+historical reports are part of their revision context. The active Makefile,
+manifest and source navigation use the new paths. No module version changed.
+Technical completion and acceptance depend on the full regression report and
+independent review of the Draft PR.
+
 ## D-036 — S06 single-host pilot and fail-closed offered load (2026-11-11; review candidate)
 
 The Owner merged S05 PR #16 into `test-mainet` at

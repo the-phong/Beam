@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"example.com/pluto/internal/b1test"
-	"example.com/pluto/internal/b1tx"
+	"example.com/pluto/internal/hybrid/testutil"
+	"example.com/pluto/internal/hybrid/tx"
 )
 
 // A network with only two of four validators cannot commit. This leaves a

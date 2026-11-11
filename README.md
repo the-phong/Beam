@@ -11,11 +11,10 @@ establish DoS, an EVM, multi-host independence, or a useful ML detector.
 The [current experimental checklist](research/checklists/01_CHECKLIST_CHUAN_HOA_MO_RONG_REPO_THUC_NGHIEM.md)
 tracks a separate RQ1–RQ3 program. S01–S04 are closed after the Owner merged
 [PR #15](https://github.com/the-phong/DoS-in-Blockchain-PQC/pull/15).
-S05 PR #16 was merged by the Owner. S06 now has a bounded
+S05 PR #16 and S06 PR #17 were merged by the Owner. S06 has a bounded
 [testbed contract](research/protocol/TESTBED_CONFIG.md) and
 [single-host four-validator pilot](research/evidence/s06/TESTBED_REPORT.md)
-on `research/s06-safe-testbed`; independent review and Owner acceptance
-remain pending. The C/CP/P/H application has a four-validator localhost
+on the merged `test-mainet` baseline. The C/CP/P/H application has a four-validator localhost
 integration harness; it is not a selectable profile in the normal `plutod`
 CLI. Checked items link to new evidence. Historical Phase 05 results are not
 new RQ1–RQ3 results.
@@ -24,9 +23,14 @@ new RQ1–RQ3 results.
 
 | Path | Purpose |
 |---|---|
-| `cmd/`, `internal/`, `test/integration/` | Executables, application packages and tests. Current C/CP/P/H code is under `internal/profiles/`; B0/B1 corpus and benchmark code is under `internal/benchmarks/`. |
+| [`cmd/`](cmd), [`internal/`](internal), [`test/integration/`](test/integration) | Node and research executables, domain packages and real-node tests. See the [source guide](docs/SOURCE_GUIDE.md). |
+| [`docs/`](docs/ARCHITECTURE.md) | Architecture, source guide, transaction and experiment flows, and [refactor mapping](docs/REFACTOR_MAPPING.md). |
 | [`research/`](research/README.md) | One home for historical Phase 01–05 records and the current RQ1–RQ3 protocol, checklist, corpus and S01–S06 evidence. Repeated historical raw logs can represent distinct fault cases and are retained for their manifests. |
 | `research/artifacts/`, `build/` | Ignored local backups, raw logs, generated keys/homes and build outputs. Rebuild binaries with `make build`. |
+
+Read [architecture](docs/ARCHITECTURE.md), [source guide](docs/SOURCE_GUIDE.md),
+[transaction flow](docs/TRANSACTION_FLOW.md) and
+[experiment flow](docs/EXPERIMENT_FLOW.md) for the current implementation.
 
 The operator's checklist 01 and checklist 02 also live one directory above
 `pluto`. Checklist 01 there is the local progress copy; the tracked copy
@@ -111,7 +115,7 @@ go vet ./...
 make verify
 make test-integration
 make test-s04-4v
-go test -race ./internal/app ./internal/store
+go test -race ./internal/legacy/app ./internal/legacy/store
 ```
 
 `make verify` builds both executables, runs unit/ABCI tests, vet, a read-only
@@ -163,9 +167,9 @@ protocol and decisions D-020–D-022 after Controller rework. The accepted
 [test-vector plan](research/specs/B0_TEST_VECTOR_PLAN_V1.md) are protocol and
 test requirements. Phase 03A PR #3 was merged into `test-mainet` at
 `54bf720ac4625c17eaa6101a8f398ef7c0663432`. Phase 03B now implements a
-standalone `internal/tx` library; the historical Phase 02 profile still
+standalone `internal/classical/tx` library; the historical Phase 02 profile still
 rejects all transactions. Phase 03B PR #4 is merged. Phase 03C adds a
-`internal/b0state` transition engine and `internal/b0store` V2 persistence
+`internal/classical/state` transition engine and `internal/classical/store` V2 persistence
 adapter; neither is connected to the historical Phase 02 ABCI application.
 The explicit Phase 03D B0 profile connects them for genesis and classical
 transfer execution. See the

@@ -19,8 +19,8 @@ import (
 	"testing"
 	"time"
 
-	"example.com/pluto/internal/b0state"
-	"example.com/pluto/internal/benchmarks/corpus"
+	"example.com/pluto/internal/classical/state"
+	"example.com/pluto/internal/experiment/corpus/b0b1"
 )
 
 type contentionConfig struct {

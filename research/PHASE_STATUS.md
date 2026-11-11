@@ -8,9 +8,10 @@ corpus, four-validator localhost runner, analysis and bounded NO-GO
 recommendation are historical evidence. Their 78 usable corrected conditions
 and earlier exploratory matrix do not answer the new four-profile RQ1–RQ3
 contract. The Owner requested the new checklist program on 2026-11-07;
-implementation and review now continue on `research/s06-safe-testbed`
-in the single original `pluto` folder from the S05 merge commit
-`ac91250ddff31d07b6dcb19f81878e149256e84f`.
+S06 was merged in PR #17 into `test-mainet` at
+`ed6bc8f474c13ed709d5ab5f57b3856edcbf602a`. The source-only
+architecture refactor now proceeds on `refactor/domain-oriented-architecture`
+from that merge commit in the original `pluto` folder.
 The [S01 baseline audit](evidence/s01/BASELINE_AUDIT.md) fixes
 the source tree, records the reruns, and marks the bounded local technical
 Gate S01 OK. The Owner confirmed Gate S02 after PR #12 merged into
@@ -31,9 +32,9 @@ local technical evidence, including an S05-only source-checked Comet build
 for P2P ingress and CheckTx socket queue. The Owner merged S05 PR #16 and
 authorized S06. The [S06 testbed contract](protocol/TESTBED_CONFIG.md) and
 [pilot report](evidence/s06/TESTBED_REPORT.md) cover a bounded, randomized
-seven-job four-validator loopback pilot. The S06 technical gate is a review
-candidate; independent review and Owner acceptance remain pending. S07 is
-closed.
+seven-job four-validator loopback pilot. The merged pilot is bounded; S07 is
+closed. The refactor is a separate Draft PR candidate, not an accepted
+research result.
 No new RQ1–RQ3 result is accepted. The paragraphs below record historical
 authorization and candidate status at their original dates.
 

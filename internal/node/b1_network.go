@@ -20,9 +20,9 @@ import (
 	"github.com/cometbft/cometbft/privval"
 	"github.com/cometbft/cometbft/types"
 
-	"example.com/pluto/internal/b1genesis"
-	"example.com/pluto/internal/b1store"
-	"example.com/pluto/internal/store"
+	"example.com/pluto/internal/hybrid/genesis"
+	"example.com/pluto/internal/hybrid/store"
+	"example.com/pluto/internal/legacy/store"
 )
 
 // InitB1FourValidators exclusively claims a fresh root, generates four

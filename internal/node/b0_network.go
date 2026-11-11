@@ -20,9 +20,9 @@ import (
 	"github.com/cometbft/cometbft/privval"
 	"github.com/cometbft/cometbft/types"
 
-	"example.com/pluto/internal/b0genesis"
-	"example.com/pluto/internal/b0store"
-	"example.com/pluto/internal/store"
+	"example.com/pluto/internal/classical/genesis"
+	"example.com/pluto/internal/classical/store"
+	"example.com/pluto/internal/legacy/store"
 )
 
 // B0Ports assigns independent localhost endpoints to one validator.

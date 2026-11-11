@@ -16,6 +16,8 @@
 
 > **Tên thư mục mã 2026-11-10:** C/CP/P/H dùng `internal/profiles/` và `cmd/profile-*`; mã corpus/benchmark B0/B1 dùng `internal/benchmarks/`, `cmd/b0b1-corpus/`, `research/benchmarks/b0b1/` và `research/corpus/b0b1/`. Không còn thư mục mã hiện hành đặt theo `v2` hoặc `phase05`; các định danh format trên wire và hồ sơ chứng cứ lịch sử giữ nguyên. `make verify`, race tests, S04 bốn validator, hai corpus verifier và hai B0/B1 smoke đều exit 0 sau khi đổi đường dẫn. Không thay đổi dấu tích hoặc Gate.
 
+> **Điều hướng source sau PR #17:** Owner đã merge S06 vào `test-mainet` tại `ed6bc8f474c13ed709d5ab5f57b3856edcbf602a` và giao refactor kiến trúc riêng. Những đường dẫn source trong checkpoint lịch sử ở dưới là cách viết tại thời điểm kiểm chứng; dùng [bảng ánh xạ](../../docs/REFACTOR_MAPPING.md) để chạy lại trên cây mới. Refactor này không đổi dấu tích hoặc mở S07.
+
 ## S01 — Đóng băng bản gốc và kiểm kê đường xử lý [BẮT BUỘC ĐẦU TIÊN]
 
 - [x] **S01.1** Ghi commit/tree nguồn, nhánh, version Go/CometBFT/cryptolib, cấu hình, lệnh build/test và tạo bản sao lưu + hash manifest. **Đã kiểm chứng:** `BASELINE_AUDIT.md`; bundle Git đầy đủ 4.084.006 byte, `git bundle verify` đạt, SHA-256 `0310c9738e001c11e010bb69c7d85fcb5a2a1f3933ab684a4680d746c2f6fd42`; manifest 148 hash SHA-256 `2aafada7f216984e9c8cb75bdbc41f9734bbfc58aa1679d7188f08e180a644de`.
@@ -50,7 +52,7 @@
 ## S03 — Xây bốn profile so sánh C / CP / P / H [CHỈ SAU S02]
 
 - [x] **S03.1** Chuẩn hóa **một đường xử lý nghiệp vụ/state/consensus chung**; chỉ thay đổi yếu tố crypto và kích thước theo thiết kế đối chứng, tránh lấy toàn bộ B0/B1 delta làm “chi phí ML-DSA”. **Bằng chứng:** [PROFILE_EQUIVALENCE](../protocol/PROFILE_EQUIVALENCE.md), `internal/profiles/app/app.go`, `TestOneABCIPathForFourProfiles`; cùng genesis, transfer, AppHash và callbacks. App trực tiếp trong bộ nhớ; chạy node thật thuộc S04.
-- [x] **S03.2** Hoàn thiện **C, CP, P, H**; CP phải là giao dịch **được chấp nhận hợp lệ**, có kích thước khớp H theo chính sách định trước (không bị reject vì padding). **Bằng chứng:** [public vectors](../../internal/profiles/testdata/public_vectors.json), `TestFourProfilesSameTransferAndExactSize`, `TestCPAndHExactBytesAcrossChainIDBounds`; CP/H 2.565 byte với chain ID vector, cả hai được chấp nhận.
+- [x] **S03.2** Hoàn thiện **C, CP, P, H**; CP phải là giao dịch **được chấp nhận hợp lệ**, có kích thước khớp H theo chính sách định trước (không bị reject vì padding). **Bằng chứng:** [public vectors](../../internal/experiment/profiles/testdata/public_vectors.json), `TestFourProfilesSameTransferAndExactSize`, `TestCPAndHExactBytesAcrossChainIDBounds`; CP/H 2.565 byte với chain ID vector, cả hai được chấp nhận.
 - [x] **S03.3** Chuẩn hóa canonical signed intent, nonce/balance, khóa và binding, thứ tự xác minh/dừng sớm; định nghĩa chính sách public key on-wire hoặc genesis và giữ biến này được kiểm soát. **Bằng chứng:** [PROFILE_EQUIVALENCE](../protocol/PROFILE_EQUIVALENCE.md#canonical-wire-and-authentication), `internal/profiles/{tx,state}.go`; khóa ở genesis, profile tách domain, secp→ML→state, từ chối không đổi state.
 - [x] **S03.4** Viết test từng profile: valid, malformed, wrong chain, wrong signature, wrong binding, wrong nonce, duplicate; đo chính xác kích thước wire và đường xác minh đạt tới. **Bằng chứng:** [PROFILE_AUDIT](../evidence/s03/PROFILE_AUDIT.md), `internal/profiles/{profile,vector}_test.go`, `internal/profiles/app/app_test.go`; `make verify` và race test exit 0.
 

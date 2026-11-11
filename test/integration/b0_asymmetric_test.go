@@ -13,8 +13,8 @@ import (
 	"testing"
 	"time"
 
-	"example.com/pluto/internal/b0app"
-	"example.com/pluto/internal/b0state"
+	"example.com/pluto/internal/classical/app"
+	"example.com/pluto/internal/classical/state"
 	"example.com/pluto/internal/node"
 	"github.com/cometbft/cometbft/abci/server"
 )
