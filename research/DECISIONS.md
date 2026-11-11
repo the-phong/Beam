@@ -1,5 +1,40 @@
 # Architectural decision log
 
+## D-035 — S05 bounded telemetry without consensus inputs (2026-11-10; review candidate)
+
+The Owner merged S04 PR #15 into `test-mainet` at
+`630f2d8c81398f84073796747108c30ab9dee3c8` and authorized S05. The
+four-profile application gains an optional bounded recorder for `CheckTx`
+result/stage and monotonic secp, ML and state spans. The OFF path invokes
+the accepted evaluator without a clock read in the state machine. The ON
+path never feeds timing, buffer state or local process measurements into
+validation or AppHash. No B0/B1 or CometBFT protocol source changes.
+
+A separate loopback-only proxy observes controlled RPC submissions and
+classifies only known response reasons. A process sampler reads native
+Comet accepted-mempool RPC, Prometheus mempool and P2P `0x30` channel
+counters, and Linux `/proc` CPU/RSS. This avoids treating rejected CheckTx
+traffic as accepted occupancy and avoids conflating RPC with P2P relay.
+For S05 only, a source-checked, disposable copy of pinned CometBFT v0.38.26
+adds aggregate decoded P2P transaction count/bytes at `Reactor.Receive` and
+a monotonic CheckTx socket-client enqueue-to-writer-dequeue histogram. The
+normal Comet build and its protocol path remain unchanged; the patch adds
+only Prometheus observations and uses a temporary modfile under ignored
+`build/`. The script fails closed if any of its three pinned source files
+changes. The socket queue component ends before transport and the app
+callback. Total Comet enqueue-to-app wait and P2P propagation latency remain
+`NOT MEASURED`; no subtraction of proxy and application spans is used.
+The already pinned Prometheus client v1.21.0 (module minimum Go 1.21) is
+promoted from indirect to direct for the hook benchmark and the temporary
+Comet build. No version changed; `go mod tidy -diff`, `make verify` and the
+four-validator S05 test verify the dependency path. Its cost is measured
+only as isolated metric calls, not whole-node overhead.
+The [metric dictionary](protocol/METRICS_DICTIONARY.md) records units,
+availability, quality, dropped samples, privacy and reproducible commands.
+The five S05 checklist items have local technical evidence, subject to
+independent review on the Draft PR. This is not Owner acceptance or S06
+authorization; S06 remains closed.
+
 ## D-034 — S04 bounded correctness network (2026-11-09; technical review candidate)
 
 After the Owner merged S03 PR #14 into `test-mainet` at

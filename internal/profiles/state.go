@@ -6,6 +6,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"math"
+	"time"
 
 	"github.com/cloudflare/circl/sign/mldsa/mldsa44"
 
@@ -289,6 +290,13 @@ func EvaluateTrusted(s State, profile Profile, raw []byte) (State, Result, error
 // A nil recorder is the ordinary S03 path; the hook exists for S04 correctness
 // tests and is not an admission or consensus input.
 func EvaluateTrustedRecorded(s State, profile Profile, raw []byte, record func(Stage)) (State, Result, error) {
+	return EvaluateTrustedObserved(s, profile, raw, record, nil)
+}
+
+// EvaluateTrustedObserved reports only completed expensive stages. The clock
+// is read exclusively when the optional observer is present; its values are
+// never used for validation, proposal selection or state transitions.
+func EvaluateTrustedObserved(s State, profile Profile, raw []byte, record func(Stage), duration func(Stage, time.Duration)) (State, Result, error) {
 	if !s.trusted || !profile.Valid() {
 		return State{}, Result{}, ErrState
 	}
@@ -328,18 +336,41 @@ func EvaluateTrustedRecorded(s State, profile Profile, raw []byte, record func(S
 	}
 	if profile.UsesSecp() {
 		visit(StageSecp)
-		if code := verifySecp(sender.SecpKey, t.SecpSignature, digest); code != CodeOK {
+		var started time.Time
+		if duration != nil {
+			started = time.Now()
+		}
+		code := verifySecp(sender.SecpKey, t.SecpSignature, digest)
+		if duration != nil {
+			duration(StageSecp, time.Since(started))
+		}
+		if code != CodeOK {
 			return s, Result{code, StageSecp}, nil
 		}
 	}
 	if profile.UsesML() {
 		visit(StageML)
-		if code := verifyML(sender.MLKey, t.MLSignature, digest); code != CodeOK {
+		var started time.Time
+		if duration != nil {
+			started = time.Now()
+		}
+		code := verifyML(sender.MLKey, t.MLSignature, digest)
+		if duration != nil {
+			duration(StageML, time.Since(started))
+		}
+		if code != CodeOK {
 			return s, Result{code, StageML}, nil
 		}
 	}
 	visit(StageState)
+	var started time.Time
+	if duration != nil {
+		started = time.Now()
+	}
 	base, code, err := b0state.ApplyAuthenticatedTrusted(s.base, b0state.Address(t.Sender), b0state.Address(t.Receiver), t.Amount, t.Nonce)
+	if duration != nil {
+		duration(StageState, time.Since(started))
+	}
 	if err != nil {
 		return State{}, Result{}, err
 	}

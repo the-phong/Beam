@@ -1,0 +1,8 @@
+# Gitleaks v8.30.1 incorrectly parsed the Go field access
+# long P2P rate field access as a Vault service token in commit 7988130.
+# These exact historical findings contain only source identifiers. The field
+# was renamed in the follow-up commit; all other findings remain active.
+7988130f7cb8d5c22182c8e7dce0af7fd55544c7:internal/telemetry/collector.go:vault-service-token:141
+7988130f7cb8d5c22182c8e7dce0af7fd55544c7:internal/telemetry/collector_test.go:vault-service-token:39
+7988130f7cb8d5c22182c8e7dce0af7fd55544c7:internal/telemetry/collector_test.go:vault-service-token:44
+7988130f7cb8d5c22182c8e7dce0af7fd55544c7:internal/telemetry/collector_test.go:vault-service-token:49

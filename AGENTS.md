@@ -1,5 +1,21 @@
 # Pluto agent execution contract
 
+## Current authority — S05 telemetry (2026-11-10)
+
+The Owner merged S04 Draft PR #15 into `test-mainet` at
+`630f2d8c81398f84073796747108c30ab9dee3c8` and explicitly authorized
+S05. Work only in the original `pluto` folder on
+`research/s05-observability` from that merge commit. Complete S05.1–S05.5
+with a metric dictionary, bounded collector and structured events, real
+isolated four-validator checks, ON/OFF and overhead evidence. Tick only
+verified items. Keep unavailable capture points labeled `NOT MEASURED` and
+do not infer queue wait or P2P transaction ingress from RPC or ABCI data.
+Preserve accepted B0/B1/S03/S04 behavior, public corpus bytes, local stash,
+ignored private artifacts and unrelated D026 files. Commit and push only
+the S05 branch, open a Draft PR against `test-mainet`, and stop for Owner
+review. Do not start S06, claim DoS/resource study results, merge or touch
+protected branches.
+
 ## Current directory authority — one research tree (2026-11-10)
 
 The Owner requested one research directory with no separate versioned tree.
@@ -12,11 +28,10 @@ Historical B0/B1 experiment code is grouped by purpose under
 `internal/benchmarks/`, `cmd/b0b1-corpus/` and `research/benchmarks/b0b1/`.
 Preserve corpus, manifest and raw-log bytes, the local refactor stash and
 unrelated D026 files; document any report link repairs.
-This organization does not approve S05 or change S04's independent review
-gate. Continue to commit and push only `research/s04-bft-correctness` and leave
-Draft PR #15 for the Owner; do not merge or touch protected branches.
+This organization alone did not approve S05 or change S04's review gate.
+The later Owner merge and S05 authorization above supersede that status.
 
-## Current authority — S04 four-validator correctness (2026-11-09)
+## Historical authority — S04 four-validator correctness (2026-11-09)
 
 The Owner merged S03 PR #14 into `test-mainet` at
 `1c8084207adb5da787e34e230dd0dc6d9a3de05f` and explicitly authorized

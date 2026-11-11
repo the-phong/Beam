@@ -10,7 +10,7 @@ study; they are not new RQ1–RQ3 results.
 | [`protocol/`](protocol/RESEARCH_PROTOCOL.md) | RQ1–RQ3 contract, threat model, measurement contract and C/CP/P/H equivalence. |
 | [`corpus/`](corpus/s04_public_corpus.json) | Public S04 synthetic corpus alongside historical Phase 05 corpora. |
 | [`evidence/s01/`](evidence/s01/BASELINE_AUDIT.md) | Baseline audit and the former M01 inventory together. |
-| [`evidence/s02/`](evidence/s02/CONTRACT_AUDIT.md), [`s03/`](evidence/s03/PROFILE_AUDIT.md), [`s04/`](evidence/s04/CORRECTNESS_REPORT.md) | New study evidence and bounded gate reports. |
+| [`evidence/s02/`](evidence/s02/CONTRACT_AUDIT.md), [`s03/`](evidence/s03/PROFILE_AUDIT.md), [`s04/`](evidence/s04/CORRECTNESS_REPORT.md), [`s05/`](evidence/s05/TELEMETRY_REPORT.md) | New study evidence and bounded gate reports. |
 | [`evidence/phase_02/`](evidence/phase_02), [`PHASE_REPORTS/`](PHASE_REPORTS) | Historical engineering evidence and reports; retain their manifests and distinct fault cases. |
 | [`benchmarks/`](benchmarks/b0b1), [`tools/`](tools/freeze_baseline.py) | Historical B0/B1 analysis and the baseline hash tool. |
 | `artifacts/` | Git-ignored local backups, raw logs and private runtime material; never publish this directory. |
@@ -33,6 +33,8 @@ of the source revision; the current `Makefile` uses the relocated paths.
 The obsolete V1 checklist and a byte-identical local copy of checklist 02
 are preserved under `artifacts/private-baseline/checklists/` on this machine.
 The original checklist 02 remains beside `pluto`. Neither old document is an
-S05 authorization. The [S04 correctness report](evidence/s04/CORRECTNESS_REPORT.md)
-is the current handoff. Run `make verify` and `make test-s04-4v` from the
-repository root. S04's four validators run on one localhost host.
+S05 authorization. The Owner merged S04 PR #15 and explicitly authorized
+S05. The [S05 telemetry report](evidence/s05/TELEMETRY_REPORT.md) and
+[metric dictionary](protocol/METRICS_DICTIONARY.md) are the current handoff.
+Run `make verify` and `make test-s05-telemetry` from the repository root.
+S05's four validators run on one localhost host; its full gate is still open.

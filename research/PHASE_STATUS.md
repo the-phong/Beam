@@ -1,4 +1,4 @@
-# Phase status — 2026-11-09
+# Phase status — 2026-11-10
 
 ## Current `test-mainet` baseline and new research program
 
@@ -8,9 +8,9 @@ corpus, four-validator localhost runner, analysis and bounded NO-GO
 recommendation are historical evidence. Their 78 usable corrected conditions
 and earlier exploratory matrix do not answer the new four-profile RQ1–RQ3
 contract. The Owner requested the new checklist program on 2026-11-07;
-implementation and review now continue on `research/s04-bft-correctness`
-in the single original `pluto` folder from the S03 merge commit
-`1c8084207adb5da787e34e230dd0dc6d9a3de05f`.
+implementation and review now continue on `research/s05-observability`
+in the single original `pluto` folder from the S04 merge commit
+`630f2d8c81398f84073796747108c30ab9dee3c8`.
 The [S01 baseline audit](evidence/s01/BASELINE_AUDIT.md) fixes
 the source tree, records the reruns, and marks the bounded local technical
 Gate S01 OK. The Owner confirmed Gate S02 after PR #12 merged into
@@ -23,10 +23,13 @@ The S04 candidate adds a public four-profile correctness corpus, a stage
 recorder used only for oracle checks, a profile/genesis-bound Pebble snapshot,
 and a real four-validator localhost test harness. The
 [correctness report](evidence/s04/CORRECTNESS_REPORT.md)
-records the bounded result and verification. S04 review and Owner acceptance
-remain separate; [Draft PR #15](https://github.com/the-phong/DoS-in-Blockchain-PQC/pull/15)
-targets `test-mainet` from implementation commit
-`b8ccd7cf8c500fe2495143a21c76606d41c558d2`. S05 telemetry and
+records the bounded result and verification. The Owner merged
+[PR #15](https://github.com/the-phong/DoS-in-Blockchain-PQC/pull/15) and
+authorized S05 telemetry. The [S05 metric dictionary](protocol/METRICS_DICTIONARY.md)
+records directly observed and unavailable fields. S05.1–S05.5 have bounded
+local technical evidence, including an S05-only source-checked Comet build
+for P2P ingress and CheckTx socket queue. The S05 technical gate is a
+review candidate; independent review and Owner acceptance remain pending.
 S06–S07 loaded experiments are closed.
 No new RQ1–RQ3 result is accepted. The paragraphs below record historical
 authorization and candidate status at their original dates.

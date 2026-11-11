@@ -8,6 +8,24 @@ bounded; the new four-profile research program is tracked separately in
 The historical candidate/authorization wording below describes prior review
 points and must not be read as current implementation status.
 
+## S05 observation boundary
+
+After the Owner merged S04 PR #15 at
+`630f2d8c81398f84073796747108c30ab9dee3c8`, S05 adds optional
+`internal/telemetry` observation to the same C/CP/P/H application. The
+bounded recorder is reached only from `CheckTx`; stage timings are emitted
+after verification and never enter consensus decisions. A localhost RPC
+proxy records controlled RPC ingress and response classification. A separate
+sampler reads Comet's accepted mempool snapshot, Prometheus counters for
+the mempool P2P channel `0x30`, S05-only decoded P2P ingress and CheckTx
+socket queue metrics, and process CPU/RSS. The instrumented Comet binary is
+generated from source-checked v0.38.26 into ignored `build/` with a temporary
+modfile; the normal S04 binary stays separate. The
+[metric dictionary](protocol/METRICS_DICTIONARY.md) defines null and
+quality rules. Total Comet enqueue-to-app wait and P2P propagation latency
+remain unobserved; the measured socket queue ends before transport. S05
+is an observability gate candidate, not a loaded RQ1–RQ3 comparison.
+
 ## S03/S04 profile and correctness boundary
 
 The S03 candidate in `internal/profiles` has one profile-selected canonical

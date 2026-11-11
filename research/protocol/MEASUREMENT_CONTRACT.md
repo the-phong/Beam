@@ -2,6 +2,13 @@
 
 Status: S02 design candidate for independent review. This document fixes **what** is counted, **where** it is observed, and **when** a feature is available. It does not claim the telemetry exists; S05 implements and validates it, S06 freezes calibrated numerical loads and collector settings, and S07 proves end-to-end reproduction. A missing stream is `NOT MEASURED`/`null`, never a fabricated zero. The final S02 contract must be frozen before confirmatory File 02 runs.
 
+S05 implementation status (2026-11-10): the
+[metric dictionary](METRICS_DICTIONARY.md) maps this contract to observed
+application, controlled RPC, native Comet mempool/P2P and Linux process
+signals. Exact Comet CheckTx queue wait and P2P transaction ingress remain
+`NOT MEASURED`; therefore S05's full gate and loaded RQ1–RQ3 runs remain
+closed. Historical S02 design wording below is retained for provenance.
+
 ## Run identity, controls and valid comparisons
 
 Each run records `run_id`, immutable source/tree and protocol version, profile, genesis/config hash, four-validator host topology, CPU model/features and limits, OS/toolchain/Comet/crypto versions, mempool/consensus limits, RPC/P2P source, corpus and seed, planned/actual offered tx/s and bytes/s, warm-up/steady/drain times, time-sync error bound, collector version, raw SHA-256, oracle result and QC status. A fresh network or a separately proven reset is required. Raw results are append-only; reruns receive new IDs. Historical Phase 05 runs never enter this dataset.

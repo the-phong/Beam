@@ -1,4 +1,4 @@
-.PHONY: build clean test test-integration test-integration-4v test-integration-b1-4v test-s04-4v corpus-s04-verify vet fmt-check verify benchmark-corpus benchmark-smoke benchmark-micro benchmark-b1 benchmark-full benchmark-analyze benchmark-contention-corpus benchmark-contention-smoke benchmark-contention-full benchmark-contention-analyze
+.PHONY: build build-comet-s05 clean test test-integration test-integration-4v test-integration-b1-4v test-s04-4v test-s05-telemetry corpus-s04-verify vet fmt-check verify benchmark-corpus benchmark-smoke benchmark-micro benchmark-b1 benchmark-full benchmark-analyze benchmark-contention-corpus benchmark-contention-smoke benchmark-contention-full benchmark-contention-analyze
 
 GO ?= go
 INTEGRATION_TIMEOUT ?= 900s
@@ -8,6 +8,12 @@ build:
 	mkdir -p build
 	$(GO) build -ldflags "-X example.com/pluto/internal/version.Revision=$(REVISION)" -o build/plutod ./cmd/plutod
 	$(GO) build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
+	$(GO) build -o build/profile-observer ./cmd/profile-observer
+	$(GO) build -o build/profile-ingress ./cmd/profile-ingress
+
+build-comet-s05:
+	python3 research/telemetry/comet_overlay.py build/s05-comet-overlay
+	$(GO) build -modfile=build/s05-comet.mod -o build/cometbft-s05 github.com/cometbft/cometbft/cmd/cometbft
 
 # Remove only disposable local outputs; runtime homes and research evidence
 # deliberately have no clean target.
@@ -29,6 +35,9 @@ test-integration-b1-4v: build
 
 test-s04-4v: build corpus-s04-verify
 	$(GO) test -tags 'integration fourval' ./test/integration -run '^TestS04FourValidatorProfiles$$' -timeout 600s -count=1 -v
+
+test-s05-telemetry: build build-comet-s05 corpus-s04-verify
+	$(GO) test -tags 'integration fourval' ./test/integration -run '^TestS05FourValidatorTelemetry$$' -timeout 600s -count=1 -v
 
 corpus-s04-verify:
 	$(GO) run ./cmd/profile-corpus verify research/corpus/s04_public_corpus.json

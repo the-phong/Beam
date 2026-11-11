@@ -7,8 +7,9 @@ project:
   research_v2_s01_gate: local_technical_ok_pending_pr_review
   research_v2_s02_status: owner_confirmed_ok_merged_pr12_2a3dcbce
   research_v2_s03_status: owner_merged_pr14_1c808420_source_direct_abci_gate_ok
-  research_v2_s04_status: local_technical_gate_ok_controller_owner_review_pending
-  active_authorization: owner_authorized_s04_2026_11_09
+  research_v2_s04_status: owner_merged_pr15_630f2d8c
+  research_v2_s05_status: implementation_candidate_gate_open
+  active_authorization: owner_authorized_s05_2026_11_10
   baseline_branch: test-mainet
   baseline_commit: 0bdd869f2c6b3ed59b0ae825954d8667b3c7481e
   baseline_tree: 09c24280590aee51d97b53b18c5d9e193dbe6dbe
@@ -48,6 +49,22 @@ application:
   b0_runtime_profile: explicit_durable_H0_init_b0_and_strict_existing_state_start
   module_path: example.com/pluto
   module_path_status: provisional_migration_required
+observability:
+  schema: pluto.telemetry.v1
+  controlled_profiles: C_CP_P_H
+  local_rpc_proxy: cmd/profile-ingress
+  node_sampler: cmd/profile-observer
+  app_checktx_recorder: internal/telemetry
+  accepted_mempool_source: comet_rpc_num_unconfirmed_txs
+  relay_byte_source: comet_prometheus_p2p_channel_0x30
+  s05_comet_source: pinned_cometbft_v0.38.26_source_checked_disposable_build
+  s05_comet_build: build/cometbft-s05
+  p2p_transaction_ingress: instrumented_mempool_reactor_decoded_tx_count_and_bytes
+  comet_checktx_socket_queue_wait: instrumented_abci_socket_enqueue_to_writer_dequeue_histogram
+  process_source: linux_proc_stat_statm
+  comet_total_enqueue_to_app_wait: NOT_MEASURED
+  p2p_propagation_latency: NOT_MEASURED
+  raw_output_policy: ignored_research_artifacts_only
 source:
   # Earlier tested/recovery identities below remain historical; the accepted
   # Phase 03D staged tree is recorded separately in phase_03d_accepted_staged_tree.
@@ -75,7 +92,9 @@ source:
   phase_03d_recovery_reviewed_source_tree: 87b504853cb0ff98790976879ea8832db92b83e0
   phase_03d_recovery_source_manifest_sha256: f0146d74ebe11561efbdd3c23f4508caf42a69a2a0456035a72a69213f47355c
   phase_03d_recovery_bundle_sha256: 94e4c562a1ed43ad92fcf22d65fa5724379e6fc3a74e715be587ac2a6f523916
-  working_branch: research/s04-bft-correctness
+  working_branch: research/s05-observability
+  research_v2_s04_merge_commit: 630f2d8c81398f84073796747108c30ab9dee3c8
+  research_v2_s05_base_commit: 630f2d8c81398f84073796747108c30ab9dee3c8
   research_v2_s03_merge_commit: 1c8084207adb5da787e34e230dd0dc6d9a3de05f
   research_v2_s04_base_commit: 1c8084207adb5da787e34e230dd0dc6d9a3de05f
   research_v2_s04_implementation_commit: b8ccd7cf8c500fe2495143a21c76606d41c558d2
@@ -117,6 +136,11 @@ dependencies:
     module: github.com/cometbft/cometbft
     selected_version: v0.38.26
     status: pinned_compiled_integrated_single_validator_tested
+  prometheus_s05:
+    module: github.com/prometheus/client_golang
+    selected_version: v1.21.0
+    minimum_go: "1.21"
+    status: existing_pinned_comet_transitive_promoted_to_direct_for_S05_hook_benchmark_and_disposable_comet_build
   comet_config_parser:
     module: github.com/spf13/viper
     selected_version: v1.19.0

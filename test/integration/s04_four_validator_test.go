@@ -4,6 +4,7 @@ package integration
 
 import (
 	"bytes"
+	"context"
 	"encoding/base64"
 	"encoding/binary"
 	"encoding/hex"
@@ -11,6 +12,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/http/httptest"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -33,6 +35,7 @@ import (
 	"example.com/pluto/internal/profiles/corpus"
 	"example.com/pluto/internal/profiles/genesis"
 	"example.com/pluto/internal/profiles/store"
+	"example.com/pluto/internal/telemetry"
 )
 
 func s04Account(t *testing.T, n *fourNetwork, i int, address b0state.Address) (uint64, uint64) {
@@ -85,7 +88,18 @@ func s04Duplicate(t *testing.T, n *fourNetwork, raw []byte) string {
 }
 
 func TestS04FourValidatorProfiles(t *testing.T) {
+	runFourProfileCorrectness(t, false)
+}
+
+func TestS05FourValidatorTelemetry(t *testing.T) {
+	runFourProfileCorrectness(t, true)
+}
+
+func runFourProfileCorrectness(t *testing.T, observe bool) {
 	comet, _ := filepath.Abs("../../build/cometbft")
+	if observe {
+		comet, _ = filepath.Abs("../../build/cometbft-s05")
+	}
 	if info, err := os.Stat(comet); err != nil || !info.Mode().IsRegular() {
 		t.Fatalf("build CometBFT first: %v", err)
 	}
@@ -121,6 +135,8 @@ func TestS04FourValidatorProfiles(t *testing.T) {
 				t.Fatal(err)
 			}
 			n := &fourNetwork{t: t, root: filepath.Join(t.TempDir(), "network"), genesis: binaryGenesis}
+			var metricsPorts [4]int
+			var recorders [4]*telemetry.Recorder
 			if err := os.Mkdir(n.root, 0700); err != nil {
 				t.Fatal(err)
 			}
@@ -134,6 +150,16 @@ func TestS04FourValidatorProfiles(t *testing.T) {
 						p := freePort(t)
 						if !used[p] {
 							*ptr = p
+							used[p] = true
+							break
+						}
+					}
+				}
+				if observe {
+					for {
+						p := freePort(t)
+						if !used[p] {
+							metricsPorts[i] = p
 							used[p] = true
 							break
 						}
@@ -201,6 +227,10 @@ func TestS04FourValidatorProfiles(t *testing.T) {
 				cfg.Consensus.CreateEmptyBlocksInterval = time.Second
 				cfg.P2P.AllowDuplicateIP = true
 				cfg.P2P.AddrBookStrict = false
+				if observe {
+					cfg.Instrumentation.Prometheus = true
+					cfg.Instrumentation.PrometheusListenAddr = fmt.Sprintf("127.0.0.1:%d", metricsPorts[i])
+				}
 				var peers []string
 				for j := range n.nodes {
 					if j != i {
@@ -220,6 +250,10 @@ func TestS04FourValidatorProfiles(t *testing.T) {
 				apps[i], err = researchv2app.Open(dir, binaryGenesis, corpus.ChainID, profile)
 				if err != nil {
 					t.Fatal(err)
+				}
+				if observe {
+					recorders[i] = telemetry.NewRecorder(256)
+					apps[i].SetRecorder(recorders[i])
 				}
 				abciServer, err := server.NewServer(cfg.ProxyApp, "socket", apps[i])
 				if err != nil {
@@ -245,6 +279,32 @@ func TestS04FourValidatorProfiles(t *testing.T) {
 				go func() { n.nodes[i].done <- cmd.Wait() }()
 			}
 			n.waitAll(2, 90*time.Second)
+			var submitter *telemetry.Submitter
+			var ingress *telemetry.IngressProxy
+			if observe {
+				ingress, err = telemetry.NewIngressProxy(fmt.Sprintf("http://127.0.0.1:%d", n.nodes[0].ports.RPC), 16)
+				if err != nil {
+					t.Fatal(err)
+				}
+				front := httptest.NewServer(ingress)
+				t.Cleanup(front.Close)
+				submitter, err = telemetry.NewSubmitter(front.URL)
+				if err != nil {
+					t.Fatal(err)
+				}
+				invalid, err := submitter.BroadcastSync(context.Background(), []byte{0})
+				if err != nil || invalid.Code == nil || *invalid.Code == 0 || invalid.Reason != "app_reject" || invalid.ClientRPCNS <= 0 {
+					t.Fatalf("invalid pre-admission probe: %+v err=%v", invalid, err)
+				}
+				collector, err := telemetry.NewCollector(fmt.Sprintf("http://127.0.0.1:%d", n.nodes[0].ports.RPC), fmt.Sprintf("http://127.0.0.1:%d", metricsPorts[0]), n.nodes[0].pid, os.Getpid())
+				if err != nil {
+					t.Fatal(err)
+				}
+				sample := collector.Sample(context.Background())
+				if sample.AcceptedMempoolCount == nil || *sample.AcceptedMempoolCount != 0 || sample.AcceptedMempoolBytes == nil || *sample.AcceptedMempoolBytes != 0 || sample.FailedTxTotal == nil || *sample.FailedTxTotal < 1 || sample.Comet == nil || sample.Application == nil {
+					t.Fatalf("rejected transaction entered accepted occupancy or metrics unavailable: %+v", sample)
+				}
+			}
 			result, err := n.broadcast(raw)
 			if err != nil || result.Result.CheckTx.Code != 0 || result.Result.TxResult.Code != 0 {
 				t.Fatalf("valid transfer: %+v %v", result, err)
@@ -312,6 +372,69 @@ func TestS04FourValidatorProfiles(t *testing.T) {
 				t.Fatalf("only %d/4 validator identities voted in eight commits", len(observed))
 			}
 			duplicate := s04Duplicate(t, n, raw)
+			if observe {
+				cached, err := submitter.BroadcastSync(context.Background(), raw)
+				if err != nil || cached.Reason != "duplicate_cache" {
+					t.Fatalf("cache classification: %+v err=%v", cached, err)
+				}
+				proxyEvents, proxyDrops := ingress.Drain()
+				if len(proxyEvents) != 2 || proxyDrops != 0 || proxyEvents[0].Reason != "app_reject" || proxyEvents[1].Reason != "duplicate_cache" {
+					t.Fatalf("real RPC proxy event mismatch: %+v drops=%d", proxyEvents, proxyDrops)
+				}
+				var sawRelay, sawP2PIngress, sawSocketQueue bool
+				var ingressTxs, ingressBytes, queueCount, queueSeconds float64
+				for i := range n.nodes {
+					collector, err := telemetry.NewCollector(fmt.Sprintf("http://127.0.0.1:%d", n.nodes[i].ports.RPC), fmt.Sprintf("http://127.0.0.1:%d", metricsPorts[i]), n.nodes[i].pid, os.Getpid())
+					if err != nil {
+						t.Fatal(err)
+					}
+					sample := collector.Sample(context.Background())
+					if sample.AcceptedMempoolCount == nil || sample.AcceptedMempoolBytes == nil || sample.Comet == nil || sample.Application == nil || (i == 0 && sample.FailedTxTotal == nil) {
+						t.Fatalf("validator %d missing native telemetry: %+v", i, sample)
+					}
+					if sample.RelaySendEnvelopeBytes != nil && *sample.RelaySendEnvelopeBytes > 0 && sample.RelayReceiveEnvelopeBytes != nil && *sample.RelayReceiveEnvelopeBytes > 0 {
+						sawRelay = true
+					}
+					if sample.P2PIngressTxTotal != nil && *sample.P2PIngressTxTotal > 0 && sample.P2PIngressTxBytesTotal != nil && *sample.P2PIngressTxBytesTotal >= float64(len(raw)) {
+						sawP2PIngress = true
+					}
+					if sample.P2PIngressTxTotal != nil {
+						ingressTxs += *sample.P2PIngressTxTotal
+					}
+					if sample.P2PIngressTxBytesTotal != nil {
+						ingressBytes += *sample.P2PIngressTxBytesTotal
+					}
+					if sample.CheckTxSocketQueueCount != nil && *sample.CheckTxSocketQueueCount > 0 && sample.CheckTxSocketQueueSeconds != nil && *sample.CheckTxSocketQueueSeconds > 0 {
+						sawSocketQueue = true
+					}
+					if sample.CheckTxSocketQueueCount != nil {
+						queueCount += *sample.CheckTxSocketQueueCount
+					}
+					if sample.CheckTxSocketQueueSeconds != nil {
+						queueSeconds += *sample.CheckTxSocketQueueSeconds
+					}
+					events, dropped := recorders[i].Drain()
+					if dropped != 0 || len(events) == 0 {
+						t.Fatalf("validator %d event loss or missing CheckTx: events=%d drops=%d", i, len(events), dropped)
+					}
+					var sawValid bool
+					for _, e := range events {
+						if e.Code == 0 && e.WireBytes == len(raw) && e.ServiceNS >= 0 {
+							sawValid = true
+						}
+					}
+					if !sawValid {
+						t.Fatalf("validator %d never observed valid CheckTx", i)
+					}
+				}
+				if !sawRelay {
+					t.Fatal("no direct mempool-channel P2P bytes observed")
+				}
+				if !sawP2PIngress || !sawSocketQueue {
+					t.Fatalf("missing direct P2P transaction ingress or Comet CheckTx socket queue: p2p=%t queue=%t", sawP2PIngress, sawSocketQueue)
+				}
+				t.Logf("telemetry profile=%d p2p_ingress_txs=%.0f p2p_ingress_tx_bytes=%.0f checktx_socket_queue_count=%.0f checktx_socket_queue_seconds=%.9f", profile, ingressTxs, ingressBytes, queueCount, queueSeconds)
+			}
 			var postBlock string
 			for i := range n.nodes {
 				b, postHash, txs, err := n.block(i, h+1)
