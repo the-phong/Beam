@@ -1,6 +1,22 @@
 # Pluto agent execution contract
 
-## Current authority — S05 telemetry (2026-11-10)
+## Current authority — S06 safe testbed and open-loop load (2026-11-11)
+
+The Owner merged S05 PR #16 into `test-mainet` at
+`ac91250ddff31d07b6dcb19f81878e149256e84f` and explicitly authorized
+S06. Work only in the original `pluto` folder on
+`research/s06-safe-testbed` from that merge commit. Complete S06.1–S06.5
+in checklist order with pinned testbed configuration, a bounded open-loop
+generator, three offered-load regimes, capability-correct workload corpus,
+and safety abort evidence. Tick only verified items. A four-validator
+single-host run is a pilot, not independent infrastructure. Keep all load
+on controlled loopback/private endpoints, preserve accepted B0/B1/S03–S05,
+the refactor stash, ignored artifacts and unrelated D026 files. Commit/push
+only the S06 branch, open a Draft PR into `test-mainet`, and stop for Owner
+review. Do not merge, touch protected branches, start S07 or claim loaded
+RQ1–RQ3/DoS results.
+
+## Historical authority — S05 telemetry (2026-11-10)
 
 The Owner merged S04 Draft PR #15 into `test-mainet` at
 `630f2d8c81398f84073796747108c30ab9dee3c8` and explicitly authorized

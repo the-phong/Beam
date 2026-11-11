@@ -1,19 +1,20 @@
 # Pluto research master plan
 
-**Current status (2026-11-10):** Phase 05 PR #10 is merged into `test-mainet`
+**Current status (2026-11-11):** Phase 05 PR #10 is merged into `test-mainet`
 at `0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`. The Owner requested a
 new, separately evidenced RQ1–RQ3 program in the
 [research checklist](checklists/01_CHECKLIST_CHUAN_HOA_MO_RONG_REPO_THUC_NGHIEM.md).
 S01 and S02 are accepted; S03 four-profile source and direct-ABCI work was
 merged in PR #14 at `1c8084207adb5da787e34e230dd0dc6d9a3de05f`.
 The Owner merged S04 PR #15 at
-`630f2d8c81398f84073796747108c30ab9dee3c8` and authorized S05 on
-`research/s05-observability`. Its bounded implementation, directly measured
+`630f2d8c81398f84073796747108c30ab9dee3c8` and authorized S05. Its bounded implementation, directly measured
 socket queue component and remaining quality limits are in the
 [metric dictionary](protocol/METRICS_DICTIONARY.md).
-S05.1–S05.5 have local technical evidence awaiting independent review and
-Owner acceptance; S06–S07, multi-host measurements and detector
-comparison are not authorized. D-031–D-035 record provenance and decisions. Earlier phase schedules and
+S05 PR #16 was merged at `ac91250ddff31d07b6dcb19f81878e149256e84f`;
+the Owner authorized S06 on `research/s06-safe-testbed`. Its controlled
+single-host four-validator [pilot](evidence/s06/TESTBED_REPORT.md) has local
+technical evidence. Multi-host measurements, detector comparison and S07
+are not authorized. D-031–D-036 record provenance and decisions. Earlier phase schedules and
 authority paragraphs below are historical and do not establish checklist
 completion.
 

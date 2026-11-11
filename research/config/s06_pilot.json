@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "network": {
+    "validator_count": 4,
+    "placement": "single_host_pilot",
+    "comet_version": "v0.38.26",
+    "mempool_type": "flood",
+    "mempool_size": 128,
+    "mempool_max_bytes": 8388608,
+    "mempool_cache_size": 1024,
+    "mempool_max_tx_bytes": 8192,
+    "mempool_recheck": true,
+    "mempool_broadcast": true,
+    "max_block_bytes": 1048576,
+    "create_empty_blocks": true,
+    "empty_block_interval_ms": 1000,
+    "timeout_commit_ms": 1000,
+    "collector_interval_ms": 1000
+  },
+  "safety": {
+    "max_tx_per_second": 25,
+    "max_bytes_per_second": 65536,
+    "max_outstanding": 16,
+    "max_duration_seconds": 60,
+    "request_timeout_ms": 2000,
+    "max_cpu_fraction": 0.9,
+    "cpu_breach_seconds": 30,
+    "max_rss_fraction": 0.8,
+    "min_free_disk_fraction": 0.1,
+    "max_observer_stale_ms": 4000,
+    "allowed_rpc_host": "127.0.0.1"
+  }
+}

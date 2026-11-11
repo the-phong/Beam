@@ -1,13 +1,16 @@
 # S02 measurement contract — proposed definitions and decision timing
 
-Status: S02 design candidate for independent review. This document fixes **what** is counted, **where** it is observed, and **when** a feature is available. It does not claim the telemetry exists; S05 implements and validates it, S06 freezes calibrated numerical loads and collector settings, and S07 proves end-to-end reproduction. A missing stream is `NOT MEASURED`/`null`, never a fabricated zero. The final S02 contract must be frozen before confirmatory File 02 runs.
+Status: S02 contract accepted for staged implementation. This document fixes **what** is counted, **where** it is observed, and **when** a feature is available. S05 implements and validates the available telemetry; S06 tests a bounded collector and load configuration; S07 must prove end-to-end reproduction. The calibration and precision requirements below remain open before confirmatory File 02 runs. A missing stream is `NOT MEASURED`/`null`, never a fabricated zero.
 
-S05 implementation status (2026-11-10): the
+S05 implementation status (2026-11-11): the Owner merged PR #16 into
+`test-mainet` at `ac91250ddff31d07b6dcb19f81878e149256e84f`. The
 [metric dictionary](METRICS_DICTIONARY.md) maps this contract to observed
-application, controlled RPC, native Comet mempool/P2P and Linux process
-signals. Exact Comet CheckTx queue wait and P2P transaction ingress remain
-`NOT MEASURED`; therefore S05's full gate and loaded RQ1–RQ3 runs remain
-closed. Historical S02 design wording below is retained for provenance.
+application, controlled RPC, instrumented decoded Comet P2P ingress and
+socket queue, native Comet mempool/P2P and Linux process signals. Total
+enqueue-to-app wait and P2P propagation latency remain `NOT MEASURED`.
+S06 is authorized for an isolated, bounded testbed pilot; confirmatory
+loaded RQ1–RQ3 runs remain closed. Historical S02 design wording below is
+retained for provenance.
 
 ## Run identity, controls and valid comparisons
 

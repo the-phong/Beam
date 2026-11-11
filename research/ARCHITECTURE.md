@@ -8,6 +8,21 @@ bounded; the new four-profile research program is tracked separately in
 The historical candidate/authorization wording below describes prior review
 points and must not be read as current implementation status.
 
+## S06 isolated offered-load boundary
+
+`internal/profiles/load` validates a pinned private plan, schedules unique
+pre-signed transactions on absolute monotonic deadlines, submits through a
+loopback-only RPC client and records actual socket-write times. It has no
+validator signing keys or consensus role. The standalone `profile-load`
+process reads four independent `profile-observer` process streams and the
+four validators' status endpoints to enforce safety caps and stop on
+divergence, observer loss or a manual kill file. The integration harness
+creates fresh four-validator networks for six shuffled jobs, and verifies
+the direct workload oracle and post-commit state on every validator.
+[`TESTBED_CONFIG`](protocol/TESTBED_CONFIG.md) pins the limits. This is a
+single-host pilot: shared hardware and network prevent infrastructure
+independence and confirmatory RQ1–RQ3 inference.
+
 ## S05 observation boundary
 
 After the Owner merged S04 PR #15 at

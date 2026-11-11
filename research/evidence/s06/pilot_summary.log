@@ -1,0 +1,18 @@
+S06 workload corpus verified
+    s06_pilot_test.go:369: pilot order=0 seed=611 profile=3 regime=equal_tx_s waveform=constant planned=9 actual=9 legitimate_committed=9 result_sha256=2d1a4ec4066ef43497b433f81e396ec4fa53ac9cc6b64f6f56b29ab24664c28a
+    s06_pilot_test.go:369: pilot order=1 seed=611 profile=4 regime=equal_tx_s waveform=burst planned=9 actual=9 legitimate_committed=9 result_sha256=88d65bccd558f2d54615b54958db1d0951782b1f42453e61009f9d9d49b80669
+    s06_pilot_test.go:369: pilot order=2 seed=611 profile=2 regime=equal_bytes_s waveform=constant planned=5 actual=5 legitimate_committed=5 result_sha256=c7ab326214e2f000f75538ca23ea096740f014740ef68512b6e9de2ed90d84b5
+    s06_pilot_test.go:369: pilot order=3 seed=611 profile=1 regime=equal_bytes_s waveform=constant planned=69 actual=69 legitimate_committed=69 result_sha256=3261af49569fba34772f37a28a59e8dcaeb600a4387618d313dcc5edb27c87ea
+    s06_pilot_test.go:369: pilot order=4 seed=611 profile=4 regime=equal_tx_s waveform=constant planned=9 actual=9 legitimate_committed=9 result_sha256=098be6c77479c39dd39a9cbe120665b20f2176eeb848c11d8584f0f25b3641fb
+    s06_pilot_test.go:369: pilot order=5 seed=611 profile=4 regime=equal_tx_s waveform=constant planned=25 actual=25 legitimate_committed=25 result_sha256=d733634c04be56589283d3b847359b995b422771004950a54a5133285f351739
+    s06_pilot_test.go:369: pilot order=6 seed=611 profile=4 regime=fixed_legitimate_plus_adversarial waveform=constant planned=9 actual=9 legitimate_committed=5 result_sha256=18f7fca300c08dee750f2b6ec6e0d71bb215ac88a1819e26bcba9f4cf31fa98d
+--- PASS: TestS06IsolatedOpenLoopPilot (91.10s)
+    --- PASS: TestS06IsolatedOpenLoopPilot/P-equal-tx (13.18s)
+    --- PASS: TestS06IsolatedOpenLoopPilot/H-burst (12.90s)
+    --- PASS: TestS06IsolatedOpenLoopPilot/CP-equal-bytes (13.07s)
+    --- PASS: TestS06IsolatedOpenLoopPilot/C-equal-bytes (13.08s)
+    --- PASS: TestS06IsolatedOpenLoopPilot/H-equal-tx (12.87s)
+    --- PASS: TestS06IsolatedOpenLoopPilot/H-valid-high (12.89s)
+    --- PASS: TestS06IsolatedOpenLoopPilot/H-fixed-plus-invalid (13.08s)
+PASS
+ok  	example.com/pluto/test/integration	91.120s

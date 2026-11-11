@@ -10,6 +10,8 @@
 
 > **Tiến độ 2026-11-10:** Owner đã merge [PR #15](https://github.com/the-phong/DoS-in-Blockchain-PQC/pull/15) vào `test-mainet` tại `630f2d8c81398f84073796747108c30ab9dee3c8` và giao S05. Nhánh hiện hành `research/s05-observability` trong đúng folder `pluto`. S05 có bằng chứng kỹ thuật cục bộ cho 5/5 mục, gồm số giao dịch/byte P2P nhận trực tiếp và thành phần hàng đợi socket CheckTx từ bản CometBFT v0.38.26 instrument riêng cho S05. Gate kỹ thuật cục bộ **OK**, chờ review độc lập và Owner; S06–S07 chưa mở.
 
+> **Tiến độ 2026-11-11:** Owner đã merge [PR #16](https://github.com/the-phong/DoS-in-Blockchain-PQC/pull/16) vào `test-mainet` tại `ac91250ddff31d07b6dcb19f81878e149256e84f` và giao S06. Nhánh `research/s06-safe-testbed` ở đúng folder `pluto` có 5/5 mục S06 được kiểm chứng bằng corpus, unit/race và pilot bảy lượt trên bốn validator thật cùng một host; [report](../evidence/s06/TESTBED_REPORT.md) ghi kết quả/giới hạn. Gate kỹ thuật cục bộ OK, chờ review độc lập và Owner; S07 chưa mở. Các dòng trên là checkpoint lịch sử tại thời điểm ghi.
+
 > **Sắp xếp thư mục 2026-11-10:** Chỉ còn một cây `research/`. Checklist, protocol, corpus, evidence và artifacts đã được chuyển vào đây; hồ sơ M01 được đặt cùng S01. Đường dẫn bằng chứng đã cập nhật. Không thay đổi dấu tích hoặc trạng thái Gate; S04 vẫn chờ Controller/Owner review, S05 chưa mở.
 
 > **Tên thư mục mã 2026-11-10:** C/CP/P/H dùng `internal/profiles/` và `cmd/profile-*`; mã corpus/benchmark B0/B1 dùng `internal/benchmarks/`, `cmd/b0b1-corpus/`, `research/benchmarks/b0b1/` và `research/corpus/b0b1/`. Không còn thư mục mã hiện hành đặt theo `v2` hoặc `phase05`; các định danh format trên wire và hồ sơ chứng cứ lịch sử giữ nguyên. `make verify`, race tests, S04 bốn validator, hai corpus verifier và hai B0/B1 smoke đều exit 0 sau khi đổi đường dẫn. Không thay đổi dấu tích hoặc Gate.
@@ -97,15 +99,17 @@
 
 ## S06 — Chuẩn hóa testbed và bộ tạo tải an toàn [CHỈ SAU S05]
 
-- [ ] **S06.1** Pin phiên bản/cấu hình/mempool limits/consensus; tách load generator và collector khỏi tiến trình validator; ghi rõ nếu chỉ chạy **4 validator cùng một host** (chỉ đủ cho pilot, không tuyên bố độc lập hạ tầng).
-- [ ] **S06.2** Xây open-loop generator có `planned/actual send timestamps`, unique tx, nonce/account management và phân biệt nguồn RPC/P2P.
-- [ ] **S06.3** Hỗ trợ ba kiểu tải **same tx/s**, **same bytes/s**, **fixed legitimate tx/s + added invalid tx/s**; nếu không đạt offered rate thì run phải báo lỗi.
-- [ ] **S06.4** Chuẩn hóa workload: benign low/high/burst, invalid early, invalid ECDSA, invalid ML-DSA sau ECDSA hợp lệ, late state-invalid, valid high-rate; mỗi vector có khả năng attacker tạo ra được.
-- [ ] **S06.5** Thêm warm-up/steady-state/drain, randomize thứ tự run, giới hạn CPU/RAM/queue/time, auto-abort/kill switch; các thử nghiệm gây tải chỉ lên hệ thống riêng.
+- [x] **S06.1** Pin phiên bản/cấu hình/mempool limits/consensus; tách load generator và collector khỏi tiến trình validator; ghi rõ nếu chỉ chạy **4 validator cùng một host** (chỉ đủ cho pilot, không tuyên bố độc lập hạ tầng). **Bằng chứng:** [TESTBED_CONFIG](../protocol/TESTBED_CONFIG.md), [config máy đọc được](../config/s06_pilot.json); test tạo bốn tiến trình Comet, bốn collector riêng và một `profile-load` riêng; pilot một host WSL2, không tuyên bố độc lập hạ tầng.
+- [x] **S06.2** Xây open-loop generator có `planned/actual send timestamps`, unique tx, nonce/account management và phân biệt nguồn RPC/P2P. **Bằng chứng:** `internal/profiles/load/{plan,runner,pilot}.go`, `cmd/profile-load`, `TestS06IsolatedOpenLoopPilot`; plan mỗi tx ký sẵn, hash duy nhất, mỗi sender nonce 0 riêng; thời điểm gửi thực là HTTP socket-write callback. Chỉ nguồn RPC loopback được phép; P2P relay đo riêng, không giả làm P2P injection.
+- [x] **S06.3** Hỗ trợ ba kiểu tải **same tx/s**, **same bytes/s**, **fixed legitimate tx/s + added invalid tx/s**; nếu không đạt offered rate thì run phải báo lỗi. **Bằng chứng:** ba regime trong `plan.go`, `TestS06PilotPlansHaveDirectOracleAndMatchedRegimes`, `TestS06OpenLoopQueueMissIsFailure`; [pilot summary](../evidence/s06/pilot_summary.log) xác nhận 7/7 lượt đạt planned/actual, C/CP cùng target byte, P/H cùng target tx, H fixed legitimate+invalid; `RATE_MISS` khi queue/rate không đạt.
+- [x] **S06.4** Chuẩn hóa workload: benign low/high/burst, invalid early, invalid ECDSA, invalid ML-DSA sau ECDSA hợp lệ, late state-invalid, valid high-rate; mỗi vector có khả năng attacker tạo ra được. **Bằng chứng:** [corpus S06](../corpus/s06_scenarios.json) SHA-256 `6f43b725156f60deb0f0d2e6c451605bae479a5e890ff58f7e3be46c5a8ca0e2`, `make corpus-s06-verify` dùng oracle code/stage/capability; pilot thực có H valid 6 tx/s, burst và H bad-ML sau secp hợp lệ. Corpus là ví dụ chuẩn hóa, chưa phải mẫu thống kê.
+- [x] **S06.5** Thêm warm-up/steady-state/drain, randomize thứ tự run, giới hạn CPU/RAM/queue/time, auto-abort/kill switch; các thử nghiệm gây tải chỉ lên hệ thống riêng. **Bằng chứng:** seed 611 xáo bảy lượt, 1/4/3 giây; config hard cap 25 tx/s, 65536 byte/s, outstanding 16, 60 giây, CPU/RAM/disk; `TestS06RuntimeGuardAbortsOutstandingLoad`, `TestS06KillSwitchAndPublicTargetRefused` và [report](../evidence/s06/TESTBED_REPORT.md). Không thử đẩy host tới ngưỡng vật lý.
 
 **Bàn giao:** `TESTBED_CONFIG.md`, load generator, corpus có nhãn/kịch bản, safety test.
 
 **GATE S06 — OK:** Bộ tạo tải đạt mức gửi yêu cầu trên mạng kiểm soát, oracle xác nhận workload đúng loại, giới hạn an toàn hoạt động; không có tấn công ra public network.
+
+**Trạng thái Gate S06: kỹ thuật cục bộ OK, chờ review độc lập và Owner chấp nhận.** `make test-s06-pilot` exit 0: bảy mạng bốn validator cô lập, 135/135 lần gửi theo kế hoạch, 131 giao dịch hợp lệ commit và 4 invalid được reject đúng oracle; [TESTBED_REPORT](../evidence/s06/TESTBED_REPORT.md) ghi hash log, cấu hình, seed và giới hạn. Đây là pilot cùng một host; calibration benign, precision/FPR 1%, clock nhiều host và kết quả RQ1–RQ3 **chưa có** theo [measurement contract](../protocol/MEASUREMENT_CONTRACT.md). S07 chưa được Owner giao.
 
 ---
 
