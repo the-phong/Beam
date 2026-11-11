@@ -11,9 +11,11 @@ establish DoS, an EVM, multi-host independence, or a useful ML detector.
 The [current experimental checklist](research/checklists/01_CHECKLIST_CHUAN_HOA_MO_RONG_REPO_THUC_NGHIEM.md)
 tracks a separate RQ1–RQ3 program. S01–S04 are closed after the Owner merged
 [PR #15](https://github.com/the-phong/DoS-in-Blockchain-PQC/pull/15).
-S05.1–S05.5 now have bounded local technical evidence and a
-[metric dictionary](research/protocol/METRICS_DICTIONARY.md); independent
-review and Owner acceptance remain pending. The C/CP/P/H application has a four-validator localhost
+S05 PR #16 was merged by the Owner. S06 now has a bounded
+[testbed contract](research/protocol/TESTBED_CONFIG.md) and
+[single-host four-validator pilot](research/evidence/s06/TESTBED_REPORT.md)
+on `research/s06-safe-testbed`; independent review and Owner acceptance
+remain pending. The C/CP/P/H application has a four-validator localhost
 integration harness; it is not a selectable profile in the normal `plutod`
 CLI. Checked items link to new evidence. Historical Phase 05 results are not
 new RQ1–RQ3 results.
@@ -23,7 +25,7 @@ new RQ1–RQ3 results.
 | Path | Purpose |
 |---|---|
 | `cmd/`, `internal/`, `test/integration/` | Executables, application packages and tests. Current C/CP/P/H code is under `internal/profiles/`; B0/B1 corpus and benchmark code is under `internal/benchmarks/`. |
-| [`research/`](research/README.md) | One home for historical Phase 01–05 records and the current RQ1–RQ3 protocol, checklist, corpus and S01–S05 evidence. Repeated historical raw logs can represent distinct fault cases and are retained for their manifests. |
+| [`research/`](research/README.md) | One home for historical Phase 01–05 records and the current RQ1–RQ3 protocol, checklist, corpus and S01–S06 evidence. Repeated historical raw logs can represent distinct fault cases and are retained for their manifests. |
 | `research/artifacts/`, `build/` | Ignored local backups, raw logs, generated keys/homes and build outputs. Rebuild binaries with `make build`. |
 
 The operator's checklist 01 and checklist 02 also live one directory above

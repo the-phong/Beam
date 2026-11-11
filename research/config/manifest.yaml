@@ -8,8 +8,9 @@ project:
   research_v2_s02_status: owner_confirmed_ok_merged_pr12_2a3dcbce
   research_v2_s03_status: owner_merged_pr14_1c808420_source_direct_abci_gate_ok
   research_v2_s04_status: owner_merged_pr15_630f2d8c
-  research_v2_s05_status: implementation_candidate_gate_open
-  active_authorization: owner_authorized_s05_2026_11_10
+  research_v2_s05_status: owner_merged_pr16_ac91250d
+  research_v2_s06_status: local_technical_pilot_ok_pending_pr_review
+  active_authorization: owner_authorized_s06_2026_11_11
   baseline_branch: test-mainet
   baseline_commit: 0bdd869f2c6b3ed59b0ae825954d8667b3c7481e
   baseline_tree: 09c24280590aee51d97b53b18c5d9e193dbe6dbe
@@ -65,6 +66,24 @@ observability:
   comet_total_enqueue_to_app_wait: NOT_MEASURED
   p2p_propagation_latency: NOT_MEASURED
   raw_output_policy: ignored_research_artifacts_only
+s06_testbed:
+  config: research/config/s06_pilot.json
+  protocol: research/protocol/TESTBED_CONFIG.md
+  public_corpus: research/corpus/s06_scenarios.json
+  placement: four_validators_single_WSL2_host_pilot
+  ingress: loopback_RPC_only_P2P_relay_observed_separately
+  generator: separate_profile_load_process
+  collectors: four_separate_profile_observer_processes
+  order_seed: 611
+  warmup_seconds: 1
+  steady_seconds: 4
+  drain_seconds: 3
+  max_tx_per_second: 25
+  max_bytes_per_second: 65536
+  max_outstanding: 16
+  max_duration_seconds: 60
+  public_network_load: prohibited
+  result_scope: technical_pilot_no_RQ1_RQ2_RQ3_inference
 source:
   # Earlier tested/recovery identities below remain historical; the accepted
   # Phase 03D staged tree is recorded separately in phase_03d_accepted_staged_tree.
@@ -92,7 +111,11 @@ source:
   phase_03d_recovery_reviewed_source_tree: 87b504853cb0ff98790976879ea8832db92b83e0
   phase_03d_recovery_source_manifest_sha256: f0146d74ebe11561efbdd3c23f4508caf42a69a2a0456035a72a69213f47355c
   phase_03d_recovery_bundle_sha256: 94e4c562a1ed43ad92fcf22d65fa5724379e6fc3a74e715be587ac2a6f523916
-  working_branch: research/s05-observability
+  working_branch: research/s06-safe-testbed
+  research_v2_s05_merge_commit: ac91250ddff31d07b6dcb19f81878e149256e84f
+  research_v2_s06_base_commit: ac91250ddff31d07b6dcb19f81878e149256e84f
+  research_v2_s06_config_sha256: 9bc640db8b8875af3f9a5e4f89faa1882e8f4bc10459997d1a891397768cf21a
+  research_v2_s06_corpus_sha256: 6f43b725156f60deb0f0d2e6c451605bae479a5e890ff58f7e3be46c5a8ca0e2
   research_v2_s04_merge_commit: 630f2d8c81398f84073796747108c30ab9dee3c8
   research_v2_s05_base_commit: 630f2d8c81398f84073796747108c30ab9dee3c8
   research_v2_s03_merge_commit: 1c8084207adb5da787e34e230dd0dc6d9a3de05f
@@ -177,7 +200,12 @@ build:
   configuration: standard_go_compiler_with_revision_ldflag
   binaries: build/plutod_and_build/cometbft
 verification:
-  status: phase_05_matched_rate_matrix_and_22_local_checks_passed_hosted_ci_pending_controller_review
+  status: s06_single_host_pilot_local_technical_ok_hosted_ci_pending_review
+  s06_pilot_command: make test-s06-pilot
+  s06_pilot_jobs: 7_shuffled_seed_611_all_passed
+  s06_pilot_summary: research/evidence/s06/pilot_summary.log
+  s06_pilot_raw_log: research/artifacts/s06/pilot_private_final.log_ignored
+  s06_legacy_phase05_status: phase_05_matched_rate_matrix_and_22_local_checks_passed_historical
   phase_05_exploratory_runs: 122_complete_of_122_zero_failed_p99_insufficient
   phase_05_matched_rate_runs: 78_usable_of_78_with_one_wall_clock_exclusion_and_fresh_replacement
   phase_05_valid_confirmed: 20400_matched_rate

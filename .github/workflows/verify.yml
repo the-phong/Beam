@@ -30,6 +30,9 @@ jobs:
       - name: Verify S05 controlled-profile telemetry
         run: make test-s05-telemetry
         timeout-minutes: 10
+      - name: Verify S06 isolated offered-load pilot
+        run: make test-s06-pilot
+        timeout-minutes: 15
       - name: Verify Phase 05 public corpus and correctness oracle
         run: make benchmark-corpus
         timeout-minutes: 5

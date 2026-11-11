@@ -1,4 +1,4 @@
-# Phase status — 2026-11-10
+# Phase status — 2026-11-11
 
 ## Current `test-mainet` baseline and new research program
 
@@ -8,9 +8,9 @@ corpus, four-validator localhost runner, analysis and bounded NO-GO
 recommendation are historical evidence. Their 78 usable corrected conditions
 and earlier exploratory matrix do not answer the new four-profile RQ1–RQ3
 contract. The Owner requested the new checklist program on 2026-11-07;
-implementation and review now continue on `research/s05-observability`
-in the single original `pluto` folder from the S04 merge commit
-`630f2d8c81398f84073796747108c30ab9dee3c8`.
+implementation and review now continue on `research/s06-safe-testbed`
+in the single original `pluto` folder from the S05 merge commit
+`ac91250ddff31d07b6dcb19f81878e149256e84f`.
 The [S01 baseline audit](evidence/s01/BASELINE_AUDIT.md) fixes
 the source tree, records the reruns, and marks the bounded local technical
 Gate S01 OK. The Owner confirmed Gate S02 after PR #12 merged into
@@ -28,9 +28,12 @@ records the bounded result and verification. The Owner merged
 authorized S05 telemetry. The [S05 metric dictionary](protocol/METRICS_DICTIONARY.md)
 records directly observed and unavailable fields. S05.1–S05.5 have bounded
 local technical evidence, including an S05-only source-checked Comet build
-for P2P ingress and CheckTx socket queue. The S05 technical gate is a
-review candidate; independent review and Owner acceptance remain pending.
-S06–S07 loaded experiments are closed.
+for P2P ingress and CheckTx socket queue. The Owner merged S05 PR #16 and
+authorized S06. The [S06 testbed contract](protocol/TESTBED_CONFIG.md) and
+[pilot report](evidence/s06/TESTBED_REPORT.md) cover a bounded, randomized
+seven-job four-validator loopback pilot. The S06 technical gate is a review
+candidate; independent review and Owner acceptance remain pending. S07 is
+closed.
 No new RQ1–RQ3 result is accepted. The paragraphs below record historical
 authorization and candidate status at their original dates.
 

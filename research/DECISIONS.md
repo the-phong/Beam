@@ -1,5 +1,29 @@
 # Architectural decision log
 
+## D-036 — S06 single-host pilot and fail-closed offered load (2026-11-11; review candidate)
+
+The Owner merged S05 PR #16 into `test-mainet` at
+`ac91250ddff31d07b6dcb19f81878e149256e84f` and authorized S06. The
+S06 harness runs four distinct CometBFT v0.38.26 validator processes and
+stores on one WSL2 host, with the existing research app servers in the test
+process. A separate `profile-load` process sends pre-signed transactions;
+four separate `profile-observer` processes collect node samples. The
+[`TESTBED_CONFIG`](protocol/TESTBED_CONFIG.md) pins Comet consensus/mempool
+settings, the public scenario corpus and all safety caps. This is a pilot in
+one fault domain, not four independent machines.
+
+The generator uses absolute monotonic send deadlines and records actual
+socket-write timestamps. It fails a run if the planned rate, real writes,
+CheckTx oracle or runtime safety checks fail. It accepts only literal
+loopback RPC origins, disables proxy/redirects and rejects a claimed direct
+P2P source. Comet's P2P relay is observed separately by the accepted S05
+instrumentation. The test shuffles seven isolated jobs, exercises all three
+regimes, checks four-validator state and P2P relay, and labels missing or
+failed sends explicitly. Only bounded pilot evidence is claimed; it cannot
+answer RQ1–RQ3, estimate DoS susceptibility or satisfy multi-host timing and
+statistical calibration. S07 requires separate Owner authorization.
+
+
 ## D-035 — S05 bounded telemetry without consensus inputs (2026-11-10; review candidate)
 
 The Owner merged S04 PR #15 into `test-mainet` at

@@ -1,4 +1,4 @@
-.PHONY: build build-comet-s05 clean test test-integration test-integration-4v test-integration-b1-4v test-s04-4v test-s05-telemetry corpus-s04-verify vet fmt-check verify benchmark-corpus benchmark-smoke benchmark-micro benchmark-b1 benchmark-full benchmark-analyze benchmark-contention-corpus benchmark-contention-smoke benchmark-contention-full benchmark-contention-analyze
+.PHONY: build build-comet-s05 clean test test-integration test-integration-4v test-integration-b1-4v test-s04-4v test-s05-telemetry test-s06-pilot corpus-s04-verify corpus-s06-verify vet fmt-check verify benchmark-corpus benchmark-smoke benchmark-micro benchmark-b1 benchmark-full benchmark-analyze benchmark-contention-corpus benchmark-contention-smoke benchmark-contention-full benchmark-contention-analyze
 
 GO ?= go
 INTEGRATION_TIMEOUT ?= 900s
@@ -10,6 +10,8 @@ build:
 	$(GO) build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
 	$(GO) build -o build/profile-observer ./cmd/profile-observer
 	$(GO) build -o build/profile-ingress ./cmd/profile-ingress
+	$(GO) build -o build/profile-load ./cmd/profile-load
+	$(GO) build -o build/profile-workload-corpus ./cmd/profile-workload-corpus
 
 build-comet-s05:
 	python3 research/telemetry/comet_overlay.py build/s05-comet-overlay
@@ -39,8 +41,14 @@ test-s04-4v: build corpus-s04-verify
 test-s05-telemetry: build build-comet-s05 corpus-s04-verify
 	$(GO) test -tags 'integration fourval' ./test/integration -run '^TestS05FourValidatorTelemetry$$' -timeout 600s -count=1 -v
 
+test-s06-pilot: build build-comet-s05 corpus-s06-verify
+	$(GO) test -tags 'integration fourval' ./test/integration -run '^TestS06IsolatedOpenLoopPilot$$' -timeout 900s -count=1 -v
+
 corpus-s04-verify:
 	$(GO) run ./cmd/profile-corpus verify research/corpus/s04_public_corpus.json
+
+corpus-s06-verify:
+	$(GO) run ./cmd/profile-workload-corpus verify research/corpus/s06_scenarios.json
 
 vet:
 	$(GO) vet ./...
