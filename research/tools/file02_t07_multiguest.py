@@ -74,7 +74,7 @@ def survey_audit(raw, *, guest=True):
     require(isinstance(inventory, dict) and inventory.get("kernel") and
             inventory.get("cpu_model") and inventory.get("logical_cpus") and
             inventory.get("filesystem_type") and inventory.get("network_interfaces_mtu") and
-            (not guest or inventory.get("product_uuid_sha256")), "incomplete host inventory")
+            (not guest or inventory.get("machine_id_sha256")), "incomplete host inventory")
     return {"inventory": inventory, "clock": result,
             "warmup_ns": raw["warmup_end_ns"]-raw["warmup_start_ns"],
             "steady_ns": raw["steady_end_ns"]-raw["warmup_end_ns"],
@@ -125,9 +125,9 @@ def audit(session):
         info["after"] = boundary(after)
         guests[label] = info
         all_probes.extend(before+after)
-    require(guests["u1"]["inventory"]["product_uuid_sha256"] !=
-            guests["u2"]["inventory"]["product_uuid_sha256"],
-            "guest product UUIDs not distinct")
+    require(guests["u1"]["inventory"]["machine_id_sha256"] !=
+            guests["u2"]["inventory"]["machine_id_sha256"],
+            "guest machine IDs not distinct")
     controller_step = controller_continuity(all_probes, controller)
     cross = {}
     for phase in ("before", "after"):
