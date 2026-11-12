@@ -19,10 +19,19 @@ answer that question by itself. Checklist 02's attack rows and RQ2 detection
 work anticipate that scenario but do not replace the accepted RQ1 decision
 rule. The bounded benign T06 pilot answers neither question.
 
+| Contract | Treatment and comparator | Primary endpoint | Decision |
+| --- | --- | --- | --- |
+| Accepted RQ1 | Valid H minus valid CP at matched intent, offered rate and wire length | Application CheckTx service time for valid accepted transfers | Run-level 95% CI lower bound > 0, with equivalence and oracle QC |
+| Proposed separate service question | Fixed legitimate H stream plus invalid-H background versus the same legitimate stream plus matched benign-H background | Legitimate deadline-inclusion fraction using the same observation bound in both arms | Paired independent-run 95% CI lower bound for control minus treatment > 0, with complete-window and run QC |
+
+The [decision-ready proposal](SECTION2_SERVICE_DEGRADATION_PROPOSAL.md)
+spells out the candidate hypotheses, endpoint, matching, censoring, CI rule
+and limits. Its deadline, matched rate, run count and attack family still
+require prospective case-specific locking; no result is inferred here.
+
 **Proposed Controller/Owner decision:** keep the accepted RQ1 valid-cost
-contrast as a prerequisite/mechanism study, and add a separately numbered
-attack-impact question with preregistered matched benign control, fixed
-legitimate offered stream, independent-run service endpoint, degradation
-threshold, CI and safety gate; or explicitly amend RQ1's primary endpoint
-and H0/H1. The present work makes neither normative change. No official
-case, effect estimate or DoS conclusion is authorized by this review.
+contrast as a mechanism study and accept, revise or defer the separately
+numbered attack-impact proposal. An alternative would be an explicit RQ1
+amendment, but that would change the accepted hypothesis and decision rule.
+The present work makes neither normative change. No official case, effect
+estimate or DoS conclusion is authorized by this review.

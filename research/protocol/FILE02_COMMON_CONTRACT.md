@@ -32,7 +32,14 @@ origin. P2P origin is available only after an actual P2P injector and oracle
 are implemented; observing relay does not make an RPC-origin run P2P-origin.
 The factor levels and exclusions are encoded in
 [`file02_factors.json`](../config/file02_factors.json). Numerical load levels
-remain unset until T06 determines safe, profile-specific knees.
+tested by the bounded T06 pilots are 2/6/12/20/23/25 tx/s on the single-host
+diagnostic topology. These are tested pilot rates, not confirmatory case rates
+or proven load regions. The [knee pilot](../evidence/file02/T06_KNEE_PILOT.md)
+did not establish a defensible knee within the unchanged safe range:
+`NEAR_KNEE`, `AT_KNEE` and `SLIGHTLY_OVER_KNEE` are
+`NOT_OBSERVED_WITHIN_SAFE_RANGE`. A future case may preregister a supported
+bounded rate and report this limitation; this contract does not require or
+authorize another knee search.
 
 ## Run unit, matching and time
 
@@ -91,6 +98,11 @@ four-validator oracle/recorder/load/abort chain; it is QA evidence, not
 confirmatory data. The Owner-authorized bounded T06 calibration and
 precision extension satisfy COMMON-06 with 12 independent networks and
 2,880 steady samples per profile; [the gate audit](../evidence/file02/COMMON_GATE_AUDIT.md)
-records the result. Gate COMMON remains open because numerical knee levels
-and the full preregistration needed for section 2.1 are not locked. No new
-confirmatory T/R/A/Q/D case has been run by this document.
+records the result. The later bounded knee pilot did not identify a
+defensible near/at/above-knee region; its preregistered flags and the
+observation-window limitation remain in the historical evidence. Gate COMMON
+remains open for Controller/Owner disposition of that unavailable factor
+region and the [RQ1 wording issue](../evidence/file02/SECTION2_RQ1_CONSISTENCY.md).
+Case-specific rates, sample sizes, endpoints and exclusions still require
+their own locked plans after authorization. No new confirmatory T/R/A/Q/D
+case has been run by this document.

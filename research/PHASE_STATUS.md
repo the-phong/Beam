@@ -1,4 +1,4 @@
-# Phase status — 2026-11-12
+# Phase status — 2026-11-13
 
 ## Current File 02 sections 0–2 foundation candidate
 
@@ -17,6 +17,10 @@ ready for review; future per-case output remains `PENDING_CASE_EXECUTION`.
 Numerical knee levels, per-case plans, multi-host/P2P origin and the full
 COMMON gate remain open. The [section 2 report](evidence/file02/SECTION2_READINESS_REPORT.md)
 records the RQ1 wording issue. No confirmatory case or RQ1–RQ3 result is claimed.
+The common contract now records the negative bounded knee finding without
+requiring a further search. A [separate legitimate-service question](evidence/file02/SECTION2_SERVICE_DEGRADATION_PROPOSAL.md)
+has a decision-ready proposal; the accepted RQ1 hypothesis is unchanged.
+The seven per-case outputs in Checklist 02 section 2.3 remain unchecked.
 Controller/Owner review remains separate. The sections below retain their
 historical wording.
 

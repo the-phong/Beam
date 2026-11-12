@@ -1,6 +1,7 @@
 # Checklist 02 section 2 — pre-case readiness handoff
 
-Date: 2026-11-12. Branch `research/file02-common-foundation`, Draft PR #21.
+Date: 2026-11-12; consistency addendum 2026-11-13. Branch
+`research/file02-common-foundation`, Draft PR #21.
 This is an engineering readiness report for Controller/Owner review; it
 contains no confirmatory T/R/A/Q/D case or RQ result. The accepted S02
 research contract, prior T06 preregistration and historical raw evidence
@@ -57,12 +58,27 @@ The [RQ1 comparison report](SECTION2_RQ1_CONSISTENCY.md) finds the accepted
 H–CP valid-transaction CheckTx cost contrast aligned across S02 protocol,
 common contract and Checklist 02's resource wording. The Owner's current
 question about legitimate-service degradation under hybrid-invalid load is
-a different causal contrast. No accepted hypothesis or endpoint was changed.
+a different causal contrast. A [separate question proposal](SECTION2_SERVICE_DEGRADATION_PROPOSAL.md)
+now states its candidate paired control, hypotheses, primary endpoint,
+observation censoring and CI decision rule for Controller/Owner review. No
+accepted hypothesis or endpoint was changed.
 
-Gate COMMON remains open for Controller/Owner disposition of the missing
-near/at/above-knee levels, the prospective correction to the boundary-biased
-pilot knee rule, and the RQ1 question wording. Official case plans still
-require their own independent-run, measurement, safety and oracle review.
+The [common contract](../../protocol/FILE02_COMMON_CONTRACT.md) now states
+the completed bounded T06 outcome rather than implying that T06 must keep
+searching until a knee is found. Gate COMMON remains open for
+Controller/Owner disposition of the missing near/at/above-knee levels and
+the separate service question. No additional knee pilot is required by this
+handoff. If a future study seeks a knee, its boundary-biased pilot rule
+would need prospective revision before any new claim. Official case plans
+still require their own independent-run, measurement, safety and oracle
+review.
+
+The **pre-case engineering contract for all of section 2 is complete**.
+The literal Checklist 02 section is **not fully closed**: its seven 2.3
+boxes require actual artifacts from each future authorized case. Their
+status is `PENDING_CASE_EXECUTION`, and none was ticked. This distinction
+prevents a schema/template test from being reported as an experimental
+result or Gate COMMON acceptance.
 
 ## Verification and preserved boundaries
 
