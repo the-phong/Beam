@@ -25,8 +25,7 @@ default-branch change, review branch protection, CI triggers, links and
 collaborator expectations. The second option requires a scoped review and
 conflict resolution for PR #13. Neither action is authorized by this record.
 
-**Naming:** GitHub repository `the-phong/Beam` is the renamed repository;
-the application and CLI remain Pluto and the provisional Go module remains
-`example.com/pluto`. The Owner has not decided on an application or module
-rename. A repository rename alone is no reason to change imports, binaries,
-protocol identifiers or evidence paths.
+**Naming update, 2026-11-12:** The Owner confirmed Beam is the GitHub
+repository name only. The application and CLI remain Pluto and the
+provisional Go module remains `example.com/pluto`. Do not change imports,
+binaries, protocol identifiers or evidence paths on account of the repo name.

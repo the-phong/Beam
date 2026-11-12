@@ -2,8 +2,8 @@
 
 The GitHub repository is [Beam](https://github.com/the-phong/Beam); the
 application, CLI and provisional Go module `example.com/pluto` still use
-**Pluto**. A repository rename alone does not change the application or its
-module path. The Owner has not decided whether to rename either one.
+**Pluto**. The Owner confirmed on 2026-11-12 that Beam is the repository name
+only; the application and Go module are not being renamed in S07.
 
 Pluto is a local CometBFT v0.38.26 research application with three selectable
 profiles. The historical Phase 02 profile rejects transactions; B0 executes
@@ -19,8 +19,10 @@ The [post-merge verification run](https://github.com/the-phong/Beam/actions/runs
 completed successfully. The Controller's technical verdict is **conditional
 acceptance for the structural refactor**; see the
 [review closeout](research/evidence/refactor/CONTROLLER_REVIEW_CLOSEOUT.md).
-S07 is not authorized or complete, and File 02 confirmatory experiments have
-not begun. `test-mainet` holds current research; GitHub still defaults to the
+After [PR #19](https://github.com/the-phong/Beam/pull/19) merged, the Owner
+authorized S07 reproducibility and QA on a separate branch. File 02
+confirmatory experiments have not begun. `test-mainet` holds current research;
+GitHub still defaults to the
 older `master`. [Branch status and decision needed](docs/BRANCH_POLICY.md)
 record the distinction and the conflicting PR #13.
 
@@ -32,8 +34,11 @@ S05 PR #16 and S06 PR #17 were merged by the Owner. S06 has a bounded
 [single-host four-validator pilot](research/evidence/s06/TESTBED_REPORT.md)
 on the merged `test-mainet` baseline. The C/CP/P/H application has a four-validator localhost
 integration harness; it is not a selectable profile in the normal `plutod`
-CLI. Checked items link to new evidence. Historical Phase 05 results are not
-new RQ1–RQ3 results.
+CLI. The [S07 reproduction command](REPRODUCE.md) runs a bounded four-profile
+smoke and freezes private raw/derived artifacts with SHA-256; its
+[readiness report](research/evidence/s07/RUN_READINESS_REPORT.md) states the
+technical gate and limitations. Checked items link to new evidence.
+Historical Phase 05 and S07 smoke results are not new RQ1–RQ3 results.
 
 ## Directory map
 
@@ -41,7 +46,7 @@ new RQ1–RQ3 results.
 |---|---|
 | [`cmd/`](cmd), [`internal/`](internal), [`test/integration/`](test/integration) | Node and research executables, domain packages and real-node tests. See the [source guide](docs/SOURCE_GUIDE.md). |
 | [`docs/`](docs/ARCHITECTURE.md) | Architecture, source guide, transaction and experiment flows, and [refactor mapping](docs/REFACTOR_MAPPING.md). |
-| [`research/`](research/README.md) | One home for historical Phase 01–05 records and the current RQ1–RQ3 protocol, checklist, corpus and S01–S06 evidence. Repeated historical raw logs can represent distinct fault cases and are retained for their manifests. |
+| [`research/`](research/README.md) | One home for historical Phase 01–05 records and the current RQ1–RQ3 protocol, checklist, corpus and S01–S07 evidence. Repeated historical raw logs can represent distinct fault cases and are retained for their manifests. |
 | `research/artifacts/`, `build/` | Ignored local backups, raw logs, generated keys/homes and build outputs. Rebuild binaries with `make build`. |
 
 Read [architecture](docs/ARCHITECTURE.md), [source guide](docs/SOURCE_GUIDE.md),

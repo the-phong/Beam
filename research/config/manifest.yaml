@@ -2,6 +2,8 @@
 # Phase 05 measurements are historical, not new four-profile RQ1–RQ3 evidence.
 project:
   name: Pluto
+  repository_name: Beam
+  repository_name_scope: github_repository_only_owner_confirmed_2026_11_12
   research_title: Evaluation of Resource Cost and Processing Correctness for Hybrid secp256k1–ML-DSA-44 Transactions in a CometBFT-Based Blockchain Application under Deliberately Invalid Input Workloads
   phase: "research-v2-in-progress"
   research_v2_s01_gate: ok_bounded_local_verified
@@ -10,12 +12,12 @@ project:
   research_v2_s04_status: owner_merged_pr15_630f2d8c
   research_v2_s05_status: owner_merged_pr16_ac91250d
   research_v2_s06_status: owner_merged_pr17_ed6bc8f_pilot_only
-  research_v2_s07_status: not_authorized_not_started
+  research_v2_s07_status: five_tasks_local_technical_gate_ok_controller_owner_review_pending
   refactor_status: owner_merged_pr18_e8f20726_controller_conditional_accept_postmerge_ci_pass
-  active_authorization: post_refactor_governance_closeout_2026_11_12
+  active_authorization: s07_reproducibility_qa_2026_11_12
   baseline_branch: test-mainet
-  baseline_commit: e8f20726f5cea94b47c4dcddb756e39d21207448
-  baseline_tree: 0e2fb19edab1ceb6989e88b8e08e9389b5a816e4
+  baseline_commit: 49facc28ca29102e3e7295546f29b74fe3503a00
+  baseline_tree: 994527bc2efe4aebff97cedd3c69808b92894d76
   refactor_source_commit: ed6bc8f474c13ed709d5ab5f57b3856edcbf602a
   phase_03b_status: completed_controller_accepted_merged
   phase_03c_implementation_authorized: false
@@ -52,7 +54,7 @@ application:
   isolated_research_v2_runtime: four_validator_integration_harness_only
   b0_runtime_profile: explicit_durable_H0_init_b0_and_strict_existing_state_start
   module_path: example.com/pluto
-  module_path_status: provisional_owner_naming_decision_pending
+  module_path_status: provisional_pluto_unchanged_by_beam_repo_rename
 observability:
   schema: pluto.telemetry.v1
   controlled_profiles: C_CP_P_H
@@ -87,6 +89,18 @@ s06_testbed:
   max_duration_seconds: 60
   public_network_load: prohibited
   result_scope: technical_pilot_no_RQ1_RQ2_RQ3_inference
+s07_smoke:
+  implementation_commit: ea393d1b9408aeb1a969e4eb245530d529391d1c
+  implementation_tree: e325945cce8467adb924e78bb17ff443c42c7456
+  command: python3_research/tools/s07_orchestrate.py_smoke
+  private_session_id: s07-20261112T061020Z-6a222cf3
+  private_manifest_sha256: 53046b1b87122e320010ac1aecb4332c98e5a0cc114a3e32b28b6ccab971e8b2
+  public_sample: research/evidence/s07/smoke_sample.json
+  public_sample_sha256: 5aa6aa78ed63a3984d6dd9b34b2e51a5ec24636e4224d36a8f5e1300931390f3
+  profiles: C_CP_P_H
+  placement: four_validators_single_host_smoke
+  status: local_and_hosted_smoke_full_regression_ok_review_pending
+  conclusion_scope: QA_only_no_RQ1_RQ2_RQ3_inference
 source:
   # Earlier tested/recovery identities below remain historical; the accepted
   # Phase 03D staged tree is recorded separately in phase_03d_accepted_staged_tree.
@@ -203,7 +217,7 @@ build:
   configuration: standard_go_compiler_with_revision_ldflag
   binaries: build/plutod_and_build/cometbft
 verification:
-  status: s06_single_host_pilot_local_technical_ok_hosted_ci_pending_review
+  status: s07_local_technical_gate_ok_full_ci_pass_review_pending
   s06_pilot_command: make test-s06-pilot
   s06_pilot_jobs: 7_shuffled_seed_611_all_passed
   s06_pilot_summary: research/evidence/s06/pilot_summary.log

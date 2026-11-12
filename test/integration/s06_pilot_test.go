@@ -46,6 +46,12 @@ type s06Network struct {
 }
 
 func startS06Network(t *testing.T, c load.Config, f *load.PilotFixture, profile researchv2.Profile) *s06Network {
+	return startS06NetworkAt(t, c, f, profile, t.TempDir())
+}
+
+// startS06NetworkAt keeps a selected private run directory for reproducibility.
+// The S06 caller still uses testing's disposable directory.
+func startS06NetworkAt(t *testing.T, c load.Config, f *load.PilotFixture, profile researchv2.Profile, runRoot string) *s06Network {
 	t.Helper()
 	comet, _ := filepath.Abs("../../build/cometbft-s05")
 	if _, err := os.Stat(comet); err != nil {
@@ -55,7 +61,7 @@ func startS06Network(t *testing.T, c load.Config, f *load.PilotFixture, profile 
 	if err != nil {
 		t.Fatal(err)
 	}
-	pilot := &s06Network{n: &fourNetwork{t: t, root: filepath.Join(t.TempDir(), "network"), genesis: f.Genesis}}
+	pilot := &s06Network{n: &fourNetwork{t: t, root: filepath.Join(runRoot, "network"), genesis: f.Genesis}}
 	n := pilot.n
 	if err := os.Mkdir(n.root, 0700); err != nil {
 		t.Fatal(err)

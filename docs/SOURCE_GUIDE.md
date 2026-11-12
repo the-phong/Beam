@@ -15,6 +15,7 @@ Start at [`cmd/plutod/main.go`](../cmd/plutod/main.go) for CLI commands, then [`
 | `internal/experiment/corpus` | `profiles/corpus.go`, `b0b1/oracle.go` | Public corpus verification and independent direct-ABCI oracle inputs. |
 | `internal/experiment/benchmark` | `measure.go`, `bench_test.go` | Historical cost measurements; benchmarks and runners consume it. |
 | `cmd/research` | `corpus/*/main.go`, `workload/main.go`, `observer/main.go` | Separate executable contracts grouped by function; `Makefile` preserves binary names. |
-| `test/integration` | `s04_four_validator_test.go`, `s05_telemetry_test.go`, `s06_pilot_test.go` | Real localhost validators, replay, telemetry and load pilot. |
+| `test/integration` | `s04_four_validator_test.go`, `s05_telemetry_test.go`, `s06_pilot_test.go`, `s07_reproduce_test.go` | Real localhost validators, replay, telemetry, load pilot and S07 per-profile smoke oracle. |
+| `research/tools/s07_orchestrate.py` | `smoke`, `analyze_run`, `freeze`, `verify` | Creates unique private sessions, runs the S07 integration harness, derives per-run metrics, records exclusions and checks SHA-256. See [REPRODUCE](../REPRODUCE.md). |
 
 To change protocol behavior, identify the affected B0, B1 or C/CP/P/H `tx` and `state` pair, then its `app` callbacks and golden tests. To change node wiring, start in `internal/node`; to change measurement, start in `internal/experiment` and read [`research/protocol`](../research/protocol) contracts. Run `make verify` and the matching integration target. The [refactor mapping](REFACTOR_MAPPING.md) lists former paths.
