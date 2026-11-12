@@ -57,6 +57,10 @@ test-file02-common02:
 test-file02-common03:
 	python3 research/tools/file02_common03.py smoke
 
+.PHONY: test-file02-common04
+test-file02-common04:
+	python3 research/tools/file02_common04.py smoke
+
 # Builds, verifies public corpora and runs four fresh bounded private networks.
 # The script prints an ignored session path and a SHA-256 manifest for reruns.
 test-s07-smoke:
