@@ -145,6 +145,26 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if err := s07WriteJSON(filepath.Join(run, "oracle.json"), oracle); err != nil {
 		t.Fatal(err)
 	}
+	if metadata["case_id"] == "T04" {
+		var totals [4]uint64
+		for i := range pilot.n.nodes {
+			totals[i], _ = s04Account(t, pilot.n, i, fixture.Receiver.Binding.Account)
+			for _, sender := range fixture.Senders {
+				balance, _ := s04Account(t, pilot.n, i, sender.Binding.Account)
+				totals[i] += balance
+			}
+			if totals[i] != uint64(2*len(fixture.Senders)) {
+				t.Fatalf("validator %d total supply changed: %d", i, totals[i])
+			}
+		}
+		if err := s07WriteJSON(filepath.Join(run, "t04_supply_oracle.json"), map[string]any{
+			"schema": "pluto.file02.t04_supply_oracle.v1", "run_id": plan.RunID,
+			"expected_total_supply": 2 * len(fixture.Senders), "validator_total_supply": totals,
+			"common_height": oracle.CommonHeight,
+		}); err != nil {
+			t.Fatal(err)
+		}
+	}
 	if captureCommits {
 		var commits []s07CommitObservation
 		select {
