@@ -137,7 +137,10 @@ def smoke():
 
 def verify(path):
     session=private_session(path);manifest=common.verify_raw(session);prior=common.read_json(session/'summary.json')
-    require(audit(session,prior['source_commit'],prior['source_tree'])==prior,'summary differs from frozen raw')
+    recalculated=audit(session,prior['source_commit'],prior['source_tree'])
+    # JSON object keys are strings: the in-memory decision uses integer rate keys.
+    canonical=lambda value:json.loads(json.dumps(value,sort_keys=True))
+    require(canonical(recalculated)==prior,'summary differs from frozen raw')
     print(f'T06_KNEE_VERIFY=OK runs=36 manifest_sha256={manifest}')
 
 def main():

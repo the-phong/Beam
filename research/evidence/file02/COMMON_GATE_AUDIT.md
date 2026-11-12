@@ -31,3 +31,14 @@ This evidence does not open the T/R/A/Q/D case program or support an RQ
 claim. The next decision is whether to authorize a separately bounded T06
 knee search and, if no knee exists within unchanged safety caps, how to
 record the unavailable load levels in section 2.1.
+
+## Subsequent bounded search
+
+The Owner authorized a separate search within the existing caps. Its
+[36-network report](T06_KNEE_PILOT.md) found no defensible knee at 20,
+23 or 25 tx/s: eventual goodput matched offered rate and p95/socket queue
+wait did not rise persistently. The literal preregistered rule produced
+timely-goodput flags for C/H, but the same threshold failed at the 20 tx/s
+reference because of end-of-window censoring. Those flags and the limitation
+remain published. Gate COMMON stays open pending Owner disposition of
+section 2.1's unavailable near/at/above-knee levels.
