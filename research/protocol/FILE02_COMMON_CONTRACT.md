@@ -88,6 +88,9 @@ Only controlled loopback/private targets, disposable test keys and the S06
 caps in [`s06_pilot.json`](../config/s06_pilot.json) are allowed. The generator
 and observer abort guards remain mandatory. S07 demonstrates a bounded
 four-validator oracle/recorder/load/abort chain; it is QA evidence, not
-confirmatory data. COMMON-06 and the COMMON gate remain open until a
-precision pilot sets independent n, p99 support and a complete preregistration.
-No new T/R/A/Q/D case has been run by this document.
+confirmatory data. The Owner-authorized bounded T06 calibration and
+precision extension satisfy COMMON-06 with 12 independent networks and
+2,880 steady samples per profile; [the gate audit](../evidence/file02/COMMON_GATE_AUDIT.md)
+records the result. Gate COMMON remains open because numerical knee levels
+and the full preregistration needed for section 2.1 are not locked. No new
+confirmatory T/R/A/Q/D case has been run by this document.
