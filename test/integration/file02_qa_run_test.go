@@ -15,6 +15,7 @@ import (
 
 	"example.com/pluto/internal/experiment/load"
 	researchv2 "example.com/pluto/internal/experiment/profiles"
+	"example.com/pluto/internal/experiment/telemetry"
 )
 
 // file02ExecuteQA runs one pre-signed bounded plan on a fresh local network.
@@ -53,6 +54,17 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 		t.Fatal(err)
 	}
 	pilot := startS06NetworkAt(t, c, fixture, profile, t.TempDir())
+	if metadata["case_id"] == "T05" {
+		mode, ok := metadata["recorder_mode"].(string)
+		if !ok || (mode != "ON" && mode != "OFF") {
+			t.Fatal("T05 requires recorder mode ON or OFF")
+		}
+		if mode == "OFF" {
+			for _, app := range pilot.apps {
+				app.SetRecorder(nil)
+			}
+		}
+	}
 	pilot.startObservers(t, c)
 	deadline := time.Now().Add(10 * time.Second)
 	for {
@@ -161,6 +173,46 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 			"schema": "pluto.file02.t04_supply_oracle.v1", "run_id": plan.RunID,
 			"expected_total_supply": 2 * len(fixture.Senders), "validator_total_supply": totals,
 			"common_height": oracle.CommonHeight,
+		}); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if metadata["case_id"] == "T05" {
+		var fixedHash string
+		for i := range pilot.n.nodes {
+			_, appHash, _, err := pilot.n.block(i, 8)
+			if err != nil || appHash == "" || i > 0 && appHash != fixedHash {
+				t.Fatalf("T05 fixed-height AppHash differs on validator %d: %v", i, err)
+			}
+			fixedHash = appHash
+		}
+		counts := make([]int, 4)
+		drops := make([]uint64, 4)
+		for i, recorder := range pilot.recorders {
+			events, dropped := recorder.Drain()
+			counts[i], drops[i] = len(events), dropped
+			if dropped != 0 || metadata["recorder_mode"] == "OFF" && len(events) != 0 {
+				t.Fatalf("T05 recorder mode %v unexpected events/drops: %d/%d", metadata["recorder_mode"], len(events), dropped)
+			}
+			file, err := os.OpenFile(filepath.Join(run, fmt.Sprintf("recorder-%d.jsonl", i)), os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err := telemetry.WriteJSONL(file, events); err != nil {
+				_ = file.Close()
+				t.Fatal(err)
+			}
+			if err := file.Close(); err != nil {
+				t.Fatal(err)
+			}
+		}
+		if metadata["recorder_mode"] == "ON" && counts[0]+counts[1]+counts[2]+counts[3] == 0 {
+			t.Fatal("T05 ON recorder captured no events")
+		}
+		if err := s07WriteJSON(filepath.Join(run, "t05_recorder_summary.json"), map[string]any{
+			"schema": "pluto.file02.t05_recorder_summary.v1", "run_id": plan.RunID,
+			"mode": metadata["recorder_mode"], "event_counts": counts, "drop_counts": drops,
+			"height": 8, "app_hash_at_height": fixedHash,
 		}); err != nil {
 			t.Fatal(err)
 		}
