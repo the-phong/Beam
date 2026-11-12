@@ -1,0 +1,93 @@
+{
+  "cp_h_exact_byte_match": true,
+  "on_wire_key_variant": "UNSUPPORTED_REQUIRES_SEPARATE_PROTOCOL_DECISION",
+  "profiles": [
+    {
+      "breakdown_bytes": {
+        "amount": 8,
+        "canonical_zero_padding": 0,
+        "chain_id": 16,
+        "magic_version_profile_chain_length": 12,
+        "mldsa_signature": 0,
+        "nonce": 8,
+        "on_wire_public_key": 0,
+        "receiver": 20,
+        "secp_signature": 64,
+        "sender": 20
+      },
+      "canonical_parse_and_accepted": true,
+      "max_bytes": 148,
+      "mean_bytes": 148,
+      "min_bytes": 148,
+      "n": 9,
+      "on_wire_public_key_status": "ABSENT_BY_GENESIS_ONLY_PROTOCOL",
+      "profile": "C"
+    },
+    {
+      "breakdown_bytes": {
+        "amount": 8,
+        "canonical_zero_padding": 2420,
+        "chain_id": 16,
+        "magic_version_profile_chain_length": 12,
+        "mldsa_signature": 0,
+        "nonce": 8,
+        "on_wire_public_key": 0,
+        "receiver": 20,
+        "secp_signature": 64,
+        "sender": 20
+      },
+      "canonical_parse_and_accepted": true,
+      "max_bytes": 2568,
+      "mean_bytes": 2568,
+      "min_bytes": 2568,
+      "n": 9,
+      "on_wire_public_key_status": "ABSENT_BY_GENESIS_ONLY_PROTOCOL",
+      "profile": "CP"
+    },
+    {
+      "breakdown_bytes": {
+        "amount": 8,
+        "canonical_zero_padding": 0,
+        "chain_id": 16,
+        "magic_version_profile_chain_length": 12,
+        "mldsa_signature": 2420,
+        "nonce": 8,
+        "on_wire_public_key": 0,
+        "receiver": 20,
+        "secp_signature": 0,
+        "sender": 20
+      },
+      "canonical_parse_and_accepted": true,
+      "max_bytes": 2504,
+      "mean_bytes": 2504,
+      "min_bytes": 2504,
+      "n": 9,
+      "on_wire_public_key_status": "ABSENT_BY_GENESIS_ONLY_PROTOCOL",
+      "profile": "P"
+    },
+    {
+      "breakdown_bytes": {
+        "amount": 8,
+        "canonical_zero_padding": 0,
+        "chain_id": 16,
+        "magic_version_profile_chain_length": 12,
+        "mldsa_signature": 2420,
+        "nonce": 8,
+        "on_wire_public_key": 0,
+        "receiver": 20,
+        "secp_signature": 64,
+        "sender": 20
+      },
+      "canonical_parse_and_accepted": true,
+      "max_bytes": 2568,
+      "mean_bytes": 2568,
+      "min_bytes": 2568,
+      "n": 9,
+      "on_wire_public_key_status": "ABSENT_BY_GENESIS_ONLY_PROTOCOL",
+      "profile": "H"
+    }
+  ],
+  "schema": "pluto.file02.t02_size_audit.v1",
+  "source_commit": "c5bb90929a1b845d179f3968868dc72a08857ef0",
+  "source_t01_manifest_sha256": "2b55abb9e087152154f0deb14aed98ecc60c3ad2f32b98d8a05f1eb63eed9529"
+}
