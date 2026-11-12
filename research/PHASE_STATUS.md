@@ -9,11 +9,16 @@ the [gate acceptance](evidence/file02/COMMON_GATE_ACCEPTANCE_20261113.md)
 record the scope. Checklist 02 T01–T07 are authorized **in order**. T01–T06
 have verified case evidence; [formal T06](evidence/file02/T06_FORMAL_CALIBRATION_AUDIT.md)
 used 16 new bounded networks and is separate from the historical pilots.
-[T07](evidence/file02/T07_HOST_TIME_PARTIAL_AUDIT.md) has a verified
-single-host survey but lacks independent multi-host infrastructure and
-cross-host clock bounds; it remains unchecked and Gate T remains open. The
-seven per-case outputs in section 2.3 remain pending. R/A/Q/D cases and RQ
-claims remain closed.
+[T07](evidence/file02/T07_MULTI_GUEST_TIME_AUDIT.md) now has verified
+single-host and two-guest VMware clock/host surveys with bounded observed
+cross-guest offset uncertainty. T01–T07 are checked; Gate T is a technical
+pre-case candidate for Controller/Owner acceptance, not independently
+approved. The guests share one physical hypervisor, and the deferred
+four-validator multi-host primary topology remains unsupported. The seven
+per-case outputs in section 2.3 remain pending. R/A/Q/D cases and RQ claims
+remain closed.
+The T07 survey also measured roughly 3.45 seconds of WSL-to-guest wall-clock
+offset; future cross-host timestamps require new per-run causal bounds.
 
 ## Historical File 02 sections 0–2 foundation candidate
 
