@@ -12,7 +12,7 @@ project:
   research_v2_s04_status: owner_merged_pr15_630f2d8c
   research_v2_s05_status: owner_merged_pr16_ac91250d
   research_v2_s06_status: owner_merged_pr17_ed6bc8f_pilot_only
-  research_v2_s07_status: owner_authorized_implementation_in_progress
+  research_v2_s07_status: five_tasks_local_technical_gate_ok_controller_owner_review_pending
   refactor_status: owner_merged_pr18_e8f20726_controller_conditional_accept_postmerge_ci_pass
   active_authorization: s07_reproducibility_qa_2026_11_12
   baseline_branch: test-mainet
@@ -99,7 +99,7 @@ s07_smoke:
   public_sample_sha256: 5aa6aa78ed63a3984d6dd9b34b2e51a5ec24636e4224d36a8f5e1300931390f3
   profiles: C_CP_P_H
   placement: four_validators_single_host_smoke
-  status: local_four_profile_smoke_ok_hosted_ci_pending_review
+  status: local_and_hosted_smoke_full_regression_ok_review_pending
   conclusion_scope: QA_only_no_RQ1_RQ2_RQ3_inference
 source:
   # Earlier tested/recovery identities below remain historical; the accepted
@@ -217,7 +217,7 @@ build:
   configuration: standard_go_compiler_with_revision_ldflag
   binaries: build/plutod_and_build/cometbft
 verification:
-  status: s07_local_smoke_ok_hosted_ci_pending_review
+  status: s07_local_technical_gate_ok_full_ci_pass_review_pending
   s06_pilot_command: make test-s06-pilot
   s06_pilot_jobs: 7_shuffled_seed_611_all_passed
   s06_pilot_summary: research/evidence/s06/pilot_summary.log

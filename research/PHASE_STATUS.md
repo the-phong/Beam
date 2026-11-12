@@ -10,8 +10,12 @@ repository name; the application and Go module remain Pluto. The
 [S07 run instructions](../REPRODUCE.md) and
 [readiness report](evidence/s07/RUN_READINESS_REPORT.md) document a bounded
 C/CP/P/H smoke, immutable private raw artifacts, analyzer and quick CI.
-Technical verification and independent Controller/Owner acceptance remain
-separate. File 02 confirmatory experiments, ML Detection and RQ1–RQ3 result
+All five S07 checklist tasks have local evidence; hosted quick CI and secret
+scan passed on [Draft PR #20](https://github.com/the-phong/Beam/pull/20).
+Both full regression CI runs passed on source/evidence commit `24edcb4`.
+Gate S07 is technically OK within the bounded smoke scope; final PR-head CI
+and independent Controller/Owner acceptance remain separate. File 02
+confirmatory experiments, ML Detection and RQ1–RQ3 result
 claims remain closed. Historical status follows.
 
 ## Historical status after structural refactor merge

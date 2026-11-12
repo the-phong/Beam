@@ -88,14 +88,19 @@ are rejected.
 | `make verify` | 0 | Private log SHA-256 `a529379030e6af42402685f1302be94b399f83c3b0491415de16781941b6c741`. |
 | `go test -race -tags 'integration fourval' ./test/integration -run '^TestS07ReproSmoke$' -timeout 900s -count=1 -v` | 0 | Four profile subtests; private log SHA-256 `6d7afad0b5e87186990774390d89d5ead48306bb50e85844fc9253c783bdff3c`. |
 | `make test-s06-pilot` | 0 | S06 helper regression: 7/7 original jobs PASS; private log SHA-256 `0b07d51c0ba8e8f81331717d08bbc1e780bdd3668761fd17c4584ad86dccc7a8`. |
+| [S07 quick CI on PR #20](https://github.com/the-phong/Beam/actions/runs/43167862383) | 0 | Hosted build/unit, public vectors/corpora, schema/integrity and four-validator C/CP/P/H smoke PASS on `24edcb4`. |
+| [PR secret scan](https://github.com/the-phong/Beam/actions/runs/43167862365) | 0 | Pinned Gitleaks scan PASS on `24edcb4`. |
+| [PR full regression](https://github.com/the-phong/Beam/actions/runs/43167862261) and [push full regression](https://github.com/the-phong/Beam/actions/runs/43167815295) | 0 each | Both `verify` jobs PASS on `24edcb4`; included B0/B1, S04, S05, S06 and historical smoke checks. |
 | `git diff --check` | 0 | No whitespace errors. |
 
-The [quick CI workflow](../../../.github/workflows/s07-quick.yml) runs build,
-Go units, public vectors/corpora, schema/integrity tests and this four-node
-smoke on PRs to `test-mainet`; the existing separate PR workflow scans
-secrets. Hosted CI must pass on the Draft PR before S07.4 and the local
-technical gate can be marked OK. Independent Controller/Owner review remains
-separate from that technical gate.
+The [quick CI workflow](../../../.github/workflows/s07-quick.yml) and PR
+secret scan passed on Draft PR #20, as did both full regression `verify`
+checks on source/evidence commit `24edcb4`. **Gate S07 is technically OK in
+this bounded QA scope:** an independent GitHub runner reproduced the smoke
+and the source→config→workload→raw→derived→oracle chain is verifiable. CI must
+also pass on the final documentation head before merge. Independent
+Controller/Owner acceptance remains separate; File 02 is not authorized by
+this technical verdict.
 
 ## Limits before File 02
 
