@@ -7,6 +7,7 @@ import subprocess
 import sys
 
 import file02_common as f
+import file02_runtime as runtime
 
 
 H40 = "a" * 40
@@ -65,9 +66,16 @@ class File02CommonTest(unittest.TestCase):
         self.raw = Path(self.tmp.name) / "raw"
         self.raw.mkdir()
         (self.raw / "events.json").write_text("{}\n")
+        p = plan()
+        runtime = {"schema": "pluto.file02.runtime_inventory.v1", "run_id": p["run_id"],
+                   "profile": p["profile"], "source_clean": True,
+                   "node_configs": [{"config_toml_sha256": H64} for _ in range(4)]}
+        runtime.update({key: p[key] for key in ("source_commit", "source_tree", "config_sha256",
+                                             "software_versions", "host_inventory", "network_config")})
+        (self.raw / "runtime_inventory.json").write_text(json.dumps(runtime))
         (self.raw / "manifest.json").write_text(json.dumps({
             "schema": "pluto.file02.raw_manifest.v1",
-            "files": {"events.json": f.digest(self.raw / "events.json")},
+            "files": {name: f.digest(self.raw / name) for name in ("events.json", "runtime_inventory.json")},
         }))
 
     def test_plan_rejects_unavailable_and_incompatible_factors(self):
@@ -121,6 +129,48 @@ class File02CommonTest(unittest.TestCase):
         changed["seed"] = 2
         with self.assertRaisesRegex(ValueError, "plan binding"):
             f.evaluate(changed, o, self.raw)
+
+    def test_actual_runtime_mismatch_fails(self):
+        runtime_path = self.raw / "runtime_inventory.json"
+        runtime = json.loads(runtime_path.read_text())
+        runtime["network_config"]["mempool_size"] = 999
+        runtime_path.write_text(json.dumps(runtime))
+        manifest = json.loads((self.raw / "manifest.json").read_text())
+        manifest["files"]["runtime_inventory.json"] = f.digest(runtime_path)
+        (self.raw / "manifest.json").write_text(json.dumps(manifest))
+        o = observation(f.digest(self.raw / "manifest.json"))
+        with self.assertRaisesRegex(ValueError, "planned/actual runtime mismatch"):
+            f.evaluate(plan(), o, self.raw)
+
+    def test_actual_comet_config_values_are_checked(self):
+        net = f.read_json(f.ROOT / "config/s06_pilot.json")["network"]
+        config_path = Path(self.tmp.name) / "config.toml"
+        config_path.write_text('''proxy_app = "tcp://127.0.0.1:10000"
+[rpc]
+laddr = "tcp://127.0.0.1:10001"
+[p2p]
+laddr = "tcp://127.0.0.1:10002"
+persistent_peers = "a@127.0.0.1:1,b@127.0.0.1:2,c@127.0.0.1:3"
+[mempool]
+type = "flood"
+size = 128
+max_txs_bytes = 8388608
+cache_size = 1024
+max_tx_bytes = 8192
+recheck = true
+broadcast = true
+[consensus]
+create_empty_blocks = true
+create_empty_blocks_interval = "1s"
+timeout_commit = "1s"
+[instrumentation]
+prometheus = true
+prometheus_listen_addr = "127.0.0.1:10003"
+''')
+        self.assertEqual(runtime.require_node_config(config_path, net)["config_toml_sha256"], f.digest(config_path))
+        config_path.write_text(config_path.read_text().replace("size = 128", "size = 129"))
+        with self.assertRaisesRegex(ValueError, "actual Comet config mismatch"):
+            runtime.require_node_config(config_path, net)
 
     def test_capability_and_missing_availability_fail(self):
         changed = plan()

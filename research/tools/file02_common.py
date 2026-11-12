@@ -187,6 +187,16 @@ def evaluate(plan, observation, raw_dir):
     require(observation.get("plan_sha256") == plan_digest(plan), "plan binding")
     raw_hash = verify_raw(raw_dir)
     require(observation.get("raw_manifest_sha256") == raw_hash, "raw manifest binding")
+    runtime = read_json(Path(raw_dir) / "runtime_inventory.json")
+    require(runtime.get("schema") == "pluto.file02.runtime_inventory.v1"
+            and runtime.get("run_id") == plan["run_id"] and runtime.get("profile") == plan["profile"]
+            and runtime.get("source_clean") is True, "runtime inventory identity or dirty source")
+    for key in ("source_commit", "source_tree", "config_sha256", "software_versions",
+                "host_inventory", "network_config"):
+        require(runtime.get(key) == plan[key], f"planned/actual runtime mismatch: {key}")
+    require(isinstance(runtime.get("node_configs"), list) and len(runtime["node_configs"]) == 4
+            and all(sha(node.get("config_toml_sha256")) for node in runtime["node_configs"]),
+            "four actual node config hashes missing")
     require(isinstance(observation.get("qc"), dict) and isinstance(observation.get("achieved"), dict), "observation QC/rates")
     failures = [key for key in FLAGS if observation["qc"].get(key) is not True]
     for key in ("valid_tx_s", "invalid_tx_s", "total_bytes_s"):

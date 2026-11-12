@@ -24,6 +24,18 @@ come from independent oracle, generator, collector and guard records; the
 common tool checks their presence and excludes failures but does not create
 those observations itself.
 
+COMMON-01 requires a `runtime_inventory.json` inside each raw run before
+freezing. Its `pluto.file02.runtime_inventory.v1` schema records actual
+source/cleanliness, Go/Comet/crypto/OS versions, CPU model/features,
+four-validator topology, mempool/block settings and each Comet `config.toml`
+hash. `qc-run` compares this actual inventory with the locked plan and fails
+closed on a missing or mismatched field. The bounded S07 QA inventory can be
+captured with `python3 research/tools/file02_runtime.py capture-s07 PRIVATE/S07_SESSION`;
+this verifies the S07 frozen manifest first and writes
+a separate ignored, read-only File 02 COMMON-01 audit. S07 raw remains
+untouched. This QA command is evidence for the capture path, not a
+confirmatory experiment.
+
 After writing every raw file, run
 `python3 research/tools/file02_common.py freeze-raw PRIVATE/raw/RUN_ID`.
 This creates the manifest once, hashes every file, rejects symlinks and a
