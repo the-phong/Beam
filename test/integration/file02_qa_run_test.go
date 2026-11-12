@@ -62,6 +62,10 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if err := s07WriteExclusive(filepath.Join(run, "nodes.json"), nodes); err != nil {
 		t.Fatal(err)
 	}
+	observed := make(chan []s07CommitObservation, 1)
+	stopObservation := make(chan struct{})
+	go s07ObserveCommits(pilot, plan, stopObservation, observed)
+	defer close(stopObservation)
 	binary, _ := filepath.Abs("../../build/profile-load")
 	cmd := exec.Command(binary, "-config", configPath, "-plan", planPath,
 		"-genesis", genesisPath, "-nodes", filepath.Join(run, "nodes.json"),
@@ -83,6 +87,22 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	pilot.n.waitAll(8, 30*time.Second)
 	oracle := s07Oracle(t, pilot, fixture, plan, result)
 	if err := s07WriteJSON(filepath.Join(run, "oracle.json"), oracle); err != nil {
+		t.Fatal(err)
+	}
+	var commits []s07CommitObservation
+	select {
+	case commits = <-observed:
+	case <-time.After(10 * time.Second):
+		t.Fatal("commit observations incomplete")
+	}
+	if len(commits) != oracle.ValidCommitted {
+		t.Fatalf("commit observations %d differ from valid count %d", len(commits), oracle.ValidCommitted)
+	}
+	if err := s07WriteJSON(filepath.Join(run, "commit_observations.json"), map[string]any{
+		"schema": "pluto.s07.commits.v1", "run_id": plan.RunID, "poll_interval_ms": 100,
+		"observation_semantics": "first RPC tx-index observation on all four validators; upper bound on inclusion time",
+		"events":                commits,
+	}); err != nil {
 		t.Fatal(err)
 	}
 	metadata["scope"] = "QA_ONLY"
