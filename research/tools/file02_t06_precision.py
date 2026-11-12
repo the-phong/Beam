@@ -9,6 +9,7 @@ import math
 import os
 from pathlib import Path
 import random
+import re
 import secrets
 import subprocess
 import sys
@@ -17,7 +18,6 @@ from uuid import uuid4
 import file02_common as common
 from file02_common03 import private_session, git_value, require
 from file02_common06 import rank_coverage
-import s07_orchestrate as s07
 
 ROOT = Path(__file__).resolve().parents[2]
 ARTIFACTS = ROOT / "research/artifacts/file02"
@@ -27,6 +27,19 @@ RATE = 20
 STEADY_SECONDS = 12
 BOOTSTRAP_DRAWS = 2000
 MAX_RELATIVE_CI_RADIUS = .20
+
+
+def parse_go_rfc3339(value):
+    """Accept Go's 1–9 fractional digits on Python 3.10 without clock changes."""
+    require(isinstance(value, str), "timestamp must be a string")
+    normalized = value.replace("Z", "+00:00")
+    match = re.search(r"\.(\d{1,9})([+-]\d{2}:\d{2})$", normalized)
+    if match:
+        fraction = match.group(1)[:6].ljust(6, "0")
+        normalized = normalized[:match.start()] + "." + fraction + match.group(2)
+    parsed = datetime.fromisoformat(normalized)
+    require(parsed.tzinfo is not None, "timestamp timezone missing")
+    return parsed
 
 
 def schedule(master_seed):
@@ -135,7 +148,7 @@ def validate_run(run, job, source, tree):
         commit = by_id[expected["id"]]
         require(commit["sha256"] == expected["sha256"] and 1 <= commit["height"] <= oracle["common_height"],
                 "all-four commit observation mismatch")
-        sent_utc, seen_utc = s07.parse_time(actual["actual_send_utc"]), s07.parse_time(commit["all_four_seen_utc"])
+        sent_utc, seen_utc = parse_go_rfc3339(actual["actual_send_utc"]), parse_go_rfc3339(commit["all_four_seen_utc"])
         require(seen_utc >= sent_utc, "negative inclusion upper bound")
         if target >= plan["warmup_ns"]:
             latencies.append((seen_utc-sent_utc).total_seconds()*1000)
@@ -197,15 +210,31 @@ def verify(path):
     print(f"T06_PRECISION_VERIFY=OK runs=48 manifest_sha256={manifest}")
 
 
+def finalize(path):
+    """Finish an already executed complete session after parser-only rework."""
+    session = private_session(path)
+    require(not (session / "manifest.json").exists() and not (session / "summary.json").exists(),
+            "session already finalized")
+    first = common.read_json(session / "runs" / "t06p-b00-c" / "metadata.json")
+    summary = audit(session, first["source_commit"], first["source_tree"])
+    common.write_once(session / "summary.json", json.dumps(summary, indent=2, sort_keys=True) + "\n")
+    manifest = common.freeze_raw(session)
+    statuses = ",".join(f"{p}:{summary['precision'][p]['status']}" for p in PROFILES)
+    print(f"T06_PRECISION=QA_ONLY runs=48 {statuses} session={session} manifest_sha256={manifest}")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("smoke")
     p = sub.add_parser("verify")
     p.add_argument("session")
+    p = sub.add_parser("finalize")
+    p.add_argument("session")
     args = parser.parse_args()
     try:
         if args.command == "smoke": smoke()
+        elif args.command == "finalize": finalize(args.session)
         else: verify(args.session)
         return 0
     except (OSError, ValueError, KeyError, TypeError, subprocess.TimeoutExpired) as exc:

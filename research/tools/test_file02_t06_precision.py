@@ -20,6 +20,11 @@ class T06PrecisionTest(unittest.TestCase):
         self.assertEqual(stable["status"], "PRECISION_PASS")
         self.assertEqual(stable["n_transaction_samples"], 2880)
 
+    def test_go_timestamp_with_five_or_nine_fractional_digits(self):
+        five = pilot.parse_go_rfc3339("2026-11-12T14:39:39.89815Z")
+        nine = pilot.parse_go_rfc3339("2026-11-12T14:39:39.898150000Z")
+        self.assertEqual(five, nine)
+
 
 if __name__ == "__main__":
     unittest.main()
