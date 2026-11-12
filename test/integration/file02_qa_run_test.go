@@ -87,6 +87,17 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if err := s07WriteExclusive(filepath.Join(run, "load.log"), output); err != nil {
 		t.Fatal(err)
 	}
+	// Preserve the independent recorder streams even when the bounded load
+	// aborts. The run directory is private and remains available for QC.
+	for i, watched := range pilot.nodes {
+		observerRaw, err := os.ReadFile(watched.ObserverFile)
+		if err != nil {
+			t.Fatalf("read observer %d: %v", i, err)
+		}
+		if err := s07WriteExclusive(filepath.Join(run, fmt.Sprintf("observer-%d.jsonl", i)), observerRaw); err != nil {
+			t.Fatal(err)
+		}
+	}
 	if cmd.ProcessState != nil {
 		resources := map[string]any{
 			"schema": "pluto.file02.generator_resources.v1", "run_id": plan.RunID,
