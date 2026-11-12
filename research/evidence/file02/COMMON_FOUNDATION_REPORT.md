@@ -53,7 +53,7 @@ was separately verified (92 files) and left untouched.
 | 0 | Contract implemented for review | Scientific acceptance and case-specific numerical preregistration are separate. |
 | COMMON-01 | Verified for available single-host QA topology | [Runtime audit](COMMON01_RUNTIME_AUDIT.md) captured actual software, CPU features, topology and 16 Comet configs across four profiles; future File 02 QC requires a matching inventory. Multi-host remains untested. |
 | COMMON-02 | Verified for available single-host QA path | [Phase audit](COMMON02_PHASE_AUDIT.md) proved fresh run/validator homes, disjoint monotonic sends and a live-network cooldown across C/CP/P/H. Future case runs must retain this contract. |
-| COMMON-03 | Partial | S06/S07 fixed-legitimate plans and distinct transactions exist; case-specific attack pair checks need integration. |
+| COMMON-03 | Verified for available single-host QA path | [Paired audit](COMMON03_FIXED_LEGITIMATE_AUDIT.md) used eight fresh networks; each benign/attack pair kept identical legitimate bytes, schedule, accounts and nonce, then added four distinct invalid sends. All valid transactions committed once and all invalid transactions were rejected. Future cases must use the same invariant. |
 | COMMON-04 | Open | Equal tx/s and bytes/s confirmatory comparisons require T06 safe-rate pilot. |
 | COMMON-05 | Open | Matched attacker/benign pairs and unmatched-variable declarations need real case plans. |
 | COMMON-06 | Open | S07 has n=1/profile; order, repeated independent runs and p99 precision are unestablished. |
