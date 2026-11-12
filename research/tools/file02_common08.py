@@ -6,8 +6,10 @@ from datetime import datetime, timezone
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
+import tempfile
 from uuid import uuid4
 
 import file02_common as common
@@ -31,12 +33,21 @@ def classify(signals):
 def inspect_run(run, source, tree):
     meta = common.read_json(run / "metadata.json")
     plan = common.read_json(run / "plan.json")
+    common.require(meta["run_id"] == plan["run_id"] and meta["source_commit"] == source and
+                   meta["source_tree"] == tree, "run binding mismatch")
+    required = ("result.json", "oracle.json", "generator_resources.json")
+    absent = [name for name in required if not (run / name).is_file()]
+    if absent:
+        return {"schema": "pluto.file02.common08_qc.v1", "run_id": meta["run_id"],
+                "source_commit": source, "source_tree": tree, "signals": {key: None for key in FAULTS},
+                "status": "INVALID_FOR_ANALYSIS", "exclude_reasons": ["INCOMPLETE_EVIDENCE"],
+                "missing_artifacts": absent, "raw_preserved": True}
     result = common.read_json(run / "result.json")
     oracle = common.read_json(run / "oracle.json")
     resources = common.read_json(run / "generator_resources.json")
     config = common.read_json(ROOT / "research/config/s06_pilot.json")
     common.require(meta["run_id"] == plan["run_id"] == result["run_id"] == oracle["run_id"] ==
-                   resources["run_id"] and meta["source_commit"] == source and meta["source_tree"] == tree and
+                   resources["run_id"] and
                    result["plan_sha256"] == common.digest(run / "plan.json"), "run binding mismatch")
     signals = dict.fromkeys(FAULTS, False)
     signals["validator_lost"] = oracle["status"] != "OK" or oracle["common_height"] < 8
@@ -119,11 +130,11 @@ def smoke():
         run = subprocess.run(["go", "test", "-tags", "integration fourval", "./test/integration",
                               "-run", "^TestFile02Common08QCEvidence$", "-timeout", "180s", "-count=1", "-v"],
                              cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT, timeout=200)
-    common.require(run.returncode == 0, "integration failed")
     summary = audit(session, source, tree)
-    common.require(summary["qc"]["status"] == "USABLE_FOR_QA_ONLY", "QA QC failed")
     common.write_once(session / "summary.json", json.dumps(summary, indent=2, sort_keys=True) + "\n")
     manifest = common.freeze_raw(session)
+    common.require(run.returncode == 0 and summary["qc"]["status"] == "USABLE_FOR_QA_ONLY",
+                   f"QA run excluded; raw frozen at {session} manifest_sha256={manifest}")
     print(f"COMMON08=PASS run=1 session={session} manifest_sha256={manifest}")
 
 
@@ -136,16 +147,75 @@ def verify(path):
     print(f"COMMON08_VERIFY=OK status={prior['qc']['status']} manifest_sha256={manifest}")
 
 
+def inject(path):
+    """Exercise each exclusion on a disposable copy; preserve frozen source."""
+    session = private_session(path)
+    common.verify_raw(session)
+    prior = common.read_json(session / "summary.json")
+    source, tree = prior["source_commit"], prior["source_tree"]
+    for fault in FAULTS:
+        with tempfile.TemporaryDirectory(prefix="common08-inject-", dir=ARTIFACTS) as scratch:
+            copied = Path(scratch) / "run"
+            shutil.copytree(session / "run", copied, copy_function=shutil.copyfile)
+            if fault in ("validator_lost", "apphash_divergence"):
+                target = copied / "oracle.json"
+                document = common.read_json(target)
+                if fault == "validator_lost": document["status"] = "FAILED"
+                else: document["app_hash"] = ""
+                target.write_text(json.dumps(document) + "\n")
+            elif fault == "wall_clock_discontinuity":
+                target = copied / "result.json"
+                document = common.read_json(target)
+                old = parse_go_rfc3339(document["events"][0]["actual_send_utc"])
+                from datetime import timedelta
+                document["events"][0]["actual_send_utc"] = (old + timedelta(seconds=2)).isoformat()
+                target.write_text(json.dumps(document) + "\n")
+            elif fault == "failed_target_load":
+                target = copied / "result.json"
+                document = common.read_json(target)
+                document["actual_send_count"] -= 1
+                target.write_text(json.dumps(document) + "\n")
+            elif fault == "monitoring_drops":
+                target = copied / "observer-0.jsonl"
+                lines = target.read_text().splitlines()
+                sample = json.loads(lines[0]); sample["dropped_samples"] = 1
+                lines[0] = json.dumps(sample)
+                target.write_text("\n".join(lines) + "\n")
+            else:
+                target = copied / "generator_resources.json"
+                document = common.read_json(target)
+                document["user_cpu_ns"] = document["wall_ns"]
+                target.write_text(json.dumps(document) + "\n")
+            decision = inspect_run(copied, source, tree)
+            common.require(decision["status"] == "INVALID_FOR_ANALYSIS" and
+                           fault in decision["exclude_reasons"] and target.exists(),
+                           f"fault injection did not exclude: {fault}")
+    with tempfile.TemporaryDirectory(prefix="common08-incomplete-", dir=ARTIFACTS) as scratch:
+        copied = Path(scratch) / "run"
+        shutil.copytree(session / "run", copied, copy_function=shutil.copyfile)
+        copied.chmod(0o700)
+        (copied / "oracle.json").unlink()
+        decision = inspect_run(copied, source, tree)
+        common.require(decision["status"] == "INVALID_FOR_ANALYSIS" and
+                       decision["exclude_reasons"] == ["INCOMPLETE_EVIDENCE"] and
+                       "oracle.json" in decision["missing_artifacts"], "incomplete raw accepted")
+    common.verify_raw(session)
+    print("COMMON08_INJECTION=PASS faults=6 missing_oracle=excluded frozen_raw_unchanged=true")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("smoke")
     p = sub.add_parser("verify")
     p.add_argument("session")
+    p = sub.add_parser("inject")
+    p.add_argument("session")
     args = parser.parse_args()
     try:
         if args.command == "smoke": smoke()
-        else: verify(args.session)
+        elif args.command == "verify": verify(args.session)
+        else: inject(args.session)
         return 0
     except (ValueError, KeyError, TypeError, OSError, subprocess.TimeoutExpired) as exc:
         print(f"COMMON08_ERROR: {exc}", file=sys.stderr)

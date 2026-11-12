@@ -36,6 +36,15 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if err := os.WriteFile(genesisPath, fixture.Genesis, 0600); err != nil {
 		t.Fatal(err)
 	}
+	metadata["scope"] = "QA_ONLY"
+	metadata["run_id"] = plan.RunID
+	metadata["source_commit"] = os.Getenv("FILE02_SOURCE_COMMIT")
+	metadata["source_tree"] = os.Getenv("FILE02_SOURCE_TREE")
+	metadata["config_sha256"] = configHash
+	metadata["network"] = "fresh_four_validator_single_host_loopback"
+	if err := s07WriteJSON(filepath.Join(run, "metadata.json"), metadata); err != nil {
+		t.Fatal(err)
+	}
 	pilot := startS06NetworkAt(t, c, fixture, profile, t.TempDir())
 	pilot.startObservers(t, c)
 	deadline := time.Now().Add(10 * time.Second)
@@ -76,6 +85,11 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 		defer close(stopObservation)
 	}
 	binary, _ := filepath.Abs("../../build/profile-load")
+	if metadata["inject_stop_before_load"] == true {
+		if err := os.WriteFile(filepath.Join(run, "STOP"), []byte("QA safety stop\n"), 0600); err != nil {
+			t.Fatal(err)
+		}
+	}
 	cmd := exec.Command(binary, "-config", configPath, "-plan", planPath,
 		"-genesis", genesisPath, "-nodes", filepath.Join(run, "nodes.json"),
 		"-rpc", pilot.nodes[0].RPC, "-data-root", pilot.n.root,
@@ -141,15 +155,6 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 		}); err != nil {
 			t.Fatal(err)
 		}
-	}
-	metadata["scope"] = "QA_ONLY"
-	metadata["run_id"] = plan.RunID
-	metadata["source_commit"] = os.Getenv("FILE02_SOURCE_COMMIT")
-	metadata["source_tree"] = os.Getenv("FILE02_SOURCE_TREE")
-	metadata["config_sha256"] = configHash
-	metadata["network"] = "fresh_four_validator_single_host_loopback"
-	if err := s07WriteJSON(filepath.Join(run, "metadata.json"), metadata); err != nil {
-		t.Fatal(err)
 	}
 	t.Logf("File02 QA run=%s valid=%d invalid=%d height=%d", plan.RunID, oracle.ValidCommitted, oracle.InvalidRejected, oracle.CommonHeight)
 }
