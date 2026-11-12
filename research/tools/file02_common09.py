@@ -33,7 +33,7 @@ def audit(session, source, tree):
                    all(urlsplit(n["rpc"]).hostname == "127.0.0.1" for n in nodes), "identity/network scope")
     common.require((run / "STOP").is_file() and
                    result["status"] == "SAFETY_ABORT" and "manual kill switch" in result["reason"] and
-                   result["actual_send_count"] == 0 and len(result.get("events", [])) == 0 and
+                   result["actual_send_count"] == 0 and len(result.get("events") or []) == 0 and
                    resources["wall_ns"] < 2_000_000_000 and
                    all((run / f"observer-{i}.jsonl").is_file() for i in range(4)),
                    "guard did not stop before sending")
@@ -81,16 +81,30 @@ def verify(path):
     print(f"COMMON09_VERIFY=OK sent=0 manifest_sha256={manifest}")
 
 
+def finalize(path):
+    session = private_session(path)
+    common.require(not (session / "summary.json").exists() and not (session / "manifest.json").exists(),
+                   "session already finalized")
+    meta = common.read_json(session / "run/metadata.json")
+    summary = audit(session, meta["source_commit"], meta["source_tree"])
+    common.write_once(session / "summary.json", json.dumps(summary, indent=2, sort_keys=True) + "\n")
+    manifest = common.freeze_raw(session)
+    print(f"COMMON09=PASS sent=0 wall_ms={summary['generator_wall_ms']:.1f} session={session} manifest_sha256={manifest}")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("smoke")
     p = sub.add_parser("verify")
     p.add_argument("session")
+    p = sub.add_parser("finalize")
+    p.add_argument("session")
     args = parser.parse_args()
     try:
         if args.command == "smoke": smoke()
-        else: verify(args.session)
+        elif args.command == "verify": verify(args.session)
+        else: finalize(args.session)
         return 0
     except (ValueError, KeyError, TypeError, OSError, subprocess.TimeoutExpired) as exc:
         print(f"COMMON09_ERROR: {exc}", file=sys.stderr)
