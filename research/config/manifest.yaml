@@ -4,7 +4,7 @@ project:
   name: Pluto
   research_title: Evaluation of Resource Cost and Processing Correctness for Hybrid secp256k1–ML-DSA-44 Transactions in a CometBFT-Based Blockchain Application under Deliberately Invalid Input Workloads
   phase: "research-v2-in-progress"
-  research_v2_s01_gate: local_technical_ok_pending_pr_review
+  research_v2_s01_gate: ok_bounded_local_verified
   research_v2_s02_status: owner_confirmed_ok_merged_pr12_2a3dcbce
   research_v2_s03_status: owner_merged_pr14_1c808420_source_direct_abci_gate_ok
   research_v2_s04_status: owner_merged_pr15_630f2d8c
@@ -52,7 +52,7 @@ application:
   isolated_research_v2_runtime: four_validator_integration_harness_only
   b0_runtime_profile: explicit_durable_H0_init_b0_and_strict_existing_state_start
   module_path: example.com/pluto
-  module_path_status: provisional_migration_required
+  module_path_status: provisional_owner_naming_decision_pending
 observability:
   schema: pluto.telemetry.v1
   controlled_profiles: C_CP_P_H
