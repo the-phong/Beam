@@ -1,5 +1,20 @@
 # Pluto agent execution contract
 
+## Current authority — File 02 common foundation, sections 0–2 (2026-11-12)
+
+The Owner explicitly requested autonomous setup, implementation and completion
+of sections 0, 1 and 2 of the outside Checklist 02. Work in the original
+Pluto folder on `research/file02-common-foundation` from merged `test-mainet`
+commit `e0bcd9e0f903a2e807a3d28adc5554dffa48e1f1`. Implement the bounded
+research contract, common-run controls, factor/metric registry, plan and QC
+artifact foundation. Tick only verified items. The S07 smoke may be rerun as
+QA; it is not confirmatory File 02 data. Preserve accepted S01–S07 behavior,
+public corpus, historical evidence bytes, ignored private artifacts, unrelated
+D026 files and local stash. Push only this branch and open a Draft PR against
+`test-mainet`; stop for Controller/Owner review. Do not merge, alter protected
+branches, start T/R/A/Q/D cases, build ML detection or claim RQ1–RQ3/DoS
+results. The S07 authority below is historical.
+
 ## Current authority — S07 reproducibility and QA (2026-11-12)
 
 The Owner merged governance PR #19 into `test-mainet` at

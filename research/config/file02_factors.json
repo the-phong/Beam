@@ -1,0 +1,17 @@
+{
+  "schema": "pluto.file02.factors.v1",
+  "profiles": ["C", "CP", "P", "H"],
+  "workloads": ["BENIGN_LOW", "BENIGN_HIGH", "BENIGN_BURST", "STRUCT_INVALID", "ECDSA_INVALID", "MLDSA_INVALID", "STATE_INVALID", "VALID_FLOOD", "MIXED"],
+  "incompatible": {"C": ["MLDSA_INVALID"], "CP": ["MLDSA_INVALID"], "P": ["ECDSA_INVALID"]},
+  "capabilities": {"BENIGN_LOW": ["NONE"], "BENIGN_HIGH": ["NONE"], "BENIGN_BURST": ["NONE"], "STRUCT_INVALID": ["A", "B", "C"], "ECDSA_INVALID": ["B", "C"], "MLDSA_INVALID": ["B", "C"], "STATE_INVALID": ["C"], "VALID_FLOOD": ["C"], "MIXED": ["A", "B", "C", "D"]},
+  "regimes": ["equal_tx_s", "equal_bytes_s", "fixed_legitimate_plus_adversarial", "matched_pressure"],
+  "origins_available": ["RPC"],
+  "origins_deferred": ["P2P"],
+  "topologies_available": ["FOUR_VALIDATOR_SINGLE_HOST_DIAGNOSTIC"],
+  "topologies_deferred": ["FOUR_VALIDATOR_MULTI_HOST_PRIMARY"],
+  "load_levels": ["PILOT_LOW", "SUBCRITICAL", "NEAR_KNEE", "AT_KNEE", "SLIGHTLY_OVER_KNEE"],
+  "load_values": null,
+  "policy_available": ["BASELINE_VERIFY_ORDER"],
+  "policy_deferred": ["REVERSE_VERIFY_ORDER", "EARLY_REJECT"],
+  "note": "Numerical rates and independent repetition count must be fixed from T06 and precision pilots."
+}

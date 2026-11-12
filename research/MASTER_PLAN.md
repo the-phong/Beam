@@ -1,5 +1,14 @@
 # Pluto research master plan
 
+**Current authorization (2026-11-12):** After the Owner merged S07 PR #20
+into `test-mainet` at `e0bcd9e0f903a2e807a3d28adc5554dffa48e1f1`, the
+Owner authorized only sections 0–2 of the outside Checklist 02. The
+[File 02 common contract](protocol/FILE02_COMMON_CONTRACT.md) and
+[artifact workflow](protocol/FILE02_ARTIFACTS.md) are a review candidate on
+`research/file02-common-foundation`. Numeric load levels, independent-run
+precision and confirmatory T/R/A/Q/D cases remain open. Later historical
+authority paragraphs below are retained for audit.
+
 **Current status (2026-11-11):** Phase 05 PR #10 is merged into `test-mainet`
 at `0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`. The Owner requested a
 new, separately evidenced RQ1–RQ3 program in the

@@ -1,5 +1,20 @@
 # Phase status — 2026-11-12
 
+## Current File 02 sections 0–2 foundation candidate
+
+The Owner merged S07 PR #20 into `test-mainet` at
+`e0bcd9e0f903a2e807a3d28adc5554dffa48e1f1` and explicitly authorized
+sections 0–2 of the outside Checklist 02. Work is on
+`research/file02-common-foundation` from that merge. The
+[common contract](protocol/FILE02_COMMON_CONTRACT.md),
+[artifact workflow](protocol/FILE02_ARTIFACTS.md), factor registry and QC
+tooling are an implementation candidate. A new bounded S07 four-profile QA
+smoke passed, and its private raw is ignored. Independent-run precision,
+pilot-derived load levels, per-case plans, multi-host/P2P origin and the full
+COMMON gate remain open. No confirmatory case or RQ1–RQ3 result is claimed.
+Controller/Owner review remains separate. The sections below retain their
+historical wording.
+
 ## Current S07 implementation candidate
 
 The Owner merged governance [PR #19](https://github.com/the-phong/Beam/pull/19)
