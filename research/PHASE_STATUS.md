@@ -6,9 +6,14 @@ The Owner accepted Gate COMMON for bounded pre-case readiness after all four
 PR #21 CI checks passed at `ec0eabe` and directed the separate
 [RQ1b addendum](protocol/FILE02_RQ1B_ADDENDUM.md). [D-038](DECISIONS.md) and
 the [gate acceptance](evidence/file02/COMMON_GATE_ACCEPTANCE_20261113.md)
-record the scope. Checklist 02 T01–T07 are now authorized **in order**.
-The seven per-case outputs in section 2.3 remain pending; the pilot T06 does
-not complete formal T06. R/A/Q/D cases and RQ claims remain closed.
+record the scope. Checklist 02 T01–T07 are authorized **in order**. T01–T06
+have verified case evidence; [formal T06](evidence/file02/T06_FORMAL_CALIBRATION_AUDIT.md)
+used 16 new bounded networks and is separate from the historical pilots.
+[T07](evidence/file02/T07_HOST_TIME_PARTIAL_AUDIT.md) has a verified
+single-host survey but lacks independent multi-host infrastructure and
+cross-host clock bounds; it remains unchecked and Gate T remains open. The
+seven per-case outputs in section 2.3 remain pending. R/A/Q/D cases and RQ
+claims remain closed.
 
 ## Historical File 02 sections 0–2 foundation candidate
 
@@ -25,7 +30,8 @@ gates. A separate bounded knee search tested 20/23/25 tx/s without
 confirming a knee. Section 2 factor, 63-metric and artifact contracts are
 ready for review; future per-case output remains `PENDING_CASE_EXECUTION`.
 Numerical knee levels, per-case plans, multi-host/P2P origin and the full
-COMMON gate remain open. The [section 2 report](evidence/file02/SECTION2_READINESS_REPORT.md)
+COMMON gate were then open (the later Owner decision above supersedes this
+historical status). The [section 2 report](evidence/file02/SECTION2_READINESS_REPORT.md)
 records the RQ1 wording issue. No confirmatory case or RQ1–RQ3 result is claimed.
 The common contract now records the negative bounded knee finding without
 requiring a further search. A [separate legitimate-service question](evidence/file02/SECTION2_SERVICE_DEGRADATION_PROPOSAL.md)
