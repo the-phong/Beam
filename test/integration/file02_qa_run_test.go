@@ -68,7 +68,11 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if captureCommits {
 		observed = make(chan []s07CommitObservation, 1)
 		stopObservation := make(chan struct{})
-		go s07ObserveCommits(pilot, plan, stopObservation, observed)
+		if metadata["commit_observer_mode"] == "block_scan" {
+			go file02ObserveCommitsByBlock(pilot, plan, stopObservation, observed)
+		} else {
+			go s07ObserveCommits(pilot, plan, stopObservation, observed)
+		}
 		defer close(stopObservation)
 	}
 	binary, _ := filepath.Abs("../../build/profile-load")

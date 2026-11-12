@@ -37,3 +37,40 @@ population rank within 98.5–99.5% at ≥95% coverage) stays fixed. Any
 later precision extension must separately count transaction samples and
 independent runs, account for clustering/censoring, and withhold p99 if its
 registered precision criterion is not met.
+
+## Precision extension locked after calibration, before execution
+
+The separate calibration session at
+`research/artifacts/file02/t06-calibration-20261112T141031Z-b8ad1a5f`
+(manifest SHA-256
+`5c591674c86b69e081c61e1f360f6d538c3e21120461453cd294c8098ff90f81`)
+achieved every preregistered 2/6/12/20 tx/s window on C/CP/P/H, with zero
+unsent requests and a passing four-validator oracle. At 20 tx/s, H offered
+51,360 encoded bytes/s, within the unchanged S06 cap. This observation is
+why the precision extension selects **20 tx/s**, without asserting a
+capacity knee or scientific effect.
+
+The precision extension fixes 12 independent fresh networks per profile
+(48 total), with a random initial profile order and 12 cyclic blocks, so
+every profile occupies every order position three times. Each run uses a
+fresh genesis/validator set, unique seed, 241 distinct funded account
+transactions at nonce zero: one warm-up send plus 20/s for 12 steady
+seconds, followed by three drain seconds. All run durations, tx/s, bytes/s,
+queue, CPU/RSS and disk guards remain the accepted S06 caps. A failed run
+stops the sequence; it is not silently retried. Exact planned/achieved
+send windows, complete all-four block/state oracle, no censoring and all
+241 block-scan inclusion observations are required for QC.
+
+The latency observation is the first time each transaction is found in
+the same block on all four validators by 100 ms block scanning. It is an
+**upper bound** on inclusion time, not the exact commit timestamp.
+For each profile, the 12 run clusters provide 2,892 transaction samples.
+The already fixed empirical p99 population-rank band is 98.5–99.5% with
+≥95% coverage under the optimistic i.i.d. order-statistic model. To account
+for dependence, a deterministic two-stage bootstrap resamples 12 complete
+networks with replacement and then transactions within each selected
+network, for 2,000 replicates. The 95% percentile CI must have both sides
+within **20% of the pooled p99**. A profile passes only if the rank floor,
+cluster CI width, all run QC and sample counts pass. Otherwise p99 is
+reported `INSUFFICIENT_PRECISION`; no effect comparison is made. The
+numerical p99 remains pilot-only evidence even if precision passes.
