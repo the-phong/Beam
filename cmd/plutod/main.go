@@ -13,8 +13,8 @@ import (
 	"runtime"
 	"syscall"
 
-	"example.com/pluto/internal/b0genesis"
-	"example.com/pluto/internal/b1genesis"
+	"example.com/pluto/internal/classical/genesis"
+	"example.com/pluto/internal/hybrid/genesis"
 	"example.com/pluto/internal/node"
 	"example.com/pluto/internal/version"
 )

@@ -19,10 +19,10 @@ import (
 	"github.com/cometbft/cometbft/privval"
 	"github.com/cometbft/cometbft/types"
 
-	"example.com/pluto/internal/b1app"
-	"example.com/pluto/internal/b1genesis"
-	"example.com/pluto/internal/b1state"
-	"example.com/pluto/internal/b1store"
+	"example.com/pluto/internal/hybrid/app"
+	"example.com/pluto/internal/hybrid/genesis"
+	"example.com/pluto/internal/hybrid/state"
+	"example.com/pluto/internal/hybrid/store"
 )
 
 func verifyB1Home(home, chainID string, transport, binary []byte, expected Config) error {

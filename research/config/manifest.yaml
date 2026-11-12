@@ -9,11 +9,11 @@ project:
   research_v2_s03_status: owner_merged_pr14_1c808420_source_direct_abci_gate_ok
   research_v2_s04_status: owner_merged_pr15_630f2d8c
   research_v2_s05_status: owner_merged_pr16_ac91250d
-  research_v2_s06_status: local_technical_pilot_ok_pending_pr_review
-  active_authorization: owner_authorized_s06_2026_11_11
+  research_v2_s06_status: owner_merged_pr17_ed6bc8f_pilot_only
+  active_authorization: owner_requested_domain_oriented_refactor_2026_11_11
   baseline_branch: test-mainet
-  baseline_commit: 0bdd869f2c6b3ed59b0ae825954d8667b3c7481e
-  baseline_tree: 09c24280590aee51d97b53b18c5d9e193dbe6dbe
+  baseline_commit: ed6bc8f474c13ed709d5ab5f57b3856edcbf602a
+  baseline_tree: 8c84b0b2ad85fb064d1286ff78f4d37871e49bcb
   phase_03b_status: completed_controller_accepted_merged
   phase_03c_implementation_authorized: false
   phase_03c_was_authorized: true
@@ -53,9 +53,9 @@ application:
 observability:
   schema: pluto.telemetry.v1
   controlled_profiles: C_CP_P_H
-  local_rpc_proxy: cmd/profile-ingress
-  node_sampler: cmd/profile-observer
-  app_checktx_recorder: internal/telemetry
+  local_rpc_proxy: cmd/research/ingress
+  node_sampler: cmd/research/observer
+  app_checktx_recorder: internal/experiment/telemetry
   accepted_mempool_source: comet_rpc_num_unconfirmed_txs
   relay_byte_source: comet_prometheus_p2p_channel_0x30
   s05_comet_source: pinned_cometbft_v0.38.26_source_checked_disposable_build

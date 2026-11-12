@@ -27,12 +27,12 @@ import (
 	"github.com/cometbft/cometbft/privval"
 	cmttypes "github.com/cometbft/cometbft/types"
 
-	"example.com/pluto/internal/b0state"
-	"example.com/pluto/internal/b1app"
-	"example.com/pluto/internal/b1genesis"
-	"example.com/pluto/internal/b1store"
-	"example.com/pluto/internal/b1test"
-	"example.com/pluto/internal/b1tx"
+	"example.com/pluto/internal/classical/state"
+	"example.com/pluto/internal/hybrid/app"
+	"example.com/pluto/internal/hybrid/genesis"
+	"example.com/pluto/internal/hybrid/store"
+	"example.com/pluto/internal/hybrid/testutil"
+	"example.com/pluto/internal/hybrid/tx"
 	"example.com/pluto/internal/node"
 )
 
@@ -224,7 +224,7 @@ func TestB1HybridInitializationRefusals(t *testing.T) {
 }
 
 func TestB1HybridCLIInitialization(t *testing.T) {
-	raw, err := os.ReadFile("../../internal/b1tx/testdata/hybrid_public_vector.json")
+	raw, err := os.ReadFile("../../internal/hybrid/tx/testdata/hybrid_public_vector.json")
 	if err != nil {
 		t.Fatal(err)
 	}

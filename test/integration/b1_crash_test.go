@@ -18,10 +18,10 @@ import (
 	abci "github.com/cometbft/cometbft/abci/types"
 	cmttypes "github.com/cometbft/cometbft/types"
 
-	"example.com/pluto/internal/b1app"
-	"example.com/pluto/internal/b1genesis"
-	"example.com/pluto/internal/b1store"
-	"example.com/pluto/internal/b1test"
+	"example.com/pluto/internal/hybrid/app"
+	"example.com/pluto/internal/hybrid/genesis"
+	"example.com/pluto/internal/hybrid/store"
+	"example.com/pluto/internal/hybrid/testutil"
 	"example.com/pluto/internal/node"
 )
 

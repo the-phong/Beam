@@ -29,13 +29,13 @@ import (
 	"github.com/cometbft/cometbft/privval"
 	cmttypes "github.com/cometbft/cometbft/types"
 
-	"example.com/pluto/internal/b0state"
-	"example.com/pluto/internal/profiles"
-	"example.com/pluto/internal/profiles/app"
-	"example.com/pluto/internal/profiles/corpus"
-	"example.com/pluto/internal/profiles/genesis"
-	"example.com/pluto/internal/profiles/store"
-	"example.com/pluto/internal/telemetry"
+	"example.com/pluto/internal/classical/state"
+	"example.com/pluto/internal/experiment/corpus/profiles"
+	"example.com/pluto/internal/experiment/profiles"
+	"example.com/pluto/internal/experiment/profiles/app"
+	"example.com/pluto/internal/experiment/profiles/genesis"
+	"example.com/pluto/internal/experiment/profiles/store"
+	"example.com/pluto/internal/experiment/telemetry"
 )
 
 func s04Account(t *testing.T, n *fourNetwork, i int, address b0state.Address) (uint64, uint64) {

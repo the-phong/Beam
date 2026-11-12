@@ -8,13 +8,13 @@ build:
 	mkdir -p build
 	$(GO) build -ldflags "-X example.com/pluto/internal/version.Revision=$(REVISION)" -o build/plutod ./cmd/plutod
 	$(GO) build -o build/cometbft github.com/cometbft/cometbft/cmd/cometbft
-	$(GO) build -o build/profile-observer ./cmd/profile-observer
-	$(GO) build -o build/profile-ingress ./cmd/profile-ingress
-	$(GO) build -o build/profile-load ./cmd/profile-load
-	$(GO) build -o build/profile-workload-corpus ./cmd/profile-workload-corpus
+	$(GO) build -o build/profile-observer ./cmd/research/observer
+	$(GO) build -o build/profile-ingress ./cmd/research/ingress
+	$(GO) build -o build/profile-load ./cmd/research/workload
+	$(GO) build -o build/profile-workload-corpus ./cmd/research/corpus/workload
 
 build-comet-s05:
-	python3 research/telemetry/comet_overlay.py build/s05-comet-overlay
+	python3 research/tools/comet_overlay.py build/s05-comet-overlay
 	$(GO) build -modfile=build/s05-comet.mod -o build/cometbft-s05 github.com/cometbft/cometbft/cmd/cometbft
 
 # Remove only disposable local outputs; runtime homes and research evidence
@@ -45,10 +45,10 @@ test-s06-pilot: build build-comet-s05 corpus-s06-verify
 	$(GO) test -tags 'integration fourval' ./test/integration -run '^TestS06IsolatedOpenLoopPilot$$' -timeout 900s -count=1 -v
 
 corpus-s04-verify:
-	$(GO) run ./cmd/profile-corpus verify research/corpus/s04_public_corpus.json
+	$(GO) run ./cmd/research/corpus/profiles verify research/corpus/s04_public_corpus.json
 
 corpus-s06-verify:
-	$(GO) run ./cmd/profile-workload-corpus verify research/corpus/s06_scenarios.json
+	$(GO) run ./cmd/research/corpus/workload verify research/corpus/s06_scenarios.json
 
 vet:
 	$(GO) vet ./...
@@ -61,13 +61,13 @@ verify: build test vet fmt-check
 	./build/plutod version
 
 benchmark-corpus:
-	$(GO) run ./cmd/b0b1-corpus -mode verify -file research/corpus/b0b1/public_corpus.json
+	$(GO) run ./cmd/research/corpus/b0b1 -mode verify -file research/corpus/b0b1/public_corpus.json
 
 benchmark-smoke: build benchmark-corpus
 	python3 research/benchmarks/b0b1/run_matrix.py --mode smoke
 
 benchmark-micro:
-	$(GO) test ./internal/benchmarks/bench -run '^$$' -bench '^BenchmarkPhase05' -benchmem -count=5 -benchtime=200x
+	$(GO) test ./internal/experiment/benchmark -run '^$$' -bench '^BenchmarkPhase05' -benchmem -count=5 -benchtime=200x
 
 benchmark-b1: build benchmark-corpus
 	python3 research/benchmarks/b0b1/run_matrix.py --mode b1
@@ -80,7 +80,7 @@ benchmark-analyze:
 	python3 research/benchmarks/b0b1/analyze.py "$(PHASE05_RUN_ROOT)" "$(PHASE05_RUN_ROOT)/analysis" --require-complete
 
 benchmark-contention-corpus:
-	$(GO) run ./cmd/b0b1-corpus -mode verify -file research/corpus/b0b1/public_corpus_contention.json
+	$(GO) run ./cmd/research/corpus/b0b1 -mode verify -file research/corpus/b0b1/public_corpus_contention.json
 
 benchmark-contention-smoke: build benchmark-contention-corpus
 	python3 research/benchmarks/b0b1/run_contention.py --mode smoke

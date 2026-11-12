@@ -28,9 +28,9 @@ import (
 	"github.com/cometbft/cometbft/privval"
 	cmttypes "github.com/cometbft/cometbft/types"
 
-	"example.com/pluto/internal/b0app"
-	"example.com/pluto/internal/b0state"
-	"example.com/pluto/internal/b0store"
+	"example.com/pluto/internal/classical/app"
+	"example.com/pluto/internal/classical/state"
+	"example.com/pluto/internal/classical/store"
 	"example.com/pluto/internal/node"
 )
 

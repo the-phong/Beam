@@ -21,12 +21,12 @@ for a current rerun, substitute `research/` for `research-v2/`. The public
 files were moved without changing their bytes unless a current link or path
 needed repair. The former M01 inventory now lives with S01 evidence.
 The current C/CP/P/H implementation is grouped under
-[`internal/profiles/`](../internal/profiles/tx.go), with purpose-specific
-subpackages. Its tools are `cmd/profile-corpus/` and `cmd/profile-vectors/`.
+[`internal/experiment/profiles/`](../internal/experiment/profiles/tx.go), with purpose-specific
+subpackages. Its tools are `cmd/research/corpus/profiles/` and `cmd/research/vectors/profiles/`.
 Historical report commands retain the import paths and command names used
 at the time; use these current locations for reruns.
-The B0/B1 corpus and analysis code is under `internal/benchmarks/`,
-`cmd/b0b1-corpus/`, `corpus/b0b1/` and `benchmarks/b0b1/`. Historical Phase 05
+The B0/B1 corpus and analysis code is under `internal/experiment/corpus/b0b1/`,
+`cmd/research/corpus/b0b1/`, `corpus/b0b1/` and `benchmarks/b0b1/`. Historical Phase 05
 source manifests and log hashes keep their original path strings as evidence
 of the source revision; the current `Makefile` uses the relocated paths.
 
@@ -34,8 +34,8 @@ The obsolete V1 checklist and a byte-identical local copy of checklist 02
 are preserved under `artifacts/private-baseline/checklists/` on this machine.
 The original checklist 02 remains beside `pluto`. Neither old document is an
 S06 authorization. The Owner merged S05 PR #16 and explicitly authorized
-S06. The [testbed contract](protocol/TESTBED_CONFIG.md) and
-[pilot report](evidence/s06/TESTBED_REPORT.md) are the current handoff.
+S06, and subsequently merged PR #17 into `test-mainet`. The [testbed contract](protocol/TESTBED_CONFIG.md) and
+[pilot report](evidence/s06/TESTBED_REPORT.md) are the bounded historical handoff.
 Run `make verify` and `make test-s06-pilot` from the repository root.
 The four validators run on one localhost host; independent infrastructure
 and File 02 inference remain untested.

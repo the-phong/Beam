@@ -1,5 +1,17 @@
 # Pluto agent execution contract
 
+## Current authority — domain-oriented structural refactor (2026-11-11)
+
+The Owner merged S06 PR #17 into `test-mainet` at
+`ed6bc8f474c13ed709d5ab5f57b3856edcbf602a` and requested one complete
+architecture-first structural refactor from that commit on
+`refactor/domain-oriented-architecture`. Preserve accepted protocol,
+corpus/evidence bytes, ignored artifacts, unrelated D026 files and the local
+stash. Run the full regression suite, push only the refactor branch, open one
+Draft PR targeting `test-mainet` and stop for Controller/Owner review. Do not
+merge, change protected branches, begin S07 or claim loaded RQ1–RQ3 results.
+The older S06 authority below is historical.
+
 ## Current authority — S06 safe testbed and open-loop load (2026-11-11)
 
 The Owner merged S05 PR #16 into `test-mainet` at

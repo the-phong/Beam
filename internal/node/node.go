@@ -22,12 +22,12 @@ import (
 	cfg "github.com/cometbft/cometbft/config"
 	"github.com/cometbft/cometbft/types"
 
-	"example.com/pluto/internal/app"
-	"example.com/pluto/internal/b0app"
-	"example.com/pluto/internal/b0genesis"
-	"example.com/pluto/internal/b0state"
-	"example.com/pluto/internal/b0store"
-	"example.com/pluto/internal/store"
+	"example.com/pluto/internal/classical/app"
+	"example.com/pluto/internal/classical/genesis"
+	"example.com/pluto/internal/classical/state"
+	"example.com/pluto/internal/classical/store"
+	"example.com/pluto/internal/legacy/app"
+	"example.com/pluto/internal/legacy/store"
 )
 
 const ProfileB0 = "b0-v2"
