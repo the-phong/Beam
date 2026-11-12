@@ -48,6 +48,8 @@ def inventory():
     product_uuid = optional("/sys/class/dmi/id/product_uuid")
     return {"guest_hostname": socket.gethostname(), "kernel": platform.release(),
             "machine": platform.machine(), "cpu_model": model, "logical_cpus": os.cpu_count(),
+            "clocksource": optional("/sys/devices/system/clocksource/clocksource0/current_clocksource"),
+            "systemd_timesyncd_status": run("systemctl", "is-active", "systemd-timesyncd"),
             "product_name": optional("/sys/class/dmi/id/product_name"),
             "machine_id_sha256": hashlib.sha256(machine_id.encode()).hexdigest() if machine_id else None,
             "product_uuid_sha256": hashlib.sha256(product_uuid.encode()).hexdigest() if product_uuid else None,

@@ -27,7 +27,7 @@ STEP_LIMIT_NS = 10_000_000
 def vmx_identity(path):
     content = Path(path).read_text()
     values = {}
-    for name in ("displayName", "uuid.bios", "ethernet0.generatedAddress"):
+    for name in ("displayName", "uuid.bios", "ethernet0.generatedAddress", "tools.syncTime"):
         match = re.search(rf'^{re.escape(name)} = "([^"]+)"$', content, re.MULTILINE)
         require(match is not None, f"VMX lacks {name}")
         values[name] = match.group(1)
@@ -74,6 +74,7 @@ def survey_audit(raw, *, guest=True):
     require(isinstance(inventory, dict) and inventory.get("kernel") and
             inventory.get("cpu_model") and inventory.get("logical_cpus") and
             inventory.get("filesystem_type") and inventory.get("network_interfaces_mtu") and
+            inventory.get("clocksource") and
             (not guest or inventory.get("machine_id_sha256")), "incomplete host inventory")
     return {"inventory": inventory, "clock": result,
             "warmup_ns": raw["warmup_end_ns"]-raw["warmup_start_ns"],
