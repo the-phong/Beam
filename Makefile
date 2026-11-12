@@ -1,4 +1,4 @@
-.PHONY: build build-comet-s05 clean test test-integration test-integration-4v test-integration-b1-4v test-s04-4v test-s05-telemetry test-s06-pilot test-s07-schema test-s07-smoke test-file02-common corpus-s04-verify corpus-s06-verify vet fmt-check verify benchmark-corpus benchmark-smoke benchmark-micro benchmark-b1 benchmark-full benchmark-analyze benchmark-contention-corpus benchmark-contention-smoke benchmark-contention-full benchmark-contention-analyze
+.PHONY: build build-comet-s05 clean test test-integration test-integration-4v test-integration-b1-4v test-s04-4v test-s05-telemetry test-s06-pilot test-s07-schema test-s07-smoke test-file02-common test-file02-common02 corpus-s04-verify corpus-s06-verify vet fmt-check verify benchmark-corpus benchmark-smoke benchmark-micro benchmark-b1 benchmark-full benchmark-analyze benchmark-contention-corpus benchmark-contention-smoke benchmark-contention-full benchmark-contention-analyze
 
 GO ?= go
 INTEGRATION_TIMEOUT ?= 900s
@@ -49,6 +49,9 @@ test-s07-schema:
 
 test-file02-common:
 	python3 -m unittest discover research/tools -p 'test_file02_*.py' -v
+
+test-file02-common02:
+	python3 research/tools/file02_common02.py smoke
 
 # Builds, verifies public corpora and runs four fresh bounded private networks.
 # The script prints an ignored session path and a SHA-256 manifest for reruns.

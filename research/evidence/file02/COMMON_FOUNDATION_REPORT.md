@@ -33,7 +33,7 @@ candidate for independent Controller/Owner review, not a scientific result.
 
 | Command | Exit | Result |
 | --- | ---: | --- |
-| `make test-file02-common` | 0 | Nine tests: factor/capability, public-target and cap refusal, raw freeze/hash tamper, plan binding, rate/safety exclusion, unavailable metric, write-once CLI, QC/aggregate binding. |
+| `make test-file02-common` | 0 | Fourteen tests including actual runtime mismatch, altered Comet config, disjoint monotonic phases, phase-boundary crossing and cooldown duration. |
 | `make verify` | 0 | Build, Go unit tests, `go vet`, format and module verification passed; Go 1.24.1, linux/amd64. |
 | `make test-s07-smoke` | 0 | Four fresh single-host loopback validator networks, one per C/CP/P/H; `runs=4`, `excluded=0`. This is QA only. |
 | `python3 research/tools/s07_orchestrate.py verify research/artifacts/s07/s07-20261112T115501Z-81905384` | 0 | Rehashed 92 frozen files and rederived results; source commit `e0bcd9e0f903a2e807a3d28adc5554dffa48e1f1`. |
@@ -51,7 +51,7 @@ was separately verified (92 files) and left untouched.
 | Item | Status | Evidence / unmet part |
 | --- | --- | --- |
 | 0 | Contract implemented for review | Scientific acceptance and case-specific numerical preregistration are separate. |
-| COMMON-01 | Partial | Config fields and hashes required; future actual host CPU features and every run's real config need capture. |
+| COMMON-01 | Verified for available single-host QA topology | [Runtime audit](COMMON01_RUNTIME_AUDIT.md) captured actual software, CPU features, topology and 16 Comet configs across four profiles; future File 02 QC requires a matching inventory. Multi-host remains untested. |
 | COMMON-02 | Partial | S07 fresh networks and phase separation passed; future File 02 cooldown/reset and monotonic records need case runs. |
 | COMMON-03 | Partial | S06/S07 fixed-legitimate plans and distinct transactions exist; case-specific attack pair checks need integration. |
 | COMMON-04 | Open | Equal tx/s and bytes/s confirmatory comparisons require T06 safe-rate pilot. |

@@ -318,7 +318,9 @@ def verify(session: Path) -> dict:
     for row in rows:
         run = session / f"profile-{row['profile']}"
         phase_names = [json.loads(line)["phase"] for line in (run / "phases.jsonl").read_text().splitlines()]
-        require(phase_names == ["setup", "warm-up", "execute", "drain", "oracle", "collect", "analyze", "freeze"],
+        standard_phases = ["setup", "warm-up", "execute", "drain", "oracle", "collect", "analyze", "freeze"]
+        common02_phases = ["setup", "warm-up", "execute", "drain", "oracle", "collect", "cooldown", "analyze", "freeze"]
+        require(phase_names in (standard_phases, common02_phases),
                 f"incomplete stage sequence for {row['profile']}")
         require(row == analyze_run(run, source["source_commit"], source["config_sha256"], source["corpus_sha256"]),
                 f"derived result differs from raw/oracle for {row['profile']}")

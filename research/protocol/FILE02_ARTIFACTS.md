@@ -35,6 +35,17 @@ this verifies the S07 frozen manifest first and writes
 a separate ignored, read-only File 02 COMMON-01 audit. S07 raw remains
 untouched. This QA command is evidence for the capture path, not a
 confirmatory experiment.
+`python3 research/tools/file02_runtime.py verify-s07-capture PRIVATE/COMMON01_AUDIT`
+rehashes the frozen audit and its source session, including all 16 actual
+Comet config files. The [COMMON-01 report](../evidence/file02/COMMON01_RUNTIME_AUDIT.md)
+records the bounded successful check.
+
+COMMON-02 has a separate bounded QA command: `make test-file02-common02`.
+It creates four fresh S07-style private networks with a one-second cooldown
+after the generator drains and the oracle completes, then audits monotonic
+phase markers, actual send offsets, the absence of sends during drain and
+cooldown, and four distinct validator homes. The standard S07 command keeps
+its original phase schedule. The COMMON-02 audit remains QA evidence only.
 
 After writing every raw file, run
 `python3 research/tools/file02_common.py freeze-raw PRIVATE/raw/RUN_ID`.

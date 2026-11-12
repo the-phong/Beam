@@ -26,3 +26,5 @@ jobs:
         run: make test-file02-common
       - name: Four-validator C/CP/P/H smoke
         run: make test-s07-smoke
+      - name: File 02 COMMON-02 fresh-network and phase smoke
+        run: make test-file02-common02

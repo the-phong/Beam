@@ -211,15 +211,63 @@ def capture_s07_session(session_path):
     return output, frozen_sha
 
 
+def verify_s07_capture(output_path):
+    import file02_common as common
+    import s07_orchestrate as s07
+
+    output = Path(output_path)
+    manifest_sha = common.verify_raw(output)
+    require(output.name.startswith("common01-s07-"), "unexpected COMMON-01 audit ID")
+    session = s07.private_session(s07.ARTIFACTS / output.name.removeprefix("common01-"))
+    s07_manifest = s07.verify(session)
+    summary = json.loads((output / "summary.json").read_text())
+    require(summary.get("schema") == "pluto.file02.common01_audit.v1"
+            and summary.get("scope") == "QA_ONLY"
+            and summary.get("s07_manifest_sha256") == digest(session / "manifest.json")
+            and summary.get("s07_frozen_file_count") == len(s07_manifest["files"]),
+            "S07 source/manifest audit mismatch")
+    records = summary.get("records", [])
+    require([row.get("profile") for row in records] == ["C", "CP", "P", "H"],
+            "profile audit order/completeness")
+    session_meta = json.loads((session / "session.json").read_text())
+    require(summary.get("source_commit") == session_meta["source_commit"] and
+            summary.get("source_tree") == session_meta["source_tree"], "source audit mismatch")
+    for row in records:
+        profile = row["profile"]
+        inventory_path = output / f"profile-{profile}.json"
+        inventory = json.loads(inventory_path.read_text())
+        require(digest(inventory_path) == row["inventory_sha256"] and
+                inventory.get("schema") == "pluto.file02.runtime_inventory.v1" and
+                inventory.get("profile") == profile and inventory.get("source_clean") is True and
+                inventory.get("source_commit") == summary["source_commit"] and
+                inventory.get("source_tree") == summary["source_tree"] and
+                inventory.get("config_sha256") == session_meta["config_sha256"] and
+                len(inventory.get("node_configs", [])) == 4 and
+                len(inventory.get("host_inventory", {}).get("cpu_features", [])) > 0,
+                f"incomplete runtime inventory: {profile}")
+        run_root = session / f"profile-{profile}"
+        for index, node in enumerate(inventory["node_configs"]):
+            actual = run_root / "network" / f"validator-{index}" / "config" / "config.toml"
+            require(node.get("config_toml_sha256") == digest(actual),
+                    f"node config changed since audit: {profile}/{index}")
+    return manifest_sha
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
     p = sub.add_parser("capture-s07")
     p.add_argument("session")
+    p = sub.add_parser("verify-s07-capture")
+    p.add_argument("audit")
     args = parser.parse_args()
     try:
-        output, frozen_sha = capture_s07_session(args.session)
-        print(f"COMMON01_STATUS=OK inventory={output} manifest_sha256={frozen_sha}")
+        if args.command == "capture-s07":
+            output, frozen_sha = capture_s07_session(args.session)
+            print(f"COMMON01_STATUS=OK inventory={output} manifest_sha256={frozen_sha}")
+        else:
+            manifest_sha = verify_s07_capture(args.audit)
+            print(f"COMMON01_VERIFY=OK profiles=4 manifest_sha256={manifest_sha}")
         return 0
     except (ValueError, OSError, KeyError, subprocess.CalledProcessError) as exc:
         print(f"COMMON01_ERROR: {exc}", file=sys.stderr)
