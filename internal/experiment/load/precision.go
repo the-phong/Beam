@@ -15,7 +15,21 @@ import (
 // It is for bounded File 02 precision QA, not a confirmatory study workload.
 func BuildPrecisionPilotPlan(f *PilotFixture, p researchv2.Profile, runID string,
 	seed int64, c Config, configHash string) (Plan, error) {
-	const rate = 20
+	return buildExtendedBenignPlan(f, p, runID, seed, c, configHash, 20)
+}
+
+// BuildKneePilotPlan builds a bounded benign plan for the separately
+// authorized T06 knee search; it cannot exceed the unchanged S06 caps.
+func BuildKneePilotPlan(f *PilotFixture, p researchv2.Profile, runID string,
+	seed int64, c Config, configHash string, rate int) (Plan, error) {
+	if rate != 20 && rate != 23 && rate != 25 {
+		return Plan{}, ErrPlan
+	}
+	return buildExtendedBenignPlan(f, p, runID, seed, c, configHash, rate)
+}
+
+func buildExtendedBenignPlan(f *PilotFixture, p researchv2.Profile, runID string,
+	seed int64, c Config, configHash string, rate int) (Plan, error) {
 	const steadySeconds = 12
 	if f == nil || len(f.Senders) < 1+rate*steadySeconds {
 		return Plan{}, ErrPlan
