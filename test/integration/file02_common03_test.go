@@ -102,6 +102,25 @@ func TestFile02Common03FixedLegitimate(t *testing.T) {
 						t.Fatal(err)
 					}
 					pilot := startS06NetworkAt(t, c, fixture, profile.code, t.TempDir())
+					pilot.startObservers(t, c)
+					deadline := time.Now().Add(10 * time.Second)
+					for {
+						ready := true
+						for _, watched := range pilot.nodes {
+							info, err := os.Stat(watched.ObserverFile)
+							if err != nil || info.Size() == 0 {
+								ready = false
+								break
+							}
+						}
+						if ready {
+							break
+						}
+						if time.Now().After(deadline) {
+							t.Fatal("four observers did not become ready")
+						}
+						time.Sleep(100 * time.Millisecond)
+					}
 					nodes, err := json.Marshal(pilot.nodes)
 					if err != nil {
 						t.Fatal(err)
