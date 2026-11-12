@@ -1,0 +1,70 @@
+{
+  "artifacts": {
+    "decision.md": {
+      "rq_conclusion": null,
+      "schema": "pluto.file02.decision.v1",
+      "status": "PENDING_CASE_EXECUTION"
+    },
+    "figures/manifest.json": {
+      "figures": [],
+      "generator": null,
+      "schema": "pluto.file02.figure_manifest.v1",
+      "status": "PENDING_CASE_EXECUTION"
+    },
+    "observation.json": {
+      "achieved": null,
+      "availability": null,
+      "metrics": null,
+      "plan_sha256": null,
+      "qc": null,
+      "raw_manifest_sha256": null,
+      "schema": "pluto.file02.observation.v1",
+      "status": "PENDING_CASE_EXECUTION",
+      "steady_windows": null
+    },
+    "plan.json": {
+      "schema": "pluto.file02.plan.v1",
+      "status": "DRAFT",
+      "template": "research/config/file02_plan.template.json"
+    },
+    "qc_report.json": {
+      "checks": null,
+      "exclude_reasons": null,
+      "raw_manifest_sha256": null,
+      "schema": "pluto.file02.qc.v1",
+      "status": "PENDING_CASE_EXECUTION"
+    },
+    "raw/run_id/manifest.json": {
+      "files": null,
+      "schema": "pluto.file02.raw_manifest.v1",
+      "status": "PENDING_CASE_EXECUTION"
+    },
+    "result_aggregate.json": {
+      "ci95": null,
+      "ci_status": "PENDING_CASE_EXECUTION",
+      "mean": null,
+      "median": null,
+      "n_runs_usable": null,
+      "schema": "pluto.file02.aggregate.v1",
+      "status": "PENDING_CASE_EXECUTION"
+    },
+    "result_per_run.csv": {
+      "rows": null,
+      "schema": "pluto.file02.result_per_run.v1",
+      "status": "PENDING_CASE_EXECUTION"
+    },
+    "result_per_run.json": {
+      "achieved": null,
+      "availability": null,
+      "metrics": null,
+      "planned": null,
+      "qc_status": null,
+      "raw_manifest_sha256": null,
+      "schema": "pluto.file02.result_per_run.v1",
+      "source_tree": null,
+      "status": "PENDING_CASE_EXECUTION"
+    }
+  },
+  "schema": "pluto.file02.artifact_templates.v1",
+  "status": "PENDING_CASE_EXECUTION"
+}

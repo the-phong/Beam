@@ -9,9 +9,14 @@ sections 0–2 of the outside Checklist 02. Work is on
 [common contract](protocol/FILE02_COMMON_CONTRACT.md),
 [artifact workflow](protocol/FILE02_ARTIFACTS.md), factor registry and QC
 tooling are an implementation candidate. A new bounded S07 four-profile QA
-smoke passed, and its private raw is ignored. Independent-run precision,
-pilot-derived load levels, per-case plans, multi-host/P2P origin and the full
-COMMON gate remain open. No confirmatory case or RQ1–RQ3 result is claimed.
+smoke passed, and its private raw is ignored. COMMON-01–09 bounded QA is
+evidenced; T06 calibration and precision pilots passed their registered
+gates. A separate bounded knee search tested 20/23/25 tx/s without
+confirming a knee. Section 2 factor, 63-metric and artifact contracts are
+ready for review; future per-case output remains `PENDING_CASE_EXECUTION`.
+Numerical knee levels, per-case plans, multi-host/P2P origin and the full
+COMMON gate remain open. The [section 2 report](evidence/file02/SECTION2_READINESS_REPORT.md)
+records the RQ1 wording issue. No confirmatory case or RQ1–RQ3 result is claimed.
 Controller/Owner review remains separate. The sections below retain their
 historical wording.
 

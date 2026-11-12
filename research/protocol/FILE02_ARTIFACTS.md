@@ -77,3 +77,39 @@ bounded `make test-s07-smoke`. The S07 command creates a separate private QA
 session; its output must not be fed to the File 02 aggregate as a
 confirmatory run. Existing S07 raw remains untouched. The new CLI uses only
 Python standard library and adds no Go dependency.
+
+## Section 2 contract after the bounded T06 pilots
+
+The [factor registry](../config/file02_factors.json) records six tested
+pilot rates and labels all three knee-relative levels
+`NOT_OBSERVED_WITHIN_SAFE_RANGE`. It does not turn those pilot rates into
+confirmatory case plans. The [metric registry](../config/file02_metrics.json)
+defines every canonical field, unit, capture point, availability time,
+calculation, limitation and status. The [artifact templates](../config/file02_artifact_templates.json)
+declare the schemas and `PENDING_CASE_EXECUTION` placeholders for all eight
+required outputs and the observation envelope.
+
+`plan.json` now explicitly records H0/H1, primary endpoint, independent-run
+unit, CI method, exclusion rule, expected oracle, safety caps, source/config
+hashes and the five required raw streams. A future case producer must lock
+those values before sending any transactions. `raw/<run_id>/` remains
+write-once, ignored, manifest-hashed and read-only; the original raw files
+must remain available even when QC excludes the run. A missing artifact or
+invalid provenance is a validation failure, not a measured zero.
+
+Use `python3 research/tools/file02_section2.py validate-registry` to audit
+factor, metric and artifact schemas. `init-pending PRIVATE/CASE_DIR` creates
+a draft plan, status manifest, empty figure manifest and pending decision;
+`validate-pending PRIVATE/CASE_DIR` rejects any unreviewed result or figure.
+`validate-run-bundle PRIVATE/CASE_DIR` checks a future locked plan,
+manifested raw, observation/plan binding, recomputed QC/result, CSV identity,
+run-level aggregate and pending figure/decision state. It does not execute
+the case. The validator refuses a fabricated CI: scientific figures and RQ
+decisions need a later, separately reviewed case-specific analysis contract.
+
+The current handoff state for `result_per_run`, aggregate, figures and
+decision is `PENDING_CASE_EXECUTION`. Their schema/validator readiness is
+complete; the outside Checklist 02's per-experiment output boxes remain
+unchecked until actual authorized cases create those artifacts. Gate COMMON
+still requires Controller/Owner review of the knee-level limitation and the
+[RQ1 wording discrepancy](../evidence/file02/SECTION2_RQ1_CONSISTENCY.md).

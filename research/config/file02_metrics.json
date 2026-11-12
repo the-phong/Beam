@@ -1,0 +1,590 @@
+{
+  "metrics": {
+    "consensus": {
+      "blocks": {
+        "available_at": "after all-four observation and drain",
+        "calculation": "count matching block IDs through common height",
+        "capture_point": "four-validator block/state oracle",
+        "definition": "common-height blocks inspected on all validators",
+        "limitation": "Block-scan observation bounds inclusion; it is not the exact commit instant",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "blocks"
+      },
+      "finality_measure_defined": {
+        "available_at": "after all-four observation and drain",
+        "calculation": "named consensus observation rule and uncertainty",
+        "capture_point": "four-validator block/state oracle",
+        "definition": "meaning and availability of chosen finality endpoint",
+        "limitation": "Block-scan observation bounds inclusion; it is not the exact commit instant",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "text"
+      },
+      "inclusion_latency_p50_ms": {
+        "available_at": "after all-four observation and drain",
+        "calculation": "p50 matched send and inclusion times only when exact endpoint exists",
+        "capture_point": "four-validator block/state oracle",
+        "definition": "median send-to-inclusion latency",
+        "limitation": "Block-scan observation bounds inclusion; it is not the exact commit instant",
+        "status": "UNAVAILABLE",
+        "unit": "ms"
+      },
+      "inclusion_latency_p95_ms": {
+        "available_at": "after all-four observation and drain",
+        "calculation": "p95 matched send and inclusion times only when exact endpoint exists",
+        "capture_point": "four-validator block/state oracle",
+        "definition": "95th-percentile send-to-inclusion latency",
+        "limitation": "Block-scan observation bounds inclusion; it is not the exact commit instant",
+        "status": "UNAVAILABLE",
+        "unit": "ms"
+      },
+      "inclusion_latency_p99_ms": {
+        "available_at": "after all-four observation and drain",
+        "calculation": "p99 only with n and preregistered precision; upper bound separate",
+        "capture_point": "four-validator block/state oracle",
+        "definition": "99th-percentile send-to-inclusion latency",
+        "limitation": "Block-scan observation bounds inclusion; it is not the exact commit instant",
+        "status": "UNAVAILABLE",
+        "unit": "ms"
+      },
+      "legitimate_goodput_tx_s": {
+        "available_at": "after all-four observation and drain",
+        "calculation": "legitimate inclusions / interval; state timely or eventual explicitly",
+        "capture_point": "four-validator block/state oracle",
+        "definition": "legitimate committed transactions per declared interval",
+        "limitation": "Block-scan observation bounds inclusion; it is not the exact commit instant",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "tx/s"
+      },
+      "matched_AppHash": {
+        "available_at": "after all-four observation and drain",
+        "calculation": "compare AppHash and block ID at common height",
+        "capture_point": "four-validator block/state oracle",
+        "definition": "all four validators agree at same height",
+        "limitation": "Block-scan observation bounds inclusion; it is not the exact commit instant",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "boolean"
+      },
+      "valid_included_count": {
+        "available_at": "after all-four observation and drain",
+        "calculation": "count oracle-confirmed unique block inclusions",
+        "capture_point": "four-validator block/state oracle",
+        "definition": "distinct valid transactions committed exactly once",
+        "limitation": "Block-scan observation bounds inclusion; it is not the exact commit instant",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "tx"
+      }
+    },
+    "crypto": {
+      "alloc_B_per_tx": {
+        "available_at": "after the validation stage completes",
+        "calculation": "validation allocation delta / validated transactions, if instrumented",
+        "capture_point": "application validation spans or microbenchmark",
+        "definition": "allocated bytes attributable to transaction validation",
+        "limitation": "Microbenchmark cost is not full-path cost; absent stage instrumentation is unavailable",
+        "status": "UNAVAILABLE",
+        "unit": "byte/tx"
+      },
+      "cpu_ns_per_tx": {
+        "available_at": "after the validation stage completes",
+        "calculation": "validation CPU delta / validated transactions, if instrumented",
+        "capture_point": "application validation spans or microbenchmark",
+        "definition": "CPU time attributable to transaction validation",
+        "limitation": "Microbenchmark cost is not full-path cost; absent stage instrumentation is unavailable",
+        "status": "UNAVAILABLE",
+        "unit": "ns/tx"
+      },
+      "rejection_stage": {
+        "available_at": "after the validation stage completes",
+        "calculation": "independent stage trace matched to outcome",
+        "capture_point": "application validation spans or microbenchmark",
+        "definition": "last structural or cryptographic stage reached",
+        "limitation": "Microbenchmark cost is not full-path cost; absent stage instrumentation is unavailable",
+        "status": "PENDING_CASE_EXECUTION",
+        "unit": "stage"
+      },
+      "total_checktx_us": {
+        "available_at": "after the validation stage completes",
+        "calculation": "end minus start of application CheckTx span",
+        "capture_point": "application validation spans or microbenchmark",
+        "definition": "application CheckTx service duration",
+        "limitation": "Microbenchmark cost is not full-path cost; absent stage instrumentation is unavailable",
+        "status": "PENDING_CASE_EXECUTION",
+        "unit": "us/tx"
+      },
+      "verify_mldsa_us": {
+        "available_at": "after the validation stage completes",
+        "calculation": "sum ML verify spans / ML attempts",
+        "capture_point": "application validation spans or microbenchmark",
+        "definition": "ML-DSA-44 verification service duration",
+        "limitation": "Microbenchmark cost is not full-path cost; absent stage instrumentation is unavailable",
+        "status": "PENDING_CASE_EXECUTION",
+        "unit": "us/tx"
+      },
+      "verify_secp_us": {
+        "available_at": "after the validation stage completes",
+        "calculation": "sum secp verify spans / secp attempts",
+        "capture_point": "application validation spans or microbenchmark",
+        "definition": "secp256k1 verification service duration",
+        "limitation": "Microbenchmark cost is not full-path cost; absent stage instrumentation is unavailable",
+        "status": "PENDING_CASE_EXECUTION",
+        "unit": "us/tx"
+      }
+    },
+    "detection": {
+      "FN": {
+        "available_at": "at detector decision time on held-out run",
+        "calculation": "count held-out attack misses",
+        "capture_point": "held-out detector and label timeline",
+        "definition": "attack windows without timely alert",
+        "limitation": "Future labels or post-alert data must not enter features",
+        "status": "PENDING_CASE_EXECUTION",
+        "unit": "windows"
+      },
+      "FP": {
+        "available_at": "at detector decision time on held-out run",
+        "calculation": "count held-out benign alerts",
+        "capture_point": "held-out detector and label timeline",
+        "definition": "benign windows alerted",
+        "limitation": "Future labels or post-alert data must not enter features",
+        "status": "PENDING_CASE_EXECUTION",
+        "unit": "windows"
+      },
+      "FP_per_hour": {
+        "available_at": "at detector decision time on held-out run",
+        "calculation": "false alerts / held-out benign duration hours",
+        "capture_point": "held-out detector and label timeline",
+        "definition": "false alerts per benign hour",
+        "limitation": "Future labels or post-alert data must not enter features",
+        "status": "PENDING_CASE_EXECUTION",
+        "unit": "alerts/hour"
+      },
+      "PR_AUC": {
+        "available_at": "at detector decision time on held-out run",
+        "calculation": "integrate held-out precision versus recall",
+        "capture_point": "held-out detector and label timeline",
+        "definition": "area under precision-recall curve",
+        "limitation": "Future labels or post-alert data must not enter features",
+        "status": "PENDING_CASE_EXECUTION",
+        "unit": "ratio"
+      },
+      "TN": {
+        "available_at": "at detector decision time on held-out run",
+        "calculation": "count held-out benign non-alerts",
+        "capture_point": "held-out detector and label timeline",
+        "definition": "benign windows without alert",
+        "limitation": "Future labels or post-alert data must not enter features",
+        "status": "PENDING_CASE_EXECUTION",
+        "unit": "windows"
+      },
+      "TP": {
+        "available_at": "at detector decision time on held-out run",
+        "calculation": "count held-out attack alerts meeting deadline",
+        "capture_point": "held-out detector and label timeline",
+        "definition": "attack windows alerted before deadline",
+        "limitation": "Future labels or post-alert data must not enter features",
+        "status": "PENDING_CASE_EXECUTION",
+        "unit": "windows"
+      },
+      "detector_CPU": {
+        "available_at": "at detector decision time on held-out run",
+        "calculation": "CPU nanosecond delta / elapsed nanoseconds",
+        "capture_point": "held-out detector and label timeline",
+        "definition": "detector process CPU utilization",
+        "limitation": "Future labels or post-alert data must not enter features",
+        "status": "PENDING_CASE_EXECUTION",
+        "unit": "core"
+      },
+      "detector_RSS": {
+        "available_at": "at detector decision time on held-out run",
+        "calculation": "maximum detector RSS sample",
+        "capture_point": "held-out detector and label timeline",
+        "definition": "detector peak resident set",
+        "limitation": "Future labels or post-alert data must not enter features",
+        "status": "PENDING_CASE_EXECUTION",
+        "unit": "byte"
+      },
+      "inference_p99_ms": {
+        "available_at": "at detector decision time on held-out run",
+        "calculation": "p99 held-out decision duration with n",
+        "capture_point": "held-out detector and label timeline",
+        "definition": "99th-percentile detector runtime",
+        "limitation": "Future labels or post-alert data must not enter features",
+        "status": "PENDING_CASE_EXECUTION",
+        "unit": "ms"
+      },
+      "lead_time_ms": {
+        "available_at": "at detector decision time on held-out run",
+        "calculation": "degradation timestamp minus alert timestamp with clock uncertainty",
+        "capture_point": "held-out detector and label timeline",
+        "definition": "alert lead before measured degradation",
+        "limitation": "Future labels or post-alert data must not enter features",
+        "status": "PENDING_CASE_EXECUTION",
+        "unit": "ms"
+      },
+      "recall_at_fixed_FPR": {
+        "available_at": "at detector decision time on held-out run",
+        "calculation": "TP / (TP+FN) at validation-frozen threshold",
+        "capture_point": "held-out detector and label timeline",
+        "definition": "attack recall at preregistered false-positive cap",
+        "limitation": "Future labels or post-alert data must not enter features",
+        "status": "PENDING_CASE_EXECUTION",
+        "unit": "ratio"
+      }
+    },
+    "ingress": {
+      "ingress_bytes_s": {
+        "available_at": "on receipt before verification",
+        "calculation": "T0 encoded bytes / observation seconds",
+        "capture_point": "origin-specific ingress collector",
+        "definition": "origin-specific bytes received before verification",
+        "limitation": "RPC and P2P origin must remain separate; socket wait is not total transaction queue wait",
+        "status": "PENDING_CASE_EXECUTION",
+        "unit": "byte/s"
+      },
+      "ingress_source": {
+        "available_at": "on receipt before verification",
+        "calculation": "origin recorded at T0; do not infer from relay counters",
+        "capture_point": "origin-specific ingress collector",
+        "definition": "actual RPC or P2P origin",
+        "limitation": "RPC and P2P origin must remain separate; socket wait is not total transaction queue wait",
+        "status": "PENDING_CASE_EXECUTION",
+        "unit": "enum"
+      },
+      "ingress_tx_s": {
+        "available_at": "on receipt before verification",
+        "calculation": "T0 ingress count / observation seconds",
+        "capture_point": "origin-specific ingress collector",
+        "definition": "origin-specific transactions received before verification",
+        "limitation": "RPC and P2P origin must remain separate; socket wait is not total transaction queue wait",
+        "status": "PENDING_CASE_EXECUTION",
+        "unit": "tx/s"
+      },
+      "queue_depth": {
+        "available_at": "on receipt before verification",
+        "calculation": "timestamped queue gauge; currently unavailable",
+        "capture_point": "origin-specific ingress collector",
+        "definition": "transactions waiting between origin and application",
+        "limitation": "RPC and P2P origin must remain separate; socket wait is not total transaction queue wait",
+        "status": "UNAVAILABLE",
+        "unit": "tx"
+      },
+      "queue_wait_ms": {
+        "available_at": "on receipt before verification",
+        "calculation": "application dequeue minus ingress enqueue; currently unavailable",
+        "capture_point": "origin-specific ingress collector",
+        "definition": "total ingress-to-application waiting duration",
+        "limitation": "RPC and P2P origin must remain separate; socket wait is not total transaction queue wait",
+        "status": "UNAVAILABLE",
+        "unit": "ms/tx"
+      }
+    },
+    "mempool": {
+      "accepted_bytes": {
+        "available_at": "after admission decision or collector sample",
+        "calculation": "native accepted byte gauge",
+        "capture_point": "Comet native mempool telemetry",
+        "definition": "current accepted mempool encoded bytes",
+        "limitation": "Rejected before admission is excluded from accepted occupancy",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "byte"
+      },
+      "accepted_tx_count": {
+        "available_at": "after admission decision or collector sample",
+        "calculation": "native accepted count sample",
+        "capture_point": "Comet native mempool telemetry",
+        "definition": "current accepted mempool entries",
+        "limitation": "Rejected before admission is excluded from accepted occupancy",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "tx"
+      },
+      "eviction_count": {
+        "available_at": "after admission decision or collector sample",
+        "calculation": "native eviction counter delta; unavailable if unexposed",
+        "capture_point": "Comet native mempool telemetry",
+        "definition": "accepted mempool entries later evicted",
+        "limitation": "Rejected before admission is excluded from accepted occupancy",
+        "status": "UNAVAILABLE",
+        "unit": "tx"
+      },
+      "full_bytes": {
+        "available_at": "after admission decision or collector sample",
+        "calculation": "difference of native byte-full counter",
+        "capture_point": "Comet native mempool telemetry",
+        "definition": "byte-limit rejection events",
+        "limitation": "Rejected before admission is excluded from accepted occupancy",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "events"
+      },
+      "full_count": {
+        "available_at": "after admission decision or collector sample",
+        "calculation": "difference of native count-full counter",
+        "capture_point": "Comet native mempool telemetry",
+        "definition": "count-limit rejection events",
+        "limitation": "Rejected before admission is excluded from accepted occupancy",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "events"
+      },
+      "rejected_by_reason": {
+        "available_at": "after admission decision or collector sample",
+        "calculation": "count stage-tagged rejection events by canonical reason",
+        "capture_point": "Comet native mempool telemetry",
+        "definition": "rejections grouped by reason before/at admission",
+        "limitation": "Rejected before admission is excluded from accepted occupancy",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "map"
+      }
+    },
+    "node": {
+      "CPU_app": {
+        "available_at": "at periodic recorder sample",
+        "calculation": "application CPU nanosecond delta / elapsed nanoseconds",
+        "capture_point": "process and host collector",
+        "definition": "application process CPU consumed",
+        "limitation": "Process CPU cannot be attributed to crypto without stage instrumentation",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "core"
+      },
+      "CPU_crypto": {
+        "available_at": "at periodic recorder sample",
+        "calculation": "crypto CPU spans / elapsed nanoseconds; unavailable without attribution",
+        "capture_point": "process and host collector",
+        "definition": "crypto-only CPU consumed",
+        "limitation": "Process CPU cannot be attributed to crypto without stage instrumentation",
+        "status": "UNAVAILABLE",
+        "unit": "core"
+      },
+      "CPU_total": {
+        "available_at": "at periodic recorder sample",
+        "calculation": "sum CPU nanosecond deltas / elapsed nanoseconds",
+        "capture_point": "process and host collector",
+        "definition": "watched node process CPU consumed",
+        "limitation": "Process CPU cannot be attributed to crypto without stage instrumentation",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "core"
+      },
+      "GC_pause": {
+        "available_at": "at periodic recorder sample",
+        "calculation": "GC pause counter delta / interval",
+        "capture_point": "process and host collector",
+        "definition": "garbage-collector stop duration",
+        "limitation": "Process CPU cannot be attributed to crypto without stage instrumentation",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "ms"
+      },
+      "RSS_peak": {
+        "available_at": "at periodic recorder sample",
+        "calculation": "maximum process RSS sample",
+        "capture_point": "process and host collector",
+        "definition": "maximum watched resident set size",
+        "limitation": "Process CPU cannot be attributed to crypto without stage instrumentation",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "byte"
+      },
+      "process_count": {
+        "available_at": "at periodic recorder sample",
+        "calculation": "count verified process identities",
+        "capture_point": "process and host collector",
+        "definition": "watched live processes",
+        "limitation": "Process CPU cannot be attributed to crypto without stage instrumentation",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "processes"
+      },
+      "thread_count": {
+        "available_at": "at periodic recorder sample",
+        "calculation": "sum sampled thread gauges",
+        "capture_point": "process and host collector",
+        "definition": "watched OS threads",
+        "limitation": "Process CPU cannot be attributed to crypto without stage instrumentation",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "threads"
+      }
+    },
+    "quality": {
+      "CI95": {
+        "available_at": "after complete run QC",
+        "calculation": "preregistered estimator across independent runs only",
+        "capture_point": "plan, raw manifest and QC audit",
+        "definition": "run-level 95% uncertainty interval",
+        "limitation": "Run is the independent inference unit; missing values cannot be zero-filled",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "endpoint unit"
+      },
+      "achieved_rate_error": {
+        "available_at": "after complete run QC",
+        "calculation": "abs(achieved-planned) / planned; zero target uses exact equality",
+        "capture_point": "plan, raw manifest and QC audit",
+        "definition": "relative offered-rate deviation",
+        "limitation": "Run is the independent inference unit; missing values cannot be zero-filled",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "ratio"
+      },
+      "exclude_reason": {
+        "available_at": "after complete run QC",
+        "calculation": "QC failed-flag list from raw audit",
+        "capture_point": "plan, raw manifest and QC audit",
+        "definition": "reasons run cannot enter analysis",
+        "limitation": "Run is the independent inference unit; missing values cannot be zero-filled",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "list"
+      },
+      "n_runs": {
+        "available_at": "after complete run QC",
+        "calculation": "count QC-usable network run IDs",
+        "capture_point": "plan, raw manifest and QC audit",
+        "definition": "independent fresh-network runs",
+        "limitation": "Run is the independent inference unit; missing values cannot be zero-filled",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "runs"
+      },
+      "n_samples": {
+        "available_at": "after complete run QC",
+        "calculation": "count noncensored valid samples",
+        "capture_point": "plan, raw manifest and QC audit",
+        "definition": "number of valid observations for endpoint",
+        "limitation": "Run is the independent inference unit; missing values cannot be zero-filled",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "samples"
+      },
+      "observer_drop_count": {
+        "available_at": "after complete run QC",
+        "calculation": "maximum or delta of collector dropped-sample counter",
+        "capture_point": "plan, raw manifest and QC audit",
+        "definition": "recorder samples dropped",
+        "limitation": "Run is the independent inference unit; missing values cannot be zero-filled",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "samples"
+      }
+    },
+    "relay": {
+      "peer_rx_bytes_s": {
+        "available_at": "after peer send/receive sample",
+        "calculation": "peer receive byte-counter delta / interval",
+        "capture_point": "Comet P2P telemetry",
+        "definition": "P2P envelope bytes received from peers",
+        "limitation": "RPC-origin relay observation does not establish P2P-origin injection",
+        "status": "PENDING_CASE_EXECUTION",
+        "unit": "byte/s"
+      },
+      "peer_tx_bytes_s": {
+        "available_at": "after peer send/receive sample",
+        "calculation": "peer send byte-counter delta / interval",
+        "capture_point": "Comet P2P telemetry",
+        "definition": "P2P envelope bytes sent to peers",
+        "limitation": "RPC-origin relay observation does not establish P2P-origin injection",
+        "status": "PENDING_CASE_EXECUTION",
+        "unit": "byte/s"
+      },
+      "propagation_p50_ms": {
+        "available_at": "after peer send/receive sample",
+        "calculation": "p50 of matched first-send and first-peer-receive durations",
+        "capture_point": "Comet P2P telemetry",
+        "definition": "median peer propagation delay",
+        "limitation": "RPC-origin relay observation does not establish P2P-origin injection",
+        "status": "UNAVAILABLE",
+        "unit": "ms"
+      },
+      "propagation_p95_ms": {
+        "available_at": "after peer send/receive sample",
+        "calculation": "p95 of matched first-send and first-peer-receive durations",
+        "capture_point": "Comet P2P telemetry",
+        "definition": "95th-percentile peer propagation delay",
+        "limitation": "RPC-origin relay observation does not establish P2P-origin injection",
+        "status": "UNAVAILABLE",
+        "unit": "ms"
+      },
+      "propagation_p99_ms": {
+        "available_at": "after peer send/receive sample",
+        "calculation": "p99 of matched first-send and first-peer-receive durations with n",
+        "capture_point": "Comet P2P telemetry",
+        "definition": "99th-percentile peer propagation delay",
+        "limitation": "RPC-origin relay observation does not establish P2P-origin injection",
+        "status": "UNAVAILABLE",
+        "unit": "ms"
+      },
+      "relay_queue": {
+        "available_at": "after peer send/receive sample",
+        "calculation": "relay queue gauge; currently unavailable",
+        "capture_point": "Comet P2P telemetry",
+        "definition": "queued P2P relay transactions",
+        "limitation": "RPC-origin relay observation does not establish P2P-origin injection",
+        "status": "UNAVAILABLE",
+        "unit": "tx"
+      }
+    },
+    "workload": {
+      "achieved_invalid_tx_s": {
+        "available_at": "at send deadline or socket write",
+        "calculation": "invalid socket writes / steady seconds",
+        "capture_point": "generator plan and socket-write log",
+        "definition": "invalid events actually written to socket per steady second",
+        "limitation": "Only actual writes count as achieved offered load; RPC acceptance is separate",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "tx/s"
+      },
+      "achieved_tx_bytes_s": {
+        "available_at": "at send deadline or socket write",
+        "calculation": "sum actual wire bytes / steady seconds",
+        "capture_point": "generator plan and socket-write log",
+        "definition": "actual encoded socket-write bytes per steady second",
+        "limitation": "Only actual writes count as achieved offered load; RPC acceptance is separate",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "byte/s"
+      },
+      "achieved_valid_tx_s": {
+        "available_at": "at send deadline or socket write",
+        "calculation": "valid socket writes / steady seconds",
+        "capture_point": "generator plan and socket-write log",
+        "definition": "valid events actually written to socket per steady second",
+        "limitation": "Only actual writes count as achieved offered load; RPC acceptance is separate",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "tx/s"
+      },
+      "burstiness": {
+        "available_at": "at send deadline or socket write",
+        "calculation": "standard deviation / mean of window counts; unavailable when mean is zero",
+        "capture_point": "generator plan and socket-write log",
+        "definition": "variation of offered counts across fixed decision windows",
+        "limitation": "Only actual writes count as achieved offered load; RPC acceptance is separate",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "ratio"
+      },
+      "distinct_tx_count": {
+        "available_at": "at send deadline or socket write",
+        "calculation": "cardinality of sent wire SHA-256 digests",
+        "capture_point": "generator plan and socket-write log",
+        "definition": "unique transmitted transaction hashes",
+        "limitation": "Only actual writes count as achieved offered load; RPC acceptance is separate",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "tx"
+      },
+      "offered_invalid_tx_s": {
+        "available_at": "at send deadline or socket write",
+        "calculation": "invalid planned events / steady seconds",
+        "capture_point": "generator plan and socket-write log",
+        "definition": "planned invalid socket sends per steady second",
+        "limitation": "Only actual writes count as achieved offered load; RPC acceptance is separate",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "tx/s"
+      },
+      "offered_tx_bytes_s": {
+        "available_at": "at send deadline or socket write",
+        "calculation": "sum planned wire lengths / steady seconds",
+        "capture_point": "generator plan and socket-write log",
+        "definition": "planned encoded bytes per steady second",
+        "limitation": "Only actual writes count as achieved offered load; RPC acceptance is separate",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "byte/s"
+      },
+      "offered_valid_tx_s": {
+        "available_at": "at send deadline or socket write",
+        "calculation": "valid planned events / steady seconds",
+        "capture_point": "generator plan and socket-write log",
+        "definition": "planned valid socket sends per steady second",
+        "limitation": "Only actual writes count as achieved offered load; RPC acceptance is separate",
+        "status": "AVAILABLE_WITH_CASE",
+        "unit": "tx/s"
+      }
+    }
+  },
+  "schema": "pluto.file02.metric_registry.v1"
+}

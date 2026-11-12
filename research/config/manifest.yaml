@@ -14,6 +14,9 @@ project:
   research_v2_s06_status: owner_merged_pr17_ed6bc8f_pilot_only
   research_v2_s07_status: owner_merged_pr20_e0bcd9e_bounded_qa_only
   file02_common_status: sections_0_2_foundation_candidate_common_gate_open
+  file02_section2_status: factor_metric_artifact_contract_ready_case_outputs_pending_common_gate_open
+  file02_tested_pilot_tx_s: [2, 6, 12, 20, 23, 25]
+  file02_knee_levels: not_observed_within_safe_range
   refactor_status: owner_merged_pr18_e8f20726_controller_conditional_accept_postmerge_ci_pass
   active_authorization: file02_sections_0_1_2_2026_11_12
   baseline_branch: test-mainet

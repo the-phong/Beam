@@ -26,6 +26,7 @@ METRICS = {
     "quality": "n_samples n_runs CI95 exclude_reason observer_drop_count achieved_rate_error",
 }
 METRICS = {group: names.split() for group, names in METRICS.items()}
+METRIC_REGISTRY = json.loads((ROOT / "config/file02_metrics.json").read_text())
 FLAGS = (
     "fresh_network", "oracle_pass", "four_validators_live", "apphash_agreement",
     "clock_continuous", "observer_drops_within_limit", "generator_not_saturated",
@@ -71,12 +72,20 @@ def validate_plan(plan, locked=True):
     if locked:
         require(plan["status"] == "LOCKED", "plan not locked")
     for key in ("run_id", "case_id", "protocol_version", "research_question", "hypothesis",
+                "null_hypothesis", "alternative_hypothesis", "analysis_plan", "raw_capture_plan",
                 "expected_oracle", "profile", "workload", "regime", "traffic_source",
                 "topology", "policy", "actor_capability", "host_inventory", "software_versions", "network_config",
                 "safety_config", "seed", "order_index", "phase_seconds", "planned", "matching"):
         require(plan.get(key) is not None, f"missing {key}")
-    for key in ("case_id", "protocol_version", "research_question", "hypothesis", "expected_oracle"):
+    for key in ("case_id", "protocol_version", "research_question", "hypothesis",
+                "null_hypothesis", "alternative_hypothesis", "expected_oracle"):
         require(isinstance(plan[key], str) and plan[key].strip(), f"empty {key}")
+    analysis=plan["analysis_plan"]
+    require(isinstance(analysis,dict) and analysis.get("independent_unit")=="fresh_four_validator_network" and
+            all(isinstance(analysis.get(key),str) and analysis[key].strip() for key in
+                ("primary_endpoint","ci_method","exclusion_rule")), "analysis preregistration")
+    require(plan["raw_capture_plan"]==["telemetry","transaction_results","validator_blocks_and_apphash",
+                                         "loadgen_timeline","host_metrics"], "raw capture plan")
     require(isinstance(plan["run_id"], str) and plan["run_id"].replace("-", "").replace("_", "").isalnum(), "run_id")
     require(plan["profile"] in FACTORS["profiles"], "profile")
     require(plan["workload"] in FACTORS["workloads"] and plan["workload"] not in FACTORS["incompatible"].get(plan["profile"], []), "workload/profile mismatch")
@@ -233,6 +242,8 @@ def evaluate(plan, observation, raw_dir):
     require(isinstance(availability, dict), "availability")
     for group, values in metrics.items():
         for name, value in values.items():
+            if METRIC_REGISTRY["metrics"][group][name]["status"] == "UNAVAILABLE":
+                require(value is None, f"unavailable metric must be null: {group}.{name}")
             if value is None:
                 require(isinstance(availability.get(name), str) and availability[name].strip(), f"missing availability reason: {name}")
     status = "USABLE" if not failures else "INVALID_FOR_ANALYSIS"
