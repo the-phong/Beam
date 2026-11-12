@@ -39,3 +39,10 @@ S06, and subsequently merged PR #17 into `test-mainet`. The [testbed contract](p
 Run `make verify` and `make test-s06-pilot` from the repository root.
 The four validators run on one localhost host; independent infrastructure
 and File 02 inference remain untested.
+
+The Owner also merged [structural refactor PR #18](https://github.com/the-phong/Beam/pull/18)
+at `e8f20726f5cea94b47c4dcddb756e39d21207448`; post-merge CI passed.
+The [Controller review closeout](evidence/refactor/CONTROLLER_REVIEW_CLOSEOUT.md)
+records conditional technical acceptance and limits. S07 remains unchecked
+and has no separate Owner authorization. The current package paths above are
+the ones to use for future reruns.

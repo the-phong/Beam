@@ -1,5 +1,10 @@
 # Pluto
 
+The GitHub repository is [Beam](https://github.com/the-phong/Beam); the
+application, CLI and provisional Go module `example.com/pluto` still use
+**Pluto**. A repository rename alone does not change the application or its
+module path. The Owner has not decided whether to rename either one.
+
 Pluto is a local CometBFT v0.38.26 research application with three selectable
 profiles. The historical Phase 02 profile rejects transactions; B0 executes
 classical secp256k1 transfers; B1 executes genesis-bound secp256k1 and
@@ -7,6 +12,17 @@ ML-DSA-44 hybrid transfers. B0 and B1 have four-validator localhost test
 networks. The Phase 05 evaluation was merged into `test-mainet` at
 `0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`. Its bounded results do not
 establish DoS, an EVM, multi-host independence, or a useful ML detector.
+
+The Owner merged [structural refactor PR #18](https://github.com/the-phong/Beam/pull/18)
+into `test-mainet` at `e8f20726f5cea94b47c4dcddb756e39d21207448`.
+The [post-merge verification run](https://github.com/the-phong/Beam/actions/runs/43146676567)
+completed successfully. The Controller's technical verdict is **conditional
+acceptance for the structural refactor**; see the
+[review closeout](research/evidence/refactor/CONTROLLER_REVIEW_CLOSEOUT.md).
+S07 is not authorized or complete, and File 02 confirmatory experiments have
+not begun. `test-mainet` holds current research; GitHub still defaults to the
+older `master`. [Branch status and decision needed](docs/BRANCH_POLICY.md)
+record the distinction and the conflicting PR #13.
 
 The [current experimental checklist](research/checklists/01_CHECKLIST_CHUAN_HOA_MO_RONG_REPO_THUC_NGHIEM.md)
 tracks a separate RQ1–RQ3 program. S01–S04 are closed after the Owner merged

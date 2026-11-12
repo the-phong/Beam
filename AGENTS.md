@@ -1,6 +1,20 @@
 # Pluto agent execution contract
 
-## Current authority — domain-oriented structural refactor (2026-11-11)
+## Current status and authority — post-refactor governance (2026-11-12)
+
+The Owner merged domain-oriented refactor PR #18 into `test-mainet` at
+`e8f20726f5cea94b47c4dcddb756e39d21207448`. The post-merge `verify`
+workflow succeeded. The Controller conditionally accepted the structural
+refactor; this is not acceptance of S07 or RQ1–RQ3 results. This governance
+closeout records that review, current paths and branch status on
+`governance/refactor-acceptance-closeout` from the merge commit. Preserve
+historical evidence, local ignored artifacts, unrelated D026 files and stash.
+Submit a Draft PR to `test-mainet` for review. Do not merge, change the
+default or protected branches, resolve PR #13 by merging, begin S07, run
+File 02 experiments or claim new research results. The sections below record
+authority at their original dates and are historical, not current grants.
+
+## Historical authority — domain-oriented structural refactor (2026-11-11)
 
 The Owner merged S06 PR #17 into `test-mainet` at
 `ed6bc8f474c13ed709d5ab5f57b3856edcbf602a` and requested one complete
@@ -12,7 +26,7 @@ Draft PR targeting `test-mainet` and stop for Controller/Owner review. Do not
 merge, change protected branches, begin S07 or claim loaded RQ1–RQ3 results.
 The older S06 authority below is historical.
 
-## Current authority — S06 safe testbed and open-loop load (2026-11-11)
+## Historical authority — S06 safe testbed and open-loop load (2026-11-11)
 
 The Owner merged S05 PR #16 into `test-mainet` at
 `ac91250ddff31d07b6dcb19f81878e149256e84f` and explicitly authorized
@@ -44,7 +58,7 @@ the S05 branch, open a Draft PR against `test-mainet`, and stop for Owner
 review. Do not start S06, claim DoS/resource study results, merge or touch
 protected branches.
 
-## Current directory authority — one research tree (2026-11-10)
+## Historical directory authority — one research tree (2026-11-10)
 
 The Owner requested one research directory with no separate versioned tree.
 Keep the S01–S04 checklist, protocol, corpus, evidence and ignored private
@@ -73,7 +87,7 @@ artifacts. Commit/push only the S04 branch, open a Draft PR against
 `test-mainet` and stop for Owner review. Do not start S05, make resource/DoS
 claims, merge or touch protected branches.
 
-## Current authority — S03 controlled profiles (2026-11-09)
+## Historical authority — S03 controlled profiles (2026-11-09)
 
 The Owner confirmed S02 review/acceptance and merged PR #12 into
 `test-mainet` at `2a3dcbceb52b996425d911dde87b691317f56efd`, then
@@ -87,7 +101,7 @@ repo checklist item by item. Push only this research branch and open a Draft
 PR into `test-mainet`; the Owner controls merge. S04 and later stages remain
 closed until S03's own gate and subsequent authorization.
 
-## Current authority — research-v2 experimental checklist (2026-11-07)
+## Historical authority — research-v2 experimental checklist (2026-11-07)
 
 The Owner requested completion of the separate
 `research/checklists/01_CHECKLIST_CHUAN_HOA_MO_RONG_REPO_THUC_NGHIEM.md`
