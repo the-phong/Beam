@@ -2,8 +2,8 @@
 
 The GitHub repository is [Beam](https://github.com/the-phong/Beam); the
 application, CLI and provisional Go module `example.com/pluto` still use
-**Pluto**. A repository rename alone does not change the application or its
-module path. The Owner has not decided whether to rename either one.
+**Pluto**. The Owner confirmed on 2026-11-12 that Beam is the repository name
+only; the application and Go module are not being renamed in S07.
 
 Pluto is a local CometBFT v0.38.26 research application with three selectable
 profiles. The historical Phase 02 profile rejects transactions; B0 executes
@@ -19,8 +19,10 @@ The [post-merge verification run](https://github.com/the-phong/Beam/actions/runs
 completed successfully. The Controller's technical verdict is **conditional
 acceptance for the structural refactor**; see the
 [review closeout](research/evidence/refactor/CONTROLLER_REVIEW_CLOSEOUT.md).
-S07 is not authorized or complete, and File 02 confirmatory experiments have
-not begun. `test-mainet` holds current research; GitHub still defaults to the
+After [PR #19](https://github.com/the-phong/Beam/pull/19) merged, the Owner
+authorized S07 reproducibility and QA on a separate branch. File 02
+confirmatory experiments have not begun. `test-mainet` holds current research;
+GitHub still defaults to the
 older `master`. [Branch status and decision needed](docs/BRANCH_POLICY.md)
 record the distinction and the conflicting PR #13.
 

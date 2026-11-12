@@ -1,6 +1,22 @@
 # Pluto agent execution contract
 
-## Current status and authority — post-refactor governance (2026-11-12)
+## Current authority — S07 reproducibility and QA (2026-11-12)
+
+The Owner merged governance PR #19 into `test-mainet` at
+`49facc28ca29102e3e7295546f29b74fe3503a00` and explicitly authorized
+completion of S07.1–S07.5 in checklist order. Work only in the original
+`pluto` folder on `research/s07-reproducibility` from that merge commit.
+Beam is the GitHub repository name only; the application and provisional
+Go module remain Pluto. Build a traceable bounded four-profile smoke,
+immutable private raw evidence, integrity checks, per-run analyzer and quick
+CI. Tick only verified items. Preserve accepted S01–S06 behavior, public
+corpus and historical evidence bytes, ignored artifacts, unrelated D026
+files and the local stash. Push only this S07 branch and open a Draft PR
+against `test-mainet`; stop for Controller/Owner review. Do not merge,
+change protected branches, start File 02 confirmatory runs, build ML
+detection or claim RQ1–RQ3/DoS results. The dated sections below are history.
+
+## Historical status and authority — post-refactor governance (2026-11-12)
 
 The Owner merged domain-oriented refactor PR #18 into `test-mainet` at
 `e8f20726f5cea94b47c4dcddb756e39d21207448`. The post-merge `verify`

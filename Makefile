@@ -1,4 +1,4 @@
-.PHONY: build build-comet-s05 clean test test-integration test-integration-4v test-integration-b1-4v test-s04-4v test-s05-telemetry test-s06-pilot corpus-s04-verify corpus-s06-verify vet fmt-check verify benchmark-corpus benchmark-smoke benchmark-micro benchmark-b1 benchmark-full benchmark-analyze benchmark-contention-corpus benchmark-contention-smoke benchmark-contention-full benchmark-contention-analyze
+.PHONY: build build-comet-s05 clean test test-integration test-integration-4v test-integration-b1-4v test-s04-4v test-s05-telemetry test-s06-pilot test-s07-schema test-s07-smoke corpus-s04-verify corpus-s06-verify vet fmt-check verify benchmark-corpus benchmark-smoke benchmark-micro benchmark-b1 benchmark-full benchmark-analyze benchmark-contention-corpus benchmark-contention-smoke benchmark-contention-full benchmark-contention-analyze
 
 GO ?= go
 INTEGRATION_TIMEOUT ?= 900s
@@ -43,6 +43,14 @@ test-s05-telemetry: build build-comet-s05 corpus-s04-verify
 
 test-s06-pilot: build build-comet-s05 corpus-s06-verify
 	$(GO) test -tags 'integration fourval' ./test/integration -run '^TestS06IsolatedOpenLoopPilot$$' -timeout 900s -count=1 -v
+
+test-s07-schema:
+	python3 -m unittest discover research/tools -p 'test_s07_*.py' -v
+
+# Builds, verifies public corpora and runs four fresh bounded private networks.
+# The script prints an ignored session path and a SHA-256 manifest for reruns.
+test-s07-smoke:
+	python3 research/tools/s07_orchestrate.py smoke
 
 corpus-s04-verify:
 	$(GO) run ./cmd/research/corpus/profiles verify research/corpus/s04_public_corpus.json
