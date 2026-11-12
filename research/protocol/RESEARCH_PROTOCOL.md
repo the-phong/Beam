@@ -2,6 +2,12 @@
 
 Status: S02 design candidate, 2026-11-09. The source baseline is `test-mainet` commit `0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`; S01 implementation checkpoint is `484c64788883a482c0e8fdba49f80a0e2126617b` (Draft PR #12). This document defines the new RQ1–RQ3 study. It does not import Phase 05 results, authorize a load run, or assert that any of the four experimental profiles exists. S03–S07 and File 02 must satisfy their own gates.
 
+2026-11-13 addendum: the Owner kept the accepted RQ1 contrast and directed
+the distinct [RQ1b legitimate-service question](FILE02_RQ1B_ADDENDUM.md)
+for later case planning. The original RQ1 row and decision rule below are
+unchanged. [D-038](../DECISIONS.md) records Gate COMMON's bounded pre-case
+acceptance; it does not supply confirmatory data.
+
 ## Research questions and falsifiable decisions
 
 The experimental unit for inference is an **independent network run**, not an individual transaction, packet, sample or overlapping time window. A run has a fresh chain/home, source revision, configuration hash, host topology, offered-load plan, seed and immutable ID. Pair runs by intent stream, seed, workload regime and host; randomize or counterbalance profile order. Any proposed effect must be reported with its estimate, run-level 95% confidence interval, number of independent runs and achieved load. A failed validity oracle or missing measurement makes the contrast unavailable, not zero.
