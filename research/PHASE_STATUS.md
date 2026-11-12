@@ -1,6 +1,20 @@
 # Phase status — 2026-11-12
 
-## Current status after structural refactor merge
+## Current S07 implementation candidate
+
+The Owner merged governance [PR #19](https://github.com/the-phong/Beam/pull/19)
+into `test-mainet` at `49facc28ca29102e3e7295546f29b74fe3503a00`, then
+authorized S07 reproducibility and QA. Branch `research/s07-reproducibility`
+starts from that merge commit in the original Pluto folder. Beam is only the
+repository name; the application and Go module remain Pluto. The
+[S07 run instructions](../REPRODUCE.md) and
+[readiness report](evidence/s07/RUN_READINESS_REPORT.md) document a bounded
+C/CP/P/H smoke, immutable private raw artifacts, analyzer and quick CI.
+Technical verification and independent Controller/Owner acceptance remain
+separate. File 02 confirmatory experiments, ML Detection and RQ1–RQ3 result
+claims remain closed. Historical status follows.
+
+## Historical status after structural refactor merge
 
 The Owner merged [PR #18](https://github.com/the-phong/Beam/pull/18) into
 `test-mainet` at `e8f20726f5cea94b47c4dcddb756e39d21207448`.

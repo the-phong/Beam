@@ -2,6 +2,14 @@
 
 Status: S02 contract accepted for staged implementation. This document fixes **what** is counted, **where** it is observed, and **when** a feature is available. S05 implements and validates the available telemetry; S06 tests a bounded collector and load configuration; S07 must prove end-to-end reproduction. The calibration and precision requirements below remain open before confirmatory File 02 runs. A missing stream is `NOT MEASURED`/`null`, never a fabricated zero.
 
+S07 QA update (2026-11-12): the Owner authorized S07 after merging PR #19.
+The [bounded reproduction smoke](../../REPRODUCE.md) exercises the full
+artifact chain, but one run per profile cannot estimate run-level confidence
+intervals or meet benign calibration/FPR requirements. Poll-based all-four
+inclusion observation is an upper bound on inclusion latency and gives a
+conservative lower bound on steady-window observed goodput. Exact commit
+times, multi-host clock bounds and File 02 inference remain unavailable.
+
 S05 implementation status (2026-11-11): the Owner merged PR #16 into
 `test-mainet` at `ac91250ddff31d07b6dcb19f81878e149256e84f`. The
 [metric dictionary](METRICS_DICTIONARY.md) maps this contract to observed

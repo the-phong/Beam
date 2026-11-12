@@ -43,6 +43,10 @@ and File 02 inference remain untested.
 The Owner also merged [structural refactor PR #18](https://github.com/the-phong/Beam/pull/18)
 at `e8f20726f5cea94b47c4dcddb756e39d21207448`; post-merge CI passed.
 The [Controller review closeout](evidence/refactor/CONTROLLER_REVIEW_CLOSEOUT.md)
-records conditional technical acceptance and limits. S07 remains unchecked
-and has no separate Owner authorization. The current package paths above are
-the ones to use for future reruns.
+records conditional technical acceptance and limits. After PR #19 merged,
+the Owner separately authorized S07. Its [reproduction instructions](../REPRODUCE.md),
+[readiness report](evidence/s07/RUN_READINESS_REPORT.md) and
+[public smoke example](evidence/s07/smoke_sample.json) cover a bounded
+four-profile QA run. Private raw files and failed-run exclusion ledgers stay
+under ignored `artifacts/s07/`. This smoke does not authorize File 02 or
+establish RQ1–RQ3 results. The package paths above are current rerun paths.

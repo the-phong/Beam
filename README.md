@@ -34,8 +34,11 @@ S05 PR #16 and S06 PR #17 were merged by the Owner. S06 has a bounded
 [single-host four-validator pilot](research/evidence/s06/TESTBED_REPORT.md)
 on the merged `test-mainet` baseline. The C/CP/P/H application has a four-validator localhost
 integration harness; it is not a selectable profile in the normal `plutod`
-CLI. Checked items link to new evidence. Historical Phase 05 results are not
-new RQ1–RQ3 results.
+CLI. The [S07 reproduction command](REPRODUCE.md) runs a bounded four-profile
+smoke and freezes private raw/derived artifacts with SHA-256; its
+[readiness report](research/evidence/s07/RUN_READINESS_REPORT.md) states the
+technical gate and limitations. Checked items link to new evidence.
+Historical Phase 05 and S07 smoke results are not new RQ1–RQ3 results.
 
 ## Directory map
 
@@ -43,7 +46,7 @@ new RQ1–RQ3 results.
 |---|---|
 | [`cmd/`](cmd), [`internal/`](internal), [`test/integration/`](test/integration) | Node and research executables, domain packages and real-node tests. See the [source guide](docs/SOURCE_GUIDE.md). |
 | [`docs/`](docs/ARCHITECTURE.md) | Architecture, source guide, transaction and experiment flows, and [refactor mapping](docs/REFACTOR_MAPPING.md). |
-| [`research/`](research/README.md) | One home for historical Phase 01–05 records and the current RQ1–RQ3 protocol, checklist, corpus and S01–S06 evidence. Repeated historical raw logs can represent distinct fault cases and are retained for their manifests. |
+| [`research/`](research/README.md) | One home for historical Phase 01–05 records and the current RQ1–RQ3 protocol, checklist, corpus and S01–S07 evidence. Repeated historical raw logs can represent distinct fault cases and are retained for their manifests. |
 | `research/artifacts/`, `build/` | Ignored local backups, raw logs, generated keys/homes and build outputs. Rebuild binaries with `make build`. |
 
 Read [architecture](docs/ARCHITECTURE.md), [source guide](docs/SOURCE_GUIDE.md),
