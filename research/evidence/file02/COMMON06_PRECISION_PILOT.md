@@ -64,3 +64,15 @@ precision pilot, including a bounded update to run duration/rate and a
 cluster-aware p99 CI criterion, or revise the COMMON-06 acceptance wording
 to a procedural gate that forbids p99 until enough samples exist. Neither
 option is assumed here.
+
+## Subsequent disposition
+
+The Owner subsequently authorized the bounded T06 pilot. The locked
+[calibration](T06_CALIBRATION_PILOT.md) and
+[precision extension](T06_PRECISION_PILOT.md) completed. The latter ran 48
+fresh networks and satisfied the preregistered p99 rank and cluster CI gates
+for all four profiles with 12 independent runs and 2,880 steady samples per
+profile. The original 16-run pilot remains an honest failed precision check;
+its raw evidence and finding are unchanged. COMMON-06 is now verified for
+the bounded single-host QA setup, with future confirmatory case runs required
+to meet their own plan and QC gates.

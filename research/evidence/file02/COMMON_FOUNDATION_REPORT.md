@@ -56,8 +56,8 @@ was separately verified (92 files) and left untouched.
 | COMMON-03 | Verified for available single-host QA path | [Paired audit](COMMON03_FIXED_LEGITIMATE_AUDIT.md) used eight fresh networks; each benign/attack pair kept identical legitimate bytes, schedule, accounts and nonce, then added four distinct invalid sends. All valid transactions committed once and all invalid transactions were rejected. Future cases must use the same invariant. |
 | COMMON-04 | Verified at bounded QA rates | [Equal-rate audit](COMMON04_EQUAL_RATE_AUDIT.md) executed eight fresh four-validator networks: exact 2 tx/s across C/CP/P/H, and 2,573 bytes/s target within ±2.49% across C/CP/P/H. Confirmatory higher-rate comparisons still require T06. |
 | COMMON-05 | Verified at bounded QA rates | [Matched-pressure audit](COMMON05_MATCHED_PRESSURE_AUDIT.md) ran four new benign/attack pairs; each profile matched 2 offered tx/s and identical encoded bytes/s in every steady window while declaring accepted rate, mempool occupancy and verification path unmatched. Confirmatory case-specific comparisons remain future work. |
-| COMMON-06 | Partial; not ticked | [Counterbalanced precision pilot](COMMON06_PRECISION_PILOT.md) ran 16 independent-network QA runs, four/profile with unique seeds/genesis and balanced order. Each profile has only 36 latency samples; p99 precision fails. A separate T06 calibration/precision authorization or Owner revision of the acceptance rule is needed before ticking. |
-| COMMON-07 | Partial | Plan/result schemas require IDs and planned/achieved rates; future case producer must feed and validate every run. |
+| COMMON-06 | Verified for bounded single-host QA | The initial [precision pilot](COMMON06_PRECISION_PILOT.md) failed at n=36/profile. After Owner-authorized bounded T06 [calibration](T06_CALIBRATION_PILOT.md), the [precision extension](T06_PRECISION_PILOT.md) ran 48 fresh networks, 12/profile and n=2,880 steady transactions/profile. All four met the preregistered rank and cluster CI gates; latency is a block-scan upper bound, not exact commit time. |
+| COMMON-07 | Verified for bounded QA path | [Run identity audit](COMMON07_RUN_IDENTITY_AUDIT.md) rehashed and QC-validated all 48 T06 pilot runs before producing [per-run records](COMMON07_RUN_RECORDS.json) with source tree, profile, case, capability and planned/achieved tx/s and bytes/s. Future case producers must satisfy the same gate. |
 | COMMON-08 | Partial | QC code excludes declared fault flags and rate misses; independent fault signal integration awaits case producer. |
 | COMMON-09 | Open by checklist order | Loopback-only four-validator smoke and S06 safety guards passed, but the item remains unchecked until COMMON-06–08 and future case guard wiring are verified. |
 | COMMON gate | Open | Precision pilot, complete preregistration and case-specific oracle integration remain. |
@@ -66,4 +66,5 @@ was separately verified (92 files) and left untouched.
 
 All unverified boxes remain unchecked in the outside Checklist 02. The
 foundation's synthetic test data are neither a fresh File 02 experiment nor
-evidence for RQ1–RQ3, capacity, p99, benign FPR, DoS or an ML detector.
+evidence for RQ1–RQ3, capacity, benign FPR, DoS or an ML detector. The
+separate bounded T06 pilot supports only the stated p99 precision gate.
