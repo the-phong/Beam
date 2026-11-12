@@ -1,6 +1,20 @@
 # Pluto agent execution contract
 
-## Current authority — File 02 common foundation, sections 0–2 (2026-11-12)
+## Current authority — File 02 T preflight, T01–T07 (2026-11-13)
+
+The Owner accepted Gate COMMON for bounded pre-case readiness after all four
+PR #21 CI checks passed and directed RQ1b to be recorded separately from
+the accepted RQ1. D-038 records that decision. The Owner then authorized
+Checklist 02 T01–T07 in order. Work on `research/file02-t-preflight` from
+the accepted COMMON branch head while PR #21 remains unmerged; preserve the
+dependency and use a Draft PR for review. Tick each T item only after its
+own verified evidence. Earlier T06 pilots are calibration evidence, not
+formal T06 completion. Keep the S06 safety caps, loopback/private targets,
+raw evidence privacy and historical bytes. Do not merge PRs, change
+protected branches, start R/A/Q/D cases, train ML or claim RQ/DoS results.
+The File 02 common foundation authority below is historical.
+
+## Historical authority — File 02 common foundation, sections 0–2 (2026-11-12)
 
 The Owner explicitly requested autonomous setup, implementation and completion
 of sections 0, 1 and 2 of the outside Checklist 02. Work in the original

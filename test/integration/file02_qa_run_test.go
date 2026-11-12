@@ -36,7 +36,14 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if err := os.WriteFile(genesisPath, fixture.Genesis, 0600); err != nil {
 		t.Fatal(err)
 	}
-	metadata["scope"] = "QA_ONLY"
+	scope, ok := metadata["scope"].(string)
+	if !ok {
+		scope = "QA_ONLY"
+	}
+	if scope != "QA_ONLY" && scope != "T_PREFLIGHT" {
+		t.Fatal("unsupported File 02 run scope")
+	}
+	metadata["scope"] = scope
 	metadata["run_id"] = plan.RunID
 	metadata["source_commit"] = os.Getenv("FILE02_SOURCE_COMMIT")
 	metadata["source_tree"] = os.Getenv("FILE02_SOURCE_TREE")
