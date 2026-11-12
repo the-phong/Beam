@@ -10,10 +10,13 @@ project:
   research_v2_s04_status: owner_merged_pr15_630f2d8c
   research_v2_s05_status: owner_merged_pr16_ac91250d
   research_v2_s06_status: owner_merged_pr17_ed6bc8f_pilot_only
-  active_authorization: owner_requested_domain_oriented_refactor_2026_11_11
+  research_v2_s07_status: not_authorized_not_started
+  refactor_status: owner_merged_pr18_e8f20726_controller_conditional_accept_postmerge_ci_pass
+  active_authorization: post_refactor_governance_closeout_2026_11_12
   baseline_branch: test-mainet
-  baseline_commit: ed6bc8f474c13ed709d5ab5f57b3856edcbf602a
-  baseline_tree: 8c84b0b2ad85fb064d1286ff78f4d37871e49bcb
+  baseline_commit: e8f20726f5cea94b47c4dcddb756e39d21207448
+  baseline_tree: 0e2fb19edab1ceb6989e88b8e08e9389b5a816e4
+  refactor_source_commit: ed6bc8f474c13ed709d5ab5f57b3856edcbf602a
   phase_03b_status: completed_controller_accepted_merged
   phase_03c_implementation_authorized: false
   phase_03c_was_authorized: true

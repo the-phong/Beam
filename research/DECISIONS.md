@@ -1,5 +1,13 @@
 # Architectural decision log
 
+Current disposition of D-037: the Owner merged [refactor PR #18](https://github.com/the-phong/Beam/pull/18)
+into `test-mainet` at `e8f20726f5cea94b47c4dcddb756e39d21207448`.
+The Controller conditionally accepted its structural scope and the
+[post-merge CI](https://github.com/the-phong/Beam/actions/runs/43146676567)
+passed. The [review closeout](evidence/refactor/CONTROLLER_REVIEW_CLOSEOUT.md)
+records limits; [branch policy](../docs/BRANCH_POLICY.md) remains an Owner
+decision. The original proposal text below is retained for history.
+
 ## D-037 — Domain-oriented source layout (2026-11-11; proposed for Controller/Owner review)
 
 The Owner requested one architecture-first structural refactor from the S06

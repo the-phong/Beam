@@ -1,6 +1,18 @@
-# Phase status — 2026-11-11
+# Phase status — 2026-11-12
 
-## Current `test-mainet` baseline and new research program
+## Current status after structural refactor merge
+
+The Owner merged [PR #18](https://github.com/the-phong/Beam/pull/18) into
+`test-mainet` at `e8f20726f5cea94b47c4dcddb756e39d21207448`.
+[Post-merge CI](https://github.com/the-phong/Beam/actions/runs/43146676567)
+completed successfully. The Controller conditionally accepted the structural
+refactor; [review closeout](evidence/refactor/CONTROLLER_REVIEW_CLOSEOUT.md)
+records evidence and limits. S07 remains unstarted and unauthorized; File 02
+experiments are unopened. Current branch roles and PR #13's conflict are in
+[branch policy](../docs/BRANCH_POLICY.md). The paragraphs below are dated
+historical checkpoints, not current authorization.
+
+## Historical `test-mainet` baseline and new research program
 
 Phase 05 PR #10 is merged into `test-mainet` at
 `0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`. The Phase 05 B0/B1
@@ -66,7 +78,7 @@ current research recommendation is NO-GO for a new mechanism on the bounded
 data, while broader DoS susceptibility remains INCONCLUSIVE. D-028's
 EVM NO-GO continues. The Phase 04 paragraphs below are historical.
 
-## Active Phase 04 B1 candidate (Owner authorized 2026-10-26)
+## Historical Phase 04 B1 candidate (Owner authorized 2026-10-26)
 
 The Owner merged accepted Phase 03E PR #8 at
 `007e827f740c9c741f47bf1f7a51eec98a79cc5a` and authorized one complete
@@ -80,7 +92,7 @@ Byzantine fault tolerance, multi-host result or physical durability is
 claimed. The historical status paragraphs below retain their original
 context; their earlier authorization limits are superseded for this phase.
 
-## Active Phase 03E implementation candidate
+## Historical Phase 03E implementation candidate
 
 The Owner approved one complete Phase 03E four-validator BFT integration
 workflow after merging the accepted Phase 03D branch into `test-mainet` at
