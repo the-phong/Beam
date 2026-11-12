@@ -66,7 +66,7 @@ def quantile99(values):
 
 def cluster_bootstrap(groups, seed):
     """Two-stage bootstrap: whole networks, then transactions within each."""
-    require(len(groups) == BLOCKS and all(len(group) == 1+RATE*STEADY_SECONDS for group in groups),
+    require(len(groups) == BLOCKS and all(len(group) == RATE*STEADY_SECONDS for group in groups),
             "bootstrap requires twelve complete independent runs")
     point = quantile99([v for group in groups for v in group])
     rng = random.Random(seed)
@@ -137,7 +137,8 @@ def validate_run(run, job, source, tree):
                 "all-four commit observation mismatch")
         sent_utc, seen_utc = s07.parse_time(actual["actual_send_utc"]), s07.parse_time(commit["all_four_seen_utc"])
         require(seen_utc >= sent_utc, "negative inclusion upper bound")
-        latencies.append((seen_utc-sent_utc).total_seconds()*1000)
+        if target >= plan["warmup_ns"]:
+            latencies.append((seen_utc-sent_utc).total_seconds()*1000)
     require(windows == [RATE]*STEADY_SECONDS and len(hashes) == len(slots) == count,
             "achieved rate or distinct transaction count")
     return {"run_id": job["run_id"], "profile": job["profile"], "block": job["block"],

@@ -59,12 +59,14 @@ seconds, followed by three drain seconds. All run durations, tx/s, bytes/s,
 queue, CPU/RSS and disk guards remain the accepted S06 caps. A failed run
 stops the sequence; it is not silently retried. Exact planned/achieved
 send windows, complete all-four block/state oracle, no censoring and all
-241 block-scan inclusion observations are required for QC.
+241 block-scan inclusion observations are required for QC. The warm-up
+transaction is verified by the oracle but excluded from the p99 sample.
 
 The latency observation is the first time each transaction is found in
 the same block on all four validators by 100 ms block scanning. It is an
 **upper bound** on inclusion time, not the exact commit timestamp.
-For each profile, the 12 run clusters provide 2,892 transaction samples.
+For each profile, the 12 run clusters provide 2,880 steady-state latency
+samples, 240 per run.
 The already fixed empirical p99 population-rank band is 98.5–99.5% with
 ≥95% coverage under the optimistic i.i.d. order-statistic model. To account
 for dependence, a deterministic two-stage bootstrap resamples 12 complete
