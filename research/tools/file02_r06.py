@@ -102,9 +102,9 @@ def bind_run_plan(run, network_root):
     metadata, load_plan, nodes = (common.read_json(run / name) for name in
                                   ("metadata.json", "plan.json", "nodes.json"))
     case = metadata.get("case_id")
-    require(case in ("R06", "R07", "R08", "R09", "R14", "R15") and metadata.get("scope") == "R_CONFIRMATORY" and
+    require(case in ("R06", "R07", "R08", "R09", "R14", "R15", "R16") and metadata.get("scope") == "R_CONFIRMATORY" and
             metadata.get("run_id") == load_plan.get("run_id") and len(nodes) == 4, "R06 identity")
-    config_path = run / "config.json" if case in ("R08", "R09", "R14", "R15") else ROOT / "research/config/s06_pilot.json"
+    config_path = run / "config.json" if case in ("R08", "R09", "R14", "R15", "R16") else ROOT / "research/config/s06_pilot.json"
     root = common.read_json(config_path)
     require(common.digest(config_path) == metadata["config_sha256"], "run config hash mismatch")
     network, safety = root["network"], root["safety"]
@@ -120,10 +120,10 @@ def bind_run_plan(run, network_root):
             "architecture": inventory["architecture"], "logical_cpus": inventory["logical_cpus"],
             "os": inventory["os"]}
     is_r06 = case in ("R06", "R15")
-    is_rate20 = case in ("R08", "R09", "R14")
-    planned_rate = metadata.get("rate") if case == "R15" else 20 if is_r06 or is_rate20 else round(2568 / WIRE[profile])
+    is_fixed4 = case in ("R08", "R09", "R14", "R16")
+    planned_rate = metadata.get("rate") if case == "R15" else 10 if case == "R16" else 20 if is_r06 or is_fixed4 else round(2568 / WIRE[profile])
     require(isinstance(planned_rate, int) and 1 <= planned_rate <= safety["max_tx_per_second"], "case rate")
-    require(load_plan["regime"] == ("equal_tx_s" if is_r06 or is_rate20 else "equal_bytes_s") and
+    require(load_plan["regime"] == ("equal_tx_s" if is_r06 or is_fixed4 else "equal_bytes_s") and
             load_plan["steady_ns"] == (12 if is_r06 else 4)*1_000_000_000 and
             load_plan["drain_ns"] == (3 if case == "R15" else 5 if is_r06 else 3)*1_000_000_000 and
             len(load_plan["events"]) == 1 + planned_rate*(12 if is_r06 else 4), "case schedule")
@@ -132,7 +132,8 @@ def bind_run_plan(run, network_root):
             "hypothesis": "H valid CheckTx service exceeds exact-size CP at matched offered rate",
             "null_hypothesis": "H-minus-CP mean service <= 0",
             "alternative_hypothesis": "H-minus-CP mean service > 0",
-            "analysis_plan": {"primary_endpoint": "time_aligned_goodput_and_latency_queue_knee_rule" if case == "R15" else
+            "analysis_plan": {"primary_endpoint": "benign_transient_queue_peak_and_recovery_bound" if case == "R16" else
+                                                  "time_aligned_goodput_and_latency_queue_knee_rule" if case == "R15" else
                                                   "recheck_count_and_result_codes" if case == "R14" else
                                                   "first_mempool_count_full_offset_ns" if case == "R08" else
                                                   "first_mempool_bytes_full_offset_ns" if case == "R09" else
@@ -142,7 +143,8 @@ def bind_run_plan(run, network_root):
                               "exclusion_rule": "any failed locked-arm QC excludes paired block; no replacement"},
             "raw_capture_plan": ["telemetry", "transaction_results", "validator_blocks_and_apphash",
                                  "loadgen_timeline", "host_metrics"],
-            "expected_oracle": (f"{1+12*planned_rate} valid exact-once commits and four-validator AppHash agreement" if case == "R15" else
+            "expected_oracle": ("41 valid exact-once commits and four-validator AppHash agreement" if case == "R16" else
+                                f"{1+12*planned_rate} valid exact-once commits and four-validator AppHash agreement" if case == "R15" else
                                 "81 valid exact-once commits and four-validator AppHash agreement" if case == "R14" else
                                 "241 valid exact-once commits and four-validator AppHash agreement"),
             "source_commit": metadata["source_commit"], "source_tree": metadata["source_tree"],
@@ -173,14 +175,14 @@ def bind_run_plan(run, network_root):
                               "drain": 3 if case == "R15" else 5 if is_r06 else 3, "cooldown": 2},
             "planned": {"valid_tx_s": planned_rate, "invalid_tx_s": 0,
                         "total_bytes_s": WIRE[profile]*planned_rate},
-            "matching": {"matched_variable": "tx_s" if is_r06 or is_rate20 else "bytes_s",
-                         "unmatched_variables": ["wire_bytes", "verification_path"] if is_r06 or is_rate20 else
+            "matching": {"matched_variable": "tx_s" if is_r06 or is_fixed4 else "bytes_s",
+                         "unmatched_variables": ["wire_bytes", "verification_path"] if is_r06 or is_fixed4 else
                                                 ["tx_s", "verification_path"]},
             "pilot_reference": "research/evidence/file02/T06_KNEE_PILOT.md" if is_r06 else
                                "research/evidence/file02/COMMON04_EQUAL_RATE_AUDIT.md" if case == "R07" else
                                "research/evidence/file02/R08_MEMPOOL_COUNT_AUDIT.md" if case == "R09" else
                                "research/evidence/file02/T01_BASELINE_AUDIT.md",
-            "independent_run_target": 3 if case == "R15" else 4 if is_rate20 else 12,
+            "independent_run_target": 3 if case == "R15" else 4 if is_fixed4 else 12,
             "p99_precision_rule": "rank>=0.95 and two_stage_cluster_CI_radius<=0.20; 2000 draws"}
     common.validate_plan(plan)
     target = run / "research_plan"

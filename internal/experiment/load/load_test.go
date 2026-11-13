@@ -60,6 +60,17 @@ func TestS06PilotPlansHaveDirectOracleAndMatchedRegimes(t *testing.T) {
 	if len(burst.Events) < 2 || burst.Waveform != "burst" {
 		t.Fatal("missing bounded burst schedule")
 	}
+	ramp, err := BuildPilotPlan(f, researchv2.ProfileH, EqualTxRate, "ramp", "pilot-ramp", 611, c, hash, 10)
+	if err != nil || ramp.Waveform != "ramp" || len(ramp.Events) != 41 {
+		t.Fatalf("missing bounded ramp schedule: events=%d err=%v", len(ramp.Events), err)
+	}
+	var windows [4]int
+	for _, event := range ramp.Events[1:] {
+		windows[(event.OffsetNS-int64(time.Second))/int64(time.Second)]++
+	}
+	if windows != [4]int{4, 8, 12, 16} {
+		t.Fatalf("R16 ramp windows %v", windows)
+	}
 }
 
 func TestS06PlanRefusesDuplicateAndUnsafeSource(t *testing.T) {
