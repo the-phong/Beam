@@ -60,6 +60,17 @@ func TestS06PilotPlansHaveDirectOracleAndMatchedRegimes(t *testing.T) {
 	if len(burst.Events) < 2 || burst.Waveform != "burst" {
 		t.Fatal("missing bounded burst schedule")
 	}
+	ramp, err := BuildPilotPlan(f, researchv2.ProfileH, EqualTxRate, "ramp", "pilot-ramp", 611, c, hash, 10)
+	if err != nil || ramp.Waveform != "ramp" || len(ramp.Events) != 41 {
+		t.Fatalf("missing bounded ramp schedule: events=%d err=%v", len(ramp.Events), err)
+	}
+	var windows [4]int
+	for _, event := range ramp.Events[1:] {
+		windows[(event.OffsetNS-int64(time.Second))/int64(time.Second)]++
+	}
+	if windows != [4]int{4, 8, 12, 16} {
+		t.Fatalf("R16 ramp windows %v", windows)
+	}
 }
 
 func TestS06PlanRefusesDuplicateAndUnsafeSource(t *testing.T) {
@@ -181,6 +192,37 @@ func TestS06KillSwitchAndPublicTargetRefused(t *testing.T) {
 	}
 	if err := guard.Check(context.Background()); !errors.Is(err, ErrSafety) || !strings.Contains(err.Error(), "kill switch") {
 		t.Fatalf("manual kill switch ignored: %v", err)
+	}
+}
+
+func TestFile02MempoolLimitReasonClassification(t *testing.T) {
+	for _, tc := range []struct {
+		message string
+		next    int
+		want    string
+	}{
+		{"mempool is full: number of txs 1 (max: 1), total txs bytes 2568 (max: 8388608)", 2568, "mempool_count_full"},
+		{"mempool is full: number of txs 1 (max: 128), total txs bytes 2568 (max: 2700)", 2568, "mempool_bytes_full"},
+		{"mempool is full: number of txs 1 (max: 1), total txs bytes 2568 (max: 2700)", 2568, "mempool_count_and_bytes_full"},
+		{"some other RPC error", 1, "rpc_reject"},
+		{"Tx too large. Max size is 8192, but got 8193", 8193, "mempool_tx_too_large"},
+	} {
+		if got := classifyRPCAdmission(tc.message, tc.next); got != tc.want {
+			t.Fatalf("%q classified %q, want %q", tc.message, got, tc.want)
+		}
+	}
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"jsonrpc":"2.0","error":{"code":-32603,"message":"Internal error","data":"mempool is full: number of txs 1 (max: 1), total txs bytes 2568 (max: 8388608)"}}`))
+	}))
+	defer server.Close()
+	sender, err := NewHTTPSender(server.URL, time.Second)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := sender.Send(context.Background(), []byte{1})
+	if got.Err == nil || got.Reason != "mempool_count_full" {
+		t.Fatalf("unexpected bounded RPC classification: %+v", got)
 	}
 }
 

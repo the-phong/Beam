@@ -3,6 +3,9 @@
 package integration
 
 import (
+	"crypto/sha256"
+	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -33,6 +36,15 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if err := load.WritePlan(planPath, plan, c, configHash); err != nil {
 		t.Fatal(err)
 	}
+	if metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
+		configBytes, err := os.ReadFile(configPath)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := s07WriteExclusive(filepath.Join(run, "config.json"), configBytes); err != nil {
+			t.Fatal(err)
+		}
+	}
 	genesisPath := filepath.Join(run, "genesis.bin")
 	if err := os.WriteFile(genesisPath, fixture.Genesis, 0600); err != nil {
 		t.Fatal(err)
@@ -41,7 +53,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if !ok {
 		scope = "QA_ONLY"
 	}
-	if scope != "QA_ONLY" && scope != "T_PREFLIGHT" {
+	if scope != "QA_ONLY" && scope != "T_PREFLIGHT" && scope != "R_CONFIRMATORY" {
 		t.Fatal("unsupported File 02 run scope")
 	}
 	metadata["scope"] = scope
@@ -54,7 +66,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 		t.Fatal(err)
 	}
 	pilot := startS06NetworkAt(t, c, fixture, profile, t.TempDir())
-	if metadata["case_id"] == "T05" {
+	if metadata["case_id"] == "T05" || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
 		mode, ok := metadata["recorder_mode"].(string)
 		if !ok || (mode != "ON" && mode != "OFF") {
 			t.Fatal("T05 requires recorder mode ON or OFF")
@@ -90,6 +102,13 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	}
 	if err := s07WriteExclusive(filepath.Join(run, "nodes.json"), nodes); err != nil {
 		t.Fatal(err)
+	}
+	if metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
+		bind := exec.Command("python3", "../../research/tools/file02_r06.py", "bind-run-plan", run, pilot.n.root)
+		output, err := bind.CombinedOutput()
+		if err != nil {
+			t.Fatalf("R06 pre-send common plan lock failed: %v: %s", err, output)
+		}
 	}
 	captureCommits := metadata["capture_commit_observations"] != false
 	var observed chan []s07CommitObservation
@@ -144,18 +163,59 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 			t.Fatal(err)
 		}
 	}
-	if runErr != nil {
+	if runErr != nil && metadata["case_id"] != "R08" && metadata["case_id"] != "R09" {
 		t.Fatalf("bounded load failed: %v (private load.log)", runErr)
 	}
 	var result load.Result
 	raw, err := os.ReadFile(filepath.Join(run, "result.json"))
-	if err != nil || json.Unmarshal(raw, &result) != nil || result.Status != load.StatusOK || result.ActualSendCount != len(plan.Events) {
+	if err != nil || json.Unmarshal(raw, &result) != nil {
+		t.Fatalf("cannot read load result: %v", err)
+	}
+	validStatus := result.Status == load.StatusOK || (metadata["case_id"] == "R08" || metadata["case_id"] == "R09") && result.Status == load.StatusOracleMismatch
+	if !validStatus || result.ActualSendCount != len(plan.Events) {
 		t.Fatalf("invalid load result: %v status=%s", err, result.Status)
 	}
+	if runErr != nil && result.Status == load.StatusOK {
+		t.Fatalf("successful R08 result had process failure: %v", runErr)
+	}
 	pilot.n.waitAll(8, 30*time.Second)
-	oracle := s07Oracle(t, pilot, fixture, plan, result)
-	if err := s07WriteJSON(filepath.Join(run, "oracle.json"), oracle); err != nil {
-		t.Fatal(err)
+	var oracle s07OracleRecord
+	if metadata["case_id"] == "R08" || metadata["case_id"] == "R09" {
+		reason := "mempool_count_full"
+		if metadata["case_id"] == "R09" {
+			reason = "mempool_bytes_full"
+		}
+		if err := s07WriteJSON(filepath.Join(run, "oracle.json"), file02LimitOracle(t, pilot, plan, result, reason)); err != nil {
+			t.Fatal(err)
+		}
+	} else {
+		oracle = s07Oracle(t, pilot, fixture, plan, result)
+		if err := s07WriteJSON(filepath.Join(run, "oracle.json"), oracle); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
+		for i, recorder := range pilot.recorders {
+			events, dropped := recorder.Drain()
+			if dropped != 0 {
+				t.Fatalf("File02 R recorder %d dropped %d events", i, dropped)
+			}
+			file, err := os.OpenFile(filepath.Join(run, fmt.Sprintf("recorder-%d.jsonl", i)), os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err := telemetry.WriteJSONL(file, events); err != nil {
+				_ = file.Close()
+				t.Fatal(err)
+			}
+			if err := file.Close(); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	if metadata["case_id"] == "R08" || metadata["case_id"] == "R09" {
+		t.Logf("%s run=%s status=%s", metadata["case_id"], plan.RunID, result.Status)
+		return
 	}
 	if metadata["case_id"] == "T04" {
 		var totals [4]uint64
@@ -236,4 +296,93 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 		}
 	}
 	t.Logf("File02 QA run=%s valid=%d invalid=%d height=%d", plan.RunID, oracle.ValidCommitted, oracle.InvalidRejected, oracle.CommonHeight)
+}
+
+func file02LimitOracle(t *testing.T, pilot *s06Network, plan load.Plan, result load.Result, reason string) map[string]any {
+	t.Helper()
+	common := int64(1 << 62)
+	for i := range pilot.n.nodes {
+		height, _, err := pilot.n.height(i)
+		if err != nil || height < 8 {
+			t.Fatalf("R08 validator %d height %d: %v", i, height, err)
+		}
+		if height < common {
+			common = height
+		}
+	}
+	var reference map[string]int
+	var blockID, appHash string
+	for i := range pilot.n.nodes {
+		seen := map[string]int{}
+		for h := int64(1); h <= common; h++ {
+			block, app, txs, err := pilot.n.block(i, h)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if h == common {
+				if i == 0 {
+					blockID, appHash = block, app
+				} else if block != blockID || app != appHash {
+					t.Fatal("R08 BlockID/AppHash divergence")
+				}
+			}
+			for _, encoded := range txs {
+				wire, err := base64.StdEncoding.DecodeString(encoded)
+				if err != nil {
+					t.Fatal(err)
+				}
+				hash := sha256.Sum256(wire)
+				seen[hex.EncodeToString(hash[:])]++
+			}
+		}
+		if i == 0 {
+			reference = seen
+		} else {
+			if len(seen) != len(reference) {
+				t.Fatal("R08 validator commit set differs")
+			}
+			for hash, count := range reference {
+				if seen[hash] != count {
+					t.Fatal("R08 validator commit count differs")
+				}
+			}
+		}
+	}
+	accepted, rejected := 0, 0
+	var firstFull *int64
+	for i, event := range plan.Events {
+		actual := result.Events[i]
+		if actual.ID != event.ID || actual.ActualOffsetNS == nil {
+			t.Fatal("R08 missing send")
+		}
+		if actual.ActualCode != nil && *actual.ActualCode == 0 && actual.SubmissionError == "" {
+			accepted++
+			if reference[event.SHA256] != 1 {
+				t.Fatalf("R08 accepted %s did not commit once", event.ID)
+			}
+		} else if actual.Reason == reason {
+			rejected++
+			if reference[event.SHA256] != 0 {
+				t.Fatalf("R08 rejected %s committed", event.ID)
+			}
+			if firstFull == nil {
+				firstFull = actual.ActualOffsetNS
+			}
+		} else {
+			t.Fatalf("R08 unexpected admission outcome for %s: %s/%s", event.ID, actual.Reason, actual.SubmissionError)
+		}
+	}
+	if len(reference) != accepted {
+		t.Fatal("R08 committed unexpected transaction")
+	}
+	if reason == "mempool_count_full" {
+		return map[string]any{"schema": "pluto.file02.r08_oracle.v1", "run_id": plan.RunID,
+			"status": "OK", "common_height": common, "block_id": blockID, "app_hash": appHash,
+			"valid_accepted": accepted, "valid_rejected_count_full": rejected,
+			"first_count_full_offset_ns": firstFull}
+	}
+	return map[string]any{"schema": "pluto.file02.r09_oracle.v1", "run_id": plan.RunID,
+		"status": "OK", "common_height": common, "block_id": blockID, "app_hash": appHash,
+		"valid_accepted": accepted, "valid_rejected_bytes_full": rejected,
+		"first_bytes_full_offset_ns": firstFull}
 }

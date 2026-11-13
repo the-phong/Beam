@@ -65,7 +65,8 @@ func (f *PilotFixture) signed(p researchv2.Profile, slot int, amount uint64) ([]
 // offered stream cannot depend on which prior transaction already committed.
 // A fresh network is still required for every run.
 func BuildPilotPlan(f *PilotFixture, p researchv2.Profile, regime, waveform, runID string, seed int64, c Config, configHash string, txRate int) (Plan, error) {
-	if f == nil || !p.Valid() || txRate < 0 || (waveform != "constant" && waveform != "burst") {
+	if f == nil || !p.Valid() || txRate < 0 || (waveform != "constant" && waveform != "burst" && waveform != "ramp") ||
+		(waveform == "ramp" && txRate%5 != 0) {
 		return Plan{}, ErrPlan
 	}
 	genesisHash := sha256.Sum256(f.Genesis)
@@ -122,6 +123,8 @@ func BuildPilotPlan(f *PilotFixture, p researchv2.Profile, regime, waveform, run
 			} else {
 				count = steadyPerSecond * 2
 			}
+		} else if waveform == "ramp" {
+			count = steadyPerSecond * (second + 1) * 2 / 5
 		}
 		for j := 0; j < count; j++ {
 			offset := int64(time.Second) + int64(second)*int64(time.Second) + int64(j+1)*int64(time.Second)/int64(count+1)
@@ -150,6 +153,8 @@ func BuildPilotPlan(f *PilotFixture, p researchv2.Profile, regime, waveform, run
 				scenario := "benign_low"
 				if waveform == "burst" {
 					scenario = "benign_burst"
+				} else if waveform == "ramp" {
+					scenario = "benign_ramp"
 				} else if steadyPerSecond >= 5 {
 					scenario = "valid_high_rate"
 				}

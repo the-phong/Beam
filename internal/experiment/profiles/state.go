@@ -306,7 +306,14 @@ func EvaluateTrustedObserved(s State, profile Profile, raw []byte, record func(S
 		}
 	}
 	visit(StageStructural)
+	var started time.Time
+	if duration != nil {
+		started = time.Now()
+	}
 	t, err := Parse(raw)
+	if duration != nil {
+		duration(StageStructural, time.Since(started))
+	}
 	if err != nil {
 		return s, Result{CodeMalformed, StageStructural}, nil
 	}
@@ -323,14 +330,30 @@ func EvaluateTrustedObserved(s State, profile Profile, raw []byte, record func(S
 		return s, Result{CodeZeroAmount, StageAmount}, nil
 	}
 	visit(StageBinding)
+	if duration != nil {
+		started = time.Now()
+	}
 	sender, found := s.lookup(b0state.Address(t.Sender))
 	if !found {
+		if duration != nil {
+			duration(StageBinding, time.Since(started))
+		}
 		return s, Result{CodeBadBinding, StageBinding}, nil
 	}
-	if _, found = s.lookup(b0state.Address(t.Receiver)); !found {
+	_, receiverFound := s.lookup(b0state.Address(t.Receiver))
+	if duration != nil {
+		duration(StageBinding, time.Since(started))
+	}
+	if !receiverFound {
 		return s, Result{CodeBadBinding, StageBinding}, nil
+	}
+	if duration != nil {
+		started = time.Now()
 	}
 	digest, err := SigningDigest(t)
+	if duration != nil {
+		duration(StageDigest, time.Since(started))
+	}
 	if err != nil {
 		return State{}, Result{}, err
 	}
@@ -363,7 +386,6 @@ func EvaluateTrustedObserved(s State, profile Profile, raw []byte, record func(S
 		}
 	}
 	visit(StageState)
-	var started time.Time
 	if duration != nil {
 		started = time.Now()
 	}
@@ -377,7 +399,13 @@ func EvaluateTrustedObserved(s State, profile Profile, raw []byte, record func(S
 	if code != 0 {
 		return s, Result{Code(code), StageState}, nil
 	}
+	if duration != nil {
+		started = time.Now()
+	}
 	next, err := s.withBase(base)
+	if duration != nil {
+		duration(StageStateCopy, time.Since(started))
+	}
 	if err != nil {
 		return State{}, Result{}, err
 	}

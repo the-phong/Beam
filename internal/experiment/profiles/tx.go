@@ -95,9 +95,11 @@ const (
 	StageChain      Stage = "chain"
 	StageAmount     Stage = "amount"
 	StageBinding    Stage = "binding"
+	StageDigest     Stage = "digest"
 	StageSecp       Stage = "secp"
 	StageML         Stage = "ml"
 	StageState      Stage = "state"
+	StageStateCopy  Stage = "state_copy"
 	StageAccepted   Stage = "accepted"
 )
 
