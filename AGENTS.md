@@ -1,6 +1,21 @@
 # Pluto agent execution contract
 
-## Current authority — File 02 R01–R16 (2026-11-13)
+## Current authority — Gate RQ1 bounded Owner acceptance (2026-11-13)
+
+The Owner accepted Checklist 02 R01–R16 with eight PASS, six PARTIAL and
+two UNSUPPORTED dispositions after PR #25 merged the R result tree into
+`test-mainet` at `d67fef2598f278015968353763357f6aed28250d`. The accepted
+H-minus-CP application CheckTx effect is +81.47 microseconds/transaction
+only for the tested four-validator single-host RPC-origin 20-tx/s stratum.
+No knee was observed within the unchanged safe range; no DoS or distributed
+performance conclusion follows. Keep PARTIAL/UNSUPPORTED boxes open and
+preserve raw, protocol and safety caps. This acceptance does not authorize
+A/Q/D cases, ML training, new R experiments or a phase transition. Record
+the acceptance on a governance branch for review; do not push directly to
+protected branches or merge the closeout PR without a new Owner instruction.
+The R execution authority below is historical.
+
+## Historical authority — File 02 R01–R16 (2026-11-13)
 
 The Owner approved one complete Checklist 02 section 4 task, R01 through R16
 in order, using accepted Gate T and the RQ1/RQ1b planning documents on Draft

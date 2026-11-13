@@ -1,5 +1,30 @@
 # Architectural decision log
 
+## D-041 — Owner accepts bounded File 02 Gate RQ1 disposition (2026-11-13)
+
+The Owner accepted the R01–R16 group with eight PASS, six PARTIAL and two
+UNSUPPORTED dispositions, as recorded in the
+[Gate acceptance](evidence/file02/RQ1_GATE_BOUNDED_ACCEPTANCE_20261113.md).
+This accepts the observed H-minus-CP valid application CheckTx service-cost
+difference of +81.47 microseconds/transaction, paired 95% CI
+[+75.16, +87.26] microseconds/transaction, **only** for the tested
+four-validator single-host, RPC-origin, 20-valid-tx/s stratum. The accepted
+RQ1 hypothesis remains unchanged and RQ1b remains separate. R15 did not
+observe a defensible benign-capacity knee through 25 tx/s within existing
+safety caps. No DoS, sustainable steady-state throughput, direct P2P-origin
+effect, exact cross-host latency or independent multi-host performance
+conclusion is accepted. Open case boxes remain open; this decision does not
+authorize A/Q/D cases, ML training or further experiments.
+
+PR #23 merged the planning baseline at
+`45495c56319b7f61619e7cd6b00208e2af7b0f3c`, PR #24 merged the R
+result tree into the planning branch at
+`7ae6fa82aa56d8d39cc4a848b8f5dd1be90ebd24`, and PR #25 integrated
+that tree into `test-mainet` at
+`d67fef2598f278015968353763357f6aed28250d`. All four PR #25 checks
+and post-merge `verify` passed. The decision records scientific acceptance
+within this scope; it does not change historical raw or protocol semantics.
+
 ## D-040 — Owner opens Checklist 02 R01–R16 as one bounded task (2026-11-13)
 
 The Owner approved all section 4 cases in checklist order without per-case
