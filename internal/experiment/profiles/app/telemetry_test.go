@@ -70,7 +70,7 @@ func TestS05CheckTxTelemetryONOFFCorpus(t *testing.T) {
 					t.Fatalf("wrong measurement: %+v", e)
 				}
 				for _, span := range e.Spans {
-					if span.DurationNS < 0 || (item.Stage == researchv2.StageStructural && span.Stage != "") {
+					if span.DurationNS < 0 || (item.Stage == researchv2.StageStructural && span.Stage != string(researchv2.StageStructural)) {
 						t.Fatalf("invalid span: %+v", span)
 					}
 				}

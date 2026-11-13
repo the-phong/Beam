@@ -9,7 +9,9 @@ confirmatory runs. RQ1b remains separate and no A/Q/D group is opened.
 Implement and verify feasible R cases on four-validator single-host,
 RPC-origin topology within unchanged S06 caps. Record unsupported or
 unobserved cases with evidence; never fabricate outputs or tick a failed
-case. Preserve historical raw, accepted protocol/runtime and private data.
+case. Preserve historical raw, accepted protocol semantics and private data;
+measurement-only hooks must leave validation outcomes unchanged and pass
+regression tests.
 Use a branch from PR #23's planning head and a stacked Draft PR for Gate RQ1
 review. Do not merge, train ML or claim DoS. Report only after R01–R16 have
 each received an evidenced disposition. The Gate T planning authority below

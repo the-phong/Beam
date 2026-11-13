@@ -160,7 +160,7 @@ func (a *App) CheckTx(_ context.Context, req *abci.RequestCheckTx) (*abci.Respon
 	if recorder == nil {
 		_, result, err = researchv2.EvaluateTrusted(s, a.profile, raw)
 	} else {
-		spans := make([]telemetry.Span, 0, 3)
+		spans := make([]telemetry.Span, 0, 7)
 		_, result, err = researchv2.EvaluateTrustedObserved(s, a.profile, raw, nil, func(stage researchv2.Stage, elapsed time.Duration) {
 			spans = append(spans, telemetry.Span{Stage: string(stage), DurationNS: elapsed.Nanoseconds()})
 		})
