@@ -142,7 +142,7 @@ def parse_process(raw, expected_order):
         require(item.get("expected_count") == SAMPLES and isinstance(samples, list) and
                 len(samples) == SAMPLES and item.get("recorder_drops") == 0, "count/drop QC")
         values = []
-        stage_values = {stage: [] for stage in STAGES[profile]}
+        stage_values = {stage: [] for stage in sorted(STAGES[profile])}
         for index, sample in enumerate(samples, 1):
             require(sample.get("slot") == index and sample.get("wire_bytes") == WIRE[profile] and
                     isinstance(sample.get("service_ns"), int) and sample["service_ns"] > 0 and
@@ -224,7 +224,7 @@ def derive(session, plan):
                 "mean_alloc_B_per_tx": statistics.mean(r["alloc_B_per_tx"] for r in subset),
                 "mean_allocs_per_tx": statistics.mean(r["allocs_per_tx"] for r in subset),
                 "mean_stage_ns": {stage: statistics.mean(r["mean_stage_ns"][stage] for r in subset)
-                                  for stage in STAGES[profile]},
+                                  for stage in sorted(STAGES[profile])},
                 "p99_precision": p99_cluster(groups[profile])}
         deltas = [h["mean_service_ns"] - cp["mean_service_ns"]
                   for h, cp in zip(by_profile["H"], by_profile["CP"])]
@@ -256,7 +256,7 @@ def write_outputs(session, plan):
     (session / "decision.md").write_text(decision)
     r01.write_new(session / "analysis_provenance.json", {"schema": "pluto.file02.analysis_provenance.v1",
                   "measurement_source_commit": plan["source_commit"], "analyzer_commit": r01.git("rev-parse", "HEAD"),
-                  "previous_analysis": "analysis-v1" if (session / "analysis-v1").exists() else None})
+                  "previous_analysis": [p.name for p in sorted(session.glob("analysis-v*"))]})
     verify(session)
     print(json.dumps({"session": str(session), "qc": qc["status"], "aggregate": agg["status"],
                       "raw_manifest_sha256": qc["raw_manifest_sha256"]}, sort_keys=True))
@@ -292,7 +292,8 @@ def reanalyze(session):
     plan = common.read_json(session / "plan.json")
     validate_plan(plan, strict_source=False)
     common.verify_raw(session / "raw")
-    archive = session / "analysis-v1"
+    previous = sorted(session.glob("analysis-v*"))
+    archive = session / f"analysis-v{len(previous) + 1}"
     archive.mkdir(mode=0o700)
     for name in ("result_per_run.json", "result_per_run.csv", "qc_report.json",
                  "result_aggregate.json", "decision.md", "analysis_provenance.json", "figures"):
@@ -317,8 +318,8 @@ def verify(session):
     require(provenance.get("measurement_source_commit") == plan["source_commit"] and
             r01.git("cat-file", "-t", provenance.get("analyzer_commit", "")) == "commit",
             "analysis revision")
-    if (session / "analysis-v1").exists():
-        common.verify_raw(session / "analysis-v1")
+    for archive in session.glob("analysis-v*"):
+        common.verify_raw(archive)
     print("R02_VERIFY=OK")
 
 
