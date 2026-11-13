@@ -38,7 +38,7 @@ def jobs():
                 profile = PROFILES[(position+repetition) % 4]
                 result.append({"rate": rate, "repetition": repetition, "position": position,
                                "profile": profile, "seed": 20000+rate*100+repetition*4+position,
-                               "run_id": f"r15-r{rate:02d}-n{repetition}-{profile.lower()}"})
+                               "run_id": f"r15-r{rate:02d}-n{repetition}-{profile}"})
     return result
 
 
