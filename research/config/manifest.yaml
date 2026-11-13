@@ -16,7 +16,8 @@ project:
   file02_common_status: owner_accepted_pre_case_readiness_2026_11_13
   file02_section2_status: pre_case_contract_accepted_case_outputs_pending
   file02_rq1b_status: separate_question_owner_directed_case_parameters_pending
-  file02_t_group_status: T01_to_T07_pre_case_verified_gate_T_owner_review_pending
+  file02_t_group_status: T01_to_T07_owner_conditional_accept_pre_case_2026_11_13
+  file02_rq1_rq1b_status: planning_only_single_host_no_formal_runs
   file02_tested_pilot_tx_s: [2, 6, 12, 20, 23, 25]
   file02_knee_levels: not_observed_within_safe_range
   refactor_status: owner_merged_pr18_e8f20726_controller_conditional_accept_postmerge_ci_pass

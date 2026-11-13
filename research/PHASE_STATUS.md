@@ -1,6 +1,17 @@
 # Phase status — 2026-11-13
 
-## Current File 02 T group authority
+## Current Gate T decision and planning authority
+
+The Owner [conditionally accepted Gate T](evidence/file02/T_GATE_CONDITIONAL_ACCEPTANCE_20261113.md)
+for the verified T01–T07 preflight only. RQ1 and RQ1b case **planning** on
+the four-validator single-host topology is permitted, with workload,
+offered rates, repetitions, endpoints, CI, safety and QC locked separately
+before any official run. PR #21 must merge before stacked PR #22; a
+planning-only branch follows the verified merged `test-mainet` head.
+No formal R/A/Q/D run or multi-host/P2P-origin/distributed DoS conclusion
+is authorized. The earlier technical-candidate status below is historical.
+
+## Historical File 02 T group authority
 
 The Owner accepted Gate COMMON for bounded pre-case readiness after all four
 PR #21 CI checks passed at `ec0eabe` and directed the separate

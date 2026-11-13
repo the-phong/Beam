@@ -1,5 +1,9 @@
 # File 02 T preflight — progress and handoff
 
+Status update: the Owner subsequently [conditionally accepted Gate T](T_GATE_CONDITIONAL_ACCEPTANCE_20261113.md)
+for bounded preflight; the review-pending wording below records the earlier
+handoff state.
+
 Date: 2026-11-13. Branch `research/file02-t-preflight` is based on accepted
 COMMON commit `0d753bf6e3247deec12ba2f83c055bf7dd16071d` (Draft PR #21,
 still unmerged). Checklist 02 is the Owner's outside file at
