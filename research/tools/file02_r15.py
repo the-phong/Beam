@@ -105,9 +105,18 @@ def row(raw, job, plan):
                     job["rate"], job["profile"], job["repetition"])
     require(base["steady_tx_windows"] == [job["rate"]]*12 and
             base["achieved_offered_bytes_s"] <= 65536, "R15 offered rate/safety")
+    comet_cpu_ns = 0
     for i in range(4):
         events = r06.samples(run / f"recorder-{i}.jsonl")
         require(events and all(e.get("kind") == "check_tx" for e in events), "R15 recorder")
+        samples = r06.samples(run / f"observer-{i}.jsonl")
+        first, last = samples[0].get("comet_process"), samples[-1].get("comet_process")
+        require(isinstance(first, dict) and isinstance(last, dict) and
+                first.get("pid") == last.get("pid") and
+                first.get("start_ticks") == last.get("start_ticks") and
+                isinstance(first.get("cpu_ns"), int) and isinstance(last.get("cpu_ns"), int) and
+                last["cpu_ns"] >= first["cpu_ns"], "R15 Comet CPU process continuity")
+        comet_cpu_ns += last["cpu_ns"]-first["cpu_ns"]
     by_id = {item["id"]: item for item in commits["events"]}
     require(len(by_id) == len(load_plan["events"]), "R15 commit identity")
     start = knee.parse_go_rfc3339(result["started_utc"])
@@ -122,7 +131,11 @@ def row(raw, job, plan):
     require(eligible == 9*job["rate"], "R15 aligned denominator")
     base.update({"position": job["position"], "seed": job["seed"],
                  "eligible_send_count": eligible, "aligned_timely_count": timely,
-                 "aligned_timely_fraction": timely/eligible, "qc_status": "PASS"})
+                 "aligned_timely_fraction": timely/eligible,
+                 "comet_cpu_seconds": comet_cpu_ns/1_000_000_000,
+                 "application_cpu_seconds": None,
+                 "application_cpu_status": "UNAVAILABLE_SHARED_WITH_INTEGRATION_HARNESS",
+                 "qc_status": "PASS"})
     return base
 
 
@@ -170,7 +183,8 @@ def decide(rows):
                                    ("eventual_goodput_tx_s", "eventual_goodput_tx_s"),
                                    ("inclusion_upper_bound_p95_ms", "p95_upper_ms"),
                                    ("checktx_socket_queue_wait_mean_ms", "socket_queue_wait_ms"),
-                                   ("max_accepted_mempool_bytes", "max_sampled_mempool_bytes")):
+                                   ("max_accepted_mempool_bytes", "max_sampled_mempool_bytes"),
+                                   ("comet_cpu_seconds", "comet_cpu_seconds")):
                 mean, interval = measured_mean_ci(selected, source)
                 level["mean_"+target] = mean
                 level["ci95_mean_"+target] = interval
@@ -212,7 +226,8 @@ def write_outputs(session, plan):
         keys = ("run_id", "profile", "rate_tx_s", "repetition", "achieved_offered_tx_s",
                 "achieved_offered_bytes_s", "aligned_timely_fraction", "eventual_goodput_tx_s",
                 "inclusion_upper_bound_p95_ms", "checktx_socket_queue_wait_mean_ms",
-                "max_accepted_mempool_bytes", "qc_status")
+                "max_accepted_mempool_bytes", "comet_cpu_seconds", "application_cpu_seconds",
+                "application_cpu_status", "qc_status")
         writer = csv.DictWriter(stream, fieldnames=keys)
         writer.writeheader()
         writer.writerows({key: r[key] for key in keys} for r in rows)
@@ -267,11 +282,23 @@ def verify(session):
     revision = session / "analysis_revision_001.json"
     if revision.exists():
         record = common.read_json(revision)
+        revision_002 = session / "analysis_revision_002.json"
+        revision_001_aggregate = (session / "analysis_revision_001_aggregate.json"
+                                  if revision_002.exists() else session / "result_aggregate.json")
         require(record.get("raw_manifest_sha256") == qc["raw_manifest_sha256"] and
                 record.get("original_aggregate_sha256") ==
                 common.digest(session / "analysis_revision_000_aggregate.json") and
-                record.get("corrected_aggregate_sha256") == common.digest(session / "result_aggregate.json"),
+                record.get("corrected_aggregate_sha256") == common.digest(revision_001_aggregate),
                 "R15 analysis correction provenance")
+        if revision_002.exists():
+            next_record = common.read_json(revision_002)
+            require(next_record.get("raw_manifest_sha256") == qc["raw_manifest_sha256"] and
+                    next_record.get("previous_aggregate_sha256") == common.digest(revision_001_aggregate) and
+                    next_record.get("previous_per_run_sha256") ==
+                    common.digest(session / "analysis_revision_001_per_run.json") and
+                    next_record.get("corrected_aggregate_sha256") == common.digest(session / "result_aggregate.json") and
+                    next_record.get("corrected_per_run_sha256") == common.digest(session / "result_per_run.json"),
+                    "R15 CPU correction provenance")
     print(f"R15_VERIFY=OK qc={qc['status']} n={len(rows)} raw_manifest_sha256={qc['raw_manifest_sha256']}")
 
 
@@ -302,6 +329,55 @@ def rederive(session):
     verify(session)
 
 
+def rederive_cpu(session):
+    session = Path(session).resolve()
+    require(session.parent == ARTIFACTS.resolve() and
+            (session / "analysis_revision_001.json").exists() and
+            not (session / "analysis_revision_002.json").exists(), "private R15 revision 001 required")
+    plan = common.read_json(session / "plan.json")
+    validate_plan(session, plan)
+    rows, qc, aggregate = derive(session, plan)
+    old_qc = common.read_json(session / "qc_report.json")
+    old_rows = common.read_json(session / "result_per_run.json")
+    old_aggregate = common.read_json(session / "result_aggregate.json")
+    added = ("comet_cpu_seconds", "application_cpu_seconds", "application_cpu_status")
+    require(qc["status"] == "PASS" and qc == old_qc and
+            old_rows == {"schema": "pluto.file02.r15.per_run.v1",
+                         "rows": [{k: v for k, v in row.items() if k not in added} for row in rows]} and
+            all(aggregate["decisions"][p]["status"] == old_aggregate["decisions"][p]["status"] for p in PROFILES),
+            "R15 prior raw/decision changed")
+    for name, backup in (("result_aggregate.json", "analysis_revision_001_aggregate.json"),
+                         ("result_per_run.json", "analysis_revision_001_per_run.json"),
+                         ("result_per_run.csv", "analysis_revision_001_per_run.csv")):
+        common.write_once(session / backup, (session / name).read_text(encoding="utf-8"))
+    for name, value in (("result_aggregate.json", aggregate),
+                        ("result_per_run.json", {"schema": "pluto.file02.r15.per_run.v1", "rows": rows})):
+        temporary = session / (name + ".tmp")
+        common.write_once(temporary, json.dumps(value, sort_keys=True, indent=2) + "\n")
+        os.replace(temporary, session / name)
+    keys = ("run_id", "profile", "rate_tx_s", "repetition", "achieved_offered_tx_s",
+            "achieved_offered_bytes_s", "aligned_timely_fraction", "eventual_goodput_tx_s",
+            "inclusion_upper_bound_p95_ms", "checktx_socket_queue_wait_mean_ms",
+            "max_accepted_mempool_bytes", "comet_cpu_seconds", "application_cpu_seconds",
+            "application_cpu_status", "qc_status")
+    temporary = session / "result_per_run.csv.tmp"
+    with temporary.open("x", newline="", encoding="utf-8") as stream:
+        writer = csv.DictWriter(stream, fieldnames=keys)
+        writer.writeheader()
+        writer.writerows({key: row[key] for key in keys} for row in rows)
+    os.replace(temporary, session / "result_per_run.csv")
+    r01.write_new(session / "analysis_revision_002.json", {
+        "schema": "pluto.file02.r15.analysis_revision.v1",
+        "reason": "derive four-Comet-process CPU deltas; application CPU is shared with harness and unavailable",
+        "analysis_source_commit": r01.git("rev-parse", "HEAD"),
+        "raw_manifest_sha256": qc["raw_manifest_sha256"],
+        "previous_aggregate_sha256": common.digest(session / "analysis_revision_001_aggregate.json"),
+        "previous_per_run_sha256": common.digest(session / "analysis_revision_001_per_run.json"),
+        "corrected_aggregate_sha256": common.digest(session / "result_aggregate.json"),
+        "corrected_per_run_sha256": common.digest(session / "result_per_run.json")})
+    verify(session)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
@@ -310,10 +386,13 @@ if __name__ == "__main__":
     p.add_argument("session")
     p = sub.add_parser("rederive")
     p.add_argument("session")
+    p = sub.add_parser("rederive-cpu")
+    p.add_argument("session")
     args = parser.parse_args()
     try:
         sys.exit(execute() if args.command == "run" else
                  (rederive(args.session) or 0) if args.command == "rederive" else
+                 (rederive_cpu(args.session) or 0) if args.command == "rederive-cpu" else
                  (verify(args.session) or 0))
     except (ValueError, OSError, KeyError, TypeError, subprocess.TimeoutExpired) as exc:
         print(f"R15_ERROR: {exc}", file=sys.stderr)

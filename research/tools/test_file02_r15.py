@@ -12,7 +12,8 @@ class R15DecisionTest(unittest.TestCase):
                  "inclusion_upper_bound_p95_ms": 1800,
                  "checktx_socket_queue_wait_mean_ms": .05,
                  "eventual_goodput_tx_s": rate,
-                 "max_accepted_mempool_bytes": 10000}
+                 "max_accepted_mempool_bytes": 10000,
+                 "comet_cpu_seconds": 4.5}
                 for profile in r15.PROFILES for rate in r15.RATES for _ in range(3)]
 
     def test_schedule_unique_and_bounded(self):
