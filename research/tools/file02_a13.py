@@ -18,6 +18,7 @@ from uuid import uuid4
 import file02_common as common
 import file02_r01 as r01
 import file02_r06 as r06
+from file02_t06_precision import parse_go_rfc3339
 
 ROOT = Path(__file__).resolve().parents[2]
 ARTIFACTS = ROOT / "research/artifacts/file02"
@@ -233,10 +234,10 @@ def audit_run(raw, job, plan):
             records[event["sha256"]]["last_stage"] == event["expected_stage"]
             for event in workload["events"]), "A13 recorder stage/hash")
     observer = r06.observer_metrics(run / "observer-0.jsonl")
-    started = datetime.fromisoformat(result["started_utc"].replace("Z", "+00:00"))
+    started = parse_go_rfc3339(result["started_utc"])
     curve = []
     for sample in r06.samples(run / "observer-0.jsonl"):
-        observed = datetime.fromisoformat(sample["observed_utc"].replace("Z", "+00:00"))
+        observed = parse_go_rfc3339(sample["observed_utc"])
         curve.append({"elapsed_s": (observed-started).total_seconds(),
                       "accepted_mempool_bytes": sample.get("accepted_mempool_bytes"),
                       "app_cpu_ns": (sample.get("application_process") or {}).get("cpu_ns"),
