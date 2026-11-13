@@ -1,5 +1,18 @@
 # Phase status — 2026-11-13
 
+## Current Checklist 02 section 5 execution
+
+The Owner confirmed [PR #26](https://github.com/the-phong/Beam/pull/26)
+merged at `2df001620d799eafa6359603f1e6dedded1d8107` and explicitly
+authorized the A01–A14 group in checklist order. [D-042](DECISIONS.md)
+records the scope. Work begins on `research/file02-a01-a14` from that
+merged head. [A01's locked design](protocol/FILE02_A01_LOCKED_PLAN.md)
+preserves a fixed legitimate H stream and compares matched benign and
+structural-invalid background at the existing S06 caps. No A case is
+checked until its raw/QC/analysis audit passes. Q/D cases, ML training,
+a DoS claim, new knee search and automatic merge remain outside this
+authority. The Gate RQ1 acceptance below is historical context.
+
 ## Current File 02 Gate RQ1 Owner acceptance
 
 Under [D-041](DECISIONS.md), the Owner accepted the bounded R01–R16

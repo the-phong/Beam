@@ -1,5 +1,30 @@
 # Architectural decision log
 
+## D-042 — Owner opens Checklist 02 section 5 A01–A14 (2026-11-14)
+
+After PR #26 merged the bounded Gate RQ1 acceptance into `test-mainet` at
+`2df001620d799eafa6359603f1e6dedded1d8107`, the Owner explicitly
+authorized engineering execution and completion of all section 5 attack
+cases in checklist order. An attack name is a workload label, not proof of
+DoS. Keep legitimate offered traffic fixed and use case-specific matched
+benign controls. Lock plans and QC before each confirmatory case, preserve
+the accepted S06 safety caps and report missing measurements or unsupported
+topologies honestly. This instruction opens the A group only; it does not
+authorize Q/D cases, ML training, changed RQ1/RQ1b hypotheses, a DoS
+conclusion or automatic merge. The A01 design is recorded in
+[its locked plan](protocol/FILE02_A01_LOCKED_PLAN.md).
+
+The A01 timestamp measurement uses the existing pinned
+`golang.org/x/sys v0.38.0` module directly for Linux `CLOCK_MONOTONIC` at
+the generator socket-write and single-host block-observer capture points.
+The module source is `golang.org/x/sys`; its `go.mod` requires Go 1.24.0,
+matching this repo's Go minimum. The risk is that these timestamps are
+comparable only within the same kernel clock domain and still bound first
+observation rather than exact commit. The clock values are measurement-only
+and never enter validation or consensus. `go.mod` retains the exact accepted
+version; no dependency upgrade is made. Build and regression evidence must
+pass before A01 sends.
+
 ## D-041 — Owner accepts bounded File 02 Gate RQ1 disposition (2026-11-13)
 
 The Owner accepted the R01–R16 group with eight PASS, six PARTIAL and two

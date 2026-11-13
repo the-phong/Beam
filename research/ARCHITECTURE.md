@@ -6,6 +6,12 @@ below retain the names and review status from their original checkpoints.
 
 The current File 02 RQ1 measurement path is described in the
 [bounded resource report](evidence/file02/RQ1_RESOURCE_REPORT.md).
+For Checklist 02 A01, measurement-only Linux `CLOCK_MONOTONIC` stamps
+are added at the isolated RPC generator's socket write and at the
+single-host four-validator block observer. They support a bounded
+send-to-first-all-four-observation interval. The stamps do not enter
+transaction validity, consensus or proposal decisions. They cannot be
+compared across hosts without a separate clock protocol.
 The R16 extension adds a validated `ramp` waveform to the isolated
 open-loop load planner; it changes send offsets only, within the
 accepted loopback and S06 caps. The application and Comet consensus

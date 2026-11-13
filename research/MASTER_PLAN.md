@@ -1,5 +1,13 @@
 # Pluto research master plan
 
+**Current section 5 authority (2026-11-14):** The Owner authorized
+Checklist 02 A01–A14 in order after [PR #26](https://github.com/the-phong/Beam/pull/26)
+merged Gate RQ1 closeout. [D-042](DECISIONS.md) sets the bounded scope;
+each case needs its own locked plan, fixed legitimate matched control and
+verified evidence before its checklist box can be checked. No Q/D group,
+ML training, DoS conclusion or safety-cap increase follows. The Gate RQ1
+acceptance below remains the research baseline for this task.
+
 **Current File 02 status (2026-11-13):** [D-041](DECISIONS.md) records
 Owner acceptance of the bounded R01–R16 disposition, integrated by
 [PR #25](https://github.com/the-phong/Beam/pull/25). Eight cases are PASS,

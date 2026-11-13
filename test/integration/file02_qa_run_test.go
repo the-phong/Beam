@@ -12,6 +12,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"syscall"
 	"testing"
 	"time"
@@ -20,6 +21,11 @@ import (
 	researchv2 "example.com/pluto/internal/experiment/profiles"
 	"example.com/pluto/internal/experiment/telemetry"
 )
+
+func file02AttackCase(caseID any) bool {
+	id, ok := caseID.(string)
+	return ok && strings.HasPrefix(id, "A") && len(id) == 3 && id >= "A01" && id <= "A05"
+}
 
 // file02ExecuteQA runs one pre-signed bounded plan on a fresh local network.
 // Only keyless run evidence is persisted under the caller's ignored root.
@@ -36,7 +42,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if err := load.WritePlan(planPath, plan, c, configHash); err != nil {
 		t.Fatal(err)
 	}
-	if metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
+	if file02AttackCase(metadata["case_id"]) || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
 		configBytes, err := os.ReadFile(configPath)
 		if err != nil {
 			t.Fatal(err)
@@ -66,7 +72,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 		t.Fatal(err)
 	}
 	pilot := startS06NetworkAt(t, c, fixture, profile, t.TempDir())
-	if metadata["case_id"] == "T05" || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
+	if file02AttackCase(metadata["case_id"]) || metadata["case_id"] == "T05" || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
 		mode, ok := metadata["recorder_mode"].(string)
 		if !ok || (mode != "ON" && mode != "OFF") {
 			t.Fatal("T05 requires recorder mode ON or OFF")
@@ -103,8 +109,12 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if err := s07WriteExclusive(filepath.Join(run, "nodes.json"), nodes); err != nil {
 		t.Fatal(err)
 	}
-	if metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
-		bind := exec.Command("python3", "../../research/tools/file02_r06.py", "bind-run-plan", run, pilot.n.root)
+	if file02AttackCase(metadata["case_id"]) || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
+		binder := "../../research/tools/file02_r06.py"
+		if file02AttackCase(metadata["case_id"]) {
+			binder = "../../research/tools/file02_attack.py"
+		}
+		bind := exec.Command("python3", binder, "bind-run-plan", run, pilot.n.root)
 		output, err := bind.CombinedOutput()
 		if err != nil {
 			t.Fatalf("R06 pre-send common plan lock failed: %v: %s", err, output)
@@ -194,7 +204,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 			t.Fatal(err)
 		}
 	}
-	if metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
+	if file02AttackCase(metadata["case_id"]) || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
 		for i, recorder := range pilot.recorders {
 			events, dropped := recorder.Drain()
 			if dropped != 0 {

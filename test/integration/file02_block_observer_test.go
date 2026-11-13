@@ -8,6 +8,8 @@ import (
 	"encoding/hex"
 	"time"
 
+	"golang.org/x/sys/unix"
+
 	"example.com/pluto/internal/experiment/load"
 )
 
@@ -62,6 +64,8 @@ func file02ObserveCommitsByBlock(pilot *s06Network, plan load.Plan, stop <-chan 
 						break
 					}
 					observed := time.Now()
+					var monotonic unix.Timespec
+					_ = unix.ClockGettime(unix.CLOCK_MONOTONIC, &monotonic)
 					for _, encoded := range txs {
 						raw, err := base64.StdEncoding.DecodeString(encoded)
 						if err != nil {
@@ -76,8 +80,10 @@ func file02ObserveCommitsByBlock(pilot *s06Network, plan load.Plan, stop <-chan 
 						if item.height == 0 || item.height == height {
 							item.seen[node], item.height, item.latest = true, height, observed
 							if item.seen == [4]bool{true, true, true, true} {
+								seenMonotonicNS := monotonic.Nano()
 								completed[hash] = s07CommitObservation{ID: item.event.ID, SHA256: hash,
-									AllFourSeenUTC: item.latest.UTC().Format(time.RFC3339Nano), Height: height}
+									AllFourSeenUTC:         item.latest.UTC().Format(time.RFC3339Nano),
+									AllFourSeenMonotonicNS: &seenMonotonicNS, Height: height}
 							}
 						}
 					}
