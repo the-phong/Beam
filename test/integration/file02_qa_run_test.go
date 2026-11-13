@@ -41,7 +41,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if !ok {
 		scope = "QA_ONLY"
 	}
-	if scope != "QA_ONLY" && scope != "T_PREFLIGHT" {
+	if scope != "QA_ONLY" && scope != "T_PREFLIGHT" && scope != "R_CONFIRMATORY" {
 		t.Fatal("unsupported File 02 run scope")
 	}
 	metadata["scope"] = scope
@@ -54,7 +54,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 		t.Fatal(err)
 	}
 	pilot := startS06NetworkAt(t, c, fixture, profile, t.TempDir())
-	if metadata["case_id"] == "T05" {
+	if metadata["case_id"] == "T05" || metadata["case_id"] == "R06" {
 		mode, ok := metadata["recorder_mode"].(string)
 		if !ok || (mode != "ON" && mode != "OFF") {
 			t.Fatal("T05 requires recorder mode ON or OFF")
@@ -156,6 +156,25 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	oracle := s07Oracle(t, pilot, fixture, plan, result)
 	if err := s07WriteJSON(filepath.Join(run, "oracle.json"), oracle); err != nil {
 		t.Fatal(err)
+	}
+	if metadata["case_id"] == "R06" {
+		for i, recorder := range pilot.recorders {
+			events, dropped := recorder.Drain()
+			if dropped != 0 {
+				t.Fatalf("R06 recorder %d dropped %d events", i, dropped)
+			}
+			file, err := os.OpenFile(filepath.Join(run, fmt.Sprintf("recorder-%d.jsonl", i)), os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err := telemetry.WriteJSONL(file, events); err != nil {
+				_ = file.Close()
+				t.Fatal(err)
+			}
+			if err := file.Close(); err != nil {
+				t.Fatal(err)
+			}
+		}
 	}
 	if metadata["case_id"] == "T04" {
 		var totals [4]uint64

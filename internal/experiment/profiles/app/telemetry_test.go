@@ -2,6 +2,7 @@ package researchv2app_test
 
 import (
 	"context"
+	"crypto/sha256"
 	"encoding/hex"
 	"path/filepath"
 	"testing"
@@ -62,11 +63,12 @@ func TestS05CheckTxTelemetryONOFFCorpus(t *testing.T) {
 				}
 			}
 			events, dropped := r.Drain()
+			hash := sha256.Sum256(raw)
 			if len(events) != 2 || dropped != 0 || events[0].CheckType != "new" || events[1].CheckType != "recheck" {
 				t.Fatalf("wrong events: %+v dropped=%d", events, dropped)
 			}
 			for _, e := range events {
-				if e.Code != uint32(item.ExpectedCode) || e.LastStage != string(item.Stage) || e.WireBytes != len(raw) || e.ServiceNS < 0 || e.AppLockWaitNS < 0 {
+				if e.Code != uint32(item.ExpectedCode) || e.LastStage != string(item.Stage) || e.WireBytes != len(raw) || e.TxSHA256 != hex.EncodeToString(hash[:]) || e.ServiceNS < 0 || e.AppLockWaitNS < 0 {
 					t.Fatalf("wrong measurement: %+v", e)
 				}
 				for _, span := range e.Spans {

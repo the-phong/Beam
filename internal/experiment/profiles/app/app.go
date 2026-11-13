@@ -5,7 +5,9 @@ package researchv2app
 import (
 	"bytes"
 	"context"
+	"crypto/sha256"
 	"encoding/binary"
+	"encoding/hex"
 	"errors"
 	"math"
 	"sync"
@@ -165,6 +167,7 @@ func (a *App) CheckTx(_ context.Context, req *abci.RequestCheckTx) (*abci.Respon
 			spans = append(spans, telemetry.Span{Stage: string(stage), DurationNS: elapsed.Nanoseconds()})
 		})
 		if err == nil {
+			txHash := sha256.Sum256(raw)
 			checkType := "new"
 			if req == nil {
 				checkType = "unknown"
@@ -172,7 +175,7 @@ func (a *App) CheckTx(_ context.Context, req *abci.RequestCheckTx) (*abci.Respon
 				checkType = "recheck"
 			}
 			recorder.Record(telemetry.CheckTxEvent{
-				Profile: uint8(a.profile), CheckType: checkType, WireBytes: len(raw),
+				Profile: uint8(a.profile), CheckType: checkType, WireBytes: len(raw), TxSHA256: hex.EncodeToString(txHash[:]),
 				Code: uint32(result.Code), LastStage: string(result.LastStage),
 				ServiceNS:     (time.Since(started) - lockWait).Nanoseconds(),
 				AppLockWaitNS: lockWait.Nanoseconds(), Spans: spans,

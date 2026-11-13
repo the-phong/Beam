@@ -25,6 +25,7 @@ type CheckTxEvent struct {
 	CheckType     string `json:"check_type"`
 	Source        string `json:"source"`
 	WireBytes     int    `json:"wire_bytes"`
+	TxSHA256      string `json:"tx_sha256,omitempty"`
 	Code          uint32 `json:"code"`
 	LastStage     string `json:"last_stage"`
 	ServiceNS     int64  `json:"service_ns"`
