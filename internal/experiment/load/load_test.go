@@ -194,6 +194,7 @@ func TestFile02MempoolLimitReasonClassification(t *testing.T) {
 		{"mempool is full: number of txs 1 (max: 128), total txs bytes 2568 (max: 2700)", 2568, "mempool_bytes_full"},
 		{"mempool is full: number of txs 1 (max: 1), total txs bytes 2568 (max: 2700)", 2568, "mempool_count_and_bytes_full"},
 		{"some other RPC error", 1, "rpc_reject"},
+		{"Tx too large. Max size is 8192, but got 8193", 8193, "mempool_tx_too_large"},
 	} {
 		if got := classifyRPCAdmission(tc.message, tc.next); got != tc.want {
 			t.Fatalf("%q classified %q, want %q", tc.message, got, tc.want)

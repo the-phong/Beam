@@ -19,8 +19,16 @@ import (
 )
 
 var mempoolFullPattern = regexp.MustCompile(`mempool is full: number of txs ([0-9]+) \(max: ([0-9]+)\), total txs bytes ([0-9]+) \(max: ([0-9]+)\)`)
+var txTooLargePattern = regexp.MustCompile(`Tx too large\. Max size is ([0-9]+), but got ([0-9]+)`)
 
 func classifyRPCAdmission(message string, nextTxBytes int) string {
+	if parts := txTooLargePattern.FindStringSubmatch(message); len(parts) == 3 {
+		max, _ := strconv.Atoi(parts[1])
+		actual, _ := strconv.Atoi(parts[2])
+		if actual == nextTxBytes && actual > max {
+			return "mempool_tx_too_large"
+		}
+	}
 	parts := mempoolFullPattern.FindStringSubmatch(message)
 	if len(parts) != 5 {
 		return "rpc_reject"
