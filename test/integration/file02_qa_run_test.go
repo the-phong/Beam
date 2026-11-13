@@ -91,6 +91,13 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if err := s07WriteExclusive(filepath.Join(run, "nodes.json"), nodes); err != nil {
 		t.Fatal(err)
 	}
+	if metadata["case_id"] == "R06" {
+		bind := exec.Command("python3", "../../research/tools/file02_r06.py", "bind-run-plan", run, pilot.n.root)
+		output, err := bind.CombinedOutput()
+		if err != nil {
+			t.Fatalf("R06 pre-send common plan lock failed: %v: %s", err, output)
+		}
+	}
 	captureCommits := metadata["capture_commit_observations"] != false
 	var observed chan []s07CommitObservation
 	if captureCommits {

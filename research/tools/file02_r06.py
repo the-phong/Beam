@@ -8,7 +8,9 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import platform
 import random
+import shutil
 import statistics
 import subprocess
 import sys
@@ -91,6 +93,81 @@ def samples(path):
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
 
 
+def bind_run_plan(run, network_root):
+    """Write and validate the COMMON plan after ports exist, before any send."""
+    run = Path(run).resolve()
+    network_root = Path(network_root).resolve()
+    require(run.is_dir() and network_root.is_dir() and not (run / "research_plan/plan.json").exists(),
+            "run/network path or previous common plan")
+    metadata, load_plan, nodes = (common.read_json(run / name) for name in
+                                  ("metadata.json", "plan.json", "nodes.json"))
+    require(metadata.get("case_id") == "R06" and metadata.get("scope") == "R_CONFIRMATORY" and
+            metadata.get("run_id") == load_plan.get("run_id") and len(nodes) == 4, "R06 identity")
+    root = common.read_json(ROOT / "research/config/s06_pilot.json")
+    network, safety = root["network"], root["safety"]
+    profile = next((p for p in PROFILES if {"C": 1, "CP": 2, "P": 3, "H": 4}[p] == load_plan["profile"]), None)
+    require(profile == metadata["profile"] and all(node["rpc"].startswith("http://127.0.0.1:") for node in nodes),
+            "profile/endpoint mismatch")
+    node_hashes = []
+    for index in range(4):
+        path = network_root / f"validator-{index}/config/config.toml"
+        node_hashes.append(common.digest(path))
+    inventory = r01.cpu_inventory()
+    host = {"cpu_model": inventory["model"], "cpu_features": inventory["flags"],
+            "architecture": inventory["architecture"], "logical_cpus": inventory["logical_cpus"],
+            "os": inventory["os"]}
+    plan = {"schema": "pluto.file02.plan.v1", "status": "LOCKED", "run_id": load_plan["run_id"],
+            "case_id": "R06", "protocol_version": "file02-common-v1", "research_question": "RQ1",
+            "hypothesis": "H valid CheckTx service exceeds exact-size CP at equal offered rate",
+            "null_hypothesis": "H-minus-CP mean service <= 0",
+            "alternative_hypothesis": "H-minus-CP mean service > 0",
+            "analysis_plan": {"primary_endpoint": "validator0_valid_steady_CheckTx_mean_service_ns",
+                              "independent_unit": "fresh_four_validator_network",
+                              "ci_method": "paired_percentile_bootstrap_20000_seed_20261113",
+                              "exclusion_rule": "any failed locked-arm QC excludes paired block; no replacement"},
+            "raw_capture_plan": ["telemetry", "transaction_results", "validator_blocks_and_apphash",
+                                 "loadgen_timeline", "host_metrics"],
+            "expected_oracle": "241 valid exact-once commits and four-validator AppHash agreement",
+            "source_commit": metadata["source_commit"], "source_tree": metadata["source_tree"],
+            "config_sha256": metadata["config_sha256"], "corpus_sha256": common.digest(run / "plan.json"),
+            "genesis_sha256": load_plan["genesis_sha256"], "profile": profile,
+            "workload": "BENIGN_HIGH", "actor_capability": "NONE", "regime": "equal_tx_s",
+            "traffic_source": "RPC", "topology": "FOUR_VALIDATOR_SINGLE_HOST_DIAGNOSTIC",
+            "policy": "BASELINE_VERIFY_ORDER", "host_inventory": host,
+            "software_versions": {"go": subprocess.check_output(["go", "version"], text=True).strip(),
+                                  "cometbft": network["comet_version"],
+                                  "crypto": "go.mod:" + common.digest(ROOT / "go.mod"),
+                                  "os": platform.platform()},
+            "network_config": {"validator_count": 4, "mempool_type": network["mempool_type"],
+                               "mempool_size": network["mempool_size"], "mempool_max_bytes": network["mempool_max_bytes"],
+                               "mempool_cache_size": network["mempool_cache_size"],
+                               "mempool_max_tx_bytes": network["mempool_max_tx_bytes"],
+                               "mempool_recheck": network["mempool_recheck"],
+                               "mempool_broadcast": network["mempool_broadcast"],
+                               "max_block_bytes": network["max_block_bytes"],
+                               "empty_block_interval_ms": network["empty_block_interval_ms"],
+                               "timeout_commit_ms": network["timeout_commit_ms"],
+                               "network_shape": "four_validator_single_host_full_mesh",
+                               "endpoint_hosts": ["127.0.0.1"]*4,
+                               "rpc_endpoints": [node["rpc"] for node in nodes],
+                               "config_toml_sha256": node_hashes},
+            "safety_config": safety, "seed": load_plan["seed"], "order_index": metadata["order"],
+            "phase_seconds": {"warmup": 1, "steady": 12, "drain": 5, "cooldown": 2},
+            "planned": {"valid_tx_s": 20, "invalid_tx_s": 0,
+                        "total_bytes_s": WIRE[profile]*20},
+            "matching": {"matched_variable": "tx_s", "unmatched_variables": ["wire_bytes", "verification_path"]},
+            "pilot_reference": "research/evidence/file02/T06_KNEE_PILOT.md",
+            "independent_run_target": 12,
+            "p99_precision_rule": "rank>=0.95 and two_stage_cluster_CI_radius<=0.20; 2000 draws"}
+    common.validate_plan(plan)
+    target = run / "research_plan"
+    target.mkdir(mode=0o700)
+    r01.write_new(target / "plan.json", plan)
+    subprocess.run(["python3", str(ROOT / "research/tools/file02_common.py"), "validate-plan",
+                    str(target / "plan.json")], cwd=ROOT, check=True, capture_output=True)
+    print(f"R06_COMMON_PLAN_LOCKED={load_plan['run_id']}")
+
+
 def observer_metrics(path):
     rows = samples(path)
     require(rows and all(r.get("kind") == "node_sample" and r.get("dropped_samples") == 0 for r in rows),
@@ -114,6 +191,19 @@ def audit_run(raw, job, plan):
     run = raw / "runs" / job["run_id"]
     meta, workload, result, oracle, commits = (common.read_json(run / f) for f in
         ("metadata.json", "plan.json", "result.json", "oracle.json", "commit_observations.json"))
+    common_plan = common.read_json(run / "research_plan/plan.json")
+    common.validate_plan(common_plan)
+    nodes = common.read_json(run / "nodes.json")
+    require(common_plan["run_id"] == job["run_id"] and common_plan["case_id"] == "R06" and
+            common_plan["source_commit"] == plan["source_commit"] and
+            common_plan["source_tree"] == plan["source_tree"] and
+            common_plan["config_sha256"] == plan["safety_config_sha256"] and
+            common_plan["corpus_sha256"] == common.digest(run / "plan.json") and
+            common_plan["genesis_sha256"] == common.digest(run / "genesis.bin") and
+            common_plan["network_config"]["rpc_endpoints"] == [node["rpc"] for node in nodes] and
+            common_plan["seed"] == job["seed"] and common_plan["order_index"] == job["order"] and
+            common_plan["planned"]["total_bytes_s"] == WIRE[job["profile"]]*20,
+            "common plan provenance/endpoint mismatch")
     require(meta.get("schema") == "pluto.file02.r06_run.v1" and meta.get("scope") == "R_CONFIRMATORY" and
             meta.get("case_id") == "R06" and meta.get("recorder_mode") == "ON" and
             meta.get("commit_observer_mode") == "block_scan" and
@@ -215,13 +305,25 @@ def derive(session, plan):
         aggregate["pair_deltas_ns"] = deltas
         for profile in PROFILES:
             group = [r for r in rows if r["profile"] == profile]
+            inclusion_groups = [r["inclusion_upper_bound_ms_samples"] for r in group]
+            precision_result = precision.cluster_bootstrap(inclusion_groups, SEED ^ sum(map(ord, profile)))
             aggregate["profile_summary"][profile] = {
                 "n_networks": len(group), "mean_service_ns": statistics.mean(r["mean_service_ns"] for r in group),
                 "mean_rpc_ms": statistics.mean(statistics.mean(r["rpc_ms_samples"]) for r in group),
+                "mean_inclusion_upper_bound_ms": statistics.mean(statistics.mean(r["inclusion_upper_bound_ms_samples"]) for r in group),
+                "inclusion_upper_bound_p99_precision": precision_result,
+                "offered_valid_tx_s_per_window": 20,
+                "offered_bytes_s_per_window": 20 * WIRE[profile],
                 "eventual_valid_included_per_network": 241,
+                "eventual_goodput_tx_s_steady_window": None,
+                "eventual_goodput_reason": "inclusion may occur after steady window; no sustainable throughput inference",
                 "mean_max_mempool_bytes": statistics.mean(r["observer_validator0"]["max_accepted_mempool_bytes"] for r in group),
-                "mean_app_cpu_delta_ns": statistics.mean(r["observer_validator0"]["application_process_cpu_delta_ns"] for r in group),
-                "mean_app_rss_peak_bytes": statistics.mean(r["observer_validator0"]["application_process_rss_peak_bytes"] for r in group)}
+                "mean_shared_app_cpu_delta_ns": statistics.mean(r["observer_validator0"]["application_process_cpu_delta_ns"] for r in group),
+                "mean_shared_app_rss_peak_bytes": statistics.mean(r["observer_validator0"]["application_process_rss_peak_bytes"] for r in group),
+                "mean_validator0_comet_cpu_delta_ns": statistics.mean(r["observer_validator0"]["comet_process_cpu_delta_ns"] for r in group),
+                "mean_validator0_comet_rss_peak_bytes": statistics.mean(r["observer_validator0"]["comet_process_rss_peak_bytes"] for r in group),
+                "mean_validator0_relay_send_envelope_bytes_delta": statistics.mean(r["observer_validator0"]["relay_send_envelope_bytes_delta"] for r in group),
+                "mean_validator0_relay_receive_envelope_bytes_delta": statistics.mean(r["observer_validator0"]["relay_receive_envelope_bytes_delta"] for r in group)}
     return rows, qc, aggregate
 
 
@@ -268,6 +370,29 @@ def execute():
     return 0 if run.returncode == 0 and qc["status"] == "PASS_BOUNDED_NETWORK" else 2
 
 
+def rederive(session):
+    """Keep the first derived version byte-for-byte, then extend secondary metrics."""
+    session = Path(session).resolve()
+    require(session.parent == ARTIFACTS.resolve(), "private session")
+    require(common.verify_raw(session / "raw"), "raw invalid")
+    archive = session / "analysis-v1"
+    require(not archive.exists(), "analysis-v1 already archived")
+    archive.mkdir(mode=0o700)
+    names = ("result_per_run.json", "result_per_run.csv", "qc_report.json", "result_aggregate.json", "decision.md")
+    for name in names:
+        shutil.copy2(session / name, archive / name)
+    shutil.copytree(session / "figures", archive / "figures")
+    common.freeze_raw(archive)
+    for name in names:
+        (session / name).unlink()
+    shutil.rmtree(session / "figures")
+    plan = common.read_json(session / "plan.json")
+    validate_plan(session, plan)
+    qc, aggregate = write_outputs(session, plan)
+    print(f"R06_REDERIVE=OK qc={qc['status']} effect_ns={aggregate['primary_H_minus_CP_ns']} "
+          f"raw_manifest_sha256={qc['raw_manifest_sha256']}")
+
+
 def verify(session):
     session = Path(session).resolve()
     require(session.parent == ARTIFACTS.resolve(), "private session")
@@ -289,11 +414,18 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("run")
+    command = sub.add_parser("bind-run-plan")
+    command.add_argument("run_dir")
+    command.add_argument("network_root")
     command = sub.add_parser("verify")
+    command.add_argument("session")
+    command = sub.add_parser("rederive")
     command.add_argument("session")
     args = parser.parse_args()
     try:
-        sys.exit(execute() if args.command == "run" else (verify(args.session) or 0))
+        sys.exit((bind_run_plan(args.run_dir, args.network_root) or 0) if args.command == "bind-run-plan" else
+                 execute() if args.command == "run" else
+                 (rederive(args.session) or 0) if args.command == "rederive" else (verify(args.session) or 0))
     except (ValueError, OSError, KeyError, TypeError, subprocess.TimeoutExpired) as exc:
         print(f"R06_ERROR: {exc}", file=sys.stderr)
         sys.exit(2)
