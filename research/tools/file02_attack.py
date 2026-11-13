@@ -224,6 +224,8 @@ def audit_run(raw, job, plan):
     fixed_hashes, all_hashes = [], set()
     windows = [{"fixed": 0, "background": 0, "bytes": 0} for _ in range(12)]
     fixed_latency_ms, invalid_service_ns, invalid_structural_ns = [], [], []
+    invalid_stage_spans = {stage: [] for stage in ("structural", "binding", "secp", "ml", "state")}
+    invalid_verify_reached = invalid_ml_reached = 0
     invalid_variants = {}
     for planned, actual in zip(workload["events"], result["events"]):
         wire = bytes.fromhex(planned["bytes_hex"])
@@ -251,6 +253,21 @@ def audit_run(raw, job, plan):
             if planned["offset_ns"] >= 1_000_000_000:
                 invalid_service_ns.append(record["service_ns"])
                 spans = record.get("spans", [])
+                span_stages = {span.get("stage") for span in spans}
+                required = {"A01": {"structural"}, "A02": {"structural", "binding"},
+                            "A03": {"structural", "binding", "secp"},
+                            "A04": {"structural", "binding", "secp", "ml"},
+                            "A05": {"structural", "binding", "secp", "ml", "state"}}[case]
+                require(required <= span_stages and
+                        ("secp" in span_stages) == (case in ("A03", "A04", "A05")) and
+                        ("ml" in span_stages) == (case in ("A04", "A05")) and
+                        ("state" in span_stages) == (case == "A05"),
+                        "invalid verification-stage oracle")
+                invalid_verify_reached += int("secp" in span_stages)
+                invalid_ml_reached += int("ml" in span_stages)
+                for span in spans:
+                    if span.get("stage") in invalid_stage_spans:
+                        invalid_stage_spans[span["stage"]].append(span["duration_ns"])
                 if case == "A01":
                     require(not any(span.get("stage") in ("secp", "ml") for span in spans),
                             "structural reject reached crypto")
@@ -282,7 +299,7 @@ def audit_run(raw, job, plan):
     else:
         require(not invalid_service_ns and not invalid_variants, "benign arm has invalid traffic")
     observer = [r06.observer_metrics(run / f"observer-{i}.jsonl") for i in range(4)]
-    return {"run_id": job["run_id"], "pair": job["pair"], "order": job["order"],
+    row = {"run_id": job["run_id"], "pair": job["pair"], "order": job["order"],
             "condition": condition, "profile": "H", "seed": workload["seed"],
             "genesis_sha256": workload["genesis_sha256"], "fixed_hashes": fixed_hashes,
             "windows": windows, "valid_committed": oracle["valid_committed"],
@@ -294,6 +311,13 @@ def audit_run(raw, job, plan):
             "invalid_mean_checktx_service_ns": statistics.mean(invalid_service_ns) if invalid_service_ns else None,
             "invalid_mean_structural_span_ns": statistics.mean(invalid_structural_ns) if invalid_structural_ns else None,
             "observer_validator0": observer[0], "qc_status": "PASS"}
+    if case != "A01":
+        row["invalid_verify_reach_fraction"] = invalid_verify_reached / 168 if condition == "attack" else None
+        row["invalid_ml_reach_fraction"] = invalid_ml_reached / 168 if condition == "attack" else None
+        row["invalid_mean_stage_wall_ns"] = {
+            stage: statistics.mean(samples) if samples else None
+            for stage, samples in invalid_stage_spans.items()}
+    return row
 
 
 def derive(session, plan):
