@@ -13,8 +13,10 @@ validity rules are unchanged. R cases use fresh four-validator
 single-host networks and observe RPC-origin traffic. Their telemetry
 can count P2P relay after RPC injection but does not measure direct
 P2P-origin injection or matched cross-host propagation latency.
-Gate RQ1 is pending Controller/Owner review; the historical S06 pilot
-description below refers to its original pre-case stage.
+The Owner accepted the bounded Gate RQ1 disposition in
+[D-041](DECISIONS.md), while six case requirements remain PARTIAL and two
+UNSUPPORTED. The historical S06 pilot description below refers to its
+original pre-case stage.
 
 At the refactor source baseline `test-mainet` `ed6bc8f474c13ed709d5ab5f57b3856edcbf602a`,
 Phase 02, B0 and B1 are selectable local profiles. B0 and B1 have tested

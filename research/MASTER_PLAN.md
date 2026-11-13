@@ -1,16 +1,15 @@
 # Pluto research master plan
 
-**Current File 02 authority (2026-11-13):** [D-040](DECISIONS.md)
-authorized Checklist 02 R01–R16 in one bounded task after conditional
-Gate T acceptance. The [RQ1 resource report](evidence/file02/RQ1_RESOURCE_REPORT.md)
-and stacked Draft [PR #24](https://github.com/the-phong/Beam/pull/24)
-give evidenced PASS, PARTIAL or UNSUPPORTED dispositions for all sixteen
-cases. The RQ1 H-minus-CP CheckTx hypothesis remains unchanged; RQ1b
-is separate. Gate RQ1 requires Controller/Owner review. The tested
-single-host RPC stratum found no defensible knee within 25 tx/s and
-does not establish DoS or distributed-network behavior. A/Q/D cases
-and ML training remain outside this authority. Later paragraphs retain
-their original historical status.
+**Current File 02 status (2026-11-13):** [D-041](DECISIONS.md) records
+Owner acceptance of the bounded R01–R16 disposition, integrated by
+[PR #25](https://github.com/the-phong/Beam/pull/25). Eight cases are PASS,
+six PARTIAL and two UNSUPPORTED. The [Gate record](evidence/file02/RQ1_GATE_BOUNDED_ACCEPTANCE_20261113.md)
+accepts H-minus-CP +81.47 microseconds/transaction only in the tested
+single-host RPC stratum; the RQ1 hypothesis is unchanged and RQ1b remains
+separate. No defensible knee was observed within 25 tx/s. No DoS,
+distributed-network behavior or sustainable throughput conclusion is
+accepted. A/Q/D cases and ML training require separate authorization.
+Later paragraphs retain their original historical status.
 
 **Historical authorization (2026-11-12):** After the Owner merged S07 PR #20
 into `test-mainet` at `e0bcd9e0f903a2e807a3d28adc5554dffa48e1f1`, the

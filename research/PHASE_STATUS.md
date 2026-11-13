@@ -1,6 +1,22 @@
 # Phase status — 2026-11-13
 
-## Current File 02 R01–R16 review status
+## Current File 02 Gate RQ1 Owner acceptance
+
+Under [D-041](DECISIONS.md), the Owner accepted the bounded R01–R16
+disposition after [PR #25](https://github.com/the-phong/Beam/pull/25) merged
+into `test-mainet` at `d67fef2598f278015968353763357f6aed28250d`.
+Eight cases are PASS and checked; R03, R04, R06, R10, R11 and R13 remain
+PARTIAL and unchecked; R05 and R12 remain UNSUPPORTED and unchecked. The
+[Gate record](evidence/file02/RQ1_GATE_BOUNDED_ACCEPTANCE_20261113.md)
+accepts H-minus-CP +81.47 microseconds/transaction, paired 95% CI
+[+75.16, +87.26], for the tested four-validator single-host RPC-origin
+20-valid-tx/s stratum only. No knee was observed through 25 tx/s within
+the existing safe range. No DoS, sustainable throughput, multi-host or
+P2P-origin inference is accepted. RQ1b remains separate and A/Q/D/ML work
+is not opened by this decision. The earlier pending-review status below is
+historical.
+
+## Historical File 02 R01–R16 review status
 
 Under Owner decision [D-040](DECISIONS.md), the accepted RQ1 H-minus-CP
 hypothesis and PR #23 study design were locked before bounded R cases.
