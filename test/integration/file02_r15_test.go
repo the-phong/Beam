@@ -51,7 +51,7 @@ func TestFile02R15(t *testing.T) {
 						filepath.Join(root, "runs", runID), plan, map[string]any{
 							"schema": "pluto.file02.r15_run.v1", "scope": "R_CONFIRMATORY", "case_id": "R15",
 							"profile": profile.name, "rate": rate, "repetition": repetition,
-							"position": position, "seed": plan.Seed, "recorder_mode": "ON",
+							"position": position, "order": position, "seed": plan.Seed, "recorder_mode": "ON",
 							"commit_observer_mode": "block_scan",
 						})
 				}); !passed {
