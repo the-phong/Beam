@@ -1,7 +1,9 @@
 # File 02 RQ1 — single-host H versus CP plan candidate
 
-Status: **DRAFT FOR CONTROLLER/OWNER REVIEW**, 2026-11-13. This is a
-pre-case design, not a `LOCKED` `plan.json`, a run authorization or a result.
+Status: **LOCKED STUDY DESIGN**, 2026-11-13 under the Owner's R01–R16
+authorization. This locks the RQ1 contrast, parameters and decision rule
+before confirmatory data. Individual private `plan.json` files still need
+source, runtime and run-specific identities locked before their own sends.
 It applies only to four real validators on one physical host. It implements
 the accepted RQ1 contrast in [RESEARCH_PROTOCOL.md](RESEARCH_PROTOCOL.md)
 without changing its hypothesis. The T06 calibration and precision pilots
@@ -32,9 +34,9 @@ requires the paired-run 95% CI lower bound above zero and every equivalence,
 rate and oracle check passing. A CI upper bound at or below zero opposes the
 positive effect in this stratum; a crossing CI is inconclusive.
 
-## Proposed parameters to lock before a formal run
+## Locked design parameters
 
-| Field | Review candidate |
+| Field | Locked value or required run-specific binding |
 | --- | --- |
 | Workload | Factor `BENIGN_HIGH`, capability `NONE`. One valid, pre-signed transfer per distinct funded sender at nonce 0; 1 warm-up and 240 steady sends per arm. Same logical intents, account registry and planned offsets within a pair. |
 | Rate and schedule | 20 valid tx/s for 12 one-second steady windows; 0 invalid tx/s; 51,360 encoded bytes/s. One-second warm-up, 12-second steady, five-second drain and two-second cooldown; total 20 seconds, below the 60-second cap. |
@@ -59,16 +61,16 @@ guarantee for a H–CP effect. A wide CI stays inconclusive.
 
 ## Pre-run lock and scientific boundary
 
-The Owner's Gate T decision permits this planning document only. Before
-execution, a separate case decision must authorize RQ1; the actual source
+The Owner authorized the complete R01–R16 group without a per-case approval
+step. Before RQ1 network execution, the actual source
 commit/tree, runtime inventory, software versions, exact endpoint ports,
 genesis/config/corpus hashes, pair seeds/order and per-run IDs must populate
 individual private `plan.json` files with status `LOCKED`. The case-specific
 producer, span join, paired CI analyzer, oracle and QC tests must pass;
 `file02_common.py validate-plan` and safety preflight must accept every plan.
-No R item or per-case artifact box is checked by this draft.
+No R item or per-case artifact box is checked by the study-design lock alone.
 
-Results, if later authorized, can describe only this RPC-origin single-host
+Results from an authorized R case can describe only this RPC-origin single-host
 stratum. They cannot establish P2P-origin effects, independent-host
 performance, exact cross-host latency, a knee, DoS or distributed-network
 behavior. If a required stream is absent, record `UNAVAILABLE`/`null` with
