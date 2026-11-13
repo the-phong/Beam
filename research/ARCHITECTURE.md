@@ -4,6 +4,18 @@ Current source locations are indexed in [`docs/ARCHITECTURE.md`](../docs/ARCHITE
 and the [refactor mapping](../docs/REFACTOR_MAPPING.md). Historical sections
 below retain the names and review status from their original checkpoints.
 
+The current File 02 RQ1 measurement path is described in the
+[bounded resource report](evidence/file02/RQ1_RESOURCE_REPORT.md).
+The R16 extension adds a validated `ramp` waveform to the isolated
+open-loop load planner; it changes send offsets only, within the
+accepted loopback and S06 caps. The application and Comet consensus
+validity rules are unchanged. R cases use fresh four-validator
+single-host networks and observe RPC-origin traffic. Their telemetry
+can count P2P relay after RPC injection but does not measure direct
+P2P-origin injection or matched cross-host propagation latency.
+Gate RQ1 is pending Controller/Owner review; the historical S06 pilot
+description below refers to its original pre-case stage.
+
 At the refactor source baseline `test-mainet` `ed6bc8f474c13ed709d5ab5f57b3856edcbf602a`,
 Phase 02, B0 and B1 are selectable local profiles. B0 and B1 have tested
 four-validator localhost configurations. Phase 05's evaluation and the bounded

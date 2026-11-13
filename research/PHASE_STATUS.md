@@ -1,6 +1,24 @@
 # Phase status — 2026-11-13
 
-## Current Gate T decision and planning authority
+## Current File 02 R01–R16 review status
+
+Under Owner decision [D-040](DECISIONS.md), the accepted RQ1 H-minus-CP
+hypothesis and PR #23 study design were locked before bounded R cases.
+The stacked Draft [PR #24](https://github.com/the-phong/Beam/pull/24)
+contains the engineering disposition of R01–R16 on
+`research/file02-rq1-r01-r16` from PR #23's planning head. Eight cases
+(R01, R02, R07–R09, R14–R16) have checked, independently verified
+bounded evidence; R03, R04, R06, R10, R11 and R13 are PARTIAL, while
+R05 and R12 are UNSUPPORTED, with open checklist boxes. The
+[resource report](evidence/file02/RQ1_RESOURCE_REPORT.md) gives the
+size/crypto/application/Comet decomposition, run-level CIs and the
+unobserved knee. Gate RQ1 is **pending Controller/Owner review**, not
+accepted by this engineering report. RQ1b remains separate; no A/Q/D
+case, ML training, DoS, P2P-origin or multi-host result is claimed.
+PR #23 remains Draft and is the dependency for PR #24. The older Gate T
+planning-only authority below is historical.
+
+## Historical Gate T decision and planning authority
 
 The Owner [conditionally accepted Gate T](evidence/file02/T_GATE_CONDITIONAL_ACCEPTANCE_20261113.md)
 for the verified T01–T07 preflight only. RQ1 and RQ1b case **planning** on
