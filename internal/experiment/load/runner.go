@@ -12,10 +12,34 @@ import (
 	"net/http"
 	"net/http/httptrace"
 	"net/url"
+	"regexp"
 	"strconv"
 	"sync"
 	"time"
 )
+
+var mempoolFullPattern = regexp.MustCompile(`mempool is full: number of txs ([0-9]+) \(max: ([0-9]+)\), total txs bytes ([0-9]+) \(max: ([0-9]+)\)`)
+
+func classifyRPCAdmission(message string) string {
+	parts := mempoolFullPattern.FindStringSubmatch(message)
+	if len(parts) != 5 {
+		return "rpc_reject"
+	}
+	count, _ := strconv.ParseInt(parts[1], 10, 64)
+	maxCount, _ := strconv.ParseInt(parts[2], 10, 64)
+	bytes, _ := strconv.ParseInt(parts[3], 10, 64)
+	maxBytes, _ := strconv.ParseInt(parts[4], 10, 64)
+	if count >= maxCount && bytes >= maxBytes {
+		return "mempool_count_and_bytes_full"
+	}
+	if count >= maxCount {
+		return "mempool_count_full"
+	}
+	if bytes >= maxBytes {
+		return "mempool_bytes_full"
+	}
+	return "mempool_full_unresolved"
+}
 
 const (
 	StatusOK             = "OK"
@@ -134,15 +158,23 @@ func (s *HTTPSender) Send(ctx context.Context, raw []byte) SendResult {
 		Result struct {
 			Code *uint32 `json:"code"`
 		} `json:"result"`
-	}
-	if response.StatusCode != http.StatusOK {
-		return SendResult{WrittenAt: wroteAt, Completed: completed, Reason: "rpc_reject", Err: fmt.Errorf("RPC HTTP %d", response.StatusCode)}
+		Error struct {
+			Message string `json:"message"`
+			Data    string `json:"data"`
+		} `json:"error"`
 	}
 	if err := decodeBoundedJSON(response.Body, &wire); err != nil {
 		return SendResult{WrittenAt: wroteAt, Completed: completed, Reason: "rpc_response_invalid", Err: err}
 	}
+	if response.StatusCode != http.StatusOK {
+		return SendResult{WrittenAt: wroteAt, Completed: completed, Reason: classifyRPCAdmission(wire.Error.Message + " " + wire.Error.Data), Err: fmt.Errorf("RPC HTTP %d", response.StatusCode)}
+	}
 	if wire.Result.Code == nil {
-		return SendResult{WrittenAt: wroteAt, Completed: completed, Reason: "rpc_code_missing", Err: errors.New("missing CheckTx code")}
+		reason := classifyRPCAdmission(wire.Error.Message + " " + wire.Error.Data)
+		if reason == "rpc_reject" {
+			reason = "rpc_code_missing"
+		}
+		return SendResult{WrittenAt: wroteAt, Completed: completed, Reason: reason, Err: errors.New("missing CheckTx code")}
 	}
 	return SendResult{WrittenAt: wroteAt, Completed: completed, Code: wire.Result.Code, Reason: "app_code"}
 }

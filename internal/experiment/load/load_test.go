@@ -184,6 +184,32 @@ func TestS06KillSwitchAndPublicTargetRefused(t *testing.T) {
 	}
 }
 
+func TestFile02MempoolLimitReasonClassification(t *testing.T) {
+	for _, tc := range []struct{ message, want string }{
+		{"mempool is full: number of txs 1 (max: 1), total txs bytes 2568 (max: 8388608)", "mempool_count_full"},
+		{"mempool is full: number of txs 2 (max: 128), total txs bytes 5136 (max: 5000)", "mempool_bytes_full"},
+		{"mempool is full: number of txs 1 (max: 1), total txs bytes 2568 (max: 2568)", "mempool_count_and_bytes_full"},
+		{"some other RPC error", "rpc_reject"},
+	} {
+		if got := classifyRPCAdmission(tc.message); got != tc.want {
+			t.Fatalf("%q classified %q, want %q", tc.message, got, tc.want)
+		}
+	}
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"jsonrpc":"2.0","error":{"code":-32603,"message":"Internal error","data":"mempool is full: number of txs 1 (max: 1), total txs bytes 2568 (max: 8388608)"}}`))
+	}))
+	defer server.Close()
+	sender, err := NewHTTPSender(server.URL, time.Second)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := sender.Send(context.Background(), []byte{1})
+	if got.Err == nil || got.Reason != "mempool_count_full" {
+		t.Fatalf("unexpected bounded RPC classification: %+v", got)
+	}
+}
+
 func TestS06PublicCorpusOracleRejectsMislabel(t *testing.T) {
 	c, err := ReadScenarioCorpus(filepath.Join("..", "..", "..", "research", "corpus", "s06_scenarios.json"))
 	if err != nil {

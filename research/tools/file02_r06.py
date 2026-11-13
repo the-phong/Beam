@@ -102,9 +102,11 @@ def bind_run_plan(run, network_root):
     metadata, load_plan, nodes = (common.read_json(run / name) for name in
                                   ("metadata.json", "plan.json", "nodes.json"))
     case = metadata.get("case_id")
-    require(case in ("R06", "R07") and metadata.get("scope") == "R_CONFIRMATORY" and
+    require(case in ("R06", "R07", "R08") and metadata.get("scope") == "R_CONFIRMATORY" and
             metadata.get("run_id") == load_plan.get("run_id") and len(nodes) == 4, "R06 identity")
-    root = common.read_json(ROOT / "research/config/s06_pilot.json")
+    config_path = run / "config.json" if case == "R08" else ROOT / "research/config/s06_pilot.json"
+    root = common.read_json(config_path)
+    require(common.digest(config_path) == metadata["config_sha256"], "run config hash mismatch")
     network, safety = root["network"], root["safety"]
     profile = next((p for p in PROFILES if {"C": 1, "CP": 2, "P": 3, "H": 4}[p] == load_plan["profile"]), None)
     require(profile == metadata["profile"] and all(node["rpc"].startswith("http://127.0.0.1:") for node in nodes),
@@ -118,8 +120,9 @@ def bind_run_plan(run, network_root):
             "architecture": inventory["architecture"], "logical_cpus": inventory["logical_cpus"],
             "os": inventory["os"]}
     is_r06 = case == "R06"
-    planned_rate = 20 if is_r06 else round(2568 / WIRE[profile])
-    require(load_plan["regime"] == ("equal_tx_s" if is_r06 else "equal_bytes_s") and
+    is_r08 = case == "R08"
+    planned_rate = 20 if is_r06 or is_r08 else round(2568 / WIRE[profile])
+    require(load_plan["regime"] == ("equal_tx_s" if is_r06 or is_r08 else "equal_bytes_s") and
             load_plan["steady_ns"] == (12 if is_r06 else 4)*1_000_000_000 and
             load_plan["drain_ns"] == (5 if is_r06 else 3)*1_000_000_000 and
             len(load_plan["events"]) == 1 + planned_rate*(12 if is_r06 else 4), "case schedule")
@@ -128,7 +131,8 @@ def bind_run_plan(run, network_root):
             "hypothesis": "H valid CheckTx service exceeds exact-size CP at matched offered rate",
             "null_hypothesis": "H-minus-CP mean service <= 0",
             "alternative_hypothesis": "H-minus-CP mean service > 0",
-            "analysis_plan": {"primary_endpoint": "validator0_valid_steady_CheckTx_mean_service_ns",
+            "analysis_plan": {"primary_endpoint": "first_mempool_count_full_offset_ns" if is_r08 else
+                                                  "validator0_valid_steady_CheckTx_mean_service_ns",
                               "independent_unit": "fresh_four_validator_network",
                               "ci_method": "paired_percentile_bootstrap_20000_seed_20261113",
                               "exclusion_rule": "any failed locked-arm QC excludes paired block; no replacement"},
@@ -163,12 +167,13 @@ def bind_run_plan(run, network_root):
                               "drain": 5 if is_r06 else 3, "cooldown": 2},
             "planned": {"valid_tx_s": planned_rate, "invalid_tx_s": 0,
                         "total_bytes_s": WIRE[profile]*planned_rate},
-            "matching": {"matched_variable": "tx_s" if is_r06 else "bytes_s",
-                         "unmatched_variables": ["wire_bytes", "verification_path"] if is_r06 else
+            "matching": {"matched_variable": "tx_s" if is_r06 or is_r08 else "bytes_s",
+                         "unmatched_variables": ["wire_bytes", "verification_path"] if is_r06 or is_r08 else
                                                 ["tx_s", "verification_path"]},
             "pilot_reference": "research/evidence/file02/T06_KNEE_PILOT.md" if is_r06 else
-                               "research/evidence/file02/COMMON04_EQUAL_RATE_AUDIT.md",
-            "independent_run_target": 12,
+                               "research/evidence/file02/COMMON04_EQUAL_RATE_AUDIT.md" if case == "R07" else
+                               "research/evidence/file02/T01_BASELINE_AUDIT.md",
+            "independent_run_target": 4 if is_r08 else 12,
             "p99_precision_rule": "rank>=0.95 and two_stage_cluster_CI_radius<=0.20; 2000 draws"}
     common.validate_plan(plan)
     target = run / "research_plan"
