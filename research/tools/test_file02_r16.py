@@ -1,6 +1,8 @@
 """R16 locked schedule and paired inference regression."""
 
 import unittest
+import tempfile
+from pathlib import Path
 
 import file02_r16 as r16
 
@@ -29,6 +31,22 @@ class R16DesignTest(unittest.TestCase):
         self.assertEqual(r16.bootstrap([5, 5, 5, 5]), [5, 5])
         low, high = r16.bootstrap([-2, -2, -2, -2])
         self.assertEqual((low, high), (-2, -2))
+
+    def test_csv_integrity_rejects_missing_and_changed_values(self):
+        row = {key: 1 for key in r16.CSV_KEYS}
+        row["run_id"] = "r16-test"
+        row["recovery_upper_ms"] = None
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "result_per_run.csv"
+            path.write_text(",".join(r16.CSV_KEYS) + "\n" +
+                            ",".join("" if row[k] is None else str(row[k]) for k in r16.CSV_KEYS) + "\n")
+            r16.validate_csv(path, [row])
+            path.write_text(path.read_text().replace("r16-test", "wrong-id"))
+            with self.assertRaisesRegex(ValueError, "content mismatch"):
+                r16.validate_csv(path, [row])
+            path.write_text("run_id,block\n")
+            with self.assertRaisesRegex(ValueError, "schema mismatch"):
+                r16.validate_csv(path, [row])
 
 
 if __name__ == "__main__":

@@ -26,6 +26,11 @@ ARMS = ("constant", "ramp", "burst")
 WINDOWS = {"constant": [10, 10, 10, 10], "ramp": [4, 8, 12, 16],
            "burst": [0, 20, 0, 20]}
 SEED = 20261113
+CSV_KEYS = ("run_id", "block", "profile", "arm", "seed", "wire_bytes", "valid_committed",
+            "max_sampled_mempool_count", "max_sampled_mempool_bytes",
+            "checktx_socket_queue_wait_ms", "inclusion_upper_p95_ms",
+            "recovery_upper_ms", "p2p_ingress_bytes_delta", "p2p_ingress_peak_bytes_s",
+            "qc_status")
 
 
 def require(ok, reason):
@@ -283,14 +288,9 @@ def write_outputs(session, plan):
     rows, qc, aggregate = derive(session, plan)
     r01.write_new(session / "result_per_run.json", {"schema": "pluto.file02.r16.per_run.v1", "rows": rows})
     with (session / "result_per_run.csv").open("x", newline="", encoding="utf-8") as stream:
-        keys = ("run_id", "block", "profile", "arm", "seed", "wire_bytes", "valid_committed",
-                "max_sampled_mempool_count", "max_sampled_mempool_bytes",
-                "checktx_socket_queue_wait_ms", "inclusion_upper_p95_ms",
-                "recovery_upper_ms", "p2p_ingress_bytes_delta", "p2p_ingress_peak_bytes_s",
-                "qc_status")
-        writer = csv.DictWriter(stream, fieldnames=keys)
+        writer = csv.DictWriter(stream, fieldnames=CSV_KEYS)
         writer.writeheader()
-        writer.writerows({key: r[key] for key in keys} for r in rows)
+        writer.writerows({key: r[key] for key in CSV_KEYS} for r in rows)
     r01.write_new(session / "qc_report.json", qc)
     r01.write_new(session / "result_aggregate.json", aggregate)
     (session / "figures").mkdir()
@@ -325,6 +325,15 @@ def execute():
     return 0 if run.returncode == 0 and qc["status"] == "PASS" else 2
 
 
+def validate_csv(path, rows):
+    with Path(path).open(newline="", encoding="utf-8") as stream:
+        reader = csv.DictReader(stream)
+        require(tuple(reader.fieldnames or ()) == CSV_KEYS, "R16 CSV schema mismatch")
+        actual = list(reader)
+    expected = [{key: "" if row[key] is None else str(row[key]) for key in CSV_KEYS} for row in rows]
+    require(actual == expected, "R16 CSV content mismatch")
+
+
 def verify(session):
     session = Path(session).resolve()
     require(session.parent == ARTIFACTS.resolve(), "private session")
@@ -336,10 +345,7 @@ def verify(session):
             common.read_json(session / "qc_report.json") == qc and
             common.read_json(session / "result_aggregate.json") == aggregate,
             "R16 derived artifact mismatch")
-    with (session / "result_per_run.csv").open(newline="", encoding="utf-8") as stream:
-        csv_rows = list(csv.DictReader(stream))
-    require(len(csv_rows) == len(rows) and all(item["run_id"] == row["run_id"]
-                                          for item, row in zip(csv_rows, rows)), "R16 CSV mismatch")
+    validate_csv(session / "result_per_run.csv", rows)
     print(f"R16_VERIFY=OK qc={qc['status']} n={len(rows)} raw_manifest_sha256={qc['raw_manifest_sha256']}")
 
 
