@@ -1,5 +1,25 @@
 # Architectural decision log
 
+## D-038 — Gate COMMON pre-case acceptance and separate RQ1b (2026-11-13; Owner decision)
+
+The Owner directed acceptance of Checklist 02 Gate COMMON for bounded
+**pre-case readiness** after CI confirmation, formal handling of RQ1b, then
+T01–T07 in checklist order. [The acceptance record](evidence/file02/COMMON_GATE_ACCEPTANCE_20261113.md)
+links four passing checks on PR #21 source `ec0eabe746a1ba0886a2cc8e09468153507c781d`.
+The common controls and section 2 registries/artifact contracts are ready;
+per-case outputs, near/at/above-knee levels and unsupported factor levels
+are not declared complete. The T06 pilot's literal flags and raw remain
+unchanged; no further knee pilot or safety-cap increase is authorized.
+
+The Owner-directed [RQ1b addendum](protocol/FILE02_RQ1B_ADDENDUM.md)
+establishes legitimate-service degradation under invalid H load as a
+separate research question with matched benign control, prospective
+deadline endpoint and paired-run CI rule. Accepted S02 RQ1 continues to
+measure valid H–CP CheckTx cost; its H0/H1 is unchanged. Case-specific
+parameters require locked plans and quality gates. T06 pilot QA does not
+count as formal T06 completion. No R/A/Q/D case, ML training, DoS finding,
+merge or protected-branch change follows from this decision.
+
 Current disposition of D-037: the Owner merged [refactor PR #18](https://github.com/the-phong/Beam/pull/18)
 into `test-mainet` at `e8f20726f5cea94b47c4dcddb756e39d21207448`.
 The Controller conditionally accepted its structural scope and the

@@ -22,5 +22,9 @@ jobs:
         run: make corpus-s04-verify corpus-s06-verify
       - name: S07 schema and integrity tests
         run: make test-s07-schema
+      - name: File 02 common plan and QC tests
+        run: make test-file02-common
       - name: Four-validator C/CP/P/H smoke
         run: make test-s07-smoke
+      - name: File 02 COMMON-02 fresh-network and phase smoke
+        run: make test-file02-common02

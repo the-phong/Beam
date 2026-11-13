@@ -1,5 +1,14 @@
 # Research directory
 
+File 02 sections 0–2 are under bounded implementation on
+`research/file02-common-foundation`. See the
+[common contract](protocol/FILE02_COMMON_CONTRACT.md),
+[factor registry](config/file02_factors.json),
+[metric dictionary](protocol/FILE02_METRICS.md) and
+[artifact workflow](protocol/FILE02_ARTIFACTS.md). The original Checklist 02
+remains beside this repository. The new foundation has no confirmatory
+T/R/A/Q/D results.
+
 All research material lives under this directory. The earlier B0/B1 engineering
 phases and Phase 05 measurements are historical inputs to the current RQ1–RQ3
 study; they are not new RQ1–RQ3 results.

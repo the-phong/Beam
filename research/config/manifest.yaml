@@ -12,12 +12,18 @@ project:
   research_v2_s04_status: owner_merged_pr15_630f2d8c
   research_v2_s05_status: owner_merged_pr16_ac91250d
   research_v2_s06_status: owner_merged_pr17_ed6bc8f_pilot_only
-  research_v2_s07_status: five_tasks_local_technical_gate_ok_controller_owner_review_pending
+  research_v2_s07_status: owner_merged_pr20_e0bcd9e_bounded_qa_only
+  file02_common_status: owner_accepted_pre_case_readiness_2026_11_13
+  file02_section2_status: pre_case_contract_accepted_case_outputs_pending
+  file02_rq1b_status: separate_question_owner_directed_case_parameters_pending
+  file02_t_group_status: authorized_T01_to_T07_in_order_not_yet_complete
+  file02_tested_pilot_tx_s: [2, 6, 12, 20, 23, 25]
+  file02_knee_levels: not_observed_within_safe_range
   refactor_status: owner_merged_pr18_e8f20726_controller_conditional_accept_postmerge_ci_pass
-  active_authorization: s07_reproducibility_qa_2026_11_12
+  active_authorization: file02_T01_to_T07_2026_11_13
   baseline_branch: test-mainet
-  baseline_commit: 49facc28ca29102e3e7295546f29b74fe3503a00
-  baseline_tree: 994527bc2efe4aebff97cedd3c69808b92894d76
+  baseline_commit: e0bcd9e0f903a2e807a3d28adc5554dffa48e1f1
+  baseline_tree: 71d03c1d083724b1bba73e62b024766cfaaedc5a
   refactor_source_commit: ed6bc8f474c13ed709d5ab5f57b3856edcbf602a
   phase_03b_status: completed_controller_accepted_merged
   phase_03c_implementation_authorized: false

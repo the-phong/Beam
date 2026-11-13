@@ -72,6 +72,7 @@ func TestS07ReproSmoke(t *testing.T) {
 	for i, profile := range profiles {
 		i, profile := i, profile
 		t.Run(profile.name, func(t *testing.T) {
+			phaseOrigin := time.Now()
 			runRoot := filepath.Join(sessionRoot, "profile-"+profile.name)
 			if err := os.Mkdir(runRoot, 0700); err != nil {
 				t.Fatalf("run ID already exists or cannot be created: %v", err)
@@ -87,7 +88,9 @@ func TestS07ReproSmoke(t *testing.T) {
 				if name == "warm-up" || name == "execute" || name == "drain" {
 					kind = "delegated_schedule"
 				}
-				if err := json.NewEncoder(phase).Encode(map[string]string{"phase": name, "detail": detail, "event_kind": kind, "observed_utc": time.Now().UTC().Format(time.RFC3339Nano)}); err != nil {
+				if err := json.NewEncoder(phase).Encode(map[string]any{"phase": name, "detail": detail, "event_kind": kind,
+					"observed_utc":         time.Now().UTC().Format(time.RFC3339Nano),
+					"elapsed_monotonic_ns": time.Since(phaseOrigin).Nanoseconds()}); err != nil {
 					t.Fatal(err)
 				}
 			}
@@ -228,6 +231,26 @@ func TestS07ReproSmoke(t *testing.T) {
 			}
 			if !p2pSeen {
 				t.Fatal("no direct P2P relay observation")
+			}
+			if rawCooldown := os.Getenv("S07_FILE02_COOLDOWN_MS"); rawCooldown != "" {
+				cooldownMS, err := strconv.Atoi(rawCooldown)
+				if err != nil || cooldownMS < 1 || cooldownMS > 5000 {
+					t.Fatal("invalid bounded File 02 cooldown")
+				}
+				startNS := time.Since(phaseOrigin).Nanoseconds()
+				start := time.Now()
+				time.Sleep(time.Duration(cooldownMS) * time.Millisecond)
+				pilot.n.waitAll(oracle.CommonHeight, 5*time.Second)
+				endNS := time.Since(phaseOrigin).Nanoseconds()
+				if err := s07WriteJSON(filepath.Join(runRoot, "cooldown.json"), map[string]any{
+					"schema": "pluto.file02.cooldown_qa.v1", "run_id": runID,
+					"planned_ms": cooldownMS, "elapsed_ns": time.Since(start).Nanoseconds(),
+					"start_monotonic_ns": startNS, "end_monotonic_ns": endNS,
+					"network_live": true,
+				}); err != nil {
+					t.Fatal(err)
+				}
+				mark("cooldown", "separate monotonic cooldown after drain, oracle and telemetry collection")
 			}
 			t.Logf("S07 smoke profile=%s run_id=%s valid=%d invalid=%d height=%d", profile.name, runID, oracle.ValidCommitted, oracle.InvalidRejected, oracle.CommonHeight)
 		})

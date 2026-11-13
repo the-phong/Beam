@@ -1,4 +1,4 @@
-.PHONY: build build-comet-s05 clean test test-integration test-integration-4v test-integration-b1-4v test-s04-4v test-s05-telemetry test-s06-pilot test-s07-schema test-s07-smoke corpus-s04-verify corpus-s06-verify vet fmt-check verify benchmark-corpus benchmark-smoke benchmark-micro benchmark-b1 benchmark-full benchmark-analyze benchmark-contention-corpus benchmark-contention-smoke benchmark-contention-full benchmark-contention-analyze
+.PHONY: build build-comet-s05 clean test test-integration test-integration-4v test-integration-b1-4v test-s04-4v test-s05-telemetry test-s06-pilot test-s07-schema test-s07-smoke test-file02-common test-file02-common02 corpus-s04-verify corpus-s06-verify vet fmt-check verify benchmark-corpus benchmark-smoke benchmark-micro benchmark-b1 benchmark-full benchmark-analyze benchmark-contention-corpus benchmark-contention-smoke benchmark-contention-full benchmark-contention-analyze
 
 GO ?= go
 INTEGRATION_TIMEOUT ?= 900s
@@ -46,6 +46,36 @@ test-s06-pilot: build build-comet-s05 corpus-s06-verify
 
 test-s07-schema:
 	python3 -m unittest discover research/tools -p 'test_s07_*.py' -v
+
+test-file02-common:
+	python3 -m unittest discover research/tools -p 'test_file02_*.py' -v
+
+test-file02-common02:
+	python3 research/tools/file02_common02.py smoke
+
+.PHONY: test-file02-common03
+test-file02-common03:
+	python3 research/tools/file02_common03.py smoke
+
+.PHONY: test-file02-common04
+test-file02-common04:
+	python3 research/tools/file02_common04.py smoke
+
+.PHONY: test-file02-common05
+test-file02-common05:
+	python3 research/tools/file02_common05.py smoke
+
+.PHONY: test-file02-common06
+test-file02-common06:
+	python3 research/tools/file02_common06.py smoke
+
+.PHONY: test-file02-t06-calibration
+test-file02-t06-calibration:
+	python3 research/tools/file02_t06.py smoke
+
+.PHONY: test-file02-t06-precision
+test-file02-t06-precision:
+	python3 research/tools/file02_t06_precision.py smoke
 
 # Builds, verifies public corpora and runs four fresh bounded private networks.
 # The script prints an ignored session path and a SHA-256 manifest for reruns.

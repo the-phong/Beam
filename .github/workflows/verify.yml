@@ -16,6 +16,8 @@ jobs:
           cache: false
       - name: Verify foundation
         run: make verify
+      - name: Verify File 02 common plan and QC gate
+        run: make test-file02-common
       - name: Verify real local node and restart
         run: make test-integration
       - name: Verify real four-validator network

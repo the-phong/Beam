@@ -1,0 +1,22 @@
+{
+  "schema": "pluto.file02.factors.v1",
+  "profiles": ["C", "CP", "P", "H"],
+  "workloads": ["BENIGN_LOW", "BENIGN_HIGH", "BENIGN_BURST", "STRUCT_INVALID", "ECDSA_INVALID", "MLDSA_INVALID", "STATE_INVALID", "VALID_FLOOD", "MIXED"],
+  "incompatible": {"C": ["MLDSA_INVALID"], "CP": ["MLDSA_INVALID"], "P": ["ECDSA_INVALID"]},
+  "capabilities": {"BENIGN_LOW": ["NONE"], "BENIGN_HIGH": ["NONE"], "BENIGN_BURST": ["NONE"], "STRUCT_INVALID": ["A", "B", "C"], "ECDSA_INVALID": ["B", "C"], "MLDSA_INVALID": ["B", "C"], "STATE_INVALID": ["C"], "VALID_FLOOD": ["C"], "MIXED": ["A", "B", "C", "D"]},
+  "regimes": ["equal_tx_s", "equal_bytes_s", "fixed_legitimate_plus_adversarial", "matched_pressure"],
+  "origins_available": ["RPC"],
+  "origins_deferred": ["P2P"],
+  "topologies_available": ["FOUR_VALIDATOR_SINGLE_HOST_DIAGNOSTIC"],
+  "topologies_deferred": ["FOUR_VALIDATOR_MULTI_HOST_PRIMARY"],
+  "load_levels": ["PILOT_LOW", "SUBCRITICAL", "NEAR_KNEE", "AT_KNEE", "SLIGHTLY_OVER_KNEE"],
+  "tested_pilot_tx_s": [2, 6, 12, 20, 23, 25],
+  "load_values": {"PILOT_LOW": [2, 6], "SUBCRITICAL": "NOT_ESTABLISHED", "NEAR_KNEE": "NOT_OBSERVED_WITHIN_SAFE_RANGE", "AT_KNEE": "NOT_OBSERVED_WITHIN_SAFE_RANGE", "SLIGHTLY_OVER_KNEE": "NOT_OBSERVED_WITHIN_SAFE_RANGE"},
+  "load_evidence": ["research/evidence/file02/T06_CALIBRATION_PILOT.md", "research/evidence/file02/T06_KNEE_PILOT.md"],
+  "source_levels": {"RPC_SINGLE": "QA_VERIFIED", "RPC_MULTI": "UNSUPPORTED", "P2P_ORIGIN_INJECTION": "UNSUPPORTED"},
+  "topology_levels": {"FOUR_VALIDATOR_SINGLE_HOST_DIAGNOSTIC": "QA_VERIFIED", "FOUR_VALIDATOR_MULTI_HOST_PRIMARY": "UNSUPPORTED"},
+  "policy_levels": {"BASELINE_VERIFY_ORDER": "IMPLEMENTED", "REVERSE_VERIFY_ORDER": "UNSUPPORTED", "EARLY_REJECT": "UNSUPPORTED"},
+  "policy_available": ["BASELINE_VERIFY_ORDER"],
+  "policy_deferred": ["REVERSE_VERIFY_ORDER", "EARLY_REJECT"],
+  "note": "Tested pilot rates are not knee levels or confirmatory loads. P2P relay observation from RPC origin is not P2P-origin injection. Case-specific run counts remain preregistration inputs."
+}

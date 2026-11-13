@@ -1,4 +1,38 @@
-# Phase status — 2026-11-12
+# Phase status — 2026-11-13
+
+## Current File 02 T group authority
+
+The Owner accepted Gate COMMON for bounded pre-case readiness after all four
+PR #21 CI checks passed at `ec0eabe` and directed the separate
+[RQ1b addendum](protocol/FILE02_RQ1B_ADDENDUM.md). [D-038](DECISIONS.md) and
+the [gate acceptance](evidence/file02/COMMON_GATE_ACCEPTANCE_20261113.md)
+record the scope. Checklist 02 T01–T07 are now authorized **in order**.
+The seven per-case outputs in section 2.3 remain pending; the pilot T06 does
+not complete formal T06. R/A/Q/D cases and RQ claims remain closed.
+
+## Historical File 02 sections 0–2 foundation candidate
+
+The Owner merged S07 PR #20 into `test-mainet` at
+`e0bcd9e0f903a2e807a3d28adc5554dffa48e1f1` and explicitly authorized
+sections 0–2 of the outside Checklist 02. Work is on
+`research/file02-common-foundation` from that merge. The
+[common contract](protocol/FILE02_COMMON_CONTRACT.md),
+[artifact workflow](protocol/FILE02_ARTIFACTS.md), factor registry and QC
+tooling are an implementation candidate. A new bounded S07 four-profile QA
+smoke passed, and its private raw is ignored. COMMON-01–09 bounded QA is
+evidenced; T06 calibration and precision pilots passed their registered
+gates. A separate bounded knee search tested 20/23/25 tx/s without
+confirming a knee. Section 2 factor, 63-metric and artifact contracts are
+ready for review; future per-case output remains `PENDING_CASE_EXECUTION`.
+Numerical knee levels, per-case plans, multi-host/P2P origin and the full
+COMMON gate remain open. The [section 2 report](evidence/file02/SECTION2_READINESS_REPORT.md)
+records the RQ1 wording issue. No confirmatory case or RQ1–RQ3 result is claimed.
+The common contract now records the negative bounded knee finding without
+requiring a further search. A [separate legitimate-service question](evidence/file02/SECTION2_SERVICE_DEGRADATION_PROPOSAL.md)
+has a decision-ready proposal; the accepted RQ1 hypothesis is unchanged.
+The seven per-case outputs in Checklist 02 section 2.3 remain unchecked.
+Controller/Owner review remains separate. The sections below retain their
+historical wording.
 
 ## Current S07 implementation candidate
 
