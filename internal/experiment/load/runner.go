@@ -450,7 +450,7 @@ func rateQuality(p Plan, actual []EventResult) error {
 		if actualByWindow[window] < int(.9*float64(expected)+.999999) {
 			return fmt.Errorf("steady window %d below 90%% of planned sends", window)
 		}
-		if (p.Waveform == "burst" || p.Waveform == "ramp") && actualByWindow[window] > int(1.1*float64(expected)) {
+		if (p.Waveform == "burst" || p.Waveform == "ramp" || p.Waveform == "step") && actualByWindow[window] > int(1.1*float64(expected)) {
 			return fmt.Errorf("scheduled window %d exceeds planned send count", window)
 		}
 		if p.Regime == FixedLegitimatePlusAdversary {
