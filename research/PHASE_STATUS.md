@@ -6,8 +6,14 @@ The Owner [conditionally accepted Gate T](evidence/file02/T_GATE_CONDITIONAL_ACC
 for the verified T01–T07 preflight only. RQ1 and RQ1b case **planning** on
 the four-validator single-host topology is permitted, with workload,
 offered rates, repetitions, endpoints, CI, safety and QC locked separately
-before any official run. PR #21 must merge before stacked PR #22; a
-planning-only branch follows the verified merged `test-mainet` head.
+before any official run. PR #21 merged at
+`6de41446272520809fbdcb84d3b1155831dc24d5` and PR #22 at
+`a88e5d7eb5984f2dcddb5368248be2bff57e2aa4`, after all four PR #22
+checks passed. The planning-only branch
+`research/file02-rq1-rq1b-planning` starts at the second merge commit.
+The [RQ1 plan](protocol/FILE02_RQ1_SINGLE_HOST_PLAN.md) and
+[RQ1b plan](protocol/FILE02_RQ1B_SINGLE_HOST_PLAN.md) are review candidates,
+not locked case artifacts or permission to send traffic.
 No formal R/A/Q/D run or multi-host/P2P-origin/distributed DoS conclusion
 is authorized. The earlier technical-candidate status below is historical.
 

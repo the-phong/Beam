@@ -1,7 +1,8 @@
 # File 02 artifact workflow v1
 
 The outside Checklist 02 remains the operator checklist. Its sections 0–2
-are implemented as a review candidate by the [common contract](FILE02_COMMON_CONTRACT.md),
+were accepted for bounded pre-case readiness under D-038 and are implemented
+by the [common contract](FILE02_COMMON_CONTRACT.md),
 [factor registry](../config/file02_factors.json),
 [metric dictionary](FILE02_METRICS.md) and
 [`file02_common.py`](../tools/file02_common.py). The template is

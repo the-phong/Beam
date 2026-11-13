@@ -1,7 +1,9 @@
 # File 02 common contract v1 — sections 0–2
 
-Status: implementation candidate for Controller/Owner review, 2026-11-12.
-The Owner authorized sections 0–2 of the outside Checklist 02. This freezes
+Status: Owner accepted for bounded pre-case readiness on 2026-11-13 under
+D-038; PR #21 merged into `test-mainet` at
+`6de41446272520809fbdcb84d3b1155831dc24d5`. The Owner authorized
+sections 0–2 of the outside Checklist 02. This freezes
 definitions and exclusion rules for preparation; case-specific plans and
 confirmatory RQ1–RQ3 runs still need their own locked parameters and gates.
 
@@ -101,8 +103,10 @@ precision extension satisfy COMMON-06 with 12 independent networks and
 records the result. The later bounded knee pilot did not identify a
 defensible near/at/above-knee region; its preregistered flags and the
 observation-window limitation remain in the historical evidence. Gate COMMON
-remains open for Controller/Owner disposition of that unavailable factor
-region and the [RQ1 wording issue](../evidence/file02/SECTION2_RQ1_CONSISTENCY.md).
+was accepted only for bounded pre-case readiness; unavailable knee-relative
+levels remain unavailable. The distinct RQ1b question is recorded in the
+[Owner-directed addendum](FILE02_RQ1B_ADDENDUM.md), without changing accepted
+RQ1 or its H–CP endpoint.
 Case-specific rates, sample sizes, endpoints and exclusions still require
 their own locked plans after authorization. No new confirmatory T/R/A/Q/D
 case has been run by this document.

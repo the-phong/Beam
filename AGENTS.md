@@ -1,15 +1,17 @@
 # Pluto agent execution contract
 
-## Current authority — Gate T conditional acceptance and RQ1/RQ1b planning (2026-11-13)
+## Current authority — RQ1/RQ1b planning after Gate T (2026-11-13)
 
 The Owner conditionally accepted Checklist 02 T01–T07 as technically complete
 within the verified preflight scope. The permitted next work is preparation
 of RQ1 and RQ1b case plans for the four-validator single-host topology, with
 explicit scientific limits. Before any official run, each case must separately
 lock workload, offered rates, repetitions, endpoints, confidence procedure,
-safety, topology and QC. Complete review and merge of dependent PR #21 then
-PR #22 in that order, preserving the stacked dependency. Once their merged
-`test-mainet` head is verified, use a separate planning branch and Draft PR.
+safety, topology and QC. PR #21 merged into `test-mainet` at
+`6de41446272520809fbdcb84d3b1155831dc24d5`; PR #22 then merged at
+`a88e5d7eb5984f2dcddb5368248be2bff57e2aa4` after four passing checks.
+Use `research/file02-rq1-rq1b-planning` from that verified merged head and a
+Draft PR for planning-only review.
 No R/A/Q/D case execution, ML training, multi-host/P2P-origin claim, DoS
 claim or protected-branch direct push is authorized. The T preflight authority
 below is historical after these ordered merges.
