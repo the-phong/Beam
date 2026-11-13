@@ -20,7 +20,7 @@ import (
 
 var mempoolFullPattern = regexp.MustCompile(`mempool is full: number of txs ([0-9]+) \(max: ([0-9]+)\), total txs bytes ([0-9]+) \(max: ([0-9]+)\)`)
 
-func classifyRPCAdmission(message string) string {
+func classifyRPCAdmission(message string, nextTxBytes int) string {
 	parts := mempoolFullPattern.FindStringSubmatch(message)
 	if len(parts) != 5 {
 		return "rpc_reject"
@@ -29,13 +29,14 @@ func classifyRPCAdmission(message string) string {
 	maxCount, _ := strconv.ParseInt(parts[2], 10, 64)
 	bytes, _ := strconv.ParseInt(parts[3], 10, 64)
 	maxBytes, _ := strconv.ParseInt(parts[4], 10, 64)
-	if count >= maxCount && bytes >= maxBytes {
+	bytesWouldOverflow := nextTxBytes > 0 && bytes > maxBytes-int64(nextTxBytes)
+	if count >= maxCount && bytesWouldOverflow {
 		return "mempool_count_and_bytes_full"
 	}
 	if count >= maxCount {
 		return "mempool_count_full"
 	}
-	if bytes >= maxBytes {
+	if bytesWouldOverflow {
 		return "mempool_bytes_full"
 	}
 	return "mempool_full_unresolved"
@@ -167,10 +168,10 @@ func (s *HTTPSender) Send(ctx context.Context, raw []byte) SendResult {
 		return SendResult{WrittenAt: wroteAt, Completed: completed, Reason: "rpc_response_invalid", Err: err}
 	}
 	if response.StatusCode != http.StatusOK {
-		return SendResult{WrittenAt: wroteAt, Completed: completed, Reason: classifyRPCAdmission(wire.Error.Message + " " + wire.Error.Data), Err: fmt.Errorf("RPC HTTP %d", response.StatusCode)}
+		return SendResult{WrittenAt: wroteAt, Completed: completed, Reason: classifyRPCAdmission(wire.Error.Message+" "+wire.Error.Data, len(raw)), Err: fmt.Errorf("RPC HTTP %d", response.StatusCode)}
 	}
 	if wire.Result.Code == nil {
-		reason := classifyRPCAdmission(wire.Error.Message + " " + wire.Error.Data)
+		reason := classifyRPCAdmission(wire.Error.Message+" "+wire.Error.Data, len(raw))
 		if reason == "rpc_reject" {
 			reason = "rpc_code_missing"
 		}

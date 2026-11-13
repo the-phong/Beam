@@ -36,7 +36,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if err := load.WritePlan(planPath, plan, c, configHash); err != nil {
 		t.Fatal(err)
 	}
-	if metadata["case_id"] == "R08" {
+	if metadata["case_id"] == "R08" || metadata["case_id"] == "R09" {
 		configBytes, err := os.ReadFile(configPath)
 		if err != nil {
 			t.Fatal(err)
@@ -66,7 +66,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 		t.Fatal(err)
 	}
 	pilot := startS06NetworkAt(t, c, fixture, profile, t.TempDir())
-	if metadata["case_id"] == "T05" || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" {
+	if metadata["case_id"] == "T05" || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" {
 		mode, ok := metadata["recorder_mode"].(string)
 		if !ok || (mode != "ON" && mode != "OFF") {
 			t.Fatal("T05 requires recorder mode ON or OFF")
@@ -103,7 +103,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if err := s07WriteExclusive(filepath.Join(run, "nodes.json"), nodes); err != nil {
 		t.Fatal(err)
 	}
-	if metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" {
+	if metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" {
 		bind := exec.Command("python3", "../../research/tools/file02_r06.py", "bind-run-plan", run, pilot.n.root)
 		output, err := bind.CombinedOutput()
 		if err != nil {
@@ -163,7 +163,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 			t.Fatal(err)
 		}
 	}
-	if runErr != nil && metadata["case_id"] != "R08" {
+	if runErr != nil && metadata["case_id"] != "R08" && metadata["case_id"] != "R09" {
 		t.Fatalf("bounded load failed: %v (private load.log)", runErr)
 	}
 	var result load.Result
@@ -171,7 +171,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if err != nil || json.Unmarshal(raw, &result) != nil {
 		t.Fatalf("cannot read load result: %v", err)
 	}
-	validStatus := result.Status == load.StatusOK || metadata["case_id"] == "R08" && result.Status == load.StatusOracleMismatch
+	validStatus := result.Status == load.StatusOK || (metadata["case_id"] == "R08" || metadata["case_id"] == "R09") && result.Status == load.StatusOracleMismatch
 	if !validStatus || result.ActualSendCount != len(plan.Events) {
 		t.Fatalf("invalid load result: %v status=%s", err, result.Status)
 	}
@@ -180,8 +180,12 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	}
 	pilot.n.waitAll(8, 30*time.Second)
 	var oracle s07OracleRecord
-	if metadata["case_id"] == "R08" {
-		if err := s07WriteJSON(filepath.Join(run, "oracle.json"), file02R08Oracle(t, pilot, plan, result)); err != nil {
+	if metadata["case_id"] == "R08" || metadata["case_id"] == "R09" {
+		reason := "mempool_count_full"
+		if metadata["case_id"] == "R09" {
+			reason = "mempool_bytes_full"
+		}
+		if err := s07WriteJSON(filepath.Join(run, "oracle.json"), file02LimitOracle(t, pilot, plan, result, reason)); err != nil {
 			t.Fatal(err)
 		}
 	} else {
@@ -190,7 +194,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 			t.Fatal(err)
 		}
 	}
-	if metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" {
+	if metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" {
 		for i, recorder := range pilot.recorders {
 			events, dropped := recorder.Drain()
 			if dropped != 0 {
@@ -209,8 +213,8 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 			}
 		}
 	}
-	if metadata["case_id"] == "R08" {
-		t.Logf("R08 run=%s status=%s", plan.RunID, result.Status)
+	if metadata["case_id"] == "R08" || metadata["case_id"] == "R09" {
+		t.Logf("%s run=%s status=%s", metadata["case_id"], plan.RunID, result.Status)
 		return
 	}
 	if metadata["case_id"] == "T04" {
@@ -294,7 +298,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	t.Logf("File02 QA run=%s valid=%d invalid=%d height=%d", plan.RunID, oracle.ValidCommitted, oracle.InvalidRejected, oracle.CommonHeight)
 }
 
-func file02R08Oracle(t *testing.T, pilot *s06Network, plan load.Plan, result load.Result) map[string]any {
+func file02LimitOracle(t *testing.T, pilot *s06Network, plan load.Plan, result load.Result, reason string) map[string]any {
 	t.Helper()
 	common := int64(1 << 62)
 	for i := range pilot.n.nodes {
@@ -356,7 +360,7 @@ func file02R08Oracle(t *testing.T, pilot *s06Network, plan load.Plan, result loa
 			if reference[event.SHA256] != 1 {
 				t.Fatalf("R08 accepted %s did not commit once", event.ID)
 			}
-		} else if actual.Reason == "mempool_count_full" {
+		} else if actual.Reason == reason {
 			rejected++
 			if reference[event.SHA256] != 0 {
 				t.Fatalf("R08 rejected %s committed", event.ID)
@@ -371,8 +375,14 @@ func file02R08Oracle(t *testing.T, pilot *s06Network, plan load.Plan, result loa
 	if len(reference) != accepted {
 		t.Fatal("R08 committed unexpected transaction")
 	}
-	return map[string]any{"schema": "pluto.file02.r08_oracle.v1", "run_id": plan.RunID,
+	if reason == "mempool_count_full" {
+		return map[string]any{"schema": "pluto.file02.r08_oracle.v1", "run_id": plan.RunID,
+			"status": "OK", "common_height": common, "block_id": blockID, "app_hash": appHash,
+			"valid_accepted": accepted, "valid_rejected_count_full": rejected,
+			"first_count_full_offset_ns": firstFull}
+	}
+	return map[string]any{"schema": "pluto.file02.r09_oracle.v1", "run_id": plan.RunID,
 		"status": "OK", "common_height": common, "block_id": blockID, "app_hash": appHash,
-		"valid_accepted": accepted, "valid_rejected_count_full": rejected,
-		"first_count_full_offset_ns": firstFull}
+		"valid_accepted": accepted, "valid_rejected_bytes_full": rejected,
+		"first_bytes_full_offset_ns": firstFull}
 }

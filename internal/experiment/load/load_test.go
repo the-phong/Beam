@@ -185,13 +185,17 @@ func TestS06KillSwitchAndPublicTargetRefused(t *testing.T) {
 }
 
 func TestFile02MempoolLimitReasonClassification(t *testing.T) {
-	for _, tc := range []struct{ message, want string }{
-		{"mempool is full: number of txs 1 (max: 1), total txs bytes 2568 (max: 8388608)", "mempool_count_full"},
-		{"mempool is full: number of txs 2 (max: 128), total txs bytes 5136 (max: 5000)", "mempool_bytes_full"},
-		{"mempool is full: number of txs 1 (max: 1), total txs bytes 2568 (max: 2568)", "mempool_count_and_bytes_full"},
-		{"some other RPC error", "rpc_reject"},
+	for _, tc := range []struct {
+		message string
+		next    int
+		want    string
+	}{
+		{"mempool is full: number of txs 1 (max: 1), total txs bytes 2568 (max: 8388608)", 2568, "mempool_count_full"},
+		{"mempool is full: number of txs 1 (max: 128), total txs bytes 2568 (max: 2700)", 2568, "mempool_bytes_full"},
+		{"mempool is full: number of txs 1 (max: 1), total txs bytes 2568 (max: 2700)", 2568, "mempool_count_and_bytes_full"},
+		{"some other RPC error", 1, "rpc_reject"},
 	} {
-		if got := classifyRPCAdmission(tc.message); got != tc.want {
+		if got := classifyRPCAdmission(tc.message, tc.next); got != tc.want {
 			t.Fatalf("%q classified %q, want %q", tc.message, got, tc.want)
 		}
 	}
