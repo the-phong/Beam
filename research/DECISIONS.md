@@ -19,8 +19,13 @@ rates, run count, endpoints, CI method, safety caps, topology and QC. The
 dependent PRs must be reviewed and merged in order: #21 then #22. The
 single-host topology can support bounded claims only for that topology;
 `FOUR_VALIDATOR_MULTI_HOST_PRIMARY` and P2P-origin remain unsupported.
-This decision neither authorizes formal R/A/Q/D execution nor changes a
-safety cap, a historical raw byte or an accepted RQ hypothesis.
+PR #21 merged into `test-mainet` first at
+`6de41446272520809fbdcb84d3b1155831dc24d5`; PR #22 then passed two
+`verify`, `scan` and `smoke` checks and merged at
+`a88e5d7eb5984f2dcddb5368248be2bff57e2aa4`. Planning starts from the
+second merge commit on `research/file02-rq1-rq1b-planning`. This decision
+neither authorizes formal R/A/Q/D execution nor changes a safety cap, a
+historical raw byte or an accepted RQ hypothesis.
 
 ## D-038 — Gate COMMON pre-case acceptance and separate RQ1b (2026-11-13; Owner decision)
 
