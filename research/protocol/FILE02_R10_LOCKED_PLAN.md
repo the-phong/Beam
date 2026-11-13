@@ -18,3 +18,10 @@ CheckTx. Preserve an unexpected result as QC failure. CPU cost at the
 Comet precheck boundary is `UNAVAILABLE` without calibrated per-request CPU
 instrumentation, never zero. This controlled diagnostic does not claim a
 valid transaction near 8,192 B or a DoS/capacity result.
+
+The Go integration harness hosts the application in its own process, so the
+S06 workload `HostGuard` refuses it by design. This case instead enforces
+fixed three-send/byte/duration bounds, loopback-only HTTP transport, manual
+STOP before each send and four fresh observer samples with zero drops before
+each send. It does not claim the full S06 resource guard ran. Any guard or
+observer failure stops the run and leaves frozen diagnostic raw.

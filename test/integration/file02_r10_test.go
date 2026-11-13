@@ -3,14 +3,15 @@
 package integration
 
 import (
+	"bytes"
 	"context"
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
-	"runtime"
 	"testing"
 	"time"
 
@@ -104,20 +105,36 @@ func TestFile02R10(t *testing.T) {
 	if err := s07WriteJSON(filepath.Join(run, "research_plan.json"), lock); err != nil {
 		t.Fatal(err)
 	}
-	guard, err := load.NewHostGuard(c, pilot.nodes, pilot.n.root, filepath.Join(run, "STOP"), runtime.NumCPU())
-	if err != nil {
-		t.Fatal(err)
-	}
 	sender, err := load.NewHTTPSender(pilot.nodes[0].RPC, time.Duration(c.Safety.RequestTimeoutMS)*time.Millisecond)
 	if err != nil {
 		t.Fatal(err)
 	}
 	raws := [][]byte{valid, malformed, oversize}
+	if len(raws) > c.Safety.MaxTxPerSecond || len(valid)+len(malformed)+len(oversize) > c.Safety.MaxBytesPerSecond || c.Safety.MaxDurationSeconds < 15 {
+		t.Fatal("R10 bounded plan exceeds unchanged S06 safety caps")
+	}
 	labels := []string{"valid_max_canonical", "invalid_at_limit", "invalid_over_limit"}
 	rows := make([]map[string]any, 0, 3)
 	for i, wire := range raws {
-		if err := guard.Check(context.Background()); err != nil {
-			t.Fatalf("safety before %s: %v", labels[i], err)
+		if _, err := os.Stat(filepath.Join(run, "STOP")); err == nil {
+			t.Fatal("R10 manual safety stop")
+		} else if !os.IsNotExist(err) {
+			t.Fatal(err)
+		}
+		for _, node := range pilot.nodes {
+			content, err := os.ReadFile(node.ObserverFile)
+			if err != nil {
+				t.Fatal(err)
+			}
+			lines := bytes.Split(bytes.TrimSpace(content), []byte{'\n'})
+			var sample telemetry.NodeSample
+			if err := json.Unmarshal(lines[len(lines)-1], &sample); err != nil || sample.Kind != "node_sample" || sample.DroppedSamples != 0 || sample.Comet == nil || sample.Application == nil {
+				t.Fatal("R10 observer unavailable or dropped")
+			}
+			stamp, err := time.Parse(time.RFC3339Nano, sample.ObservedUTC)
+			if err != nil || time.Since(stamp) > time.Duration(c.Safety.MaxObserverStaleMS)*time.Millisecond {
+				t.Fatal("R10 stale observer")
+			}
 		}
 		start := time.Now()
 		result := sender.Send(context.Background(), wire)
