@@ -27,6 +27,8 @@ func file02AttackCase(caseID any) bool {
 	return ok && strings.HasPrefix(id, "A") && len(id) == 3 && id >= "A01" && id <= "A05"
 }
 
+func file02ReplayCase(caseID any) bool { return caseID == "A06" }
+
 // file02ExecuteQA runs one pre-signed bounded plan on a fresh local network.
 // Only keyless run evidence is persisted under the caller's ignored root.
 func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string, fixture *load.PilotFixture,
@@ -42,7 +44,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if err := load.WritePlan(planPath, plan, c, configHash); err != nil {
 		t.Fatal(err)
 	}
-	if file02AttackCase(metadata["case_id"]) || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
+	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
 		configBytes, err := os.ReadFile(configPath)
 		if err != nil {
 			t.Fatal(err)
@@ -59,7 +61,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if !ok {
 		scope = "QA_ONLY"
 	}
-	if scope != "QA_ONLY" && scope != "T_PREFLIGHT" && scope != "R_CONFIRMATORY" {
+	if scope != "QA_ONLY" && scope != "T_PREFLIGHT" && scope != "R_CONFIRMATORY" && scope != "A_CONFIRMATORY" {
 		t.Fatal("unsupported File 02 run scope")
 	}
 	metadata["scope"] = scope
@@ -72,7 +74,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 		t.Fatal(err)
 	}
 	pilot := startS06NetworkAt(t, c, fixture, profile, t.TempDir())
-	if file02AttackCase(metadata["case_id"]) || metadata["case_id"] == "T05" || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
+	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || metadata["case_id"] == "T05" || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
 		mode, ok := metadata["recorder_mode"].(string)
 		if !ok || (mode != "ON" && mode != "OFF") {
 			t.Fatal("T05 requires recorder mode ON or OFF")
@@ -109,10 +111,12 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if err := s07WriteExclusive(filepath.Join(run, "nodes.json"), nodes); err != nil {
 		t.Fatal(err)
 	}
-	if file02AttackCase(metadata["case_id"]) || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
+	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
 		binder := "../../research/tools/file02_r06.py"
 		if file02AttackCase(metadata["case_id"]) {
 			binder = "../../research/tools/file02_attack.py"
+		} else if file02ReplayCase(metadata["case_id"]) {
+			binder = "../../research/tools/file02_a06.py"
 		}
 		bind := exec.Command("python3", binder, "bind-run-plan", run, pilot.n.root)
 		output, err := bind.CombinedOutput()
@@ -173,7 +177,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 			t.Fatal(err)
 		}
 	}
-	if runErr != nil && metadata["case_id"] != "R08" && metadata["case_id"] != "R09" {
+	if runErr != nil && metadata["case_id"] != "R08" && metadata["case_id"] != "R09" && !file02ReplayCase(metadata["case_id"]) {
 		t.Fatalf("bounded load failed: %v (private load.log)", runErr)
 	}
 	var result load.Result
@@ -181,7 +185,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if err != nil || json.Unmarshal(raw, &result) != nil {
 		t.Fatalf("cannot read load result: %v", err)
 	}
-	validStatus := result.Status == load.StatusOK || (metadata["case_id"] == "R08" || metadata["case_id"] == "R09") && result.Status == load.StatusOracleMismatch
+	validStatus := result.Status == load.StatusOK || (metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || file02ReplayCase(metadata["case_id"])) && result.Status == load.StatusOracleMismatch
 	if !validStatus || result.ActualSendCount != len(plan.Events) {
 		t.Fatalf("invalid load result: %v status=%s", err, result.Status)
 	}
@@ -190,7 +194,12 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	}
 	pilot.n.waitAll(8, 30*time.Second)
 	var oracle s07OracleRecord
-	if metadata["case_id"] == "R08" || metadata["case_id"] == "R09" {
+	if file02ReplayCase(metadata["case_id"]) {
+		oracle = file02A06Oracle(t, pilot, fixture, plan, result)
+		if err := s07WriteJSON(filepath.Join(run, "oracle.json"), oracle); err != nil {
+			t.Fatal(err)
+		}
+	} else if metadata["case_id"] == "R08" || metadata["case_id"] == "R09" {
 		reason := "mempool_count_full"
 		if metadata["case_id"] == "R09" {
 			reason = "mempool_bytes_full"
@@ -204,7 +213,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 			t.Fatal(err)
 		}
 	}
-	if file02AttackCase(metadata["case_id"]) || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
+	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
 		for i, recorder := range pilot.recorders {
 			events, dropped := recorder.Drain()
 			if dropped != 0 {

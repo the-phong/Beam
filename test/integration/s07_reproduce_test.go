@@ -258,15 +258,17 @@ func TestS07ReproSmoke(t *testing.T) {
 }
 
 type s07OracleRecord struct {
-	Schema          string `json:"schema"`
-	RunID           string `json:"run_id"`
-	Status          string `json:"status"`
-	ObservedUTC     string `json:"observed_utc"`
-	CommonHeight    int64  `json:"common_height"`
-	BlockID         string `json:"block_id"`
-	AppHash         string `json:"app_hash"`
-	ValidCommitted  int    `json:"valid_committed"`
-	InvalidRejected int    `json:"invalid_rejected"`
+	Schema                   string           `json:"schema"`
+	RunID                    string           `json:"run_id"`
+	Status                   string           `json:"status"`
+	ObservedUTC              string           `json:"observed_utc"`
+	CommonHeight             int64            `json:"common_height"`
+	BlockID                  string           `json:"block_id"`
+	AppHash                  string           `json:"app_hash"`
+	ValidCommitted           int              `json:"valid_committed"`
+	InvalidRejected          int              `json:"invalid_rejected"`
+	CommittedHashes          map[string]int   `json:"committed_hashes,omitempty"`
+	ValidatorCommittedHashes []map[string]int `json:"validator_committed_hashes,omitempty"`
 }
 
 type s07CommitObservation struct {

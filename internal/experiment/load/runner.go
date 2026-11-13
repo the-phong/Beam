@@ -14,6 +14,7 @@ import (
 	"net/url"
 	"regexp"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -24,6 +25,9 @@ var mempoolFullPattern = regexp.MustCompile(`mempool is full: number of txs ([0-
 var txTooLargePattern = regexp.MustCompile(`Tx too large\. Max size is ([0-9]+), but got ([0-9]+)`)
 
 func classifyRPCAdmission(message string, nextTxBytes int) string {
+	if strings.Contains(message, "tx already exists in cache") {
+		return "duplicate_cache"
+	}
 	if parts := txTooLargePattern.FindStringSubmatch(message); len(parts) == 3 {
 		max, _ := strconv.Atoi(parts[1])
 		actual, _ := strconv.Atoi(parts[2])
