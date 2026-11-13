@@ -101,7 +101,8 @@ def bind_run_plan(run, network_root):
             "run/network path or previous common plan")
     metadata, load_plan, nodes = (common.read_json(run / name) for name in
                                   ("metadata.json", "plan.json", "nodes.json"))
-    require(metadata.get("case_id") == "R06" and metadata.get("scope") == "R_CONFIRMATORY" and
+    case = metadata.get("case_id")
+    require(case in ("R06", "R07") and metadata.get("scope") == "R_CONFIRMATORY" and
             metadata.get("run_id") == load_plan.get("run_id") and len(nodes) == 4, "R06 identity")
     root = common.read_json(ROOT / "research/config/s06_pilot.json")
     network, safety = root["network"], root["safety"]
@@ -116,9 +117,15 @@ def bind_run_plan(run, network_root):
     host = {"cpu_model": inventory["model"], "cpu_features": inventory["flags"],
             "architecture": inventory["architecture"], "logical_cpus": inventory["logical_cpus"],
             "os": inventory["os"]}
+    is_r06 = case == "R06"
+    planned_rate = 20 if is_r06 else round(2568 / WIRE[profile])
+    require(load_plan["regime"] == ("equal_tx_s" if is_r06 else "equal_bytes_s") and
+            load_plan["steady_ns"] == (12 if is_r06 else 4)*1_000_000_000 and
+            load_plan["drain_ns"] == (5 if is_r06 else 3)*1_000_000_000 and
+            len(load_plan["events"]) == 1 + planned_rate*(12 if is_r06 else 4), "case schedule")
     plan = {"schema": "pluto.file02.plan.v1", "status": "LOCKED", "run_id": load_plan["run_id"],
-            "case_id": "R06", "protocol_version": "file02-common-v1", "research_question": "RQ1",
-            "hypothesis": "H valid CheckTx service exceeds exact-size CP at equal offered rate",
+            "case_id": case, "protocol_version": "file02-common-v1", "research_question": "RQ1",
+            "hypothesis": "H valid CheckTx service exceeds exact-size CP at matched offered rate",
             "null_hypothesis": "H-minus-CP mean service <= 0",
             "alternative_hypothesis": "H-minus-CP mean service > 0",
             "analysis_plan": {"primary_endpoint": "validator0_valid_steady_CheckTx_mean_service_ns",
@@ -131,7 +138,7 @@ def bind_run_plan(run, network_root):
             "source_commit": metadata["source_commit"], "source_tree": metadata["source_tree"],
             "config_sha256": metadata["config_sha256"], "corpus_sha256": common.digest(run / "plan.json"),
             "genesis_sha256": load_plan["genesis_sha256"], "profile": profile,
-            "workload": "BENIGN_HIGH", "actor_capability": "NONE", "regime": "equal_tx_s",
+            "workload": "BENIGN_HIGH", "actor_capability": "NONE", "regime": load_plan["regime"],
             "traffic_source": "RPC", "topology": "FOUR_VALIDATOR_SINGLE_HOST_DIAGNOSTIC",
             "policy": "BASELINE_VERIFY_ORDER", "host_inventory": host,
             "software_versions": {"go": subprocess.check_output(["go", "version"], text=True).strip(),
@@ -152,11 +159,15 @@ def bind_run_plan(run, network_root):
                                "rpc_endpoints": [node["rpc"] for node in nodes],
                                "config_toml_sha256": node_hashes},
             "safety_config": safety, "seed": load_plan["seed"], "order_index": metadata["order"],
-            "phase_seconds": {"warmup": 1, "steady": 12, "drain": 5, "cooldown": 2},
-            "planned": {"valid_tx_s": 20, "invalid_tx_s": 0,
-                        "total_bytes_s": WIRE[profile]*20},
-            "matching": {"matched_variable": "tx_s", "unmatched_variables": ["wire_bytes", "verification_path"]},
-            "pilot_reference": "research/evidence/file02/T06_KNEE_PILOT.md",
+            "phase_seconds": {"warmup": 1, "steady": 12 if is_r06 else 4,
+                              "drain": 5 if is_r06 else 3, "cooldown": 2},
+            "planned": {"valid_tx_s": planned_rate, "invalid_tx_s": 0,
+                        "total_bytes_s": WIRE[profile]*planned_rate},
+            "matching": {"matched_variable": "tx_s" if is_r06 else "bytes_s",
+                         "unmatched_variables": ["wire_bytes", "verification_path"] if is_r06 else
+                                                ["tx_s", "verification_path"]},
+            "pilot_reference": "research/evidence/file02/T06_KNEE_PILOT.md" if is_r06 else
+                               "research/evidence/file02/COMMON04_EQUAL_RATE_AUDIT.md",
             "independent_run_target": 12,
             "p99_precision_rule": "rank>=0.95 and two_stage_cluster_CI_radius<=0.20; 2000 draws"}
     common.validate_plan(plan)
@@ -165,7 +176,7 @@ def bind_run_plan(run, network_root):
     r01.write_new(target / "plan.json", plan)
     subprocess.run(["python3", str(ROOT / "research/tools/file02_common.py"), "validate-plan",
                     str(target / "plan.json")], cwd=ROOT, check=True, capture_output=True)
-    print(f"R06_COMMON_PLAN_LOCKED={load_plan['run_id']}")
+    print(f"{case}_COMMON_PLAN_LOCKED={load_plan['run_id']}")
 
 
 def observer_metrics(path):
