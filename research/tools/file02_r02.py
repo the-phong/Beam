@@ -9,6 +9,7 @@ import math
 import os
 from pathlib import Path
 import random
+import shutil
 import statistics
 import subprocess
 import sys
@@ -42,6 +43,10 @@ def orders():
     first = list(PROFILES)
     random.Random(SEED).shuffle(first)
     return [first[i % 4:] + first[:i % 4] for i in range(RUNS)]
+
+
+def go_arch(host_arch):
+    return {"x86_64": "amd64", "aarch64": "arm64"}.get(host_arch, host_arch)
 
 
 def validate_plan(plan, strict_source=True):
@@ -185,7 +190,7 @@ def derive(session, plan):
                     "process provenance/exit")
             data = json.loads(envelope["stdout"])
             require(data.get("go_version") == plan["go_version"].split()[2] and
-                    data.get("goos") == "linux" and data.get("goarch") == plan["host"]["architecture"],
+                    data.get("goos") == "linux" and data.get("goarch") == go_arch(plan["host"]["architecture"]),
                     "toolchain/platform mismatch")
             parsed, samples = parse_process(data, order)
             genesis = data["profiles"][0]["genesis_sha256"]
@@ -250,7 +255,8 @@ def write_outputs(session, plan):
                 "Stage spans are wall time; process CPU and allocation deltas include instrumentation.\n")
     (session / "decision.md").write_text(decision)
     r01.write_new(session / "analysis_provenance.json", {"schema": "pluto.file02.analysis_provenance.v1",
-                  "measurement_source_commit": plan["source_commit"], "analyzer_commit": r01.git("rev-parse", "HEAD")})
+                  "measurement_source_commit": plan["source_commit"], "analyzer_commit": r01.git("rev-parse", "HEAD"),
+                  "previous_analysis": "analysis-v1" if (session / "analysis-v1").exists() else None})
     verify(session)
     print(json.dumps({"session": str(session), "qc": qc["status"], "aggregate": agg["status"],
                       "raw_manifest_sha256": qc["raw_manifest_sha256"]}, sort_keys=True))
@@ -282,6 +288,21 @@ def execute(session):
     write_outputs(session, plan)
 
 
+def reanalyze(session):
+    plan = common.read_json(session / "plan.json")
+    validate_plan(plan, strict_source=False)
+    common.verify_raw(session / "raw")
+    archive = session / "analysis-v1"
+    archive.mkdir(mode=0o700)
+    for name in ("result_per_run.json", "result_per_run.csv", "qc_report.json",
+                 "result_aggregate.json", "decision.md", "analysis_provenance.json", "figures"):
+        path = session / name
+        if path.exists():
+            shutil.move(str(path), str(archive / name))
+    common.freeze_raw(archive)
+    write_outputs(session, plan)
+
+
 def verify(session):
     plan = common.read_json(session / "plan.json")
     validate_plan(plan, strict_source=False)
@@ -296,12 +317,14 @@ def verify(session):
     require(provenance.get("measurement_source_commit") == plan["source_commit"] and
             r01.git("cat-file", "-t", provenance.get("analyzer_commit", "")) == "commit",
             "analysis revision")
+    if (session / "analysis-v1").exists():
+        common.verify_raw(session / "analysis-v1")
     print("R02_VERIFY=OK")
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("action", choices=("prepare", "run", "verify"))
+    parser.add_argument("action", choices=("prepare", "run", "reanalyze", "verify"))
     parser.add_argument("session", type=Path)
     args = parser.parse_args()
     session = args.session.resolve()
@@ -309,6 +332,8 @@ def main():
         prepare(session)
     elif args.action == "run":
         execute(session)
+    elif args.action == "reanalyze":
+        reanalyze(session)
     else:
         verify(session)
 

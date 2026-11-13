@@ -22,6 +22,10 @@ def fake_process(order):
 
 
 class R02ContractTest(unittest.TestCase):
+    def test_platform_alias_is_explicit(self):
+        self.assertEqual(r02.go_arch("x86_64"), "amd64")
+        self.assertEqual(r02.go_arch("aarch64"), "arm64")
+
     def test_schedule_is_counterbalanced(self):
         jobs = r02.orders()
         self.assertEqual(len(jobs), 12)
