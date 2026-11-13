@@ -4,6 +4,7 @@
 import argparse
 import csv
 from datetime import datetime, timezone, timedelta
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -132,6 +133,13 @@ def ci(values):
     return [r01.percentile(draws, .025), r01.percentile(draws, .975)]
 
 
+def measured_mean_ci(cells, key):
+    values = [r[key] for r in cells]
+    if any(v is None for v in values):
+        return None, None
+    return statistics.mean(values), ci(values)
+
+
 def decide(rows):
     output = {}
     for profile in PROFILES:
@@ -153,20 +161,23 @@ def decide(rows):
         status = ("NOT_IDENTIFIABLE_REFERENCE" if not reference_ok else
                   "KNEE_BRACKET_20_TO_23_OBSERVED" if all(x["qualifies"] for x in flags.values()) else
                   "NOT_OBSERVED_WITHIN_SAFE_RANGE")
+        levels = {}
+        for rate in RATES:
+            selected = cells[rate]
+            level = {"n_networks": 3,
+                     "aligned_fraction": [r["aligned_timely_fraction"] for r in selected]}
+            for source, target in (("aligned_timely_fraction", "aligned_fraction"),
+                                   ("eventual_goodput_tx_s", "eventual_goodput_tx_s"),
+                                   ("inclusion_upper_bound_p95_ms", "p95_upper_ms"),
+                                   ("checktx_socket_queue_wait_mean_ms", "socket_queue_wait_ms"),
+                                   ("max_accepted_mempool_bytes", "max_sampled_mempool_bytes")):
+                mean, interval = measured_mean_ci(selected, source)
+                level["mean_"+target] = mean
+                level["ci95_mean_"+target] = interval
+            levels[str(rate)] = level
         output[profile] = {"status": status, "reference_aligned_ok": reference_ok,
                            "reference_p95_upper_ms": p95_ref, "reference_socket_queue_ms": q_ref,
-                           "criteria": flags,
-                           "levels": {str(rate): {"n_networks": 3,
-                                                  "aligned_fraction": [r["aligned_timely_fraction"] for r in cells[rate]],
-                                                  "mean_aligned_fraction": statistics.mean(r["aligned_timely_fraction"] for r in cells[rate]),
-                                                  "ci95_mean_aligned_fraction": ci([r["aligned_timely_fraction"] for r in cells[rate]]),
-                                                  "mean_eventual_goodput_tx_s": statistics.mean(r["eventual_goodput_tx_s"] for r in cells[rate]),
-                                                  "mean_p95_upper_ms": statistics.mean(r["inclusion_upper_bound_p95_ms"] for r in cells[rate]),
-                                                  "mean_socket_queue_wait_ms": statistics.mean(r["checktx_socket_queue_wait_mean_ms"] for r in cells[rate])
-                                                  if all(r["checktx_socket_queue_wait_mean_ms"] is not None for r in cells[rate]) else None,
-                                                  "mean_max_sampled_mempool_bytes": statistics.mean(r["max_accepted_mempool_bytes"] for r in cells[rate])
-                                                  if all(r["max_accepted_mempool_bytes"] is not None for r in cells[rate]) else None}
-                                      for rate in RATES}}
+                           "criteria": flags, "levels": levels}
     return output
 
 
@@ -253,7 +264,42 @@ def verify(session):
         csv_rows = list(csv.DictReader(stream))
     require(len(csv_rows) == len(rows) and all(item["run_id"] == r["run_id"] for item, r in zip(csv_rows, rows)),
             "R15 CSV mismatch")
+    revision = session / "analysis_revision_001.json"
+    if revision.exists():
+        record = common.read_json(revision)
+        require(record.get("raw_manifest_sha256") == qc["raw_manifest_sha256"] and
+                record.get("original_aggregate_sha256") ==
+                common.digest(session / "analysis_revision_000_aggregate.json") and
+                record.get("corrected_aggregate_sha256") == common.digest(session / "result_aggregate.json"),
+                "R15 analysis correction provenance")
     print(f"R15_VERIFY=OK qc={qc['status']} n={len(rows)} raw_manifest_sha256={qc['raw_manifest_sha256']}")
+
+
+def rederive(session):
+    session = Path(session).resolve()
+    require(session.parent == ARTIFACTS.resolve() and not (session / "analysis_revision_001.json").exists(),
+            "private unrevised session required")
+    plan = common.read_json(session / "plan.json")
+    validate_plan(session, plan)
+    rows, qc, aggregate = derive(session, plan)
+    require(qc["status"] == "PASS" and common.read_json(session / "qc_report.json") == qc and
+            common.read_json(session / "result_per_run.json") ==
+            {"schema": "pluto.file02.r15.per_run.v1", "rows": rows},
+            "R15 source raw/QC changed")
+    prior = session / "result_aggregate.json"
+    old = prior.read_text(encoding="utf-8")
+    common.write_once(session / "analysis_revision_000_aggregate.json", old)
+    corrected = json.dumps(aggregate, sort_keys=True, indent=2) + "\n"
+    temporary = session / "result_aggregate.tmp"
+    common.write_once(temporary, corrected)
+    os.replace(temporary, prior)
+    r01.write_new(session / "analysis_revision_001.json", {
+        "schema": "pluto.file02.r15.analysis_revision.v1", "reason": "add registered CI for all measured rate-level means",
+        "analysis_source_commit": r01.git("rev-parse", "HEAD"),
+        "raw_manifest_sha256": qc["raw_manifest_sha256"],
+        "original_aggregate_sha256": hashlib.sha256(old.encode()).hexdigest(),
+        "corrected_aggregate_sha256": common.digest(prior)})
+    verify(session)
 
 
 if __name__ == "__main__":
@@ -262,9 +308,13 @@ if __name__ == "__main__":
     sub.add_parser("run")
     p = sub.add_parser("verify")
     p.add_argument("session")
+    p = sub.add_parser("rederive")
+    p.add_argument("session")
     args = parser.parse_args()
     try:
-        sys.exit(execute() if args.command == "run" else (verify(args.session) or 0))
+        sys.exit(execute() if args.command == "run" else
+                 (rederive(args.session) or 0) if args.command == "rederive" else
+                 (verify(args.session) or 0))
     except (ValueError, OSError, KeyError, TypeError, subprocess.TimeoutExpired) as exc:
         print(f"R15_ERROR: {exc}", file=sys.stderr)
         sys.exit(2)

@@ -24,6 +24,7 @@ class R15DecisionTest(unittest.TestCase):
     def test_negative_with_aligned_goodput(self):
         decisions = r15.decide(self.rows({20: 1, 23: 1, 25: 1}))
         self.assertTrue(all(d["status"] == "NOT_OBSERVED_WITHIN_SAFE_RANGE" for d in decisions.values()))
+        self.assertEqual(decisions["C"]["levels"]["25"]["ci95_mean_p95_upper_ms"], [1800, 1800])
 
     def test_detects_two_adjacent_rate_degradation(self):
         decisions = r15.decide(self.rows({20: 1, 23: .85, 25: .8}))
