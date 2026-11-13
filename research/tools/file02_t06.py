@@ -20,11 +20,11 @@ PROFILES = ("C", "CP", "P", "H")
 RATES = (2, 6, 12, 20)
 
 
-def validate_run(run, source, tree, profile, rate):
+def validate_run(run, source, tree, profile, rate, *, schema="pluto.file02.t06_calibration.v1", scope="QA_ONLY"):
     meta, plan, result, oracle, resources = (common.read_json(run / name) for name in
                                             ("metadata.json", "plan.json", "result.json", "oracle.json",
                                              "generator_resources.json"))
-    require(meta.get("schema") == "pluto.file02.t06_calibration.v1" and meta.get("scope") == "QA_ONLY" and
+    require(meta.get("schema") == schema and meta.get("scope") == scope and
             meta.get("capture_commit_observations") is False and meta.get("profile") == profile and
             meta.get("target_tx_s") == rate and meta.get("source_commit") == source and
             meta.get("source_tree") == tree and meta.get("network") == "fresh_four_validator_single_host_loopback",

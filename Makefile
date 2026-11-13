@@ -77,6 +77,22 @@ test-file02-t06-calibration:
 test-file02-t06-precision:
 	python3 research/tools/file02_t06_precision.py smoke
 
+.PHONY: test-file02-t01
+test-file02-t01:
+	python3 research/tools/file02_t01.py run
+
+.PHONY: test-file02-t04
+test-file02-t04:
+	python3 research/tools/file02_t04.py run
+
+.PHONY: test-file02-t05
+test-file02-t05:
+	python3 research/tools/file02_t05.py run
+
+.PHONY: test-file02-t06-formal
+test-file02-t06-formal:
+	python3 research/tools/file02_t06_formal.py run
+
 # Builds, verifies public corpora and runs four fresh bounded private networks.
 # The script prints an ignored session path and a SHA-256 manifest for reruns.
 test-s07-smoke:

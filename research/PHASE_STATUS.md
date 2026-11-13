@@ -1,14 +1,35 @@
 # Phase status — 2026-11-13
 
-## Current File 02 T group authority
+## Current Gate T decision and planning authority
+
+The Owner [conditionally accepted Gate T](evidence/file02/T_GATE_CONDITIONAL_ACCEPTANCE_20261113.md)
+for the verified T01–T07 preflight only. RQ1 and RQ1b case **planning** on
+the four-validator single-host topology is permitted, with workload,
+offered rates, repetitions, endpoints, CI, safety and QC locked separately
+before any official run. PR #21 must merge before stacked PR #22; a
+planning-only branch follows the verified merged `test-mainet` head.
+No formal R/A/Q/D run or multi-host/P2P-origin/distributed DoS conclusion
+is authorized. The earlier technical-candidate status below is historical.
+
+## Historical File 02 T group authority
 
 The Owner accepted Gate COMMON for bounded pre-case readiness after all four
 PR #21 CI checks passed at `ec0eabe` and directed the separate
 [RQ1b addendum](protocol/FILE02_RQ1B_ADDENDUM.md). [D-038](DECISIONS.md) and
 the [gate acceptance](evidence/file02/COMMON_GATE_ACCEPTANCE_20261113.md)
-record the scope. Checklist 02 T01–T07 are now authorized **in order**.
-The seven per-case outputs in section 2.3 remain pending; the pilot T06 does
-not complete formal T06. R/A/Q/D cases and RQ claims remain closed.
+record the scope. Checklist 02 T01–T07 are authorized **in order**. T01–T06
+have verified case evidence; [formal T06](evidence/file02/T06_FORMAL_CALIBRATION_AUDIT.md)
+used 16 new bounded networks and is separate from the historical pilots.
+[T07](evidence/file02/T07_MULTI_GUEST_TIME_AUDIT.md) now has verified
+single-host and two-guest VMware clock/host surveys with bounded observed
+cross-guest offset uncertainty. T01–T07 are checked; Gate T is a technical
+pre-case candidate for Controller/Owner acceptance, not independently
+approved. The guests share one physical hypervisor, and the deferred
+four-validator multi-host primary topology remains unsupported. The seven
+per-case outputs in section 2.3 remain pending. R/A/Q/D cases and RQ claims
+remain closed.
+The T07 survey also measured roughly 3.45 seconds of WSL-to-guest wall-clock
+offset; future cross-host timestamps require new per-run causal bounds.
 
 ## Historical File 02 sections 0–2 foundation candidate
 
@@ -25,7 +46,8 @@ gates. A separate bounded knee search tested 20/23/25 tx/s without
 confirming a knee. Section 2 factor, 63-metric and artifact contracts are
 ready for review; future per-case output remains `PENDING_CASE_EXECUTION`.
 Numerical knee levels, per-case plans, multi-host/P2P origin and the full
-COMMON gate remain open. The [section 2 report](evidence/file02/SECTION2_READINESS_REPORT.md)
+COMMON gate were then open (the later Owner decision above supersedes this
+historical status). The [section 2 report](evidence/file02/SECTION2_READINESS_REPORT.md)
 records the RQ1 wording issue. No confirmatory case or RQ1–RQ3 result is claimed.
 The common contract now records the negative bounded knee finding without
 requiring a further search. A [separate legitimate-service question](evidence/file02/SECTION2_SERVICE_DEGRADATION_PROPOSAL.md)

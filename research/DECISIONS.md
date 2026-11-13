@@ -1,5 +1,27 @@
 # Architectural decision log
 
+## D-039 — Gate T conditional acceptance and planning-only next step (2026-11-13; Owner decision)
+
+The Owner **conditionally accepted** Checklist 02 T01–T07 as technically
+complete within their verified preflight scope. The [Gate T record](evidence/file02/T_GATE_CONDITIONAL_ACCEPTANCE_20261113.md)
+links the T audits, final source and passing PR #22 CI. This acceptance does
+not turn the two-guest clock survey into a four-validator multi-host network
+run. Both VMware guests share one physical workstation; thermal/throttling
+signals and P2P-origin behavior remain unavailable. No exact cross-host
+latency, distributed-network DoS or multi-host performance conclusion is
+accepted.
+
+The Owner permits **planning** of RQ1 and the separately accepted RQ1b on
+the four-validator single-host topology. The accepted RQ1 H–CP CheckTx
+endpoint and RQ1b legitimate-service question remain distinct. Before
+any official case run, independently lock that case's workload, offered
+rates, run count, endpoints, CI method, safety caps, topology and QC. The
+dependent PRs must be reviewed and merged in order: #21 then #22. The
+single-host topology can support bounded claims only for that topology;
+`FOUR_VALIDATOR_MULTI_HOST_PRIMARY` and P2P-origin remain unsupported.
+This decision neither authorizes formal R/A/Q/D execution nor changes a
+safety cap, a historical raw byte or an accepted RQ hypothesis.
+
 ## D-038 — Gate COMMON pre-case acceptance and separate RQ1b (2026-11-13; Owner decision)
 
 The Owner directed acceptance of Checklist 02 Gate COMMON for bounded
