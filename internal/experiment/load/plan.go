@@ -110,7 +110,8 @@ func (p Plan) Validate(c Config, configHash string) error {
 	if p.Version != 1 || !runIDPattern.MatchString(p.RunID) || !validHash(p.ConfigSHA256) || p.ConfigSHA256 != configHash || !validHash(p.GenesisSHA256) || !p.Profile.Valid() ||
 		p.WarmupNS < 0 || p.SteadyNS < int64(time.Second) || p.DrainNS < 0 || p.WindowNS != int64(time.Second) || p.WarmupNS%p.WindowNS != 0 || p.SteadyNS%p.WindowNS != 0 ||
 		p.WarmupNS > maxDuration || p.SteadyNS > maxDuration-p.WarmupNS || p.DrainNS > maxDuration-p.WarmupNS-p.SteadyNS || len(p.Events) < 1 || len(p.Events) > 6000 ||
-		(p.Waveform != "constant" && p.Waveform != "burst") || (p.Regime != EqualTxRate && p.Regime != EqualByteRate && p.Regime != FixedLegitimatePlusAdversary) {
+		(p.Waveform != "constant" && p.Waveform != "burst" && p.Waveform != "ramp") || (p.Regime != EqualTxRate && p.Regime != EqualByteRate && p.Regime != FixedLegitimatePlusAdversary) ||
+		(p.Waveform == "ramp" && p.Regime != EqualTxRate) {
 		return ErrPlan
 	}
 	if p.Regime == EqualTxRate && (p.TargetTxPS <= 0 || p.TargetBytesPS != 0 || p.TargetLegitTPS != 0 || p.TargetInvalidTPS != 0) ||
@@ -177,7 +178,7 @@ func (p Plan) Validate(c Config, configHash string) error {
 		ratio := float64(actual) / (target * seconds)
 		return ratio >= .95 && ratio <= 1.05
 	}
-	if p.Waveform == "constant" {
+	if p.Waveform == "constant" || p.Waveform == "ramp" {
 		switch p.Regime {
 		case EqualTxRate:
 			if !within(steadyCount, p.TargetTxPS) {

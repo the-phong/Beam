@@ -12,10 +12,43 @@ import (
 	"net/http"
 	"net/http/httptrace"
 	"net/url"
+	"regexp"
 	"strconv"
 	"sync"
 	"time"
 )
+
+var mempoolFullPattern = regexp.MustCompile(`mempool is full: number of txs ([0-9]+) \(max: ([0-9]+)\), total txs bytes ([0-9]+) \(max: ([0-9]+)\)`)
+var txTooLargePattern = regexp.MustCompile(`Tx too large\. Max size is ([0-9]+), but got ([0-9]+)`)
+
+func classifyRPCAdmission(message string, nextTxBytes int) string {
+	if parts := txTooLargePattern.FindStringSubmatch(message); len(parts) == 3 {
+		max, _ := strconv.Atoi(parts[1])
+		actual, _ := strconv.Atoi(parts[2])
+		if actual == nextTxBytes && actual > max {
+			return "mempool_tx_too_large"
+		}
+	}
+	parts := mempoolFullPattern.FindStringSubmatch(message)
+	if len(parts) != 5 {
+		return "rpc_reject"
+	}
+	count, _ := strconv.ParseInt(parts[1], 10, 64)
+	maxCount, _ := strconv.ParseInt(parts[2], 10, 64)
+	bytes, _ := strconv.ParseInt(parts[3], 10, 64)
+	maxBytes, _ := strconv.ParseInt(parts[4], 10, 64)
+	bytesWouldOverflow := nextTxBytes > 0 && bytes > maxBytes-int64(nextTxBytes)
+	if count >= maxCount && bytesWouldOverflow {
+		return "mempool_count_and_bytes_full"
+	}
+	if count >= maxCount {
+		return "mempool_count_full"
+	}
+	if bytesWouldOverflow {
+		return "mempool_bytes_full"
+	}
+	return "mempool_full_unresolved"
+}
 
 const (
 	StatusOK             = "OK"
@@ -134,15 +167,23 @@ func (s *HTTPSender) Send(ctx context.Context, raw []byte) SendResult {
 		Result struct {
 			Code *uint32 `json:"code"`
 		} `json:"result"`
-	}
-	if response.StatusCode != http.StatusOK {
-		return SendResult{WrittenAt: wroteAt, Completed: completed, Reason: "rpc_reject", Err: fmt.Errorf("RPC HTTP %d", response.StatusCode)}
+		Error struct {
+			Message string `json:"message"`
+			Data    string `json:"data"`
+		} `json:"error"`
 	}
 	if err := decodeBoundedJSON(response.Body, &wire); err != nil {
 		return SendResult{WrittenAt: wroteAt, Completed: completed, Reason: "rpc_response_invalid", Err: err}
 	}
+	if response.StatusCode != http.StatusOK {
+		return SendResult{WrittenAt: wroteAt, Completed: completed, Reason: classifyRPCAdmission(wire.Error.Message+" "+wire.Error.Data, len(raw)), Err: fmt.Errorf("RPC HTTP %d", response.StatusCode)}
+	}
 	if wire.Result.Code == nil {
-		return SendResult{WrittenAt: wroteAt, Completed: completed, Reason: "rpc_code_missing", Err: errors.New("missing CheckTx code")}
+		reason := classifyRPCAdmission(wire.Error.Message+" "+wire.Error.Data, len(raw))
+		if reason == "rpc_reject" {
+			reason = "rpc_code_missing"
+		}
+		return SendResult{WrittenAt: wroteAt, Completed: completed, Reason: reason, Err: errors.New("missing CheckTx code")}
 	}
 	return SendResult{WrittenAt: wroteAt, Completed: completed, Code: wire.Result.Code, Reason: "app_code"}
 }
@@ -392,8 +433,8 @@ func rateQuality(p Plan, actual []EventResult) error {
 		if actualByWindow[window] < int(.9*float64(expected)+.999999) {
 			return fmt.Errorf("steady window %d below 90%% of planned sends", window)
 		}
-		if p.Waveform == "burst" && actualByWindow[window] > int(1.1*float64(expected)) {
-			return fmt.Errorf("burst window %d exceeds planned send count", window)
+		if (p.Waveform == "burst" || p.Waveform == "ramp") && actualByWindow[window] > int(1.1*float64(expected)) {
+			return fmt.Errorf("scheduled window %d exceeds planned send count", window)
 		}
 		if p.Regime == FixedLegitimatePlusAdversary {
 			for _, traffic := range []string{"legitimate", "adversarial"} {

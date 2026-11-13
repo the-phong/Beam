@@ -1,6 +1,18 @@
 # Pluto research master plan
 
-**Current authorization (2026-11-12):** After the Owner merged S07 PR #20
+**Current File 02 authority (2026-11-13):** [D-040](DECISIONS.md)
+authorized Checklist 02 R01–R16 in one bounded task after conditional
+Gate T acceptance. The [RQ1 resource report](evidence/file02/RQ1_RESOURCE_REPORT.md)
+and stacked Draft [PR #24](https://github.com/the-phong/Beam/pull/24)
+give evidenced PASS, PARTIAL or UNSUPPORTED dispositions for all sixteen
+cases. The RQ1 H-minus-CP CheckTx hypothesis remains unchanged; RQ1b
+is separate. Gate RQ1 requires Controller/Owner review. The tested
+single-host RPC stratum found no defensible knee within 25 tx/s and
+does not establish DoS or distributed-network behavior. A/Q/D cases
+and ML training remain outside this authority. Later paragraphs retain
+their original historical status.
+
+**Historical authorization (2026-11-12):** After the Owner merged S07 PR #20
 into `test-mainet` at `e0bcd9e0f903a2e807a3d28adc5554dffa48e1f1`, the
 Owner authorized only sections 0–2 of the outside Checklist 02. The
 [File 02 common contract](protocol/FILE02_COMMON_CONTRACT.md) and
@@ -9,7 +21,7 @@ Owner authorized only sections 0–2 of the outside Checklist 02. The
 precision and confirmatory T/R/A/Q/D cases remain open. Later historical
 authority paragraphs below are retained for audit.
 
-**Current status (2026-11-11):** Phase 05 PR #10 is merged into `test-mainet`
+**Historical status (2026-11-11):** Phase 05 PR #10 is merged into `test-mainet`
 at `0bdd869f2c6b3ed59b0ae825954d8667b3c7481e`. The Owner requested a
 new, separately evidenced RQ1–RQ3 program in the
 [research checklist](checklists/01_CHECKLIST_CHUAN_HOA_MO_RONG_REPO_THUC_NGHIEM.md).

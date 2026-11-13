@@ -1,5 +1,19 @@
 # Architectural decision log
 
+## D-040 — Owner opens Checklist 02 R01–R16 as one bounded task (2026-11-13)
+
+The Owner approved all section 4 cases in checklist order without per-case
+approval pauses, using the accepted Gate T and the planning head of Draft
+PR #23. The accepted RQ1 H-minus-CP valid CheckTx hypothesis is unchanged;
+the [RQ1 study design](protocol/FILE02_RQ1_SINGLE_HOST_PLAN.md) is locked
+before confirmatory measurement. RQ1b remains a separate question; this
+authority does not open A/Q/D cases. Every feasible R case needs its own
+pre-run lock, independent raw/QC/result evidence and honest uncertainty.
+Unsupported or unobserved requirements remain explicitly unresolved rather
+than passing. Only controlled single-host, RPC-origin topology within S06
+caps is permitted. This decision does not approve a merge, a safety-cap or
+accepted-protocol change, ML training or a DoS finding.
+
 ## D-039 — Gate T conditional acceptance and planning-only next step (2026-11-13; Owner decision)
 
 The Owner **conditionally accepted** Checklist 02 T01–T07 as technically
