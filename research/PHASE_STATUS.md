@@ -1,17 +1,18 @@
-# Phase status — 2026-11-13
+# Phase status — 2026-11-14
 
 ## Current Checklist 02 section 5 execution
 
 The Owner confirmed [PR #26](https://github.com/the-phong/Beam/pull/26)
-merged at `2df001620d799eafa6359603f1e6dedded1d8107` and explicitly
-authorized the A01–A14 group in checklist order. [D-042](DECISIONS.md)
-records the scope. Work begins on `research/file02-a01-a14` from that
-merged head. [A01's locked design](protocol/FILE02_A01_LOCKED_PLAN.md)
-preserves a fixed legitimate H stream and compares matched benign and
-structural-invalid background at the existing S06 caps. No A case is
-checked until its raw/QC/analysis audit passes. Q/D cases, ML training,
-a DoS claim, new knee search and automatic merge remain outside this
-authority. The Gate RQ1 acceptance below is historical context.
+merged at `2df001620d799eafa6359603f1e6dedded1d8107` and authorized
+A01–A14 in checklist order under [D-042](DECISIONS.md). The
+[engineering closeout](evidence/file02/ATTACK_GROUP_ENGINEERING_CLOSEOUT_20261114.md)
+records eleven bounded PASS (A01–A10, A14), two PARTIAL (A11, A13) and one
+UNSUPPORTED (A12) disposition. Verified PASS items are checked; the other
+three boxes remain open. Gate ATTACK awaits Controller/Owner review and
+cannot be declared unconditionally complete. No positive legitimate-service
+degradation, knee, DoS or multi-host/P2P-origin result is claimed. Q/D
+cases, ML training, a new knee search and automatic merge remain outside
+this authority. The Gate RQ1 acceptance below is historical context.
 
 ## Current File 02 Gate RQ1 Owner acceptance
 

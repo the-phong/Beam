@@ -12,6 +12,14 @@ single-host four-validator block observer. They support a bounded
 send-to-first-all-four-observation interval. The stamps do not enter
 transaction validity, consensus or proposal decisions. They cannot be
 compared across hosts without a separate clock protocol.
+The A13 load-plan `step` waveform changes only bounded send offsets and
+retains the accepted safety checks. A14's test harness observes each
+validator's block index and temporarily pauses/resumes one **Comet process**
+in a private same-host run. It does not alter application validation or
+Comet consensus rules. The per-node timestamps are upper bounds on first
+observation; the shared host does not provide independent hardware fault
+domains. The [section 5 closeout](evidence/file02/ATTACK_GROUP_ENGINEERING_CLOSEOUT_20261114.md)
+records the measured scope and open cases.
 The R16 extension adds a validated `ramp` waveform to the isolated
 open-loop load planner; it changes send offsets only, within the
 accepted loopback and S06 caps. The application and Comet consensus

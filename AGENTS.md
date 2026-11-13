@@ -4,6 +4,9 @@
 
 The Owner confirmed PR #26 is merged and explicitly authorized implementation
 and completion of all section 5 attack-workload cases in checklist order.
+The engineering disposition now records eleven bounded PASS, two PARTIAL and
+one UNSUPPORTED case; Gate ATTACK awaits Controller/Owner review. This
+engineering completion does not self-accept the Gate.
 This supersedes the former prohibition on opening the A group, but does not
 authorize Q/D cases, ML training, a DoS claim, higher S06 safety caps or a
 change to accepted RQ1/RQ1b protocol semantics. Keep the fixed legitimate
