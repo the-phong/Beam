@@ -16,8 +16,8 @@ import (
 
 func TestFile02AttackCase(t *testing.T) {
 	caseID := os.Getenv("FILE02_A_CASE")
-	if caseID < "A01" || caseID > "A05" || len(caseID) != 3 {
-		t.Fatal("A01–A05 case ID required")
+	if !(caseID >= "A01" && caseID <= "A05" || caseID == "A08") || len(caseID) != 3 {
+		t.Fatal("A01–A05 or A08 case ID required")
 	}
 	root := os.Getenv("FILE02_A_ROOT")
 	allowed, _ := filepath.Abs("../../research/artifacts/file02")

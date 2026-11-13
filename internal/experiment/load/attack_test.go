@@ -77,3 +77,47 @@ func TestBuildAttackPairPlans(t *testing.T) {
 		t.Fatal("A04 should require hybrid profile")
 	}
 }
+
+func TestA08MixedAttackRatioAndStage(t *testing.T) {
+	config, hash, err := ReadConfig("../../../research/config/s06_pilot.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	fixture, err := NewPilotFixture("pluto-file02-a08", 241)
+	if err != nil {
+		t.Fatal(err)
+	}
+	benign, attack, err := BuildAttackPairPlans(fixture, researchv2.ProfileH, "A08", 0, config, hash)
+	if err != nil {
+		t.Fatal(err)
+	}
+	counts := [12]map[string]int{}
+	for i := range counts {
+		counts[i] = map[string]int{}
+	}
+	for i, event := range attack.Events {
+		if event.Scenario == "fixed_legitimate" {
+			if event.SHA256 != benign.Events[i].SHA256 {
+				t.Fatal("A08 fixed stream drift")
+			}
+			continue
+		}
+		second := (i - 1) / 20
+		counts[second][event.Scenario]++
+		want := map[string]struct {
+			code  researchv2.Code
+			stage researchv2.Stage
+		}{"A08_structural": {researchv2.CodeMalformed, researchv2.StageStructural},
+			"A08_bad_ml":        {researchv2.CodeBadMLSignature, researchv2.StageML},
+			"A08_state_invalid": {researchv2.CodeInvalidNonce, researchv2.StageState}}[event.Scenario]
+		if event.ExpectedCode != want.code || event.ExpectedStage != want.stage ||
+			event.Scenario == "A08_state_invalid" && event.Nonce != 1 {
+			t.Fatalf("A08 oracle mismatch %s", event.Scenario)
+		}
+	}
+	for second, got := range counts {
+		if got["A08_structural"] != 4 || got["A08_bad_ml"] != 5 || got["A08_state_invalid"] != 5 {
+			t.Fatalf("A08 second %d ratio %v", second, got)
+		}
+	}
+}

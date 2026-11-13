@@ -24,7 +24,7 @@ import (
 
 func file02AttackCase(caseID any) bool {
 	id, ok := caseID.(string)
-	return ok && strings.HasPrefix(id, "A") && len(id) == 3 && id >= "A01" && id <= "A05"
+	return ok && strings.HasPrefix(id, "A") && len(id) == 3 && (id >= "A01" && id <= "A05" || id == "A08")
 }
 
 func file02ReplayCase(caseID any) bool     { return caseID == "A06" }

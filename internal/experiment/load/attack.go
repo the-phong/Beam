@@ -16,7 +16,7 @@ import (
 func BuildAttackPairPlans(f *PilotFixture, p researchv2.Profile, caseID string, pair int,
 	config Config, configHash string) (Plan, Plan, error) {
 	if f == nil || pair < 0 || pair > 99 || len(f.Senders) < 241 ||
-		(caseID != "A01" && caseID != "A02" && caseID != "A03" && caseID != "A04" && caseID != "A05") ||
+		(caseID != "A01" && caseID != "A02" && caseID != "A03" && caseID != "A04" && caseID != "A05" && caseID != "A08") ||
 		(caseID == "A04" && p != researchv2.ProfileH) || (caseID != "A04" && p != researchv2.ProfileH && p != researchv2.ProfileC) {
 		return Plan{}, Plan{}, ErrPlan
 	}
@@ -68,9 +68,12 @@ func BuildAttackPairPlans(f *PilotFixture, p researchv2.Profile, caseID string, 
 		scenario := caseID
 		if caseID == "A01" {
 			scenario = []string{"A01_wrong_magic", "A01_wrong_declared_length", "A01_bad_chain_encoding"}[slot%3]
+		} else if caseID == "A08" {
+			class := mixedAttackClass(slot)
+			scenario = map[string]string{"A01": "A08_structural", "A04": "A08_bad_ml", "A05": "A08_state_invalid"}[class]
 		}
 		appendTx(&attack, offset, "adversarial", scenario, capability, code, stage, invalid, slot)
-		if caseID == "A05" {
+		if caseID == "A05" || caseID == "A08" && scenario == "A08_state_invalid" {
 			attack.Events[len(attack.Events)-1].Nonce = 1
 		}
 	}
@@ -96,6 +99,9 @@ func BuildAttackPairPlans(f *PilotFixture, p researchv2.Profile, caseID string, 
 
 func makeAttackWire(f *PilotFixture, p researchv2.Profile, caseID string, slot int,
 	valid []byte) ([]byte, researchv2.Code, researchv2.Stage, string, error) {
+	if caseID == "A08" {
+		caseID = mixedAttackClass(slot)
+	}
 	modified := bytes.Clone(valid)
 	switch caseID {
 	case "A01":
@@ -137,4 +143,21 @@ func makeAttackWire(f *PilotFixture, p researchv2.Profile, caseID string, slot i
 	default:
 		return nil, 0, "", "", ErrPlan
 	}
+}
+
+func mixedAttackClass(slot int) string {
+	position := (slot - 1) % 20
+	rank := position
+	for _, fixed := range []int{2, 5, 8, 11, 14, 17} {
+		if fixed < position {
+			rank--
+		}
+	}
+	if rank < 4 {
+		return "A01"
+	}
+	if rank < 9 {
+		return "A04"
+	}
+	return "A05"
 }

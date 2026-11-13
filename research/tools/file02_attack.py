@@ -21,10 +21,10 @@ import file02_r06 as r06
 
 ROOT = Path(__file__).resolve().parents[2]
 ARTIFACTS = ROOT / "research/artifacts/file02"
-CASES = ("A01", "A02", "A03", "A04", "A05")
+CASES = ("A01", "A02", "A03", "A04", "A05", "A08")
 CASE_WORKLOAD = {"A01": "STRUCT_INVALID", "A02": "MIXED", "A03": "ECDSA_INVALID",
-                 "A04": "MLDSA_INVALID", "A05": "STATE_INVALID"}
-CASE_CAPABILITY = {"A01": "A", "A02": "A", "A03": "B", "A04": "B", "A05": "C"}
+                 "A04": "MLDSA_INVALID", "A05": "STATE_INVALID", "A08": "MIXED"}
+CASE_CAPABILITY = {"A01": "A", "A02": "A", "A03": "B", "A04": "B", "A05": "C", "A08": "C"}
 CASE_CODE_STAGE = {"A01": (1, "structural"), "A02": (11, "binding"),
                    "A03": (4, "secp"), "A04": (13, "ml"), "A05": (6, "state")}
 WIRE_BYTES = 2568
@@ -226,6 +226,7 @@ def audit_run(raw, job, plan):
     fixed_latency_ms, invalid_service_ns, invalid_structural_ns = [], [], []
     invalid_stage_spans = {stage: [] for stage in ("structural", "binding", "secp", "ml", "state")}
     invalid_verify_reached = invalid_ml_reached = 0
+    invalid_class_service = {}
     invalid_variants = {}
     for planned, actual in zip(workload["events"], result["events"]):
         wire = bytes.fromhex(planned["bytes_hex"])
@@ -246,22 +247,32 @@ def audit_run(raw, job, plan):
                 isinstance(record.get("service_ns"), int) and record["service_ns"] > 0,
                 "CheckTx stage/hash missing")
         if planned["traffic"] == "adversarial":
+            target_code_stage = CASE_CODE_STAGE.get(case)
+            if case == "A08":
+                target_code_stage = {"A08_structural": (1, "structural"),
+                                     "A08_bad_ml": (13, "ml"),
+                                     "A08_state_invalid": (6, "state")}.get(planned["scenario"])
             require(condition == "attack" and
-                    (planned["expected_code"], planned["expected_stage"]) == CASE_CODE_STAGE[case] and
+                    (planned["expected_code"], planned["expected_stage"]) == target_code_stage and
                     planned["id"] not in by_commit, "invalid oracle/commit")
             invalid_variants[planned["scenario"]] = invalid_variants.get(planned["scenario"], 0) + 1
             if planned["offset_ns"] >= 1_000_000_000:
                 invalid_service_ns.append(record["service_ns"])
+                invalid_class_service.setdefault(planned["scenario"], []).append(record["service_ns"])
                 spans = record.get("spans", [])
                 span_stages = {span.get("stage") for span in spans}
+                oracle_class = case
+                if case == "A08":
+                    oracle_class = {"A08_structural": "A01", "A08_bad_ml": "A04",
+                                    "A08_state_invalid": "A05"}[planned["scenario"]]
                 required = {"A01": {"structural"}, "A02": {"structural", "binding"},
                             "A03": {"structural", "binding", "secp"},
                             "A04": {"structural", "binding", "secp", "ml"},
-                            "A05": {"structural", "binding", "secp", "ml", "state"}}[case]
+                            "A05": {"structural", "binding", "secp", "ml", "state"}}[oracle_class]
                 require(required <= span_stages and
-                        ("secp" in span_stages) == (case in ("A03", "A04", "A05")) and
-                        ("ml" in span_stages) == (case in ("A04", "A05")) and
-                        ("state" in span_stages) == (case == "A05"),
+                        ("secp" in span_stages) == (oracle_class in ("A03", "A04", "A05")) and
+                        ("ml" in span_stages) == (oracle_class in ("A04", "A05")) and
+                        ("state" in span_stages) == (oracle_class == "A05"),
                         "invalid verification-stage oracle")
                 invalid_verify_reached += int("secp" in span_stages)
                 invalid_ml_reached += int("ml" in span_stages)
@@ -294,7 +305,9 @@ def audit_run(raw, job, plan):
     if condition == "attack":
         require(len(invalid_service_ns) == 168 and
                 (case != "A01" or all(invalid_variants.get(v, 0) > 0 for v in
-                    ("A01_wrong_magic", "A01_wrong_declared_length", "A01_bad_chain_encoding"))),
+                    ("A01_wrong_magic", "A01_wrong_declared_length", "A01_bad_chain_encoding"))) and
+                (case != "A08" or invalid_variants == {"A08_structural": 48,
+                    "A08_bad_ml": 60, "A08_state_invalid": 60}),
                 "attack distinct class coverage")
     else:
         require(not invalid_service_ns and not invalid_variants, "benign arm has invalid traffic")
@@ -317,6 +330,14 @@ def audit_run(raw, job, plan):
         row["invalid_mean_stage_wall_ns"] = {
             stage: statistics.mean(samples) if samples else None
             for stage, samples in invalid_stage_spans.items()}
+    if case == "A08":
+        row["invalid_class_mean_service_ns"] = {
+            label: statistics.mean(samples) for label, samples in invalid_class_service.items()}
+        row["resource_curve_validator0"] = [{"observed_utc": sample["observed_utc"],
+            "accepted_mempool_bytes": sample.get("accepted_mempool_bytes"),
+            "app_cpu_ns": (sample.get("application_process") or {}).get("cpu_ns"),
+            "checktx_socket_queue_seconds": sample.get("checktx_socket_queue_seconds")}
+            for sample in r06.samples(run / "observer-0.jsonl")]
     return row
 
 
@@ -359,6 +380,13 @@ def derive(session, plan):
                  "invalid_mean_service_ns": statistics.mean(row["invalid_mean_checktx_service_ns"]
                     for row in rows if row["condition"] == "attack") if qc_status == "PASS" else None,
                  "shared_app_cpu_status": "UNAVAILABLE_SEPARATE_FROM_INTEGRATION_HARNESS"}
+    if plan["case_id"] == "A08":
+        aggregate["invalid_class_mean_service_ns"] = ({label: statistics.mean(
+            row["invalid_class_mean_service_ns"][label] for row in rows if row["condition"] == "attack")
+            for label in ("A08_structural", "A08_bad_ml", "A08_state_invalid")}
+            if qc_status == "PASS" else None)
+        aggregate["fixed_inclusion_p99_ms"] = None
+        aggregate["fixed_inclusion_p99_status"] = "INSUFFICIENT_PRECISION"
     return rows, qc, aggregate
 
 
