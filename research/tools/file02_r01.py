@@ -10,6 +10,7 @@ from pathlib import Path
 import platform
 import random
 import re
+import shutil
 import statistics
 import subprocess
 import sys
@@ -20,7 +21,7 @@ import file02_common as common
 
 ROOT = Path(__file__).resolve().parents[2]
 ARTIFACTS = ROOT / "research/artifacts/file02"
-BENCH = re.compile(r"^BenchmarkFile02R01/(secp256k1|mldsa44)-\d+\s+(\d+)\s+([0-9.]+)\s+ns/op\s+(\d+)\s+B/op\s+(\d+)\s+allocs/op\s*$")
+BENCH = re.compile(r"^BenchmarkFile02R01/(secp256k1|mldsa44)(?:-\d+)?\s+(\d+)\s+([0-9.]+)\s+ns/op\s+(\d+)\s+B/op\s+(\d+)\s+allocs/op\s*$")
 COMMAND = ["go", "test", "-run", "^$", "-bench", "^BenchmarkFile02R01$",
            "-benchtime=200ms", "-benchmem", "-cpu=1", "-count=1",
            "./internal/experiment/benchmark"]
@@ -116,11 +117,14 @@ def prepare(session):
     print(session / "plan.json")
 
 
-def validate_plan(plan):
+def validate_plan(plan, strict_source=True):
     require(plan.get("schema") == "pluto.file02.r01.plan.v1" and plan.get("status") == "LOCKED"
             and plan.get("case_id") == "R01", "R01 plan schema/status")
-    require(plan.get("source_commit") == git("rev-parse", "HEAD") and
-            plan.get("source_tree") == git("rev-parse", "HEAD^{tree}"), "source revision mismatch")
+    source = plan.get("source_commit")
+    require(isinstance(source, str) and re.fullmatch(r"[0-9a-f]{40}", source) and
+            plan.get("source_tree") == git("rev-parse", source + "^{tree}"), "source revision mismatch")
+    if strict_source:
+        require(source == git("rev-parse", "HEAD"), "measurement source changed after lock")
     require(plan.get("module_sha256") == hashlib.sha256((ROOT / "go.mod").read_bytes()).hexdigest(), "module changed")
     require(plan.get("safety_config_sha256") == hashlib.sha256((ROOT / "research/config/s06_pilot.json").read_bytes()).hexdigest(), "safety config changed")
     require(plan.get("command") == COMMAND and plan.get("orders") == orders() and
@@ -191,6 +195,37 @@ def derive(session, plan):
     return per_run, qc, aggregate
 
 
+def write_outputs(session, plan):
+    per_run, qc, aggregate = derive(session, plan)
+    write_new(session / "result_per_run.json", {"schema": "pluto.file02.r01.per_run.v1", "rows": per_run})
+    with (session / "result_per_run.csv").open("x", newline="", encoding="utf-8") as out:
+        fields = ["index", "order", "qc_status", "reason", "secp_ns_per_op", "ml_ns_per_op",
+                  "delta_ns_per_op", "ratio", "secp_B_per_op", "ml_B_per_op",
+                  "secp_allocs_per_op", "ml_allocs_per_op", "secp_iterations", "ml_iterations"]
+        writer = csv.DictWriter(out, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(per_run)
+    write_new(session / "qc_report.json", qc)
+    write_new(session / "result_aggregate.json", aggregate)
+    (session / "figures").mkdir()
+    write_new(session / "figures/status.json", {"status": "NOT_GENERATED", "reason": "tabular R01 primary; no scientific plot required"})
+    decision = ("# R01 decision\n\n" +
+                f"QC: {qc['status']}; independent processes: {qc['n_valid']}/{REPETITIONS}.\n\n" +
+                (f"ML minus secp mean: {aggregate['mean_delta_ns_per_op']:.3f} ns/op; "
+                 f"paired-bootstrap 95% CI: {aggregate['delta_ci95_ns_per_op']}.\n\n"
+                 if aggregate["status"] == "ANALYZED" else
+                 "No inferential contrast: insufficient valid process runs.\n\n") +
+                "This is primitive verification cost on one host, not full CheckTx, throughput or DoS. "
+                "cycles/op is UNAVAILABLE without a verified cycle counter.\n")
+    (session / "decision.md").write_text(decision)
+    write_new(session / "analysis_provenance.json", {"schema": "pluto.file02.analysis_provenance.v1",
+              "measurement_source_commit": plan["source_commit"], "analyzer_commit": git("rev-parse", "HEAD"),
+              "previous_analysis": "analysis-v1" if (session / "analysis-v1").exists() else None})
+    verify(session)
+    print(json.dumps({"session": str(session), "qc": qc["status"], "aggregate": aggregate["status"],
+                      "raw_manifest_sha256": qc["raw_manifest_sha256"]}, sort_keys=True))
+
+
 def execute(session):
     plan = common.read_json(session / "plan.json")
     validate_plan(plan)
@@ -215,48 +250,46 @@ def execute(session):
         if returncode != 0:
             break
     common.freeze_raw(raw)
-    per_run, qc, aggregate = derive(session, plan)
-    write_new(session / "result_per_run.json", {"schema": "pluto.file02.r01.per_run.v1", "rows": per_run})
-    with (session / "result_per_run.csv").open("x", newline="", encoding="utf-8") as out:
-        fields = ["index", "order", "qc_status", "reason", "secp_ns_per_op", "ml_ns_per_op",
-                  "delta_ns_per_op", "ratio", "secp_B_per_op", "ml_B_per_op",
-                  "secp_allocs_per_op", "ml_allocs_per_op", "secp_iterations", "ml_iterations"]
-        writer = csv.DictWriter(out, fieldnames=fields)
-        writer.writeheader()
-        writer.writerows(per_run)
-    write_new(session / "qc_report.json", qc)
-    write_new(session / "result_aggregate.json", aggregate)
-    (session / "figures").mkdir()
-    write_new(session / "figures/status.json", {"status": "NOT_GENERATED", "reason": "tabular R01 primary; no scientific plot required"})
-    decision = ("# R01 decision\n\n" +
-                f"QC: {qc['status']}; independent processes: {qc['n_valid']}/{REPETITIONS}.\n\n" +
-                (f"ML minus secp mean: {aggregate['mean_delta_ns_per_op']:.3f} ns/op; "
-                 f"paired-bootstrap 95% CI: {aggregate['delta_ci95_ns_per_op']}.\n\n"
-                 if aggregate["status"] == "ANALYZED" else
-                 "No inferential contrast: insufficient valid process runs.\n\n") +
-                "This is primitive verification cost on one host, not full CheckTx, throughput or DoS. "
-                "cycles/op is UNAVAILABLE without a verified cycle counter.\n")
-    (session / "decision.md").write_text(decision)
-    verify(session)
-    print(json.dumps({"session": str(session), "qc": qc["status"], "aggregate": aggregate["status"],
-                      "raw_manifest_sha256": qc["raw_manifest_sha256"]}, sort_keys=True))
+    write_outputs(session, plan)
+
+
+def reanalyze(session):
+    plan = common.read_json(session / "plan.json")
+    validate_plan(plan, strict_source=False)
+    common.verify_raw(session / "raw")
+    archive = session / "analysis-v1"
+    archive.mkdir(mode=0o700)
+    for name in ("result_per_run.json", "result_per_run.csv", "qc_report.json",
+                 "result_aggregate.json", "decision.md", "analysis_provenance.json", "figures"):
+        path = session / name
+        if path.exists():
+            shutil.move(str(path), str(archive / name))
+    common.freeze_raw(archive)
+    write_outputs(session, plan)
 
 
 def verify(session):
     plan = common.read_json(session / "plan.json")
-    validate_plan(plan)
+    validate_plan(plan, strict_source=False)
     per_run, qc, aggregate = derive(session, plan)
     require(common.read_json(session / "result_per_run.json") ==
             {"schema": "pluto.file02.r01.per_run.v1", "rows": per_run}, "per-run results changed")
     require(common.read_json(session / "qc_report.json") == qc, "QC report changed")
     require(common.read_json(session / "result_aggregate.json") == aggregate, "aggregate changed")
-    require((session / "decision.md").is_file() and (session / "figures/status.json").is_file(), "missing output")
+    require((session / "decision.md").is_file() and (session / "figures/status.json").is_file()
+            and (session / "analysis_provenance.json").is_file(), "missing output")
+    provenance = common.read_json(session / "analysis_provenance.json")
+    require(provenance.get("measurement_source_commit") == plan["source_commit"] and
+            git("cat-file", "-t", provenance.get("analyzer_commit", "")) == "commit",
+            "analysis provenance mismatch")
+    if (session / "analysis-v1").exists():
+        common.verify_raw(session / "analysis-v1")
     print("R01_VERIFY=OK")
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("action", choices=("prepare", "run", "verify"))
+    parser.add_argument("action", choices=("prepare", "run", "reanalyze", "verify"))
     parser.add_argument("session", type=Path)
     args = parser.parse_args()
     session = args.session.resolve()
@@ -264,6 +297,8 @@ def main():
         prepare(session)
     elif args.action == "run":
         execute(session)
+    elif args.action == "reanalyze":
+        reanalyze(session)
     else:
         verify(session)
 

@@ -11,6 +11,7 @@ class R01ContractTest(unittest.TestCase):
                 "BenchmarkFile02R01/mldsa44-1  1000  95000 ns/op  24 B/op  1 allocs/op\n")
         parsed = r01.parse_benchmark(text, "secp_first")
         self.assertEqual(parsed["mldsa44"]["B_per_op"], 24)
+        self.assertEqual(r01.parse_benchmark(text.replace("-1 ", " "), "secp_first"), parsed)
         with self.assertRaises(ValueError):
             r01.parse_benchmark(text, "ml_first")
         with self.assertRaises(ValueError):
