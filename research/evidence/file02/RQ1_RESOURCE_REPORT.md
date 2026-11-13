@@ -102,8 +102,9 @@ raw and accepted protocol semantics were not altered.
 
 | Command | Exit | Result |
 | --- | ---: | --- |
-| `make verify` | 0 | Go build/test/vet, formatting, module integrity and version passed at result commit `b63046c` before this report. |
-| `python3 -m unittest discover -s research/tools -p 'test_file02*.py'` | 0 | 45 File 02 Python tests passed before the final R16 CSV integrity test was added; the full suite is rerun below for the final branch. |
+| `make verify` | 0 | Go build/test/vet, formatting, module integrity and version passed at result commit `a31c688` after the R16 audit and strict CSV validator. |
+| `python3 -m unittest discover -s research/tools -p 'test_file02*.py'` | 0 | All 46 File 02 Python tests passed, including negative R16 CSV schema/content tests. |
+| `make test-s07-schema` | 0 | Three integrity/schema tests passed, including tampered raw rejection. |
 | `make test-s05-telemetry` | 0 | Real four-validator C/CP/P/H telemetry regression PASS, 60.242 s. |
 | `make test-s06-pilot` | 0 | Real isolated open-loop workload regression PASS, 80.996 s, including legacy burst and fixed legitimate-plus-invalid schedules. |
 | `python3 research/tools/file02_r14.py verify research/artifacts/file02/r14-20261113T073256Z-6a4d335c` | 0 | 16 networks; frozen manifest `5378c732f2e368ac9bb7dd0b30b8efdbe0bf1617a4ed2e7367e79da38cdc71e0`. |
