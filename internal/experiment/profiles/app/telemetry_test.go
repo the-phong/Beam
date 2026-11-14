@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"path/filepath"
 	"testing"
+	"time"
 
 	abci "github.com/cometbft/cometbft/abci/types"
 
@@ -68,6 +69,12 @@ func TestS05CheckTxTelemetryONOFFCorpus(t *testing.T) {
 				t.Fatalf("wrong events: %+v dropped=%d", events, dropped)
 			}
 			for _, e := range events {
+				start, startErr := time.Parse(time.RFC3339Nano, e.AppIngressUTC)
+				lock, lockErr := time.Parse(time.RFC3339Nano, e.AppLockUTC)
+				result, resultErr := time.Parse(time.RFC3339Nano, e.AppResultUTC)
+				if startErr != nil || lockErr != nil || resultErr != nil || lock.Before(start) || result.Before(lock) {
+					t.Fatalf("invalid app queue timeline: %+v", e)
+				}
 				if e.Code != uint32(item.ExpectedCode) || e.LastStage != string(item.Stage) || e.WireBytes != len(raw) || e.TxSHA256 != hex.EncodeToString(hash[:]) || e.ServiceNS < 0 || e.AppLockWaitNS < 0 {
 					t.Fatalf("wrong measurement: %+v", e)
 				}

@@ -147,8 +147,10 @@ func (a *App) CheckTx(_ context.Context, req *abci.RequestCheckTx) (*abci.Respon
 	a.mu.RLock()
 	defer a.mu.RUnlock()
 	var lockWait time.Duration
+	var lockAcquired time.Time
 	if recorder != nil {
-		lockWait = time.Since(started)
+		lockAcquired = time.Now()
+		lockWait = lockAcquired.Sub(started)
 	}
 	s, err := a.stateLocked()
 	if err != nil {
@@ -166,6 +168,7 @@ func (a *App) CheckTx(_ context.Context, req *abci.RequestCheckTx) (*abci.Respon
 		_, result, err = researchv2.EvaluateTrustedObserved(s, a.profile, raw, nil, func(stage researchv2.Stage, elapsed time.Duration) {
 			spans = append(spans, telemetry.Span{Stage: string(stage), DurationNS: elapsed.Nanoseconds()})
 		})
+		resultAt := time.Now()
 		if err == nil {
 			txHash := sha256.Sum256(raw)
 			checkType := "new"
@@ -175,7 +178,10 @@ func (a *App) CheckTx(_ context.Context, req *abci.RequestCheckTx) (*abci.Respon
 				checkType = "recheck"
 			}
 			recorder.Record(telemetry.CheckTxEvent{
-				Profile: uint8(a.profile), CheckType: checkType, WireBytes: len(raw), TxSHA256: hex.EncodeToString(txHash[:]),
+				AppIngressUTC: started.UTC().Format(time.RFC3339Nano),
+				AppLockUTC:    lockAcquired.UTC().Format(time.RFC3339Nano),
+				AppResultUTC:  resultAt.UTC().Format(time.RFC3339Nano),
+				Profile:       uint8(a.profile), CheckType: checkType, WireBytes: len(raw), TxSHA256: hex.EncodeToString(txHash[:]),
 				Code: uint32(result.Code), LastStage: string(result.LastStage),
 				ServiceNS:     (time.Since(started) - lockWait).Nanoseconds(),
 				AppLockWaitNS: lockWait.Nanoseconds(), Spans: spans,

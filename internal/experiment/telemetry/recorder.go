@@ -21,6 +21,9 @@ type CheckTxEvent struct {
 	Kind          string `json:"kind"`
 	Sequence      uint64 `json:"sequence"`
 	ObservedUTC   string `json:"observed_utc"`
+	AppIngressUTC string `json:"app_ingress_utc,omitempty"`
+	AppLockUTC    string `json:"app_lock_acquired_utc,omitempty"`
+	AppResultUTC  string `json:"app_result_utc,omitempty"`
 	Profile       uint8  `json:"profile"`
 	CheckType     string `json:"check_type"`
 	Source        string `json:"source"`
