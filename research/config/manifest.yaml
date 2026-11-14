@@ -30,8 +30,10 @@ project:
   file02_tested_pilot_tx_s: [2, 6, 12, 20, 23, 25]
   file02_knee_levels: not_observed_within_safe_range
   refactor_status: owner_merged_pr18_e8f20726_controller_conditional_accept_postmerge_ci_pass
-  file02_a_group_status: A01_to_A14_engineering_disposition_11_pass_2_partial_1_unsupported_gate_review_pending
-  active_authorization: file02_A01_A14_bounded_execution_2026_11_14
+  file02_a_group_status: owner_accepted_bounded_11_pass_2_partial_1_unsupported_2026_11_14
+  file02_a_merge_commit: 2b453b3c14c410545d5699e03cff90d0eb21d63e
+  file02_q_group_status: Q01_to_Q07_owner_authorized_execution_pending_case_evidence
+  active_authorization: file02_Q01_Q07_quality_control_2026_11_14
   baseline_branch: test-mainet
   baseline_commit: e0bcd9e0f903a2e807a3d28adc5554dffa48e1f1
   baseline_tree: 71d03c1d083724b1bba73e62b024766cfaaedc5a

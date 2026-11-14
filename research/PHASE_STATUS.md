@@ -1,6 +1,18 @@
 # Phase status — 2026-11-14
 
-## Current Checklist 02 section 5 execution
+## Current Checklist 02 section 6 authority
+
+Under [D-043](DECISIONS.md), the Owner accepted Gate ATTACK for the bounded
+eleven PASS, two PARTIAL and one UNSUPPORTED disposition after
+[PR #27](https://github.com/the-phong/Beam/pull/27) merged into `test-mainet`
+at `2b453b3c14c410545d5699e03cff90d0eb21d63e` with four passing checks.
+The Owner authorized Q01–Q07 in order to test control fairness and the
+robustness of RQ1b conclusions. The negative service result and open
+A11–A13 boxes remain as recorded. Work begins on
+`research/file02-q01-q07`; Gate QUALITY is pending evidence and review.
+No D/ML, DoS, knee or distributed-performance conclusion follows.
+
+## Historical Checklist 02 section 5 execution
 
 The Owner confirmed [PR #26](https://github.com/the-phong/Beam/pull/26)
 merged at `2df001620d799eafa6359603f1e6dedded1d8107` and authorized
@@ -8,8 +20,8 @@ A01–A14 in checklist order under [D-042](DECISIONS.md). The
 [engineering closeout](evidence/file02/ATTACK_GROUP_ENGINEERING_CLOSEOUT_20261114.md)
 records eleven bounded PASS (A01–A10, A14), two PARTIAL (A11, A13) and one
 UNSUPPORTED (A12) disposition. Verified PASS items are checked; the other
-three boxes remain open. Gate ATTACK awaits Controller/Owner review and
-cannot be declared unconditionally complete. No positive legitimate-service
+three boxes remain open. At this engineering checkpoint Gate ATTACK awaited
+review; D-043 later accepted it within the bounded scope. No positive legitimate-service
 degradation, knee, DoS or multi-host/P2P-origin result is claimed. Q/D
 cases, ML training, a new knee search and automatic merge remain outside
 this authority. The Gate RQ1 acceptance below is historical context.
