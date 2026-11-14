@@ -69,8 +69,10 @@ func TestFile02X05DedicatedAppProcesses(t *testing.T) {
 		t.Fatal(err)
 	}
 	var valid []byte
+	var validEvent load.PlannedTx
 	for _, event := range plan.Events {
 		if event.ExpectedCode == researchv2.CodeOK {
+			validEvent = event
 			valid, err = hex.DecodeString(event.BytesHex)
 			if err != nil {
 				t.Fatal(err)
@@ -89,6 +91,12 @@ func TestFile02X05DedicatedAppProcesses(t *testing.T) {
 		}
 		seenPID[cmd.Process.Pid] = true
 	}
+	observationPlan := plan
+	observationPlan.Events = []load.PlannedTx{validEvent}
+	observationStop := make(chan struct{})
+	observations := make(chan []s07CommitObservation, 1)
+	go file02ObserveCommitsByBlock(pilot, observationPlan, observationStop, observations)
+	t.Cleanup(func() { close(observationStop) })
 	admission, err := pilot.n.broadcast(valid)
 	if err != nil || admission.Result.CheckTx.Code != 0 || admission.Result.TxResult.Code != 0 {
 		t.Fatalf("valid H transaction failed: %v check=%d deliver=%d", err,
@@ -99,6 +107,25 @@ func TestFile02X05DedicatedAppProcesses(t *testing.T) {
 		t.Fatalf("invalid commit height %q: %v", admission.Result.Height, err)
 	}
 	pilot.n.waitAll(height+1, 30*time.Second)
+	var observation s07CommitObservation
+	select {
+	case entries := <-observations:
+		if len(entries) != 1 {
+			t.Fatalf("expected one X08 per-validator observation, got %d", len(entries))
+		}
+		observation = entries[0]
+	case <-time.After(10 * time.Second):
+		t.Fatal("X08 per-validator observation timed out")
+	}
+	if observation.Height != height || observation.AllFourSeenMonotonicNS == nil {
+		t.Fatalf("wrong X08 observation height/timestamp: %+v", observation)
+	}
+	for i := 0; i < 4; i++ {
+		if observation.PerValidatorSeenUTC[i] == "" || observation.PerValidatorSeenMonotonicNS[i] <= 0 ||
+			observation.PerValidatorSeenMonotonicNS[i] > *observation.AllFourSeenMonotonicNS {
+			t.Fatalf("validator %d missing or late X08 observation", i)
+		}
+	}
 	var blockID, appHash string
 	for i := 0; i < 4; i++ {
 		id, hash, _, err := pilot.n.block(i, height)
@@ -155,7 +182,7 @@ func TestFile02X05DedicatedAppProcesses(t *testing.T) {
 			"schema": "pluto.file02.x05_process_qa.v1", "status": "PASS",
 			"topology":              "four_comet_plus_four_dedicated_app_processes_single_host_loopback",
 			"valid_h_commit_height": height, "block_id": blockID, "header_app_hash": appHash,
-			"processes": resources,
+			"processes": resources, "per_validator_observation": observation,
 		}
 		encoded, err := json.MarshalIndent(summary, "", "  ")
 		if err != nil {
