@@ -1,0 +1,109 @@
+{
+  "case_summaries": [
+    {
+      "case_id": "A01",
+      "ci95_fraction": [
+        0.0,
+        0.0
+      ],
+      "effect_fraction": 0.0,
+      "eligible_per_arm": 72,
+      "n_independent_pairs": 12,
+      "n_networks": 24,
+      "qc_status": "PASS",
+      "source_raw_manifest_sha256": "e8ea05c17bdb405e0339e895cd0f562a1c55ad7eae29745965fa54124f10c98a"
+    },
+    {
+      "case_id": "A02",
+      "ci95_fraction": [
+        0.0,
+        0.0
+      ],
+      "effect_fraction": 0.0,
+      "eligible_per_arm": 72,
+      "n_independent_pairs": 12,
+      "n_networks": 24,
+      "qc_status": "PASS",
+      "source_raw_manifest_sha256": "9acf1b51ac4e0e9ba7132730df35de0698e06cc4c84f904dc6890727ea71646d"
+    },
+    {
+      "case_id": "A03",
+      "ci95_fraction": [
+        0.0,
+        0.0
+      ],
+      "effect_fraction": 0.0,
+      "eligible_per_arm": 72,
+      "n_independent_pairs": 12,
+      "n_networks": 24,
+      "qc_status": "PASS",
+      "source_raw_manifest_sha256": "46855a3034478e02dc49e20d1815b4e47da18e21dd24fc95e92b0ad9f268c9a1"
+    },
+    {
+      "case_id": "A04",
+      "ci95_fraction": [
+        0.0,
+        0.0
+      ],
+      "effect_fraction": 0.0,
+      "eligible_per_arm": 72,
+      "n_independent_pairs": 12,
+      "n_networks": 24,
+      "qc_status": "PASS",
+      "source_raw_manifest_sha256": "41d2bf5bef4aef6cc3c01720710a80b84704952da2c6458e3c0f68194c29c37d"
+    },
+    {
+      "case_id": "A05",
+      "ci95_fraction": [
+        0.0,
+        0.0
+      ],
+      "effect_fraction": 0.0,
+      "eligible_per_arm": 72,
+      "n_independent_pairs": 12,
+      "n_networks": 24,
+      "qc_status": "PASS",
+      "source_raw_manifest_sha256": "b90bc2b95ac43388d9d7db8e85cfa3a2dc052258c421623a56cbe2d1ccc1026b"
+    },
+    {
+      "case_id": "A08",
+      "ci95_fraction": [
+        0.0,
+        0.0
+      ],
+      "effect_fraction": 0.0,
+      "eligible_per_arm": 72,
+      "n_independent_pairs": 12,
+      "n_networks": 24,
+      "qc_status": "PASS",
+      "source_raw_manifest_sha256": "18eed7952c91b5cff08a418055a0a742ffaeb3f70e06f94f115f4e99e5ad8b4d"
+    },
+    {
+      "case_id": "A13",
+      "ci95_fraction": [
+        0.0,
+        0.0
+      ],
+      "effect_fraction": 0.0,
+      "eligible_per_arm": 36,
+      "n_independent_pairs": 4,
+      "n_networks": 8,
+      "qc_status": "PASS",
+      "source_raw_manifest_sha256": "6892315cdc842ad0539b78d4dfe5a1c73b1863c49155319bdebf62cddb2dbb61"
+    }
+  ],
+  "endpoint": "fixed_legitimate_all_four_observed_within_3000ms_fraction",
+  "excluded_cases": {
+    "A06": "replay mechanism; no fixed legitimate benign service contrast",
+    "A07": "valid-only load; no invalid background",
+    "A14": "process fault; no invalid background"
+  },
+  "failed_or_excluded_pairs": [],
+  "n_cases": 7,
+  "n_networks": 152,
+  "n_pairs": 76,
+  "pooled_ci95": null,
+  "pooled_ci_status": "NOT_ESTIMATED_ATTACK_FAMILY_HETEROGENEITY",
+  "schema": "pluto.file02.q01.summary.v1",
+  "status": "PASS"
+}

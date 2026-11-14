@@ -15,7 +15,7 @@ project:
   research_v2_s07_status: owner_merged_pr20_e0bcd9e_bounded_qa_only
   file02_common_status: owner_accepted_pre_case_readiness_2026_11_13
   file02_section2_status: pre_case_contract_accepted_case_outputs_pending
-  file02_rq1b_status: separate_question_owner_directed_case_parameters_pending
+  file02_rq1b_status: separate_question_bounded_negative_single_host_rpc_endpoint_quality_review_pending
   file02_t_group_status: T01_to_T07_owner_conditional_accept_pre_case_2026_11_13
   file02_rq1_rq1b_status: rq1_gate_owner_accepted_bounded_2026_11_13_rq1b_separate
   file02_r_group_status: eight_pass_six_partial_two_unsupported_owner_accepted_bounded
@@ -30,8 +30,13 @@ project:
   file02_tested_pilot_tx_s: [2, 6, 12, 20, 23, 25]
   file02_knee_levels: not_observed_within_safe_range
   refactor_status: owner_merged_pr18_e8f20726_controller_conditional_accept_postmerge_ci_pass
-  file02_a_group_status: A01_to_A14_engineering_disposition_11_pass_2_partial_1_unsupported_gate_review_pending
-  active_authorization: file02_A01_A14_bounded_execution_2026_11_14
+  file02_a_group_status: owner_accepted_bounded_11_pass_2_partial_1_unsupported_2026_11_14
+  file02_a_merge_commit: 2b453b3c14c410545d5699e03cff90d0eb21d63e
+  file02_q_group_status: five_pass_two_partial_engineering_disposition_controller_owner_review_pending
+  file02_q_gate_status: pending_controller_owner_review_no_automatic_D_authority
+  file02_q_base_commit: 2b453b3c14c410545d5699e03cff90d0eb21d63e
+  file02_q_result_branch: research/file02-q01-q07
+  active_authorization: file02_Q01_Q07_quality_control_2026_11_14
   baseline_branch: test-mainet
   baseline_commit: e0bcd9e0f903a2e807a3d28adc5554dffa48e1f1
   baseline_tree: 71d03c1d083724b1bba73e62b024766cfaaedc5a

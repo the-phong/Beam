@@ -1,0 +1,587 @@
+{
+  "a_case_results": [
+    {
+      "case_id": "A01",
+      "ci95_fraction": [
+        0.0,
+        0.0
+      ],
+      "first_condition_counts": {
+        "attack": 6,
+        "benign": 6
+      },
+      "leave_one_pair_out_mean_range_fraction": [
+        0.0,
+        0.0
+      ],
+      "mean_by_first_condition_fraction": {
+        "attack": 0.0,
+        "benign": 0.0
+      },
+      "mean_effect_fraction": 0.0,
+      "n_independent_pairs": 12,
+      "pair_run_ids": [
+        [
+          "A01-p00-benign",
+          "A01-p00-attack"
+        ],
+        [
+          "A01-p01-benign",
+          "A01-p01-attack"
+        ],
+        [
+          "A01-p02-benign",
+          "A01-p02-attack"
+        ],
+        [
+          "A01-p03-benign",
+          "A01-p03-attack"
+        ],
+        [
+          "A01-p04-benign",
+          "A01-p04-attack"
+        ],
+        [
+          "A01-p05-benign",
+          "A01-p05-attack"
+        ],
+        [
+          "A01-p06-benign",
+          "A01-p06-attack"
+        ],
+        [
+          "A01-p07-benign",
+          "A01-p07-attack"
+        ],
+        [
+          "A01-p08-benign",
+          "A01-p08-attack"
+        ],
+        [
+          "A01-p09-benign",
+          "A01-p09-attack"
+        ],
+        [
+          "A01-p10-benign",
+          "A01-p10-attack"
+        ],
+        [
+          "A01-p11-benign",
+          "A01-p11-attack"
+        ]
+      ],
+      "seed_count": 12,
+      "source_raw_manifest_sha256": "e8ea05c17bdb405e0339e895cd0f562a1c55ad7eae29745965fa54124f10c98a"
+    },
+    {
+      "case_id": "A02",
+      "ci95_fraction": [
+        0.0,
+        0.0
+      ],
+      "first_condition_counts": {
+        "attack": 6,
+        "benign": 6
+      },
+      "leave_one_pair_out_mean_range_fraction": [
+        0.0,
+        0.0
+      ],
+      "mean_by_first_condition_fraction": {
+        "attack": 0.0,
+        "benign": 0.0
+      },
+      "mean_effect_fraction": 0.0,
+      "n_independent_pairs": 12,
+      "pair_run_ids": [
+        [
+          "A02-p00-benign",
+          "A02-p00-attack"
+        ],
+        [
+          "A02-p01-benign",
+          "A02-p01-attack"
+        ],
+        [
+          "A02-p02-benign",
+          "A02-p02-attack"
+        ],
+        [
+          "A02-p03-benign",
+          "A02-p03-attack"
+        ],
+        [
+          "A02-p04-benign",
+          "A02-p04-attack"
+        ],
+        [
+          "A02-p05-benign",
+          "A02-p05-attack"
+        ],
+        [
+          "A02-p06-benign",
+          "A02-p06-attack"
+        ],
+        [
+          "A02-p07-benign",
+          "A02-p07-attack"
+        ],
+        [
+          "A02-p08-benign",
+          "A02-p08-attack"
+        ],
+        [
+          "A02-p09-benign",
+          "A02-p09-attack"
+        ],
+        [
+          "A02-p10-benign",
+          "A02-p10-attack"
+        ],
+        [
+          "A02-p11-benign",
+          "A02-p11-attack"
+        ]
+      ],
+      "seed_count": 12,
+      "source_raw_manifest_sha256": "9acf1b51ac4e0e9ba7132730df35de0698e06cc4c84f904dc6890727ea71646d"
+    },
+    {
+      "case_id": "A03",
+      "ci95_fraction": [
+        0.0,
+        0.0
+      ],
+      "first_condition_counts": {
+        "attack": 6,
+        "benign": 6
+      },
+      "leave_one_pair_out_mean_range_fraction": [
+        0.0,
+        0.0
+      ],
+      "mean_by_first_condition_fraction": {
+        "attack": 0.0,
+        "benign": 0.0
+      },
+      "mean_effect_fraction": 0.0,
+      "n_independent_pairs": 12,
+      "pair_run_ids": [
+        [
+          "A03-p00-benign",
+          "A03-p00-attack"
+        ],
+        [
+          "A03-p01-benign",
+          "A03-p01-attack"
+        ],
+        [
+          "A03-p02-benign",
+          "A03-p02-attack"
+        ],
+        [
+          "A03-p03-benign",
+          "A03-p03-attack"
+        ],
+        [
+          "A03-p04-benign",
+          "A03-p04-attack"
+        ],
+        [
+          "A03-p05-benign",
+          "A03-p05-attack"
+        ],
+        [
+          "A03-p06-benign",
+          "A03-p06-attack"
+        ],
+        [
+          "A03-p07-benign",
+          "A03-p07-attack"
+        ],
+        [
+          "A03-p08-benign",
+          "A03-p08-attack"
+        ],
+        [
+          "A03-p09-benign",
+          "A03-p09-attack"
+        ],
+        [
+          "A03-p10-benign",
+          "A03-p10-attack"
+        ],
+        [
+          "A03-p11-benign",
+          "A03-p11-attack"
+        ]
+      ],
+      "seed_count": 12,
+      "source_raw_manifest_sha256": "46855a3034478e02dc49e20d1815b4e47da18e21dd24fc95e92b0ad9f268c9a1"
+    },
+    {
+      "case_id": "A04",
+      "ci95_fraction": [
+        0.0,
+        0.0
+      ],
+      "first_condition_counts": {
+        "attack": 6,
+        "benign": 6
+      },
+      "leave_one_pair_out_mean_range_fraction": [
+        0.0,
+        0.0
+      ],
+      "mean_by_first_condition_fraction": {
+        "attack": 0.0,
+        "benign": 0.0
+      },
+      "mean_effect_fraction": 0.0,
+      "n_independent_pairs": 12,
+      "pair_run_ids": [
+        [
+          "A04-p00-benign",
+          "A04-p00-attack"
+        ],
+        [
+          "A04-p01-benign",
+          "A04-p01-attack"
+        ],
+        [
+          "A04-p02-benign",
+          "A04-p02-attack"
+        ],
+        [
+          "A04-p03-benign",
+          "A04-p03-attack"
+        ],
+        [
+          "A04-p04-benign",
+          "A04-p04-attack"
+        ],
+        [
+          "A04-p05-benign",
+          "A04-p05-attack"
+        ],
+        [
+          "A04-p06-benign",
+          "A04-p06-attack"
+        ],
+        [
+          "A04-p07-benign",
+          "A04-p07-attack"
+        ],
+        [
+          "A04-p08-benign",
+          "A04-p08-attack"
+        ],
+        [
+          "A04-p09-benign",
+          "A04-p09-attack"
+        ],
+        [
+          "A04-p10-benign",
+          "A04-p10-attack"
+        ],
+        [
+          "A04-p11-benign",
+          "A04-p11-attack"
+        ]
+      ],
+      "seed_count": 12,
+      "source_raw_manifest_sha256": "41d2bf5bef4aef6cc3c01720710a80b84704952da2c6458e3c0f68194c29c37d"
+    },
+    {
+      "case_id": "A05",
+      "ci95_fraction": [
+        0.0,
+        0.0
+      ],
+      "first_condition_counts": {
+        "attack": 6,
+        "benign": 6
+      },
+      "leave_one_pair_out_mean_range_fraction": [
+        0.0,
+        0.0
+      ],
+      "mean_by_first_condition_fraction": {
+        "attack": 0.0,
+        "benign": 0.0
+      },
+      "mean_effect_fraction": 0.0,
+      "n_independent_pairs": 12,
+      "pair_run_ids": [
+        [
+          "A05-p00-benign",
+          "A05-p00-attack"
+        ],
+        [
+          "A05-p01-benign",
+          "A05-p01-attack"
+        ],
+        [
+          "A05-p02-benign",
+          "A05-p02-attack"
+        ],
+        [
+          "A05-p03-benign",
+          "A05-p03-attack"
+        ],
+        [
+          "A05-p04-benign",
+          "A05-p04-attack"
+        ],
+        [
+          "A05-p05-benign",
+          "A05-p05-attack"
+        ],
+        [
+          "A05-p06-benign",
+          "A05-p06-attack"
+        ],
+        [
+          "A05-p07-benign",
+          "A05-p07-attack"
+        ],
+        [
+          "A05-p08-benign",
+          "A05-p08-attack"
+        ],
+        [
+          "A05-p09-benign",
+          "A05-p09-attack"
+        ],
+        [
+          "A05-p10-benign",
+          "A05-p10-attack"
+        ],
+        [
+          "A05-p11-benign",
+          "A05-p11-attack"
+        ]
+      ],
+      "seed_count": 12,
+      "source_raw_manifest_sha256": "b90bc2b95ac43388d9d7db8e85cfa3a2dc052258c421623a56cbe2d1ccc1026b"
+    },
+    {
+      "case_id": "A08",
+      "ci95_fraction": [
+        0.0,
+        0.0
+      ],
+      "first_condition_counts": {
+        "attack": 6,
+        "benign": 6
+      },
+      "leave_one_pair_out_mean_range_fraction": [
+        0.0,
+        0.0
+      ],
+      "mean_by_first_condition_fraction": {
+        "attack": 0.0,
+        "benign": 0.0
+      },
+      "mean_effect_fraction": 0.0,
+      "n_independent_pairs": 12,
+      "pair_run_ids": [
+        [
+          "A08-p00-benign",
+          "A08-p00-attack"
+        ],
+        [
+          "A08-p01-benign",
+          "A08-p01-attack"
+        ],
+        [
+          "A08-p02-benign",
+          "A08-p02-attack"
+        ],
+        [
+          "A08-p03-benign",
+          "A08-p03-attack"
+        ],
+        [
+          "A08-p04-benign",
+          "A08-p04-attack"
+        ],
+        [
+          "A08-p05-benign",
+          "A08-p05-attack"
+        ],
+        [
+          "A08-p06-benign",
+          "A08-p06-attack"
+        ],
+        [
+          "A08-p07-benign",
+          "A08-p07-attack"
+        ],
+        [
+          "A08-p08-benign",
+          "A08-p08-attack"
+        ],
+        [
+          "A08-p09-benign",
+          "A08-p09-attack"
+        ],
+        [
+          "A08-p10-benign",
+          "A08-p10-attack"
+        ],
+        [
+          "A08-p11-benign",
+          "A08-p11-attack"
+        ]
+      ],
+      "seed_count": 12,
+      "source_raw_manifest_sha256": "18eed7952c91b5cff08a418055a0a742ffaeb3f70e06f94f115f4e99e5ad8b4d"
+    },
+    {
+      "case_id": "A13",
+      "ci95_fraction": [
+        0.0,
+        0.0
+      ],
+      "first_condition_counts": {
+        "attack": 2,
+        "benign": 2
+      },
+      "leave_one_pair_out_mean_range_fraction": [
+        0.0,
+        0.0
+      ],
+      "mean_by_first_condition_fraction": {
+        "attack": 0.0,
+        "benign": 0.0
+      },
+      "mean_effect_fraction": 0.0,
+      "n_independent_pairs": 4,
+      "pair_run_ids": [
+        [
+          "A13-b00-benign",
+          "A13-b00-attack"
+        ],
+        [
+          "A13-b01-benign",
+          "A13-b01-attack"
+        ],
+        [
+          "A13-b02-benign",
+          "A13-b02-attack"
+        ],
+        [
+          "A13-b03-benign",
+          "A13-b03-attack"
+        ]
+      ],
+      "seed_count": 4,
+      "source_raw_manifest_sha256": "6892315cdc842ad0539b78d4dfe5a1c73b1863c49155319bdebf62cddb2dbb61"
+    }
+  ],
+  "cross_session_A01_vs_Q02_H": {
+    "a01_effect_fraction": 0.0,
+    "comparison": "same_20_tx_s_structural_invalid_H_endpoint",
+    "limit": "different fixture seeds and sessions on same physical host",
+    "pooled_ci95": null,
+    "q02_h_effect_fraction": 0.0
+  },
+  "endpoint": "fixed_legitimate_all_four_observed_within_3000ms_fraction",
+  "equivalence_status": "NOT_ESTABLISHED_CEILING_LIMITED_ENDPOINT",
+  "failed_excluded_rerun_log": [
+    {
+      "raw_manifest_sha256": "0308674aaf4695c5e8261bf6be0034004f6adca1376f67d4a8a264ecf29cdb0b",
+      "session": "q02-20261114T024019Z-8ccd9928",
+      "status": "INVALID_FOR_INFERENCE_PRE_SEND_STALE_OBSERVER",
+      "used_in_inference": false
+    },
+    {
+      "raw_manifest_sha256": "9098dc2f0c3700e11c6477ae50a17c2cd45f5e6ebe2a7c063af49be695705f95",
+      "session": "q02-20261114T025508Z-a4b258cb",
+      "status": "TECHNICAL_QC_PASS_SUPERSEDED_PROFILE_ORDER_CONFOUND",
+      "used_in_inference": false
+    },
+    {
+      "raw_manifest_sha256": "58265e00a8c0fc08a37cb4e2935633d85304a1e70d32142df5d9eaa4d1180f3f",
+      "session": "q02-20261114T044327Z-e7f236e2",
+      "status": "COMPLETE_NEW_FULL_SCHEDULE",
+      "used_in_inference": true
+    }
+  ],
+  "host_replication_status": "UNAVAILABLE_NO_SECOND_PHYSICAL_HOST",
+  "q02_h_structural_replication": {
+    "ci95_fraction": [
+      0.0,
+      0.0
+    ],
+    "first_condition_counts": {
+      "attack": 6,
+      "benign": 6
+    },
+    "leave_one_pair_out_mean_range_fraction": [
+      0.0,
+      0.0
+    ],
+    "mean_by_first_condition_fraction": {
+      "attack": 0.0,
+      "benign": 0.0
+    },
+    "mean_effect_fraction": 0.0,
+    "n_independent_pairs": 12,
+    "pair_run_ids": [
+      [
+        "Q02-b00-H-benign",
+        "Q02-b00-H-attack"
+      ],
+      [
+        "Q02-b01-H-benign",
+        "Q02-b01-H-attack"
+      ],
+      [
+        "Q02-b02-H-benign",
+        "Q02-b02-H-attack"
+      ],
+      [
+        "Q02-b03-H-benign",
+        "Q02-b03-H-attack"
+      ],
+      [
+        "Q02-b04-H-benign",
+        "Q02-b04-H-attack"
+      ],
+      [
+        "Q02-b05-H-benign",
+        "Q02-b05-H-attack"
+      ],
+      [
+        "Q02-b06-H-benign",
+        "Q02-b06-H-attack"
+      ],
+      [
+        "Q02-b07-H-benign",
+        "Q02-b07-H-attack"
+      ],
+      [
+        "Q02-b08-H-benign",
+        "Q02-b08-H-attack"
+      ],
+      [
+        "Q02-b09-H-benign",
+        "Q02-b09-H-attack"
+      ],
+      [
+        "Q02-b10-H-benign",
+        "Q02-b10-H-attack"
+      ],
+      [
+        "Q02-b11-H-benign",
+        "Q02-b11-H-attack"
+      ]
+    ],
+    "seed_count": 12,
+    "source_raw_manifest_sha256": "58265e00a8c0fc08a37cb4e2935633d85304a1e70d32142df5d9eaa4d1180f3f"
+  },
+  "schema": "pluto.file02.q06.replication.v1",
+  "status": "PARTIAL_HOST_REPLICATION"
+}
