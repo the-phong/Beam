@@ -1,5 +1,16 @@
 # Phase status — 2026-11-14
 
+## Current mechanism/service extension authority
+
+[D-045](DECISIONS.md) opens one X01–X18 program on
+`research/file02-mechanism-service` from PR #28 merge
+`da46f0cc4f87548825d9768d9242e346c17bb137`. G00.1–G00.4 are
+completed in the outside master checklist; PR #28 merged after four
+final-head checks and 31 unchanged private raw manifests. The X study must
+lock estimands, controls, precision and per-case QC before new runs, preserve
+RQ1/RQ1b historical results and S06 caps, and report unsupported measures
+as unavailable. D/ML remain closed.
+
 ## Delegated Gate QUALITY closeout and bounded X authority
 
 Under [D-044](DECISIONS.md), the Owner delegated autonomous G00.1–G00.4

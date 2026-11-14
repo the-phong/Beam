@@ -36,7 +36,9 @@ project:
   file02_q_gate_status: D044_delegated_bounded_acceptance_five_pass_two_partial_no_D_authority
   file02_q_base_commit: 2b453b3c14c410545d5699e03cff90d0eb21d63e
   file02_q_result_branch: research/file02-q01-q07
-  active_authorization: file02_G00_closeout_then_X_extension_2026_11_14
+  file02_q_merge_commit: da46f0cc4f87548825d9768d9242e346c17bb137
+  file02_x_extension_decision: D045_bounded_mechanism_service_2026_11_14
+  active_authorization: file02_X01_X18_bounded_mechanism_service_2026_11_14
   baseline_branch: test-mainet
   baseline_commit: e0bcd9e0f903a2e807a3d28adc5554dffa48e1f1
   baseline_tree: 71d03c1d083724b1bba73e62b024766cfaaedc5a
