@@ -60,6 +60,7 @@ type Plan struct {
 	TargetBytesPS    float64            `json:"target_bytes_per_second"`
 	TargetLegitTPS   float64            `json:"target_legitimate_tx_per_second"`
 	TargetInvalidTPS float64            `json:"target_invalid_tx_per_second"`
+	ReplayMode       bool               `json:"replay_mode,omitempty"`
 	Events           []PlannedTx        `json:"events"`
 }
 
@@ -110,8 +111,12 @@ func (p Plan) Validate(c Config, configHash string) error {
 	if p.Version != 1 || !runIDPattern.MatchString(p.RunID) || !validHash(p.ConfigSHA256) || p.ConfigSHA256 != configHash || !validHash(p.GenesisSHA256) || !p.Profile.Valid() ||
 		p.WarmupNS < 0 || p.SteadyNS < int64(time.Second) || p.DrainNS < 0 || p.WindowNS != int64(time.Second) || p.WarmupNS%p.WindowNS != 0 || p.SteadyNS%p.WindowNS != 0 ||
 		p.WarmupNS > maxDuration || p.SteadyNS > maxDuration-p.WarmupNS || p.DrainNS > maxDuration-p.WarmupNS-p.SteadyNS || len(p.Events) < 1 || len(p.Events) > 6000 ||
-		(p.Waveform != "constant" && p.Waveform != "burst" && p.Waveform != "ramp") || (p.Regime != EqualTxRate && p.Regime != EqualByteRate && p.Regime != FixedLegitimatePlusAdversary) ||
-		(p.Waveform == "ramp" && p.Regime != EqualTxRate) {
+		(p.Waveform != "constant" && p.Waveform != "burst" && p.Waveform != "ramp" && p.Waveform != "step") || (p.Regime != EqualTxRate && p.Regime != EqualByteRate && p.Regime != FixedLegitimatePlusAdversary) ||
+		(p.Waveform == "ramp" && p.Regime != EqualTxRate) ||
+		(p.Waveform == "step" && (len(p.RunID) < 4 || p.RunID[:4] != "A13-" || p.Regime != EqualTxRate)) {
+		return ErrPlan
+	}
+	if p.ReplayMode && (len(p.RunID) < 4 || p.RunID[:4] != "A06-" || p.Profile != researchv2.ProfileH || p.Regime != EqualTxRate || p.Waveform != "constant") {
 		return ErrPlan
 	}
 	if p.Regime == EqualTxRate && (p.TargetTxPS <= 0 || p.TargetBytesPS != 0 || p.TargetLegitTPS != 0 || p.TargetInvalidTPS != 0) ||
@@ -121,6 +126,7 @@ func (p Plan) Validate(c Config, configHash string) error {
 	}
 	seenID := map[string]bool{}
 	seenHash := map[string]bool{}
+	firstHashEvent := map[string]PlannedTx{}
 	seenLegitSlot := map[int]bool{}
 	windowCount := map[int64]int{}
 	windowBytes := map[int64]int{}
@@ -128,10 +134,15 @@ func (p Plan) Validate(c Config, configHash string) error {
 	var previous int64 = -1
 	endSend := p.WarmupNS + p.SteadyNS
 	for _, e := range p.Events {
-		if !runIDPattern.MatchString(e.ID) || seenID[e.ID] || !validHash(e.SHA256) || seenHash[e.SHA256] || e.OffsetNS < 0 || e.OffsetNS < previous || e.OffsetNS >= endSend ||
+		first := firstHashEvent[e.SHA256]
+		repeated := seenHash[e.SHA256]
+		allowedReplay := p.ReplayMode && repeated && first.Traffic == "adversarial" && e.Traffic == "adversarial" &&
+			first.Scenario == e.Scenario && first.AccountSlot == e.AccountSlot && first.ExpectedCode == e.ExpectedCode &&
+			first.Capability == e.Capability && (e.Scenario == "A06_valid_replay" || e.Scenario == "A06_bad_secp_repeated")
+		if !runIDPattern.MatchString(e.ID) || seenID[e.ID] || !validHash(e.SHA256) || repeated && !allowedReplay || e.OffsetNS < 0 || e.OffsetNS < previous || e.OffsetNS >= endSend ||
 			e.Source != "rpc" || e.AccountSlot < 0 || (e.Traffic != "legitimate" && e.Traffic != "adversarial") || e.Scenario == "" || e.Capability == "" ||
 			(e.Traffic == "legitimate" && (e.ExpectedCode != researchv2.CodeOK || e.Nonce != 0 || seenLegitSlot[e.AccountSlot])) ||
-			(e.Traffic == "adversarial" && e.ExpectedCode == researchv2.CodeOK) {
+			(e.Traffic == "adversarial" && e.ExpectedCode == researchv2.CodeOK && !(p.ReplayMode && e.Scenario == "A06_valid_replay")) {
 			return fmt.Errorf("%w: event metadata", ErrPlan)
 		}
 		raw, err := hex.DecodeString(e.BytesHex)
@@ -150,6 +161,9 @@ func (p Plan) Validate(c Config, configHash string) error {
 			return fmt.Errorf("%w: malformed event classification", ErrPlan)
 		}
 		seenID[e.ID], seenHash[e.SHA256] = true, true
+		if !repeated {
+			firstHashEvent[e.SHA256] = e
+		}
 		if e.Traffic == "legitimate" {
 			seenLegitSlot[e.AccountSlot] = true
 		}
@@ -178,7 +192,7 @@ func (p Plan) Validate(c Config, configHash string) error {
 		ratio := float64(actual) / (target * seconds)
 		return ratio >= .95 && ratio <= 1.05
 	}
-	if p.Waveform == "constant" || p.Waveform == "ramp" {
+	if p.Waveform == "constant" || p.Waveform == "ramp" || p.Waveform == "step" {
 		switch p.Regime {
 		case EqualTxRate:
 			if !within(steadyCount, p.TargetTxPS) {

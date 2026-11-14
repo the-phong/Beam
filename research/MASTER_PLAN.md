@@ -1,5 +1,14 @@
 # Pluto research master plan
 
+**Current section 5 status (2026-11-14):** The Owner authorized
+Checklist 02 A01–A14 in order after [PR #26](https://github.com/the-phong/Beam/pull/26)
+merged Gate RQ1 closeout. [D-042](DECISIONS.md) sets the bounded scope.
+The [engineering closeout](evidence/file02/ATTACK_GROUP_ENGINEERING_CLOSEOUT_20261114.md)
+records eleven PASS, two PARTIAL and one UNSUPPORTED case, each with an
+evidenced disposition. Gate ATTACK is pending review; the three incomplete
+boxes remain open. No Q/D group, ML training, DoS conclusion or safety-cap
+increase follows. The Gate RQ1 acceptance below is the research baseline.
+
 **Current File 02 status (2026-11-13):** [D-041](DECISIONS.md) records
 Owner acceptance of the bounded R01–R16 disposition, integrated by
 [PR #25](https://github.com/the-phong/Beam/pull/25). Eight cases are PASS,
@@ -8,7 +17,8 @@ accepts H-minus-CP +81.47 microseconds/transaction only in the tested
 single-host RPC stratum; the RQ1 hypothesis is unchanged and RQ1b remains
 separate. No defensible knee was observed within 25 tx/s. No DoS,
 distributed-network behavior or sustainable throughput conclusion is
-accepted. A/Q/D cases and ML training require separate authorization.
+accepted. At the time of D-041, A/Q/D cases and ML training required
+separate authorization; D-042 later opened A01–A14 only.
 Later paragraphs retain their original historical status.
 
 **Historical authorization (2026-11-12):** After the Owner merged S07 PR #20

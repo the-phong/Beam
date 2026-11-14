@@ -1,6 +1,27 @@
 # Pluto agent execution contract
 
-## Current authority — Gate RQ1 bounded Owner acceptance (2026-11-13)
+## Current authority — Checklist 02 section 5, A01–A14 (2026-11-14)
+
+The Owner confirmed PR #26 is merged and explicitly authorized implementation
+and completion of all section 5 attack-workload cases in checklist order.
+The engineering disposition now records eleven bounded PASS, two PARTIAL and
+one UNSUPPORTED case; Gate ATTACK awaits Controller/Owner review. This
+engineering completion does not self-accept the Gate.
+This supersedes the former prohibition on opening the A group, but does not
+authorize Q/D cases, ML training, a DoS claim, higher S06 safety caps or a
+change to accepted RQ1/RQ1b protocol semantics. Keep the fixed legitimate
+stream and matched benign controls; lock each case's workload, rates, source,
+topology, QC and confidence procedure before confirmatory sends. Execute
+only controlled single-host loopback/private targets unless a case has
+separately verified source/topology capability. Preserve historical raw,
+accepted protocol, private keys and unrelated work. Tick only cases with
+verified evidence. Where a required capability is absent or a measurement
+cannot be obtained within accepted limits, record PARTIAL/UNSUPPORTED with
+specific evidence and leave its box open. Submit changes for Owner review on
+a new branch from the PR #26 merged `test-mainet` head; do not merge without
+a separate Owner instruction. The Gate RQ1 acceptance below is historical.
+
+## Historical authority — Gate RQ1 bounded Owner acceptance (2026-11-13)
 
 The Owner accepted Checklist 02 R01–R16 with eight PASS, six PARTIAL and
 two UNSUPPORTED dispositions after PR #25 merged the R result tree into

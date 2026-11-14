@@ -14,14 +14,20 @@ import (
 	"net/url"
 	"regexp"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
+
+	"golang.org/x/sys/unix"
 )
 
 var mempoolFullPattern = regexp.MustCompile(`mempool is full: number of txs ([0-9]+) \(max: ([0-9]+)\), total txs bytes ([0-9]+) \(max: ([0-9]+)\)`)
 var txTooLargePattern = regexp.MustCompile(`Tx too large\. Max size is ([0-9]+), but got ([0-9]+)`)
 
 func classifyRPCAdmission(message string, nextTxBytes int) string {
+	if strings.Contains(message, "tx already exists in cache") {
+		return "duplicate_cache"
+	}
 	if parts := txTooLargePattern.FindStringSubmatch(message); len(parts) == 3 {
 		max, _ := strconv.Atoi(parts[1])
 		actual, _ := strconv.Atoi(parts[2])
@@ -58,11 +64,12 @@ const (
 )
 
 type SendResult struct {
-	WrittenAt time.Time
-	Completed time.Time
-	Code      *uint32
-	Reason    string
-	Err       error
+	WrittenAt          time.Time
+	WrittenMonotonicNS int64
+	Completed          time.Time
+	Code               *uint32
+	Reason             string
+	Err                error
 }
 
 type Sender interface {
@@ -78,19 +85,20 @@ type GuardFunc func(context.Context) error
 func (f GuardFunc) Check(ctx context.Context) error { return f(ctx) }
 
 type EventResult struct {
-	ID              string  `json:"id"`
-	Traffic         string  `json:"traffic"`
-	Source          string  `json:"source"`
-	PlannedUTC      string  `json:"planned_utc"`
-	ActualSendUTC   *string `json:"actual_send_utc"`
-	CompletedUTC    *string `json:"completed_utc"`
-	PlannedOffsetNS int64   `json:"planned_offset_ns"`
-	ActualOffsetNS  *int64  `json:"actual_offset_ns"`
-	WireBytes       int     `json:"wire_bytes"`
-	ExpectedCode    uint32  `json:"expected_code"`
-	ActualCode      *uint32 `json:"actual_code"`
-	Reason          string  `json:"reason"`
-	SubmissionError string  `json:"submission_error,omitempty"`
+	ID                    string  `json:"id"`
+	Traffic               string  `json:"traffic"`
+	Source                string  `json:"source"`
+	PlannedUTC            string  `json:"planned_utc"`
+	ActualSendUTC         *string `json:"actual_send_utc"`
+	ActualSendMonotonicNS *int64  `json:"actual_send_monotonic_ns,omitempty"`
+	CompletedUTC          *string `json:"completed_utc"`
+	PlannedOffsetNS       int64   `json:"planned_offset_ns"`
+	ActualOffsetNS        *int64  `json:"actual_offset_ns"`
+	WireBytes             int     `json:"wire_bytes"`
+	ExpectedCode          uint32  `json:"expected_code"`
+	ActualCode            *uint32 `json:"actual_code"`
+	Reason                string  `json:"reason"`
+	SubmissionError       string  `json:"submission_error,omitempty"`
 }
 
 type Result struct {
@@ -143,12 +151,16 @@ func (s *HTTPSender) Send(ctx context.Context, raw []byte) SendResult {
 		return SendResult{Err: err}
 	}
 	var written time.Time
+	var writtenMonotonicNS int64
 	var writtenMu sync.Mutex
 	request = request.WithContext(httptrace.WithClientTrace(request.Context(), &httptrace.ClientTrace{
 		WroteRequest: func(info httptrace.WroteRequestInfo) {
 			if info.Err == nil {
+				var stamp unix.Timespec
+				_ = unix.ClockGettime(unix.CLOCK_MONOTONIC, &stamp)
 				writtenMu.Lock()
 				written = time.Now()
+				writtenMonotonicNS = stamp.Nano()
 				writtenMu.Unlock()
 			}
 		},
@@ -157,9 +169,10 @@ func (s *HTTPSender) Send(ctx context.Context, raw []byte) SendResult {
 	completed := time.Now()
 	writtenMu.Lock()
 	wroteAt := written
+	wroteMonotonicNS := writtenMonotonicNS
 	writtenMu.Unlock()
 	if err != nil {
-		return SendResult{WrittenAt: wroteAt, Completed: completed, Err: err}
+		return SendResult{WrittenAt: wroteAt, WrittenMonotonicNS: wroteMonotonicNS, Completed: completed, Err: err}
 	}
 	defer response.Body.Close()
 	// This bounded decoder exports only an application code and a fixed reason.
@@ -173,19 +186,19 @@ func (s *HTTPSender) Send(ctx context.Context, raw []byte) SendResult {
 		} `json:"error"`
 	}
 	if err := decodeBoundedJSON(response.Body, &wire); err != nil {
-		return SendResult{WrittenAt: wroteAt, Completed: completed, Reason: "rpc_response_invalid", Err: err}
+		return SendResult{WrittenAt: wroteAt, WrittenMonotonicNS: wroteMonotonicNS, Completed: completed, Reason: "rpc_response_invalid", Err: err}
 	}
 	if response.StatusCode != http.StatusOK {
-		return SendResult{WrittenAt: wroteAt, Completed: completed, Reason: classifyRPCAdmission(wire.Error.Message+" "+wire.Error.Data, len(raw)), Err: fmt.Errorf("RPC HTTP %d", response.StatusCode)}
+		return SendResult{WrittenAt: wroteAt, WrittenMonotonicNS: wroteMonotonicNS, Completed: completed, Reason: classifyRPCAdmission(wire.Error.Message+" "+wire.Error.Data, len(raw)), Err: fmt.Errorf("RPC HTTP %d", response.StatusCode)}
 	}
 	if wire.Result.Code == nil {
 		reason := classifyRPCAdmission(wire.Error.Message+" "+wire.Error.Data, len(raw))
 		if reason == "rpc_reject" {
 			reason = "rpc_code_missing"
 		}
-		return SendResult{WrittenAt: wroteAt, Completed: completed, Reason: reason, Err: errors.New("missing CheckTx code")}
+		return SendResult{WrittenAt: wroteAt, WrittenMonotonicNS: wroteMonotonicNS, Completed: completed, Reason: reason, Err: errors.New("missing CheckTx code")}
 	}
-	return SendResult{WrittenAt: wroteAt, Completed: completed, Code: wire.Result.Code, Reason: "app_code"}
+	return SendResult{WrittenAt: wroteAt, WrittenMonotonicNS: wroteMonotonicNS, Completed: completed, Code: wire.Result.Code, Reason: "app_code"}
 }
 
 func decodeBoundedJSON(input io.Reader, target any) error {
@@ -326,6 +339,10 @@ func Run(parent context.Context, p Plan, c Config, configHash, planHash string, 
 			actualUTC := sent.WrittenAt.UTC().Format(time.RFC3339Nano)
 			actualOffset := sent.WrittenAt.Sub(start).Nanoseconds()
 			e.ActualSendUTC, e.ActualOffsetNS = &actualUTC, &actualOffset
+			if sent.WrittenMonotonicNS > 0 {
+				stamp := sent.WrittenMonotonicNS
+				e.ActualSendMonotonicNS = &stamp
+			}
 			e.ActualCode = sent.Code
 			e.Reason = sent.Reason
 			result.ActualSendCount++
@@ -433,7 +450,7 @@ func rateQuality(p Plan, actual []EventResult) error {
 		if actualByWindow[window] < int(.9*float64(expected)+.999999) {
 			return fmt.Errorf("steady window %d below 90%% of planned sends", window)
 		}
-		if (p.Waveform == "burst" || p.Waveform == "ramp") && actualByWindow[window] > int(1.1*float64(expected)) {
+		if (p.Waveform == "burst" || p.Waveform == "ramp" || p.Waveform == "step") && actualByWindow[window] > int(1.1*float64(expected)) {
 			return fmt.Errorf("scheduled window %d exceeds planned send count", window)
 		}
 		if p.Regime == FixedLegitimatePlusAdversary {

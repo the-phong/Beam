@@ -258,22 +258,25 @@ func TestS07ReproSmoke(t *testing.T) {
 }
 
 type s07OracleRecord struct {
-	Schema          string `json:"schema"`
-	RunID           string `json:"run_id"`
-	Status          string `json:"status"`
-	ObservedUTC     string `json:"observed_utc"`
-	CommonHeight    int64  `json:"common_height"`
-	BlockID         string `json:"block_id"`
-	AppHash         string `json:"app_hash"`
-	ValidCommitted  int    `json:"valid_committed"`
-	InvalidRejected int    `json:"invalid_rejected"`
+	Schema                   string           `json:"schema"`
+	RunID                    string           `json:"run_id"`
+	Status                   string           `json:"status"`
+	ObservedUTC              string           `json:"observed_utc"`
+	CommonHeight             int64            `json:"common_height"`
+	BlockID                  string           `json:"block_id"`
+	AppHash                  string           `json:"app_hash"`
+	ValidCommitted           int              `json:"valid_committed"`
+	InvalidRejected          int              `json:"invalid_rejected"`
+	CommittedHashes          map[string]int   `json:"committed_hashes,omitempty"`
+	ValidatorCommittedHashes []map[string]int `json:"validator_committed_hashes,omitempty"`
 }
 
 type s07CommitObservation struct {
-	ID             string `json:"id"`
-	SHA256         string `json:"sha256"`
-	AllFourSeenUTC string `json:"all_four_seen_utc"`
-	Height         int64  `json:"height"`
+	ID                     string `json:"id"`
+	SHA256                 string `json:"sha256"`
+	AllFourSeenUTC         string `json:"all_four_seen_utc"`
+	AllFourSeenMonotonicNS *int64 `json:"all_four_seen_monotonic_ns,omitempty"`
+	Height                 int64  `json:"height"`
 }
 
 // Polling observes the first indexed result on each real validator. It is a

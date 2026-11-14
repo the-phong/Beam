@@ -12,6 +12,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"syscall"
 	"testing"
 	"time"
@@ -20,6 +21,16 @@ import (
 	researchv2 "example.com/pluto/internal/experiment/profiles"
 	"example.com/pluto/internal/experiment/telemetry"
 )
+
+func file02AttackCase(caseID any) bool {
+	id, ok := caseID.(string)
+	return ok && strings.HasPrefix(id, "A") && len(id) == 3 && (id >= "A01" && id <= "A05" || id == "A08")
+}
+
+func file02ReplayCase(caseID any) bool     { return caseID == "A06" }
+func file02ValidFloodCase(caseID any) bool { return caseID == "A07" }
+func file02DynamicsCase(caseID any) bool   { return caseID == "A13" }
+func file02FaultCase(caseID any) bool      { return caseID == "A14" }
 
 // file02ExecuteQA runs one pre-signed bounded plan on a fresh local network.
 // Only keyless run evidence is persisted under the caller's ignored root.
@@ -36,7 +47,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if err := load.WritePlan(planPath, plan, c, configHash); err != nil {
 		t.Fatal(err)
 	}
-	if metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
+	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || file02ValidFloodCase(metadata["case_id"]) || file02DynamicsCase(metadata["case_id"]) || file02FaultCase(metadata["case_id"]) || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
 		configBytes, err := os.ReadFile(configPath)
 		if err != nil {
 			t.Fatal(err)
@@ -53,7 +64,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if !ok {
 		scope = "QA_ONLY"
 	}
-	if scope != "QA_ONLY" && scope != "T_PREFLIGHT" && scope != "R_CONFIRMATORY" {
+	if scope != "QA_ONLY" && scope != "T_PREFLIGHT" && scope != "R_CONFIRMATORY" && scope != "A_CONFIRMATORY" {
 		t.Fatal("unsupported File 02 run scope")
 	}
 	metadata["scope"] = scope
@@ -66,7 +77,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 		t.Fatal(err)
 	}
 	pilot := startS06NetworkAt(t, c, fixture, profile, t.TempDir())
-	if metadata["case_id"] == "T05" || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
+	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || file02ValidFloodCase(metadata["case_id"]) || file02DynamicsCase(metadata["case_id"]) || file02FaultCase(metadata["case_id"]) || metadata["case_id"] == "T05" || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
 		mode, ok := metadata["recorder_mode"].(string)
 		if !ok || (mode != "ON" && mode != "OFF") {
 			t.Fatal("T05 requires recorder mode ON or OFF")
@@ -103,8 +114,20 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if err := s07WriteExclusive(filepath.Join(run, "nodes.json"), nodes); err != nil {
 		t.Fatal(err)
 	}
-	if metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
-		bind := exec.Command("python3", "../../research/tools/file02_r06.py", "bind-run-plan", run, pilot.n.root)
+	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || file02ValidFloodCase(metadata["case_id"]) || file02DynamicsCase(metadata["case_id"]) || file02FaultCase(metadata["case_id"]) || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
+		binder := "../../research/tools/file02_r06.py"
+		if file02AttackCase(metadata["case_id"]) {
+			binder = "../../research/tools/file02_attack.py"
+		} else if file02ReplayCase(metadata["case_id"]) {
+			binder = "../../research/tools/file02_a06.py"
+		} else if file02ValidFloodCase(metadata["case_id"]) {
+			binder = "../../research/tools/file02_a07.py"
+		} else if file02DynamicsCase(metadata["case_id"]) {
+			binder = "../../research/tools/file02_a13.py"
+		} else if file02FaultCase(metadata["case_id"]) {
+			binder = "../../research/tools/file02_a14.py"
+		}
+		bind := exec.Command("python3", binder, "bind-run-plan", run, pilot.n.root)
 		output, err := bind.CombinedOutput()
 		if err != nil {
 			t.Fatalf("R06 pre-send common plan lock failed: %v: %s", err, output)
@@ -122,6 +145,13 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 		}
 		defer close(stopObservation)
 	}
+	var faultObservations chan []file02A14Observation
+	if file02FaultCase(metadata["case_id"]) {
+		faultObservations = make(chan []file02A14Observation, 1)
+		stopFaultObservation := make(chan struct{})
+		go file02A14ObservePerNode(pilot, plan, stopFaultObservation, faultObservations)
+		defer close(stopFaultObservation)
+	}
 	binary, _ := filepath.Abs("../../build/profile-load")
 	if metadata["inject_stop_before_load"] == true {
 		if err := os.WriteFile(filepath.Join(run, "STOP"), []byte("QA safety stop\n"), 0600); err != nil {
@@ -134,7 +164,13 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 		"-kill-file", filepath.Join(run, "STOP"), "-result", filepath.Join(run, "result.json"),
 		"-allocated-cores", fmt.Sprint(runtime.NumCPU()))
 	start := time.Now()
-	output, runErr := cmd.CombinedOutput()
+	var output []byte
+	var runErr error
+	if file02FaultCase(metadata["case_id"]) {
+		output, runErr = file02A14RunWithFault(cmd, pilot, run, metadata["condition"])
+	} else {
+		output, runErr = cmd.CombinedOutput()
+	}
 	wallNS := time.Since(start).Nanoseconds()
 	if err := s07WriteExclusive(filepath.Join(run, "load.log"), output); err != nil {
 		t.Fatal(err)
@@ -163,7 +199,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 			t.Fatal(err)
 		}
 	}
-	if runErr != nil && metadata["case_id"] != "R08" && metadata["case_id"] != "R09" {
+	if runErr != nil && metadata["case_id"] != "R08" && metadata["case_id"] != "R09" && !file02ReplayCase(metadata["case_id"]) {
 		t.Fatalf("bounded load failed: %v (private load.log)", runErr)
 	}
 	var result load.Result
@@ -171,7 +207,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if err != nil || json.Unmarshal(raw, &result) != nil {
 		t.Fatalf("cannot read load result: %v", err)
 	}
-	validStatus := result.Status == load.StatusOK || (metadata["case_id"] == "R08" || metadata["case_id"] == "R09") && result.Status == load.StatusOracleMismatch
+	validStatus := result.Status == load.StatusOK || (metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || file02ReplayCase(metadata["case_id"])) && result.Status == load.StatusOracleMismatch
 	if !validStatus || result.ActualSendCount != len(plan.Events) {
 		t.Fatalf("invalid load result: %v status=%s", err, result.Status)
 	}
@@ -180,7 +216,12 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	}
 	pilot.n.waitAll(8, 30*time.Second)
 	var oracle s07OracleRecord
-	if metadata["case_id"] == "R08" || metadata["case_id"] == "R09" {
+	if file02ReplayCase(metadata["case_id"]) {
+		oracle = file02A06Oracle(t, pilot, fixture, plan, result)
+		if err := s07WriteJSON(filepath.Join(run, "oracle.json"), oracle); err != nil {
+			t.Fatal(err)
+		}
+	} else if metadata["case_id"] == "R08" || metadata["case_id"] == "R09" {
 		reason := "mempool_count_full"
 		if metadata["case_id"] == "R09" {
 			reason = "mempool_bytes_full"
@@ -194,7 +235,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 			t.Fatal(err)
 		}
 	}
-	if metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
+	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || file02ValidFloodCase(metadata["case_id"]) || file02DynamicsCase(metadata["case_id"]) || file02FaultCase(metadata["case_id"]) || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
 		for i, recorder := range pilot.recorders {
 			events, dropped := recorder.Drain()
 			if dropped != 0 {
@@ -293,6 +334,30 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 			"events":                commits,
 		}); err != nil {
 			t.Fatal(err)
+		}
+	}
+	if faultObservations != nil {
+		select {
+		case items := <-faultObservations:
+			if len(items) != oracle.ValidCommitted {
+				t.Fatalf("A14 per-node observations %d differ from valid count %d", len(items), oracle.ValidCommitted)
+			}
+			for _, item := range items {
+				for node, stamp := range item.FirstSeenMonotonicNS {
+					if stamp <= 0 || item.FirstSeenUTC[node] == "" {
+						t.Fatalf("A14 validator %d missing observation for %s", node, item.ID)
+					}
+				}
+			}
+			if err := s07WriteJSON(filepath.Join(run, "per_node_observations.json"), map[string]any{
+				"schema": "pluto.file02.a14.observations.v1", "run_id": plan.RunID,
+				"semantics": "100ms block-index polling; per-validator upper bound on first observed inclusion",
+				"events":    items,
+			}); err != nil {
+				t.Fatal(err)
+			}
+		case <-time.After(10 * time.Second):
+			t.Fatal("A14 per-node observations incomplete")
 		}
 	}
 	t.Logf("File02 QA run=%s valid=%d invalid=%d height=%d", plan.RunID, oracle.ValidCommitted, oracle.InvalidRejected, oracle.CommonHeight)
