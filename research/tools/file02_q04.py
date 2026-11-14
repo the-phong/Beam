@@ -13,9 +13,9 @@ import file02_q01 as q01
 import file02_q02 as q02
 
 ROOT = Path(__file__).resolve().parents[2]
-OUTPUT = ROOT / "research/evidence/file02/quality/Q04_RATE_FIDELITY.json"
-Q02_SESSION = "q02-20261114T025508Z-a4b258cb"
-Q02_MANIFEST = "9098dc2f0c3700e11c6477ae50a17c2cd45f5e6ebe2a7c063af49be695705f95"
+OUTPUT = ROOT / "research/evidence/file02/quality/Q04_RATE_FIDELITY_V2.json"
+Q02_SESSION = "q02-20261114T044327Z-e7f236e2"
+Q02_MANIFEST = "58265e00a8c0fc08a37cb4e2935633d85304a1e70d32142df5d9eaa4d1180f3f"
 COMPONENTS = ("total", "fixed", "background")
 
 
