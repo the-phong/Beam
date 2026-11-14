@@ -7,10 +7,13 @@ eleven PASS, two PARTIAL and one UNSUPPORTED disposition after
 [PR #27](https://github.com/the-phong/Beam/pull/27) merged into `test-mainet`
 at `2b453b3c14c410545d5699e03cff90d0eb21d63e` with four passing checks.
 The Owner authorized Q01–Q07 in order to test control fairness and the
-robustness of RQ1b conclusions. The negative service result and open
-A11–A13 boxes remain as recorded. Work begins on
-`research/file02-q01-q07`; Gate QUALITY is pending evidence and review.
-No D/ML, DoS, knee or distributed-performance conclusion follows.
+robustness of RQ1b conclusions. The [section 6 engineering handoff](evidence/file02/quality/QUALITY_GATE_ENGINEERING_HANDOFF_20261114.md)
+records Q01–Q04 and Q07 PASS/checked, Q05–Q06 PARTIAL/unchecked. Q02 required
+a full order-balanced rerun after Q06 found its initial schedule flaw; all
+historical raw was preserved. The negative service result and open A11–A13
+boxes remain as recorded. Work is on `research/file02-q01-q07`; Gate
+QUALITY awaits Controller/Owner review. No D/ML, DoS, knee or distributed-
+performance conclusion follows.
 
 ## Historical Checklist 02 section 5 execution
 
