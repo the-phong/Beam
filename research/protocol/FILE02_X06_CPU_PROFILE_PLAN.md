@@ -20,3 +20,16 @@ as per-stage CheckTx CPU. `CPU_crypto` in an actual network run remains
 
 Command: `python3 research/tools/file02_x06_profile.py run
 research/artifacts/file02/<session>`; verifier uses `verify`.
+
+## Prospective comparison amendment before the second session
+
+The first profiled-only session (`x06-20261115T000000Z-profile`) passed its
+locked eight-profile QC and stays frozen. It did not provide a workload-
+matched unprofiled comparison, so its R01 cross-day difference must not be
+called profiling overhead. Before the second session, the runner was
+extended to execute one unprofiled benchmark immediately after each
+profiled process under the same fixture and flags. The second session
+requires 8+8 successful processes. Its paired wall ns/op ratio is an
+approximate measurement of profiler perturbation, still subject to fixed
+profile-first order and host drift. Only the second session is eligible
+for that overhead estimate.

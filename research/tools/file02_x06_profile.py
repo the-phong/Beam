@@ -40,6 +40,14 @@ def run(session):
             matched = BENCH.search(done.stdout)
             if not matched or matched.group(1) != primitive:
                 raise RuntimeError(f"{name} benchmark parser mismatch")
+            baseline_cmd = ["go", "test", "./internal/experiment/benchmark", "-run", "^$",
+                            "-bench", f"^BenchmarkFile02R01$/^{primitive}$", "-benchtime=2s",
+                            "-cpu=1", "-count=1"]
+            baseline = subprocess.run(baseline_cmd, cwd=ROOT, env=env, capture_output=True, text=True)
+            (raw / f"{name}.baseline.txt").write_text(baseline.stdout + baseline.stderr)
+            baseline_match = BENCH.search(baseline.stdout)
+            if baseline.returncode or not baseline_match or baseline_match.group(1) != primitive:
+                raise RuntimeError(f"{name} unprofiled baseline failed")
             pprof = subprocess.run(["go", "tool", "pprof", "-top", "-nodecount=40", str(profile)],
                                    cwd=ROOT, capture_output=True, text=True)
             (raw / f"{name}.top.txt").write_text(pprof.stdout + pprof.stderr)
@@ -47,8 +55,11 @@ def run(session):
                 raise RuntimeError(f"{name} CPU profile unreadable")
             rows.append({"index": index, "primitive": primitive,
                          "iterations": int(matched.group(2)), "wall_ns_op": float(matched.group(3)),
+                         "unprofiled_wall_ns_op": float(baseline_match.group(3)),
+                         "unprofiled_iterations": int(baseline_match.group(2)),
                          "sampled_cpu_seconds": float(SAMPLES.search(pprof.stdout).group(1)),
-                         "benchmark_exit": done.returncode, "profile_exit": pprof.returncode})
+                         "benchmark_exit": done.returncode, "baseline_exit": baseline.returncode,
+                         "profile_exit": pprof.returncode})
     (raw / "summary.json").write_text(json.dumps({"schema": "pluto.file02.x06_profile.v1",
         "scope": "isolated valid signature primitives only; CPU_crypto per CheckTx unavailable",
         "rows": rows}, indent=2, sort_keys=True) + "\n")
@@ -64,12 +75,16 @@ def verify(session):
     for row in summary["rows"]:
         name = f"{row['index']:02d}-{row['primitive']}"
         bench = (raw / f"{name}.bench.txt").read_text()
+        baseline = (raw / f"{name}.baseline.txt").read_text()
         top = (raw / f"{name}.top.txt").read_text()
         match = BENCH.search(bench)
+        baseline_match = BENCH.search(baseline)
         samples = SAMPLES.search(top)
-        if (not match or not samples or row["primitive"] != match.group(1)
+        if (not match or not baseline_match or not samples or row["primitive"] != match.group(1)
                 or row["iterations"] != int(match.group(2))
                 or row["wall_ns_op"] != float(match.group(3))
+                or row["unprofiled_iterations"] != int(baseline_match.group(2))
+                or row["unprofiled_wall_ns_op"] != float(baseline_match.group(3))
                 or row["sampled_cpu_seconds"] != float(samples.group(1))
                 or row["sampled_cpu_seconds"] < 1.0
                 or not (raw / f"{name}.pprof").is_file()):
