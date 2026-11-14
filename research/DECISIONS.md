@@ -3,6 +3,7 @@
 ## D-043 — Owner accepts bounded Gate ATTACK and opens Q01–Q07 (2026-11-14)
 
 The Owner accepted the [section 5 engineering disposition](evidence/file02/ATTACK_GROUP_ENGINEERING_CLOSEOUT_20261114.md)
+under the [bounded Gate record](evidence/file02/ATTACK_GATE_BOUNDED_ACCEPTANCE_20261114.md)
 with eleven PASS (A01–A10, A14), two PARTIAL (A11, A13) and one UNSUPPORTED
 (A12) case. PR #27 merged it into `test-mainet` at
 `2b453b3c14c410545d5699e03cff90d0eb21d63e` after four passing CI
