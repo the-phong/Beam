@@ -31,6 +31,7 @@ func file02ReplayCase(caseID any) bool     { return caseID == "A06" }
 func file02ValidFloodCase(caseID any) bool { return caseID == "A07" }
 func file02DynamicsCase(caseID any) bool   { return caseID == "A13" }
 func file02FaultCase(caseID any) bool      { return caseID == "A14" }
+func file02QualityCase(caseID any) bool    { return caseID == "Q02" }
 
 // file02ExecuteQA runs one pre-signed bounded plan on a fresh local network.
 // Only keyless run evidence is persisted under the caller's ignored root.
@@ -47,7 +48,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if err := load.WritePlan(planPath, plan, c, configHash); err != nil {
 		t.Fatal(err)
 	}
-	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || file02ValidFloodCase(metadata["case_id"]) || file02DynamicsCase(metadata["case_id"]) || file02FaultCase(metadata["case_id"]) || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
+	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || file02ValidFloodCase(metadata["case_id"]) || file02DynamicsCase(metadata["case_id"]) || file02FaultCase(metadata["case_id"]) || file02QualityCase(metadata["case_id"]) || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
 		configBytes, err := os.ReadFile(configPath)
 		if err != nil {
 			t.Fatal(err)
@@ -64,7 +65,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if !ok {
 		scope = "QA_ONLY"
 	}
-	if scope != "QA_ONLY" && scope != "T_PREFLIGHT" && scope != "R_CONFIRMATORY" && scope != "A_CONFIRMATORY" {
+	if scope != "QA_ONLY" && scope != "T_PREFLIGHT" && scope != "R_CONFIRMATORY" && scope != "A_CONFIRMATORY" && scope != "Q_CONFIRMATORY" {
 		t.Fatal("unsupported File 02 run scope")
 	}
 	metadata["scope"] = scope
@@ -77,7 +78,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 		t.Fatal(err)
 	}
 	pilot := startS06NetworkAt(t, c, fixture, profile, t.TempDir())
-	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || file02ValidFloodCase(metadata["case_id"]) || file02DynamicsCase(metadata["case_id"]) || file02FaultCase(metadata["case_id"]) || metadata["case_id"] == "T05" || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
+	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || file02ValidFloodCase(metadata["case_id"]) || file02DynamicsCase(metadata["case_id"]) || file02FaultCase(metadata["case_id"]) || file02QualityCase(metadata["case_id"]) || metadata["case_id"] == "T05" || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
 		mode, ok := metadata["recorder_mode"].(string)
 		if !ok || (mode != "ON" && mode != "OFF") {
 			t.Fatal("T05 requires recorder mode ON or OFF")
@@ -114,7 +115,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if err := s07WriteExclusive(filepath.Join(run, "nodes.json"), nodes); err != nil {
 		t.Fatal(err)
 	}
-	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || file02ValidFloodCase(metadata["case_id"]) || file02DynamicsCase(metadata["case_id"]) || file02FaultCase(metadata["case_id"]) || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
+	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || file02ValidFloodCase(metadata["case_id"]) || file02DynamicsCase(metadata["case_id"]) || file02FaultCase(metadata["case_id"]) || file02QualityCase(metadata["case_id"]) || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
 		binder := "../../research/tools/file02_r06.py"
 		if file02AttackCase(metadata["case_id"]) {
 			binder = "../../research/tools/file02_attack.py"
@@ -126,6 +127,8 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 			binder = "../../research/tools/file02_a13.py"
 		} else if file02FaultCase(metadata["case_id"]) {
 			binder = "../../research/tools/file02_a14.py"
+		} else if file02QualityCase(metadata["case_id"]) {
+			binder = "../../research/tools/file02_q02.py"
 		}
 		bind := exec.Command("python3", binder, "bind-run-plan", run, pilot.n.root)
 		output, err := bind.CombinedOutput()
@@ -235,7 +238,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 			t.Fatal(err)
 		}
 	}
-	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || file02ValidFloodCase(metadata["case_id"]) || file02DynamicsCase(metadata["case_id"]) || file02FaultCase(metadata["case_id"]) || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
+	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || file02ValidFloodCase(metadata["case_id"]) || file02DynamicsCase(metadata["case_id"]) || file02FaultCase(metadata["case_id"]) || file02QualityCase(metadata["case_id"]) || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
 		for i, recorder := range pilot.recorders {
 			events, dropped := recorder.Drain()
 			if dropped != 0 {
