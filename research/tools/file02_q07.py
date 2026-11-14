@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[2]
 OUTPUT = ROOT / "research/evidence/file02/quality/Q07_NO_INVALID_ACCEPTED.json"
 ORACLE_PATH = "test/integration/s07_reproduce_test.go"
 ORACLE_SHA256 = "1cde090e38452986d1718bec81650e21ed5bcf0df0138b9b5b0cc05169c5a859"
+REPLAY_BINARY = ROOT / "build/file02-q07-replay"
 
 
 def require(ok, reason):
@@ -42,6 +43,19 @@ def assert_commit_set(valid, invalid, committed):
 
 def session_for(case):
     return q01.ARTIFACTS / q01.INPUTS[case][0] if case in q01.INPUTS else q02.ARTIFACTS / q04.Q02_SESSION
+
+
+def replay_state(run, case):
+    session = session_for(case)
+    chain_id = common.read_json(session / "plan.json")["chain_id"]
+    proc = subprocess.run([str(REPLAY_BINARY), "-run-dir", str(run), "-chain-id", chain_id],
+                          cwd=ROOT, text=True, capture_output=True)
+    require(proc.returncode == 0, "Q07 deterministic state replay: " + proc.stderr.strip())
+    result = json.loads(proc.stdout)
+    require(result["schema"] == "pluto.file02.q07_replay.v1" and
+            result["status"] == "PASS" and result["run_id"] == run.name,
+            "Q07 replay output identity")
+    return result
 
 
 def audit_run(source):
@@ -80,22 +94,35 @@ def audit_run(source):
                 "Q07 hash/CheckTx/stage")
         slots.append(p["account_slot"])
         (valid if p["traffic"] == "legitimate" else invalid).append(wire_hash)
-    require(sorted(slots) == list(range(len(planned))), "Q07 one-use funded sender slots")
+    require(len(set(slots)) == len(slots) and all(0 <= slot < 241 for slot in slots),
+            "Q07 one-use funded sender slots")
     committed = [event["sha256"] for event in commits["events"]]
     assert_commit_set(valid, invalid, committed)
     require(oracle["valid_committed"] == len(valid) and
             oracle["invalid_rejected"] == len(invalid), "Q07 oracle counts")
+    replay = replay_state(run, case)
+    require(replay["genesis_accounts"] == 242 and
+            replay["initial_supply"] == replay["final_supply"] == 482 and
+            replay["valid_replayed"] == len(valid) and
+            replay["invalid_not_applied"] == len(invalid) and
+            replay["app_hash"] == oracle["app_hash"], "Q07 full state replay/supply")
     return {"case_id": case, "run_id": run_id, "source_raw_manifest_sha256":
             source["source_raw_manifest_sha256"], "oracle_source_sha256": digest,
             "common_height": oracle["common_height"], "block_id": oracle["block_id"],
             "app_hash": oracle["app_hash"], "valid_exact_once": len(valid),
             "invalid_rejected_and_absent": len(invalid),
-            "expected_total_supply_from_one_use_genesis": 2*len(slots),
-            "state_validation": "LIVE_ORACLE_ALL_FOUR_ACCOUNT_BALANCE_NONCE_CHECK",
+            "genesis_accounts": replay["genesis_accounts"],
+            "initial_supply": replay["initial_supply"],
+            "final_supply": replay["final_supply"],
+            "state_validation": "REPLAYED_APPHASH_SUPPLY_AND_LIVE_ORACLE_ALL_FOUR_USED_ACCOUNT_NONCE",
             "qc_status": "PASS"}
 
 
 def derive():
+    build = subprocess.run(["go", "build", "-o", str(REPLAY_BINARY),
+                            "./cmd/research/q07-replay"], cwd=ROOT, text=True,
+                           capture_output=True)
+    require(build.returncode == 0, "Q07 replay build: " + build.stderr.strip())
     rate = q04.derive()
     require(rate["status"] == "PASS" and rate["n_networks"] == 248 and
             not rate["excluded_run_ids"], "Q07 source rate/QC")
@@ -109,7 +136,7 @@ def derive():
             "status": "PASS" if len(rows) == 248 and not failed else "INVALID_FOR_INFERENCE",
             "n_planned": 248, "n_valid": len(rows), "failed_or_excluded": failed,
             "oracle_function_sha256": ORACLE_SHA256,
-            "state_evidence_limit": "per-validator account states checked live but not serialized in raw oracle",
+            "state_evidence_limit": "per-validator account snapshots not serialized; committed AppHash matches full deterministic genesis replay at header height minus one",
             "runs": rows}
 
 
