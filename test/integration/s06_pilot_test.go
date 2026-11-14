@@ -57,16 +57,20 @@ func startS06Network(t *testing.T, c load.Config, f *load.PilotFixture, profile 
 // startS06NetworkAt keeps a selected private run directory for reproducibility.
 // The S06 caller still uses testing's disposable directory.
 func startS06NetworkAt(t *testing.T, c load.Config, f *load.PilotFixture, profile researchv2.Profile, runRoot string) *s06Network {
-	return startS06NetworkAtMode(t, c, f, profile, runRoot, false)
+	return startS06NetworkAtMode(t, c, f, profile, runRoot, false, false)
 }
 
 // startX05NetworkAt isolates each app from the integration harness while
 // preserving the existing single-host, loopback Comet/network setup.
 func startX05NetworkAt(t *testing.T, c load.Config, f *load.PilotFixture, profile researchv2.Profile, runRoot string) *s06Network {
-	return startS06NetworkAtMode(t, c, f, profile, runRoot, true)
+	return startX05NetworkAtRecorder(t, c, f, profile, runRoot, true)
 }
 
-func startS06NetworkAtMode(t *testing.T, c load.Config, f *load.PilotFixture, profile researchv2.Profile, runRoot string, separateApps bool) *s06Network {
+func startX05NetworkAtRecorder(t *testing.T, c load.Config, f *load.PilotFixture, profile researchv2.Profile, runRoot string, recorder bool) *s06Network {
+	return startS06NetworkAtMode(t, c, f, profile, runRoot, true, recorder)
+}
+
+func startS06NetworkAtMode(t *testing.T, c load.Config, f *load.PilotFixture, profile researchv2.Profile, runRoot string, separateApps, recorderOn bool) *s06Network {
 	t.Helper()
 	comet, _ := filepath.Abs("../../build/cometbft-s05")
 	if _, err := os.Stat(comet); err != nil {
@@ -231,9 +235,13 @@ func startS06NetworkAtMode(t *testing.T, c load.Config, f *load.PilotFixture, pr
 				t.Fatal(err)
 			}
 			pilot.appLogs[i] = logFile
-			cmd := exec.Command(appBinary, "-db", dir, "-genesis", appGenesisPath,
+			args := []string{"-db", dir, "-genesis", appGenesisPath,
 				"-chain-id", f.ChainID, "-profile", profileName, "-listen", cfg.ProxyApp,
-				"-resources", pilot.appResources[i], "-events", pilot.appEvents[i], "-recorder")
+				"-resources", pilot.appResources[i], "-events", pilot.appEvents[i]}
+			if recorderOn {
+				args = append(args, "-recorder")
+			}
+			cmd := exec.Command(appBinary, args...)
 			cmd.Stdout, cmd.Stderr = logFile, logFile
 			if err := cmd.Start(); err != nil {
 				t.Fatal(err)

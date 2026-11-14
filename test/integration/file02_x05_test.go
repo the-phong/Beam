@@ -27,10 +27,18 @@ type x05ProcessSample struct {
 	GCPauseNS      uint64 `json:"gc_pause_total_ns"`
 	Threads        int    `json:"threads"`
 	ThreadStatus   string `json:"thread_status"`
+	RecorderDrops  uint64 `json:"recorder_drops"`
 }
 
 func TestFile02X05DedicatedAppProcesses(t *testing.T) {
 	runRoot := os.Getenv("FILE02_X05_ROOT")
+	recorderMode := os.Getenv("FILE02_X05_RECORDER_MODE")
+	if recorderMode == "" {
+		recorderMode = "ON"
+	}
+	if recorderMode != "ON" && recorderMode != "OFF" {
+		t.Fatal("FILE02_X05_RECORDER_MODE must be ON or OFF")
+	}
 	if runRoot == "" {
 		runRoot = t.TempDir()
 	} else {
@@ -83,7 +91,7 @@ func TestFile02X05DedicatedAppProcesses(t *testing.T) {
 	if len(valid) == 0 {
 		t.Fatal("no valid pre-signed H transaction")
 	}
-	pilot := startX05NetworkAt(t, c, fixture, researchv2.ProfileH, runRoot)
+	pilot := startX05NetworkAtRecorder(t, c, fixture, researchv2.ProfileH, runRoot, recorderMode == "ON")
 	seenPID := map[int]bool{}
 	for i, cmd := range pilot.appProcesses {
 		if cmd == nil || cmd.Process == nil || cmd.Process.Pid == os.Getpid() || seenPID[cmd.Process.Pid] || pilot.apps[i] != nil {
@@ -163,11 +171,16 @@ func TestFile02X05DedicatedAppProcesses(t *testing.T) {
 			last.HeapAllocBytes == 0 || last.GCCount < first.GCCount || last.GCPauseNS < first.GCPauseNS {
 			t.Fatalf("validator %d invalid dedicated-app resource identity/delta", i)
 		}
-		if i == 0 {
-			events, err := os.ReadFile(pilot.appEvents[i])
-			if err != nil || len(events) == 0 {
-				t.Fatalf("validator-0 app recorder absent: %v", err)
+		for _, line := range lines {
+			var item x05ProcessSample
+			if err := json.Unmarshal([]byte(line), &item); err != nil || item.RecorderDrops != 0 {
+				t.Fatalf("validator %d recorder sample invalid/drop: %v", i, err)
 			}
+		}
+		events, err := os.ReadFile(pilot.appEvents[i])
+		if err != nil || (recorderMode == "ON" && i == 0 && len(events) == 0) ||
+			(recorderMode == "OFF" && len(events) != 0) {
+			t.Fatalf("validator %d recorder mode %s unexpected events: %v", i, recorderMode, err)
 		}
 		resources = append(resources, map[string]any{
 			"validator": i, "pid": last.PID, "cpu_delta_ns": last.UserCPUNS + last.SystemCPUNS - first.UserCPUNS - first.SystemCPUNS,
@@ -183,6 +196,7 @@ func TestFile02X05DedicatedAppProcesses(t *testing.T) {
 			"topology":              "four_comet_plus_four_dedicated_app_processes_single_host_loopback",
 			"valid_h_commit_height": height, "block_id": blockID, "header_app_hash": appHash,
 			"processes": resources, "per_validator_observation": observation,
+			"recorder_mode": recorderMode, "recorder_drop_count": 0,
 		}
 		encoded, err := json.MarshalIndent(summary, "", "  ")
 		if err != nil {
