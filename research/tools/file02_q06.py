@@ -13,9 +13,11 @@ import file02_q02 as q02
 
 ROOT = Path(__file__).resolve().parents[2]
 OUTPUT = ROOT / "research/evidence/file02/quality/Q06_REPLICATION.json"
-Q02_SESSION = "q02-20261114T025508Z-a4b258cb"
+Q02_SESSION = "q02-20261114T044327Z-e7f236e2"
+Q02_SUPERSEDED = "q02-20261114T025508Z-a4b258cb"
 Q02_ABORTED = "q02-20261114T024019Z-8ccd9928"
-Q02_MANIFEST = "9098dc2f0c3700e11c6477ae50a17c2cd45f5e6ebe2a7c063af49be695705f95"
+Q02_MANIFEST = "58265e00a8c0fc08a37cb4e2935633d85304a1e70d32142df5d9eaa4d1180f3f"
+SUPERSEDED_MANIFEST = "9098dc2f0c3700e11c6477ae50a17c2cd45f5e6ebe2a7c063af49be695705f95"
 ABORTED_MANIFEST = "0308674aaf4695c5e8261bf6be0034004f6adca1376f67d4a8a264ecf29cdb0b"
 
 
@@ -95,6 +97,15 @@ def derive():
             any(item.get("run_id") == "Q02-b00-CP-attack" for item in failed_qc["failed"]) and
             "stale observer sample" in (aborted / "raw/runs/Q02-b00-CP-attack/load.log").read_text(),
             "Q06 failed-attempt provenance")
+    superseded = q02.ARTIFACTS / Q02_SUPERSEDED
+    q02.verify(superseded)
+    previous = common.read_json(superseded / "qc_report.json")
+    old_jobs = common.read_json(superseded / "raw/schedule.json")["jobs"]
+    require(previous["status"] == "PASS" and
+            previous["raw_manifest_sha256"] == SUPERSEDED_MANIFEST and
+            all(len({next(job["condition"] for job in old_jobs if job["block"] == b and
+                          job["profile"] == profile) for b in range(12)}) == 1
+                for profile in q02.PROFILES), "Q06 order-confounded v1 provenance")
     a01 = by_case[0]
     return {"schema": "pluto.file02.q06.replication.v1", "status": "PARTIAL_HOST_REPLICATION",
             "endpoint": "fixed_legitimate_all_four_observed_within_3000ms_fraction",
@@ -111,6 +122,9 @@ def derive():
                 "raw_manifest_sha256": ABORTED_MANIFEST,
                 "status": "INVALID_FOR_INFERENCE_PRE_SEND_STALE_OBSERVER",
                 "used_in_inference": False},
+                {"session": Q02_SUPERSEDED, "raw_manifest_sha256": SUPERSEDED_MANIFEST,
+                 "status": "TECHNICAL_QC_PASS_SUPERSEDED_PROFILE_ORDER_CONFOUND",
+                 "used_in_inference": False},
                 {"session": Q02_SESSION, "raw_manifest_sha256": Q02_MANIFEST,
                  "status": "COMPLETE_NEW_FULL_SCHEDULE", "used_in_inference": True}],
             "host_replication_status": "UNAVAILABLE_NO_SECOND_PHYSICAL_HOST",

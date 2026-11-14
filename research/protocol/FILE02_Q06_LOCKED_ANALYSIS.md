@@ -13,7 +13,8 @@ across different sessions or attack families. A13's four pairs receive the
 same descriptive stability checks with two/two order balance.
 
 Explicitly log the Q02 pre-send stale-observer safety-abort session and its
-frozen invalid QC, plus the separately completed Q02 session; do not call
+frozen invalid QC, the first technically complete but profile-order-confounded
+`schedule.v1` session, and the corrected `schedule.v2` session; do not call
 the aborted arm a valid replicate. Existing A source QC exclusions are
 reported verbatim. Host replication requires a genuinely separate physical
 host with an accepted deployment. Distinct fresh networks or VM guests on
