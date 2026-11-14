@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io"
 	"math/rand"
+	"net"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -38,6 +39,10 @@ type s06Network struct {
 	n            *fourNetwork
 	metricsPorts [4]int
 	apps         [4]*researchv2app.App
+	appProcesses [4]*exec.Cmd
+	appLogs      [4]*os.File
+	appResources [4]string
+	appEvents    [4]string
 	recorders    [4]*telemetry.Recorder
 	observers    [4]*exec.Cmd
 	observerLogs [4]*os.File
@@ -52,6 +57,16 @@ func startS06Network(t *testing.T, c load.Config, f *load.PilotFixture, profile 
 // startS06NetworkAt keeps a selected private run directory for reproducibility.
 // The S06 caller still uses testing's disposable directory.
 func startS06NetworkAt(t *testing.T, c load.Config, f *load.PilotFixture, profile researchv2.Profile, runRoot string) *s06Network {
+	return startS06NetworkAtMode(t, c, f, profile, runRoot, false)
+}
+
+// startX05NetworkAt isolates each app from the integration harness while
+// preserving the existing single-host, loopback Comet/network setup.
+func startX05NetworkAt(t *testing.T, c load.Config, f *load.PilotFixture, profile researchv2.Profile, runRoot string) *s06Network {
+	return startS06NetworkAtMode(t, c, f, profile, runRoot, true)
+}
+
+func startS06NetworkAtMode(t *testing.T, c load.Config, f *load.PilotFixture, profile researchv2.Profile, runRoot string, separateApps bool) *s06Network {
 	t.Helper()
 	comet, _ := filepath.Abs("../../build/cometbft-s05")
 	if _, err := os.Stat(comet); err != nil {
@@ -121,6 +136,13 @@ func startS06NetworkAt(t *testing.T, c load.Config, f *load.PilotFixture, profil
 		t.Fatal(err)
 	}
 	var stopServers []func() error
+	var appGenesisPath string
+	if separateApps {
+		appGenesisPath = filepath.Join(runRoot, "app-genesis.bin")
+		if err := os.WriteFile(appGenesisPath, f.Genesis, 0600); err != nil {
+			t.Fatal(err)
+		}
+	}
 	t.Cleanup(func() {
 		for i, cmd := range pilot.observers {
 			if cmd != nil && cmd.Process != nil {
@@ -135,6 +157,15 @@ func startS06NetworkAt(t *testing.T, c load.Config, f *load.PilotFixture, profil
 			}
 		}
 		n.stopAll()
+		for i, cmd := range pilot.appProcesses {
+			if cmd != nil && cmd.Process != nil {
+				_ = cmd.Process.Signal(syscall.SIGTERM)
+				_ = cmd.Wait()
+			}
+			if pilot.appLogs[i] != nil {
+				_ = pilot.appLogs[i].Close()
+			}
+		}
 		for _, stop := range stopServers {
 			_ = stop()
 		}
@@ -184,20 +215,59 @@ func startS06NetworkAt(t *testing.T, c load.Config, f *load.PilotFixture, profil
 		if err := store.Close(); err != nil {
 			t.Fatal(err)
 		}
-		pilot.apps[i], err = researchv2app.Open(dir, f.Genesis, f.ChainID, profile)
-		if err != nil {
-			t.Fatal(err)
+		if separateApps {
+			appBinary, err := filepath.Abs("../../build/profile-app")
+			if err != nil {
+				t.Fatal(err)
+			}
+			profileName := map[researchv2.Profile]string{
+				researchv2.ProfileC: "C", researchv2.ProfileCP: "CP",
+				researchv2.ProfileP: "P", researchv2.ProfileH: "H",
+			}[profile]
+			pilot.appResources[i] = filepath.Join(runRoot, fmt.Sprintf("app-%d-resources.jsonl", i))
+			pilot.appEvents[i] = filepath.Join(runRoot, fmt.Sprintf("app-%d-events.jsonl", i))
+			logFile, err := os.OpenFile(filepath.Join(runRoot, fmt.Sprintf("app-%d.log", i)), os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
+			if err != nil {
+				t.Fatal(err)
+			}
+			pilot.appLogs[i] = logFile
+			cmd := exec.Command(appBinary, "-db", dir, "-genesis", appGenesisPath,
+				"-chain-id", f.ChainID, "-profile", profileName, "-listen", cfg.ProxyApp,
+				"-resources", pilot.appResources[i], "-events", pilot.appEvents[i], "-recorder")
+			cmd.Stdout, cmd.Stderr = logFile, logFile
+			if err := cmd.Start(); err != nil {
+				t.Fatal(err)
+			}
+			pilot.appProcesses[i] = cmd
+			address := strings.TrimPrefix(cfg.ProxyApp, "tcp://")
+			deadline := time.Now().Add(10 * time.Second)
+			for {
+				conn, err := net.DialTimeout("tcp", address, 100*time.Millisecond)
+				if err == nil {
+					_ = conn.Close()
+					break
+				}
+				if time.Now().After(deadline) {
+					t.Fatalf("dedicated app %d did not become ready (private app log)", i)
+				}
+				time.Sleep(50 * time.Millisecond)
+			}
+		} else {
+			pilot.apps[i], err = researchv2app.Open(dir, f.Genesis, f.ChainID, profile)
+			if err != nil {
+				t.Fatal(err)
+			}
+			pilot.recorders[i] = telemetry.NewRecorder(2048)
+			pilot.apps[i].SetRecorder(pilot.recorders[i])
+			abciServer, err := server.NewServer(cfg.ProxyApp, "socket", pilot.apps[i])
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err := abciServer.Start(); err != nil {
+				t.Fatal(err)
+			}
+			stopServers = append(stopServers, abciServer.Stop)
 		}
-		pilot.recorders[i] = telemetry.NewRecorder(2048)
-		pilot.apps[i].SetRecorder(pilot.recorders[i])
-		abciServer, err := server.NewServer(cfg.ProxyApp, "socket", pilot.apps[i])
-		if err != nil {
-			t.Fatal(err)
-		}
-		if err := abciServer.Start(); err != nil {
-			t.Fatal(err)
-		}
-		stopServers = append(stopServers, abciServer.Stop)
 		logPath := filepath.Join(filepath.Dir(n.root), fmt.Sprintf("validator-%d.log", i))
 		logFile, err := os.Create(logPath)
 		if err != nil {
