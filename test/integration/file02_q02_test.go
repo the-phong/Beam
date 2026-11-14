@@ -42,7 +42,7 @@ func TestFile02Q02Decomposition(t *testing.T) {
 	}
 	raw, err := os.ReadFile(filepath.Join(root, "schedule.json"))
 	if err != nil || json.Unmarshal(raw, &schedule) != nil ||
-		schedule.Schema != "pluto.file02.q02.schedule.v1" || len(schedule.Jobs) != 96 {
+		schedule.Schema != "pluto.file02.q02.schedule.v2" || len(schedule.Jobs) != 96 {
 		t.Fatal("invalid locked Q02 schedule")
 	}
 	profiles := map[string]researchv2.Profile{"C": researchv2.ProfileC,

@@ -46,3 +46,15 @@ This test checks profile interaction for **structural-invalid input only**.
 It cannot attribute an effect to ML-DSA verification, explain late-invalid
 A04/A05 behavior, establish p99 precision, sustainable throughput, knee,
 P2P-origin, independent-host behavior or DoS.
+
+## Order-balance correction, 2026-11-14
+
+The first implementation of `schedule.v1` inadvertently made arm-first order
+constant within each profile (C/P always benign-first, CP/H always
+attack-first), despite the design above. Its frozen sessions and published
+technical QC remain preserved, but the first complete session is superseded
+for cross-profile inference. `schedule.v2` fixes the implementation so every
+profile has six benign-first and six attack-first pairs across the same 12
+rotated fixture blocks. The load, endpoint, contrasts, bootstrap, exclusion
+rule and safety caps above are unchanged. A new, separately locked full
+session is required; no historical raw is edited or silently substituted.

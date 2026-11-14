@@ -32,18 +32,24 @@ def require(ok, reason):
         raise ValueError(reason)
 
 
-def schedule():
+def schedule(legacy=False):
     jobs = []
     for block in range(12):
         rotated = PROFILES[block % 4:] + PROFILES[:block % 4]
         for index, profile in enumerate(rotated):
-            arms = ("benign", "attack") if (block + index) % 2 == 0 else ("attack", "benign")
+            # v1 accidentally tied arm order to profile parity after rotation.
+            # Keep it replayable for frozen historical sessions; v2 balances
+            # each profile across six benign-first and six attack-first blocks.
+            first_benign = (block + index) % 2 == 0 if legacy else block % 2 == 0
+            arms = ("benign", "attack") if first_benign else ("attack", "benign")
             for condition in arms:
                 jobs.append({"block": block, "order": len(jobs) % 8,
                              "profile": profile, "condition": condition,
                              "run_id": f"Q02-b{block:02d}-{profile}-{condition}"})
-    return {"schema": "pluto.file02.q02.schedule.v1", "seed": SEED,
-            "method": "rotated_profile_balanced_arm_order", "jobs": jobs}
+    return {"schema": "pluto.file02.q02.schedule.v1" if legacy else
+            "pluto.file02.q02.schedule.v2", "seed": SEED,
+            "method": "rotated_profile_balanced_arm_order" if legacy else
+            "rotated_profile_with_per_profile_balanced_arm_order", "jobs": jobs}
 
 
 def prepare(session):
@@ -63,6 +69,7 @@ def prepare(session):
             "module_sha256": common.digest(ROOT / "go.mod"),
             "config_sha256": common.digest(raw / "config.json"),
             "schedule_sha256": common.digest(raw / "schedule.json"),
+            "schedule_schema": "pluto.file02.q02.schedule.v2",
             "protocol": "research/protocol/FILE02_Q02_LOCKED_PLAN.md",
             "chain_id": "pluto-file02-q02", "profiles": list(PROFILES), "wire_bytes": WIRE,
             "n_blocks": 12, "n_networks": 96, "fixed_legitimate_tx_s": 6,
@@ -74,6 +81,8 @@ def prepare(session):
 
 
 def validate_plan(session, plan):
+    locked_schedule = common.read_json(session / "raw/schedule.json")
+    legacy = locked_schedule.get("schema") == "pluto.file02.q02.schedule.v1"
     require(plan.get("schema") == "pluto.file02.q02.plan.v1" and plan.get("status") == "LOCKED" and
             plan.get("case_id") == "Q02" and plan.get("source_tree") ==
             r01.git("rev-parse", plan["source_commit"] + "^{tree}") and
@@ -82,7 +91,8 @@ def validate_plan(session, plan):
             plan.get("config_sha256") == common.digest(session / "raw/config.json") ==
             common.digest(ROOT / "research/config/s06_pilot.json") and
             plan.get("schedule_sha256") == common.digest(session / "raw/schedule.json") and
-            common.read_json(session / "raw/schedule.json") == schedule() and
+            locked_schedule == schedule(legacy=legacy) and
+            plan.get("schedule_schema") == (None if legacy else "pluto.file02.q02.schedule.v2") and
             plan.get("profiles") == list(PROFILES) and plan.get("wire_bytes") == WIRE and
             plan.get("n_blocks") == 12 and plan.get("n_networks") == 96 and
             plan.get("total_tx_s") == 20 and plan.get("deadline_ms") == 3000 and
@@ -289,7 +299,7 @@ def block_contrasts(group):
 def derive(session, plan):
     manifest = common.verify_raw(session / "raw")
     rows, failed, blocks = [], [], []
-    for job in schedule()["jobs"]:
+    for job in common.read_json(session / "raw/schedule.json")["jobs"]:
         try:
             rows.append(audit_run(session / "raw", job, plan))
         except (ValueError, KeyError, TypeError, OSError, json.JSONDecodeError) as exc:

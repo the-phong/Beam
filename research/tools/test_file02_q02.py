@@ -6,6 +6,18 @@ import file02_q02 as q
 
 
 class DecompositionTest(unittest.TestCase):
+    def test_corrected_schedule_balances_each_profile_and_retains_v1_replay(self):
+        current, legacy = q.schedule(), q.schedule(legacy=True)
+        self.assertEqual(current["schema"], "pluto.file02.q02.schedule.v2")
+        self.assertEqual(legacy["schema"], "pluto.file02.q02.schedule.v1")
+        for profile in q.PROFILES:
+            first = [next(job["condition"] for job in current["jobs"] if
+                          job["block"] == block and job["profile"] == profile)
+                     for block in range(12)]
+            self.assertEqual(first.count("benign"), 6)
+            self.assertEqual(first.count("attack"), 6)
+        self.assertNotEqual(current["jobs"], legacy["jobs"])
+
     def block(self):
         rows = []
         fractions = {"C": (1.0, .75), "CP": (1.0, .875),
