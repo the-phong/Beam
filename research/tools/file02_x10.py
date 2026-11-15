@@ -205,7 +205,7 @@ def audit_run(raw, job, top_plan):
          "commit_observations.json", "research_plan/plan.json"))
     common.validate_plan(bound)
     require(meta.get("schema") == "pluto.file02.x10_run.v1" and
-            meta.get("scope") == "X_CONFIRMATORY" and meta.get("case_id") == "X10" and
+            meta.get("scope") in ("QA_ONLY", "X_CONFIRMATORY") and meta.get("case_id") == "X10" and
             meta.get("condition") == arm and meta.get("block") == job["block"] and
             meta.get("order") == job["order"] and meta.get("run_id") == job["run_id"] and
             meta.get("source_commit") == bound["source_commit"] == top_plan["source_commit"] and
@@ -309,7 +309,7 @@ def audit_run(raw, job, top_plan):
             (arm != "I" or len(invalid_service_ns) == len(ml_stage_ns) == 168),
             "X10 fixed stream, rate or invalid stage coverage")
     timely = sum(value <= 3000 for value in latencies)
-    return {"run_id": job["run_id"], "block": job["block"], "order": job["order"],
+    return {"run_id": job["run_id"], "scope": meta["scope"], "block": job["block"], "order": job["order"],
         "condition": arm, "genesis_sha256": workload["genesis_sha256"], "fixed_stream": fixed,
         "fixed_mean_upper_ms": statistics.mean(latencies), "fixed_p50_upper_ms": percentile(latencies, .5),
         "fixed_p95_upper_ms": percentile(latencies, .95), "fixed_timely_count": timely,
@@ -344,7 +344,8 @@ def derive(session, plan):
             "i_minus_b_mean_upper_ms": arms["I"]["fixed_mean_upper_ms"] - arms["B"]["fixed_mean_upper_ms"],
             "i_minus_l_mean_upper_ms": arms["I"]["fixed_mean_upper_ms"] - arms["L"]["fixed_mean_upper_ms"],
             "i_minus_b_timely_fraction": arms["I"]["fixed_timely_fraction"] - arms["B"]["fixed_timely_fraction"]})
-    status = "PASS" if len(rows) == 72 and len(blocks) == 24 and not failures else "INVALID_FOR_INFERENCE"
+    status = ("PASS" if len(rows) == 72 and len(blocks) == 24 and not failures and
+              all(row["scope"] == "X_CONFIRMATORY" for row in rows) else "INVALID_FOR_INFERENCE")
     qc = {"schema": "pluto.file02.x10_qc.v1", "status": status, "n_planned": 72,
           "n_valid": len(rows), "n_blocks": len(blocks), "failures": failures,
           "raw_manifest_sha256": manifest, "plan_sha256": common.digest(session / "plan.json")}
