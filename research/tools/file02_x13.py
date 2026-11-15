@@ -220,7 +220,8 @@ def audit_run(raw, job, top):
         cpu.append(last-first)
         observer = x10.read_jsonl(run / f"observer-{node}.jsonl")
         require(len(observer) >= 2 and any((s.get("application_process") or {}).get("pid") ==
-                                            nodes[node]["app_pid"] for s in observer),
+                                            nodes[node]["app_pid"] for s in observer) and
+                all(s.get("dropped_samples") == 0 for s in observer),
                 "X13 observer/PID mismatch")
     fixed, latencies = [], []
     windows = [{"fixed": 0, "background": 0, "bytes": 0} for _ in range(12)]
@@ -253,6 +254,9 @@ def audit_run(raw, job, top):
             observed = by_commit.get(planned["id"])
             require(observed and observed["sha256"] == digest and observed["height"] >= 1 and
                     len(observed.get("per_validator_seen_monotonic_ns", [])) == 4 and
+                    all(isinstance(stamp, int) and stamp > 0 for stamp in
+                        observed["per_validator_seen_monotonic_ns"]) and
+                    len(observed.get("per_validator_seen_utc", [])) == 4 and
                     observed["all_four_seen_monotonic_ns"] ==
                     max(observed["per_validator_seen_monotonic_ns"]),
                     "X13 valid all-four observation")

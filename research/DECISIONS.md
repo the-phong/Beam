@@ -1,5 +1,27 @@
 # Architectural decision log
 
+## D-046 — X18 bounded mechanism/service engineering disposition (2026-11-15)
+
+The [X18 evidence decision](evidence/file02/mechanism/MECHANISM_GATE_DECISION.md)
+proposes **CONDITIONAL GO** for reporting measured resource and service
+effects on four validators sharing one host with validator-0 loopback RPC.
+X10's new 24-block primary I−B mean first-all-four observation upper-bound
+effect is +60.03 ms, 95% CI [+39.51,+81.54], inside the prospectively
+registered ±100-ms research margin; every fixed H in X10/X13 met the
+unchanged 3-s endpoint. X13's 20/23/25-tx/s sensitivity did not observe a
+knee. Process CPU, accepted mempool and relay differ by workload, while
+stage CPU, full queue, observer self CPU and a localized bottleneck remain
+unavailable. X07 and X16 boxes remain PARTIAL/unchecked.
+
+This is an **engineering disposition pending independent Controller/Owner
+Gate acceptance**, not a new authorization. The original early service-
+degradation RQ2 target is `NOT ESTABLISHED` because no qualifying event was
+measured; RQ3 is `NOT_RUN`. D01–D13 and ML remain closed. No DoS,
+distributed-network, exact-commit, P2P-origin, independent-host, universal
+equivalence or capacity claim is made. The interrupted X13 raw session is
+quarantined for manifest mismatch and excluded from all estimates. Accepted
+RQ1/RQ1b definitions, historical raw and S06 caps remain unchanged.
+
 ## D-045 — Open a bounded mechanism/service measurement addendum (2026-11-14)
 
 After PR #28 merged into `test-mainet` at

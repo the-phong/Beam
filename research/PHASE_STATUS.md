@@ -1,4 +1,26 @@
-# Phase status — 2026-11-14
+# Phase status — 2026-11-15
+
+## X01–X18 engineering closeout, independent Gate review pending
+
+[D-046](DECISIONS.md) records the bounded X18 technical disposition.
+G00.1–G00.4 are complete after PR #28 merged at
+`da46f0cc4f87548825d9768d9242e346c17bb137`. X01–X06, X08–X15,
+X17–X18 have evidenced outputs in the outside master checklist; X07 and
+X16 remain **PARTIAL/unchecked** because full queue residence,
+network-stage CPU, observer self CPU and exact bottleneck attribution are
+unavailable. X18's decision package is ready for Controller/Owner review;
+the technical tick does not mean independent Gate acceptance.
+
+New X10 24-block/72-network L/B/I and X13 12-block/36-network
+20/23/25-tx/s sessions passed QC and raw verification. X10's primary
+I−B observation upper-bound effect was +60.03 ms, CI [+39.51,+81.54]
+inside the registered ±100-ms research margin. Every fixed H in the new
+sessions met the 3-s endpoint; no knee or qualifying sustained degradation
+was observed. The first full X13 attempt was interrupted and quarantined
+after a post-manifest generator write; no estimate uses it. RQ2 early
+degradation is `NOT ESTABLISHED`, RQ3 `NOT_RUN`. No D/ML, DoS,
+independent-host or P2P-origin conclusion is opened. This research branch
+requires independent review and has not been merged into `test-mainet`.
 
 ## Current mechanism/service extension authority
 

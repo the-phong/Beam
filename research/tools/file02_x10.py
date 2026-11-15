@@ -267,7 +267,8 @@ def audit_run(raw, job, top_plan):
                            resources[0]["user_cpu_ns"] - resources[0]["system_cpu_ns"])
         observed = read_jsonl(run / f"observer-{node}.jsonl")
         require(len(observed) >= 2 and any((item.get("application_process") or {}).get("pid") ==
-                                            nodes[node]["app_pid"] for item in observed),
+                                            nodes[node]["app_pid"] for item in observed) and
+                all(item.get("dropped_samples") == 0 for item in observed),
                 "X10 observer app PID mismatch")
     fixed, latencies, windows = [], [], [{"fixed": 0, "background": 0, "bytes": 0} for _ in range(12)]
     invalid_service_ns, ml_stage_ns = [], []
