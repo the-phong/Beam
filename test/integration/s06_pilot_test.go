@@ -311,14 +311,18 @@ func (p *s06Network) startObservers(t *testing.T, c load.Config) {
 		}
 		n := &p.n.nodes[i]
 		rpc := fmt.Sprintf("http://127.0.0.1:%d", n.ports.RPC)
+		appPID := os.Getpid()
+		if p.appProcesses[i] != nil {
+			appPID = p.appProcesses[i].Process.Pid
+		}
 		cmd := exec.Command(observer, "-rpc", rpc, "-metrics", fmt.Sprintf("http://127.0.0.1:%d", p.metricsPorts[i]),
-			"-comet-pid", fmt.Sprint(n.pid), "-app-pid", fmt.Sprint(os.Getpid()), "-interval", fmt.Sprintf("%dms", c.Network.CollectorIntervalMS), "-count", "0")
+			"-comet-pid", fmt.Sprint(n.pid), "-app-pid", fmt.Sprint(appPID), "-interval", fmt.Sprintf("%dms", c.Network.CollectorIntervalMS), "-count", "0")
 		cmd.Stdout, cmd.Stderr = out, stderr
 		if err := cmd.Start(); err != nil {
 			t.Fatal(err)
 		}
 		p.observers[i], p.observerLogs[i], p.observerErrs[i] = cmd, out, stderr
-		p.nodes[i] = load.WatchedNode{RPC: rpc, ObserverFile: outPath, ObserverPID: cmd.Process.Pid, CometPID: n.pid, AppPID: os.Getpid()}
+		p.nodes[i] = load.WatchedNode{RPC: rpc, ObserverFile: outPath, ObserverPID: cmd.Process.Pid, CometPID: n.pid, AppPID: appPID}
 	}
 }
 
