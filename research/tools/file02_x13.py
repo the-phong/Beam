@@ -33,9 +33,9 @@ def require(ok, why):
 
 
 def schedule():
-    orders = [
+    orders = [list(order) for order in [
         (20, 23, 25), (20, 25, 23), (23, 20, 25),
-        (23, 25, 20), (25, 20, 23), (25, 23, 20)] * 2
+        (23, 25, 20), (25, 20, 23), (25, 23, 20)] * 2]
     random.Random(SEED).shuffle(orders)
     jobs = [{"block": block, "order": order, "rate": rate,
              "run_id": f"X13-b{block:02d}-r{rate}"}
