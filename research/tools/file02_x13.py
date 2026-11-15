@@ -11,9 +11,11 @@ import os
 from pathlib import Path
 import platform
 import random
+import signal
 import statistics
 import subprocess
 import sys
+import time
 from uuid import uuid4
 
 import file02_common as common
@@ -389,11 +391,34 @@ def execute(qa=False):
         completed = subprocess.run(["go", "test", "-tags", "integration fourval", "./test/integration",
                                     "-run", "^TestFile02X13Sensitivity$", "-timeout", "7200s", "-count=1", "-v"],
                                    cwd=ROOT, env=env, stdout=stream, stderr=subprocess.STDOUT, timeout=7300)
+    quiesce_session_loads(session)
     manifest = common.freeze_raw(raw)
     qc, aggregate = write_outputs(session, plan)
     print(f"X13_SESSION={session} INTEGRATION_EXIT={completed.returncode} QC={qc['status']} "
           f"KNEE={aggregate['knee_status']} RAW_MANIFEST={manifest}")
     return 0 if completed.returncode == 0 and qc["status"] == ("QA_ONLY" if qa else "PASS") else 2
+
+
+def quiesce_session_loads(session):
+    """Prevent a detached load generator writing into raw after freeze."""
+    matched = []
+    for path in Path("/proc").glob("[0-9]*/cmdline"):
+        try:
+            command = path.read_bytes().replace(b"\0", b" ").decode(errors="replace")
+        except OSError:
+            continue
+        if str(session) in command and str(ROOT / "build/profile-load") in command:
+            matched.append(int(path.parent.name))
+    for pid in matched:
+        try:
+            os.kill(pid, signal.SIGTERM)
+        except ProcessLookupError:
+            pass
+    for _ in range(100):
+        if not any(Path(f"/proc/{pid}").exists() for pid in matched):
+            return
+        time.sleep(.1)
+    require(False, f"X13 load process still active after integration exit: {matched}")
 
 
 def verify(value):

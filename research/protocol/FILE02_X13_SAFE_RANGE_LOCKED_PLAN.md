@@ -41,3 +41,23 @@ QC, aggregate, decision and independent verifier outputs. The report must
 say **NOT_OBSERVED_WITHIN_SAFE_RANGE** for a knee unless the predeclared
 capacity criterion of R15 is actually met; X13 does not establish
 sustainable throughput, saturation or DoS.
+
+## Prospective operational restart after an Owner interruption
+
+The first full 36-network attempt was interrupted by the Owner during
+`X13-b08-r23`, after 24 complete QA-passing runs. The 12 remaining runs are
+absent or incomplete. Its whole-session QC is `INVALID_FOR_INFERENCE` and
+no rate effect/CI was computed. A detached generator later wrote to one
+result file after the freeze step; the recorded manifest hash for that file
+is now different from its bytes. This session is quarantined and **must not
+be repaired, rehashed or analyzed**. See `X13_INTERRUPTED_ATTEMPT.md`.
+
+Before another send, the runner is amended to wait for or terminate only
+its own detached generator processes before freezing raw. A completely new
+12-block/36-network session may be run from a new source commit with the
+same rates, seeds, balance, endpoints, safety caps, sample size, estimands,
+CI, QC and decision rules above. This is a whole-session restart caused by
+explicit interruption and raw integrity failure, not selective replacement
+of a rate arm. All prior QA and interrupted-session data remain excluded.
+Any failure in the new session is retained; no further restart is inferred
+by this amendment.
