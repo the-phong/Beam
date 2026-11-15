@@ -1,0 +1,299 @@
+{
+  "cases": [
+    {
+      "case_id": "A01",
+      "exploratory_attack_minus_benign_mean_upper_ms": 45.31936982870369,
+      "exploratory_mean_ci95_ms": [
+        20.96858900086805,
+        70.29218551886568
+      ],
+      "exploratory_p50_ci95_ms": [
+        18.625633743750033,
+        70.67167529375004
+      ],
+      "exploratory_p95_ci95_ms": [
+        9.999174604270767,
+        82.1030977279165
+      ],
+      "invalid_mean_checktx_wall_ci95_ns_exploratory": [
+        6345.939558531747,
+        8209.933705357143
+      ],
+      "invalid_mean_checktx_wall_ns": 7250.778273809524,
+      "n_networks": 24,
+      "n_pairs": 12,
+      "original_3s_benign_minus_attack_fraction": 0.0,
+      "original_3s_ci95_fraction": [
+        0.0,
+        0.0
+      ],
+      "raw_manifest_sha256": "e8ea05c17bdb405e0339e895cd0f562a1c55ad7eae29745965fa54124f10c98a",
+      "run_ids": [
+        "A01-p00-benign",
+        "A01-p00-attack",
+        "A01-p01-attack",
+        "A01-p01-benign",
+        "A01-p02-benign",
+        "A01-p02-attack",
+        "A01-p03-attack",
+        "A01-p03-benign",
+        "A01-p04-attack",
+        "A01-p04-benign",
+        "A01-p05-benign",
+        "A01-p05-attack",
+        "A01-p06-benign",
+        "A01-p06-attack",
+        "A01-p07-attack",
+        "A01-p07-benign",
+        "A01-p08-benign",
+        "A01-p08-attack",
+        "A01-p09-attack",
+        "A01-p09-benign",
+        "A01-p10-benign",
+        "A01-p10-attack",
+        "A01-p11-attack",
+        "A01-p11-benign"
+      ],
+      "source_commit": "657eb20bcd7d6f40dd9903c11a67b00a3c254570",
+      "stage_cpu_ns": null,
+      "stage_cpu_reason": "UNAVAILABLE_STAGE_CPU_ATTRIBUTION"
+    },
+    {
+      "case_id": "A03",
+      "exploratory_attack_minus_benign_mean_upper_ms": 52.70499744444447,
+      "exploratory_mean_ci95_ms": [
+        25.15059734071186,
+        80.80203690535299
+      ],
+      "exploratory_p50_ci95_ms": [
+        37.97710972916663,
+        95.1559737604167
+      ],
+      "exploratory_p95_ci95_ms": [
+        18.048370211145848,
+        85.22079001145828
+      ],
+      "invalid_mean_checktx_wall_ci95_ns_exploratory": [
+        176483.76247519843,
+        182276.75672123017
+      ],
+      "invalid_mean_checktx_wall_ns": 179207.94345238095,
+      "n_networks": 24,
+      "n_pairs": 12,
+      "original_3s_benign_minus_attack_fraction": 0.0,
+      "original_3s_ci95_fraction": [
+        0.0,
+        0.0
+      ],
+      "raw_manifest_sha256": "46855a3034478e02dc49e20d1815b4e47da18e21dd24fc95e92b0ad9f268c9a1",
+      "run_ids": [
+        "A03-p00-attack",
+        "A03-p00-benign",
+        "A03-p01-attack",
+        "A03-p01-benign",
+        "A03-p02-benign",
+        "A03-p02-attack",
+        "A03-p03-attack",
+        "A03-p03-benign",
+        "A03-p04-benign",
+        "A03-p04-attack",
+        "A03-p05-benign",
+        "A03-p05-attack",
+        "A03-p06-benign",
+        "A03-p06-attack",
+        "A03-p07-benign",
+        "A03-p07-attack",
+        "A03-p08-attack",
+        "A03-p08-benign",
+        "A03-p09-benign",
+        "A03-p09-attack",
+        "A03-p10-attack",
+        "A03-p10-benign",
+        "A03-p11-attack",
+        "A03-p11-benign"
+      ],
+      "source_commit": "5bc784d6f7db0ee616351288f15806bc9a8fbb2c",
+      "stage_cpu_ns": null,
+      "stage_cpu_reason": "UNAVAILABLE_STAGE_CPU_ATTRIBUTION"
+    },
+    {
+      "case_id": "A04",
+      "exploratory_attack_minus_benign_mean_upper_ms": 56.68153078472219,
+      "exploratory_mean_ci95_ms": [
+        37.43442239635418,
+        77.68648618443278
+      ],
+      "exploratory_p50_ci95_ms": [
+        34.889272947916595,
+        90.12864135833324
+      ],
+      "exploratory_p95_ci95_ms": [
+        34.444332833541644,
+        102.70221028229157
+      ],
+      "invalid_mean_checktx_wall_ci95_ns_exploratory": [
+        385241.8771825397,
+        397166.6179811508
+      ],
+      "invalid_mean_checktx_wall_ns": 391314.39186507935,
+      "n_networks": 24,
+      "n_pairs": 12,
+      "original_3s_benign_minus_attack_fraction": 0.0,
+      "original_3s_ci95_fraction": [
+        0.0,
+        0.0
+      ],
+      "raw_manifest_sha256": "41d2bf5bef4aef6cc3c01720710a80b84704952da2c6458e3c0f68194c29c37d",
+      "run_ids": [
+        "A04-p00-attack",
+        "A04-p00-benign",
+        "A04-p01-benign",
+        "A04-p01-attack",
+        "A04-p02-benign",
+        "A04-p02-attack",
+        "A04-p03-attack",
+        "A04-p03-benign",
+        "A04-p04-attack",
+        "A04-p04-benign",
+        "A04-p05-benign",
+        "A04-p05-attack",
+        "A04-p06-attack",
+        "A04-p06-benign",
+        "A04-p07-benign",
+        "A04-p07-attack",
+        "A04-p08-attack",
+        "A04-p08-benign",
+        "A04-p09-attack",
+        "A04-p09-benign",
+        "A04-p10-benign",
+        "A04-p10-attack",
+        "A04-p11-benign",
+        "A04-p11-attack"
+      ],
+      "source_commit": "e54ac6c587798cfc5f927009138584a85b1551c7",
+      "stage_cpu_ns": null,
+      "stage_cpu_reason": "UNAVAILABLE_STAGE_CPU_ATTRIBUTION"
+    },
+    {
+      "case_id": "A05",
+      "exploratory_attack_minus_benign_mean_upper_ms": 55.827683201388915,
+      "exploratory_mean_ci95_ms": [
+        37.93440646831601,
+        72.44213818052657
+      ],
+      "exploratory_p50_ci95_ms": [
+        48.12622169791664,
+        93.64033601562485
+      ],
+      "exploratory_p95_ci95_ms": [
+        54.865853005624864,
+        82.67840346270826
+      ],
+      "invalid_mean_checktx_wall_ci95_ns_exploratory": [
+        433206.3001364087,
+        443298.43100198405
+      ],
+      "invalid_mean_checktx_wall_ns": 438276.5128968254,
+      "n_networks": 24,
+      "n_pairs": 12,
+      "original_3s_benign_minus_attack_fraction": 0.0,
+      "original_3s_ci95_fraction": [
+        0.0,
+        0.0
+      ],
+      "raw_manifest_sha256": "b90bc2b95ac43388d9d7db8e85cfa3a2dc052258c421623a56cbe2d1ccc1026b",
+      "run_ids": [
+        "A05-p00-benign",
+        "A05-p00-attack",
+        "A05-p01-attack",
+        "A05-p01-benign",
+        "A05-p02-benign",
+        "A05-p02-attack",
+        "A05-p03-attack",
+        "A05-p03-benign",
+        "A05-p04-attack",
+        "A05-p04-benign",
+        "A05-p05-benign",
+        "A05-p05-attack",
+        "A05-p06-benign",
+        "A05-p06-attack",
+        "A05-p07-benign",
+        "A05-p07-attack",
+        "A05-p08-attack",
+        "A05-p08-benign",
+        "A05-p09-benign",
+        "A05-p09-attack",
+        "A05-p10-attack",
+        "A05-p10-benign",
+        "A05-p11-attack",
+        "A05-p11-benign"
+      ],
+      "source_commit": "4a616ef23ea165f64b0026c24130a3801bc21f5c",
+      "stage_cpu_ns": null,
+      "stage_cpu_reason": "UNAVAILABLE_STAGE_CPU_ATTRIBUTION"
+    },
+    {
+      "case_id": "A08",
+      "exploratory_attack_minus_benign_mean_upper_ms": 80.07860941203701,
+      "exploratory_mean_ci95_ms": [
+        47.5193774659722,
+        111.69327415662615
+      ],
+      "exploratory_p50_ci95_ms": [
+        36.54841624583338,
+        96.87528770520842
+      ],
+      "exploratory_p95_ci95_ms": [
+        37.17012697479167,
+        124.93818863802078
+      ],
+      "invalid_mean_checktx_wall_ci95_ns_exploratory": [
+        283361.45617559523,
+        290989.0292286706
+      ],
+      "invalid_mean_checktx_wall_ns": 287283.8035714286,
+      "n_networks": 24,
+      "n_pairs": 12,
+      "original_3s_benign_minus_attack_fraction": 0.0,
+      "original_3s_ci95_fraction": [
+        0.0,
+        0.0
+      ],
+      "raw_manifest_sha256": "18eed7952c91b5cff08a418055a0a742ffaeb3f70e06f94f115f4e99e5ad8b4d",
+      "run_ids": [
+        "A08-p00-attack",
+        "A08-p00-benign",
+        "A08-p01-benign",
+        "A08-p01-attack",
+        "A08-p02-attack",
+        "A08-p02-benign",
+        "A08-p03-attack",
+        "A08-p03-benign",
+        "A08-p04-benign",
+        "A08-p04-attack",
+        "A08-p05-attack",
+        "A08-p05-benign",
+        "A08-p06-benign",
+        "A08-p06-attack",
+        "A08-p07-benign",
+        "A08-p07-attack",
+        "A08-p08-attack",
+        "A08-p08-benign",
+        "A08-p09-attack",
+        "A08-p09-benign",
+        "A08-p10-benign",
+        "A08-p10-attack",
+        "A08-p11-benign",
+        "A08-p11-attack"
+      ],
+      "source_commit": "1786e946b7bc02a97381e69282586777a775cad3",
+      "stage_cpu_ns": null,
+      "stage_cpu_reason": "UNAVAILABLE_STAGE_CPU_ATTRIBUTION"
+    }
+  ],
+  "continuous_measurement": "100-ms first-all-four block scan observation upper bound, not exact commit",
+  "independent_unit": "paired fresh four-validator network fixture, 12 pairs per class",
+  "no_cross_class_pooling": true,
+  "schema": "pluto.file02.x11_historical_class_contrasts.v1",
+  "status": "HISTORICAL_PREREGISTERED_3S_WITH_EXPLORATORY_CONTINUOUS_REANALYSIS"
+}
