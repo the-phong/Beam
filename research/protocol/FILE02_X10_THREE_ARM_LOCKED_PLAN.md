@@ -56,3 +56,27 @@ with `scope=QA_ONLY` to validate the dedicated-process wiring and file
 schema. Its data are frozen separately and excluded from all confirmatory
 contrasts. The confirmatory runner never sets that variable and requires
 all 72 networks.
+
+## Prospective operational amendment after an excluded incomplete session
+
+The first full attempt at source `e788570` stopped after `X10-b10-I`
+experienced a real 1-second send-rate QC miss (17 instead of 20 writes in
+window 8, despite 241 total writes). Its raw manifest
+`b75610e83449171baca36e315b5061f6965e9a7ba31d063ac3b0cd89566d662c`
+is preserved. The attempt ended at 31 QC-passing arms and has no primary
+CI or research decision. No per-block outcome estimate from that attempt
+was used to alter effect thresholds, margins, rates or sample size.
+
+Before any second full attempt, the harness is amended to **continue the
+entire 72-run locked schedule after a run-level QC failure**. Failed arms
+remain frozen and are never replaced. A block with a `RATE_MISS` arm is
+excluded as a whole. The per-run verifier must prove the failed run is
+specifically `RATE_MISS` with intact plan/source/config/total send counts;
+any safety stop, missing run, provenance error or raw corruption withholds
+inference. The session can be analyzed with 20–24 complete matched blocks
+and at most four excluded blocks, a minimum fixed *before* the second
+attempt. The same 20,000-resample bootstrap and ±100-ms margin apply;
+if achieved CI half-width exceeds 40 ms, precision target is missed and
+the practical-effect decision is marked inconclusive. All attempts and
+excluded blocks must appear in the public report. This amendment addresses
+execution completeness and QC, not an observed treatment effect.

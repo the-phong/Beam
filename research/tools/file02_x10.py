@@ -73,6 +73,7 @@ def prepare(session):
         "block_scan_interval_ms": 100, "ci_seed": SEED, "ci_resamples": 20000,
         "primary_contrast": "I_minus_B_mean_first_all_four_observation_upper_ms",
         "margin_ms": 100, "target_halfwidth_ms": 40,
+        "qc_exclusion_policy": "rate_miss_only_min20_blocks_no_replacement",
         "topology": "four_validator_single_physical_host_loopback_RPC_validator0",
         "safety_caps": [25, 65536, 16, 60]}
     r01.write_new(session / "plan.json", plan)
@@ -95,6 +96,9 @@ def validate_plan(session, plan):
             plan.get("safety_caps") == [25, 65536, 16, 60] and
             plan.get("ci_resamples") == 20000 and plan.get("margin_ms") == 100,
             "X10 design drift")
+    if "qc_exclusion_policy" in plan:
+        require(plan["qc_exclusion_policy"] == "rate_miss_only_min20_blocks_no_replacement",
+                "X10 exclusion policy drift")
 
 
 def bind_run_plan(run, network_root):
@@ -291,7 +295,7 @@ def audit_run(raw, job, top_plan):
                     len(observed.get("per_validator_seen_utc", [])) == 4,
                     "X10 per-validator observation")
         if planned["scenario"] == "fixed_legitimate":
-            fixed.append((digest, planned["offset_ns"], planned["bytes_hex"]))
+            fixed.append([digest, planned["offset_ns"], planned["bytes_hex"]])
             if planned["offset_ns"] >= 1_000_000_000:
                 seen = by_commit[planned["id"]]["all_four_seen_monotonic_ns"]
                 require(seen >= actual["actual_send_monotonic_ns"], "X10 monotonic observation before send")
@@ -319,22 +323,73 @@ def audit_run(raw, job, top_plan):
         "app_process_cpu_delta_ns": process_cpu, "windows": windows, "qc_status": "PASS"}
 
 
+def rate_miss_exclusion(raw, job, top_plan):
+    run = raw / "runs" / job["run_id"]
+    try:
+        meta, workload, result = (common.read_json(run / name) for name in
+                                  ("metadata.json", "plan.json", "result.json"))
+        expected_total = 73 if job["condition"] == "L" else 241
+        expected_rate = 6 if job["condition"] == "L" else 20
+        if not (meta.get("source_commit") == top_plan["source_commit"] and
+                meta.get("source_tree") == top_plan["source_tree"] and
+                meta.get("scope") == "X_CONFIRMATORY" and
+                meta.get("run_id") == job["run_id"] and
+                meta.get("block") == job["block"] and meta.get("order") == job["order"] and
+                result.get("status") == "RATE_MISS" and
+                result.get("run_id") == workload.get("run_id") == job["run_id"] and
+                result.get("config_sha256") == workload.get("config_sha256") ==
+                top_plan["config_sha256"] == common.digest(run / "config.json") and
+                result.get("plan_sha256") == common.digest(run / "plan.json") and
+                result.get("genesis_sha256") == workload.get("genesis_sha256") ==
+                common.digest(run / "genesis.bin") and
+                result.get("planned_count") == result.get("actual_send_count") == expected_total and
+                result.get("planned_bytes") == result.get("actual_send_bytes") ==
+                expected_total * WIRE_BYTES and
+                len(result.get("events", [])) == expected_total and
+                all(not e.get("submission_error") for e in result["events"]) and
+                "RATE_MISS" in (run / "load.log").read_text()):
+            return None
+        windows = [0] * 12
+        for event in result["events"]:
+            actual = event.get("actual_offset_ns")
+            if not isinstance(actual, int):
+                return None
+            if actual >= 1_000_000_000:
+                index = (actual - 1_000_000_000) // 1_000_000_000
+                if 0 <= index < 12:
+                    windows[index] += 1
+        if not any(count < .9 * expected_rate for count in windows):
+            return None
+        return {"run_id": job["run_id"], "block": job["block"],
+                "reason": "RATE_MISS_SOCKET_WRITE_WINDOW", "achieved_windows": windows}
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+
+
 def derive(session, plan):
     raw = session / "raw"
     manifest = common.verify_raw(raw)
-    rows, failures = [], []
+    rows, failures, exclusions = [], [], []
+    allow_exclusions = (plan.get("qc_exclusion_policy") ==
+                        "rate_miss_only_min20_blocks_no_replacement" and
+                        all((raw / "runs" / job["run_id"]).is_dir() for job in schedule()["jobs"]))
     for job in schedule()["jobs"]:
         try:
             rows.append(audit_run(raw, job, plan))
         except (ValueError, KeyError, TypeError, OSError, json.JSONDecodeError, AssertionError) as exc:
-            failures.append({"run_id": job["run_id"], "reason": str(exc)})
+            excluded = rate_miss_exclusion(raw, job, plan) if allow_exclusions else None
+            if excluded:
+                exclusions.append(excluded)
+            else:
+                failures.append({"run_id": job["run_id"], "reason": str(exc)})
     blocks = []
     by_block = {index: {} for index in range(24)}
     for row in rows:
         by_block[row["block"]][row["condition"]] = row
     for block, arms in by_block.items():
         if set(arms) != {"L", "B", "I"}:
-            failures.append({"block": block, "reason": "missing arm; block excluded without replacement"})
+            if not allow_exclusions or block not in {item["block"] for item in exclusions}:
+                failures.append({"block": block, "reason": "missing arm; block excluded without replacement"})
             continue
         if (len({row["genesis_sha256"] for row in arms.values()}) != 1 or
                 len({json.dumps(row["fixed_stream"]) for row in arms.values()}) != 1):
@@ -345,17 +400,27 @@ def derive(session, plan):
             "i_minus_l_mean_upper_ms": arms["I"]["fixed_mean_upper_ms"] - arms["L"]["fixed_mean_upper_ms"],
             "i_minus_b_timely_fraction": arms["I"]["fixed_timely_fraction"] - arms["B"]["fixed_timely_fraction"]})
     status = ("PASS" if len(rows) == 72 and len(blocks) == 24 and not failures and
-              all(row["scope"] == "X_CONFIRMATORY" for row in rows) else "INVALID_FOR_INFERENCE")
+              all(row["scope"] == "X_CONFIRMATORY" for row in rows) else
+              "PASS_WITH_EXCLUSIONS" if allow_exclusions and not failures and
+              20 <= len(blocks) < 24 and len(rows) + len(exclusions) == 72 and
+              len({item["block"] for item in exclusions}) == 24 - len(blocks) and
+              all(row["scope"] == "X_CONFIRMATORY" for row in rows)
+              else "INVALID_FOR_INFERENCE")
     qc = {"schema": "pluto.file02.x10_qc.v1", "status": status, "n_planned": 72,
           "n_valid": len(rows), "n_blocks": len(blocks), "failures": failures,
           "raw_manifest_sha256": manifest, "plan_sha256": common.digest(session / "plan.json")}
+    if plan.get("qc_exclusion_policy"):
+        qc["excluded"] = exclusions
+        qc["excluded_blocks"] = sorted({item["block"] for item in exclusions})
     primary = [block["i_minus_b_mean_upper_ms"] for block in blocks]
     secondary = [block["i_minus_l_mean_upper_ms"] for block in blocks]
-    if status == "PASS":
+    if status in ("PASS", "PASS_WITH_EXCLUSIONS"):
         primary_ci = paired_ci(primary)
         secondary_ci = paired_ci(secondary)
         effect = statistics.mean(primary)
-        if primary_ci[0] > 100:
+        if (primary_ci[1] - primary_ci[0]) / 2 > 40:
+            decision = "INCONCLUSIVE_PRECISION_TARGET_MISSED"
+        elif primary_ci[0] > 100:
             decision = "RESEARCH_RELEVANT_LATENCY_EFFECT"
         elif primary_ci[0] > 0:
             decision = "POSITIVE_DIRECTION_PRACTICAL_SIZE_INCONCLUSIVE"
@@ -367,18 +432,21 @@ def derive(session, plan):
     else:
         primary_ci = secondary_ci = effect = None
         decision = "WITHHELD_QC_FAILURE"
-    aggregate = {"schema": "pluto.file02.x10_aggregate.v1", "status": "ANALYZED" if status == "PASS" else "WITHHELD_QC_FAILURE",
+    analyzed = status in ("PASS", "PASS_WITH_EXCLUSIONS")
+    aggregate = {"schema": "pluto.file02.x10_aggregate.v1", "status": "ANALYZED" if analyzed else "WITHHELD_QC_FAILURE",
         "n_blocks": len(blocks), "primary_i_minus_b_mean_upper_ms": effect, "primary_ci95_ms": primary_ci,
-        "i_minus_l_mean_upper_ms": statistics.mean(secondary) if status == "PASS" else None,
+        "i_minus_l_mean_upper_ms": statistics.mean(secondary) if analyzed else None,
         "i_minus_l_ci95_ms": secondary_ci, "target_halfwidth_ms": 40,
-        "achieved_halfwidth_ms": (primary_ci[1]-primary_ci[0])/2 if status == "PASS" else None,
+        "achieved_halfwidth_ms": (primary_ci[1]-primary_ci[0])/2 if analyzed else None,
         "original_3000ms_i_minus_b_fraction": statistics.mean(
-            block["i_minus_b_timely_fraction"] for block in blocks) if status == "PASS" else None,
-        "original_3000ms_ci95_fraction": paired_ci([b["i_minus_b_timely_fraction"] for b in blocks]) if status == "PASS" else None,
-        "decision": decision, "blocks": blocks if status == "PASS" else None,
+            block["i_minus_b_timely_fraction"] for block in blocks) if analyzed else None,
+        "original_3000ms_ci95_fraction": paired_ci([b["i_minus_b_timely_fraction"] for b in blocks]) if analyzed else None,
+        "decision": decision, "blocks": blocks if analyzed else None,
         "cpu_crypto_ns": None, "cpu_crypto_reason": "UNAVAILABLE_STAGE_CPU_ATTRIBUTION",
         "exact_commit_latency_ms": None, "exact_commit_reason": "UNAVAILABLE_EXACT_COMMIT_TIMESTAMP",
         "raw_manifest_sha256": manifest, "plan_sha256": qc["plan_sha256"]}
+    if plan.get("qc_exclusion_policy"):
+        aggregate["excluded_blocks"] = qc["excluded_blocks"]
     return rows, qc, aggregate
 
 
@@ -441,7 +509,8 @@ def execute():
     qc, aggregate = write_outputs(session, plan)
     print(f"X10_SESSION={session} INTEGRATION_EXIT={completed.returncode} QC={qc['status']} "
           f"DECISION={aggregate['decision']} RAW_MANIFEST={manifest}")
-    return 0 if completed.returncode == 0 and qc["status"] == "PASS" else 2
+    return 0 if qc["status"] in ("PASS", "PASS_WITH_EXCLUSIONS") and (
+        completed.returncode == 0 or qc["status"] == "PASS_WITH_EXCLUSIONS") else 2
 
 
 def verify(session):

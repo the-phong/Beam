@@ -49,6 +49,7 @@ func TestFile02X10ThreeArm(t *testing.T) {
 	} else if os.Getenv("FILE02_X10_QA_LIMIT") != "" {
 		t.Fatal("unsupported X10 QA limit")
 	}
+	failedArms := 0
 	for block := 0; block < blocks; block++ {
 		fixture, err := load.NewPilotFixture("pluto-file02-x10", 241)
 		if err != nil {
@@ -76,9 +77,13 @@ func TestFile02X10ThreeArm(t *testing.T) {
 						"commit_observer_mode": "block_scan",
 					})
 			}); !passed {
-				t.Fatal("X10 stopped after failed arm; no replacement")
+				failedArms++
+				t.Logf("X10 retained failed arm %s; block excluded if QC fails; no replacement", job.RunID)
 			}
 			time.Sleep(2 * time.Second)
 		}
+	}
+	if failedArms != 0 {
+		t.Errorf("X10 completed schedule with %d failed arms retained for QC", failedArms)
 	}
 }
