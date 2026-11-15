@@ -197,6 +197,19 @@ def paired_ci(values):
     return [percentile(means, .025), percentile(means, .975)]
 
 
+def decide_mean_effect(ci, all_timely):
+    require(len(ci) == 2 and ci[0] <= ci[1], "invalid X10 interval")
+    if (ci[1] - ci[0]) / 2 > 40:
+        return "INCONCLUSIVE_PRECISION_TARGET_MISSED"
+    if ci[0] > 100:
+        return "RESEARCH_RELEVANT_LATENCY_EFFECT"
+    if -100 < ci[0] and ci[1] < 100 and all_timely:
+        return "NO_RESEARCH_RELEVANT_MEAN_EFFECT_WITHIN_REGISTERED_MARGIN"
+    if ci[0] > 0:
+        return "POSITIVE_DIRECTION_PRACTICAL_SIZE_INCONCLUSIVE"
+    return "INCONCLUSIVE_CONTINUOUS_EFFECT"
+
+
 def read_jsonl(path):
     return [json.loads(line) for line in Path(path).read_text().splitlines() if line.strip()]
 
@@ -418,17 +431,7 @@ def derive(session, plan):
         primary_ci = paired_ci(primary)
         secondary_ci = paired_ci(secondary)
         effect = statistics.mean(primary)
-        if (primary_ci[1] - primary_ci[0]) / 2 > 40:
-            decision = "INCONCLUSIVE_PRECISION_TARGET_MISSED"
-        elif primary_ci[0] > 100:
-            decision = "RESEARCH_RELEVANT_LATENCY_EFFECT"
-        elif primary_ci[0] > 0:
-            decision = "POSITIVE_DIRECTION_PRACTICAL_SIZE_INCONCLUSIVE"
-        elif primary_ci[0] > -100 and primary_ci[1] < 100 and all(
-                row["fixed_timely_count"] == 72 for row in rows):
-            decision = "NO_RESEARCH_RELEVANT_MEAN_EFFECT_WITHIN_REGISTERED_MARGIN"
-        else:
-            decision = "INCONCLUSIVE_CONTINUOUS_EFFECT"
+        decision = decide_mean_effect(primary_ci, all(row["fixed_timely_count"] == 72 for row in rows))
     else:
         primary_ci = secondary_ci = effect = None
         decision = "WITHHELD_QC_FAILURE"
