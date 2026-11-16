@@ -184,6 +184,12 @@ def audit(session):
             (series[-1]["user_cpu_ns"]+series[-1]["system_cpu_ns"]-
              series[0]["user_cpu_ns"]-series[0]["system_cpu_ns"])/1e9 for series in resources]
         results[mode]["oracle"] = oracle
+        results[mode]["genesis_sha256"] = result["genesis_sha256"]
+        results[mode]["planned_tx_sha256"] = [event["sha256"] for event in workload["events"]]
+    require(results["OFF"]["genesis_sha256"] == results["ON"]["genesis_sha256"] and
+            results["OFF"]["planned_tx_sha256"] == results["ON"]["planned_tx_sha256"] and
+            results["OFF"]["oracle"]["app_hash"] == results["ON"]["oracle"]["app_hash"],
+            "ON/OFF fixture/genesis/AppHash mismatch")
     on = results["ON"]["intervals"]
     summary = {"schema": "pluto.file02.x07_qa_result.v1", "status": "PASS_QA_ONLY",
         "raw_manifest_sha256": manifest, "plan_sha256": common.digest(session / "plan.json"),
@@ -198,9 +204,16 @@ def audit(session):
         "cross_process_reason": "UNAVAILABLE_CALIBRATED_APP_COMET_CLOCK_BOUND",
         "note": "single ON/OFF QA pair; no inferential observer-overhead claim"}
     if all("rpc_to_app_ingress_ns" in x for x in on):
-        summary["cross_process_precise_queue_ns"] = statistics.mean(
+        # This interval includes precheck and transport work; it is not a
+        # pure queue residence and must never be labelled as one.
+        summary["schema"] = "pluto.file02.x07_qa_result.v2"
+        summary.pop("cross_process_precise_queue_ns")
+        summary.pop("cross_process_reason")
+        summary["rpc_to_app_ingress_ns_mean"] = statistics.mean(
             x["rpc_to_app_ingress_ns"] for x in on)
-        summary["cross_process_reason"] = None
+        summary["full_transaction_queue_ns"] = None
+        summary["full_transaction_queue_reason"] = "UNAVAILABLE_UNINSTRUMENTED_P2P_AND_CONSENSUS_QUEUE_SUBINTERVALS"
+        summary["supersedes"] = "x07_qa_result.json; prior derived label misidentified RPC-to-app interval as queue"
         summary["clock_semantics"] = "same-host Linux CLOCK_MONOTONIC; timestamp placement and tracer overhead remain measurement uncertainty"
     return summary
 
@@ -212,7 +225,8 @@ def main():
     args = parser.parse_args()
     try:
         result = audit(args.session)
-        target = Path(args.session) / "x07_qa_result.json"
+        target = Path(args.session) / ("x07_qa_result_v2.json" if
+            result["schema"].endswith(".v2") else "x07_qa_result.json")
         if args.command == "analyze":
             common.write_once(target, json.dumps(result, indent=2, sort_keys=True) + "\n")
         else:

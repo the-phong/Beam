@@ -28,16 +28,17 @@ func TestFile02X07TraceQA(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	fixture, err := load.NewPilotFixture("pluto-file02-x07", 241)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, _, lockedPlan, err := load.BuildX10TripletPlans(fixture, 0, config, hash)
+	if err != nil {
+		t.Fatal(err)
+	}
 	for _, mode := range []string{"OFF", "ON"} {
 		t.Run(mode, func(t *testing.T) {
-			fixture, err := load.NewPilotFixture("pluto-file02-x07", 241)
-			if err != nil {
-				t.Fatal(err)
-			}
-			_, _, plan, err := load.BuildX10TripletPlans(fixture, 0, config, hash)
-			if err != nil {
-				t.Fatal(err)
-			}
+			plan := lockedPlan
 			plan.RunID = fmt.Sprintf("X07-QA-I-%s", mode)
 			file02ExecuteQA(t, config, configPath, hash, fixture, researchv2.ProfileH,
 				filepath.Join(abs, "runs", plan.RunID), plan, map[string]any{
