@@ -89,6 +89,17 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 		} else {
 			t.Setenv("FILE02_X07_TRACE_ENABLED", "")
 		}
+		if metadata["case_id"] == "X16" {
+			stageMode, ok := metadata["stage_cpu_mode"].(string)
+			if !ok || stageMode != "ON" && stageMode != "OFF" {
+				t.Fatal("X16 stage CPU mode must be ON or OFF")
+			}
+			if stageMode == "ON" {
+				t.Setenv("FILE02_X16_STAGE_CPU_ENABLED", "1")
+			} else {
+				t.Setenv("FILE02_X16_STAGE_CPU_ENABLED", "")
+			}
+		}
 	}
 	if metadata["case_id"] == "X10" || metadata["case_id"] == "X13" || mechanismTraceCase {
 		pilot = startX05NetworkAt(t, c, fixture, profile, t.TempDir())

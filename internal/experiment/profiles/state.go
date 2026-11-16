@@ -6,6 +6,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"math"
+	"runtime"
 	"time"
 
 	"github.com/cloudflare/circl/sign/mldsa/mldsa44"
@@ -297,23 +298,61 @@ func EvaluateTrustedRecorded(s State, profile Profile, raw []byte, record func(S
 // is read exclusively when the optional observer is present; its values are
 // never used for validation, proposal selection or state transitions.
 func EvaluateTrustedObserved(s State, profile Profile, raw []byte, record func(Stage), duration func(Stage, time.Duration)) (State, Result, error) {
+	return evaluateTrustedObserved(s, profile, raw, record, duration, nil)
+}
+
+// EvaluateTrustedObservedCPU is a Linux measurement-only variant. It pins the
+// evaluating goroutine to one OS thread so stage CPU deltas refer to the same
+// CLOCK_THREAD_CPUTIME_ID. The callback receives nil when the clock fails.
+// Its output is never used for validation or state transitions.
+func EvaluateTrustedObservedCPU(s State, profile Profile, raw []byte, record func(Stage),
+	duration func(Stage, time.Duration), cpu func(Stage, *int64)) (State, Result, error) {
+	return evaluateTrustedObserved(s, profile, raw, record, duration, cpu)
+}
+
+func evaluateTrustedObserved(s State, profile Profile, raw []byte, record func(Stage),
+	duration func(Stage, time.Duration), cpu func(Stage, *int64)) (State, Result, error) {
 	if !s.trusted || !profile.Valid() {
 		return State{}, Result{}, ErrState
+	}
+	if cpu != nil {
+		runtime.LockOSThread()
+		defer runtime.UnlockOSThread()
 	}
 	visit := func(stage Stage) {
 		if record != nil {
 			record(stage)
 		}
 	}
-	visit(StageStructural)
 	var started time.Time
-	if duration != nil {
-		started = time.Now()
+	var cpuStarted int64
+	var cpuStartedOK bool
+	begin := func() {
+		if duration != nil {
+			started = time.Now()
+		}
+		if cpu != nil {
+			cpuStarted, cpuStartedOK = stageThreadCPU()
+		}
 	}
+	end := func(stage Stage) {
+		if cpu != nil {
+			finished, ok := stageThreadCPU()
+			if ok && cpuStartedOK && finished >= cpuStarted {
+				delta := finished - cpuStarted
+				cpu(stage, &delta)
+			} else {
+				cpu(stage, nil)
+			}
+		}
+		if duration != nil {
+			duration(stage, time.Since(started))
+		}
+	}
+	visit(StageStructural)
+	begin()
 	t, err := Parse(raw)
-	if duration != nil {
-		duration(StageStructural, time.Since(started))
-	}
+	end(StageStructural)
 	if err != nil {
 		return s, Result{CodeMalformed, StageStructural}, nil
 	}
@@ -330,82 +369,54 @@ func EvaluateTrustedObserved(s State, profile Profile, raw []byte, record func(S
 		return s, Result{CodeZeroAmount, StageAmount}, nil
 	}
 	visit(StageBinding)
-	if duration != nil {
-		started = time.Now()
-	}
+	begin()
 	sender, found := s.lookup(b0state.Address(t.Sender))
 	if !found {
-		if duration != nil {
-			duration(StageBinding, time.Since(started))
-		}
+		end(StageBinding)
 		return s, Result{CodeBadBinding, StageBinding}, nil
 	}
 	_, receiverFound := s.lookup(b0state.Address(t.Receiver))
-	if duration != nil {
-		duration(StageBinding, time.Since(started))
-	}
+	end(StageBinding)
 	if !receiverFound {
 		return s, Result{CodeBadBinding, StageBinding}, nil
 	}
-	if duration != nil {
-		started = time.Now()
-	}
+	begin()
 	digest, err := SigningDigest(t)
-	if duration != nil {
-		duration(StageDigest, time.Since(started))
-	}
+	end(StageDigest)
 	if err != nil {
 		return State{}, Result{}, err
 	}
 	if profile.UsesSecp() {
 		visit(StageSecp)
-		var started time.Time
-		if duration != nil {
-			started = time.Now()
-		}
+		begin()
 		code := verifySecp(sender.SecpKey, t.SecpSignature, digest)
-		if duration != nil {
-			duration(StageSecp, time.Since(started))
-		}
+		end(StageSecp)
 		if code != CodeOK {
 			return s, Result{code, StageSecp}, nil
 		}
 	}
 	if profile.UsesML() {
 		visit(StageML)
-		var started time.Time
-		if duration != nil {
-			started = time.Now()
-		}
+		begin()
 		code := verifyML(sender.MLKey, t.MLSignature, digest)
-		if duration != nil {
-			duration(StageML, time.Since(started))
-		}
+		end(StageML)
 		if code != CodeOK {
 			return s, Result{code, StageML}, nil
 		}
 	}
 	visit(StageState)
-	if duration != nil {
-		started = time.Now()
-	}
+	begin()
 	base, code, err := b0state.ApplyAuthenticatedTrusted(s.base, b0state.Address(t.Sender), b0state.Address(t.Receiver), t.Amount, t.Nonce)
-	if duration != nil {
-		duration(StageState, time.Since(started))
-	}
+	end(StageState)
 	if err != nil {
 		return State{}, Result{}, err
 	}
 	if code != 0 {
 		return s, Result{Code(code), StageState}, nil
 	}
-	if duration != nil {
-		started = time.Now()
-	}
+	begin()
 	next, err := s.withBase(base)
-	if duration != nil {
-		duration(StageStateCopy, time.Since(started))
-	}
+	end(StageStateCopy)
 	if err != nil {
 		return State{}, Result{}, err
 	}

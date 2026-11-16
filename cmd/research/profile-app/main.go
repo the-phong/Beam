@@ -24,7 +24,7 @@ import (
 
 type options struct {
 	dbDir, genesisPath, chainID, profile, listen, resourcesPath, eventsPath string
-	recorder                                                                bool
+	recorder, stageCPU                                                      bool
 }
 
 func parse(args []string) (options, error) {
@@ -38,11 +38,15 @@ func parse(args []string) (options, error) {
 	f.StringVar(&o.resourcesPath, "resources", "", "exclusive private resource JSONL")
 	f.StringVar(&o.eventsPath, "events", "", "exclusive private CheckTx JSONL")
 	f.BoolVar(&o.recorder, "recorder", false, "enable bounded CheckTx recorder")
+	f.BoolVar(&o.stageCPU, "stage-cpu", false, "measure instrumented per-stage thread CPU")
 	if err := f.Parse(args); err != nil {
 		return o, err
 	}
 	if f.NArg() != 0 || o.dbDir == "" || o.genesisPath == "" || o.chainID == "" || o.resourcesPath == "" || o.eventsPath == "" {
 		return o, errors.New("missing required argument")
+	}
+	if o.stageCPU && !o.recorder {
+		return o, errors.New("stage CPU profiling requires recorder")
 	}
 	if _, err := profileCode(o.profile); err != nil {
 		return o, err
@@ -146,6 +150,7 @@ func run(o options) error {
 		recorder = telemetry.NewRecorder(8192)
 		app.SetRecorder(recorder)
 	}
+	app.SetStageCPUProfiler(o.stageCPU)
 	srv, err := server.NewServer(o.listen, "socket", app)
 	if err != nil {
 		return err

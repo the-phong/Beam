@@ -42,6 +42,7 @@ type App struct {
 	pending     *researchv2.State
 	store       *researchv2store.Store
 	recorder    atomic.Pointer[telemetry.Recorder]
+	stageCPU    atomic.Bool
 }
 
 var _ abci.Application = (*App)(nil)
@@ -103,6 +104,10 @@ func (a *App) Profile() researchv2.Profile { return a.profile }
 // SetRecorder may be called while the node is running. Disabling it restores
 // the unobserved CheckTx path; neither mode changes the validation result.
 func (a *App) SetRecorder(r *telemetry.Recorder) { a.recorder.Store(r) }
+
+// SetStageCPUProfiler enables an optional Linux thread-clock measurement
+// path. It is used only by dedicated research app processes.
+func (a *App) SetStageCPUProfiler(enabled bool) { a.stageCPU.Store(enabled) }
 
 func (a *App) Info(context.Context, *abci.RequestInfo) (*abci.ResponseInfo, error) {
 	s, err := a.CommittedChecked()
@@ -169,9 +174,29 @@ func (a *App) CheckTx(_ context.Context, req *abci.RequestCheckTx) (*abci.Respon
 		_, result, err = researchv2.EvaluateTrusted(s, a.profile, raw)
 	} else {
 		spans := make([]telemetry.Span, 0, 7)
-		_, result, err = researchv2.EvaluateTrustedObserved(s, a.profile, raw, nil, func(stage researchv2.Stage, elapsed time.Duration) {
-			spans = append(spans, telemetry.Span{Stage: string(stage), DurationNS: elapsed.Nanoseconds()})
-		})
+		stageCPUStatus := "UNAVAILABLE_PROFILER_OFF"
+		var stageCPU map[researchv2.Stage]*int64
+		if a.stageCPU.Load() {
+			stageCPUStatus = "CLOCK_THREAD_CPUTIME_ID_INSTRUMENTED"
+			stageCPU = make(map[researchv2.Stage]*int64, 7)
+		}
+		duration := func(stage researchv2.Stage, elapsed time.Duration) {
+			spans = append(spans, telemetry.Span{Stage: string(stage), DurationNS: elapsed.Nanoseconds(), CPUNS: stageCPU[stage]})
+		}
+		if stageCPU != nil {
+			_, result, err = researchv2.EvaluateTrustedObservedCPU(s, a.profile, raw, nil, duration,
+				func(stage researchv2.Stage, cpu *int64) { stageCPU[stage] = cpu })
+		} else {
+			_, result, err = researchv2.EvaluateTrustedObserved(s, a.profile, raw, nil, duration)
+		}
+		if stageCPU != nil {
+			for _, span := range spans {
+				if span.CPUNS == nil {
+					stageCPUStatus = "UNAVAILABLE_THREAD_CLOCK_FAILURE"
+					break
+				}
+			}
+		}
 		resultAt := time.Now()
 		resultHostMono := telemetry.HostMonotonicNS()
 		if err == nil {
@@ -193,6 +218,7 @@ func (a *App) CheckTx(_ context.Context, req *abci.RequestCheckTx) (*abci.Respon
 				Code: uint32(result.Code), LastStage: string(result.LastStage),
 				ServiceNS:     (time.Since(started) - lockWait).Nanoseconds(),
 				AppLockWaitNS: lockWait.Nanoseconds(), Spans: spans,
+				StageCPUStatus: stageCPUStatus,
 			})
 		}
 	}

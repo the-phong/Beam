@@ -14,6 +14,7 @@ const Schema = "pluto.telemetry.v1"
 type Span struct {
 	Stage      string `json:"stage"`
 	DurationNS int64  `json:"duration_ns"`
+	CPUNS      *int64 `json:"cpu_ns,omitempty"`
 }
 
 type CheckTxEvent struct {
@@ -37,6 +38,7 @@ type CheckTxEvent struct {
 	ServiceNS            int64  `json:"service_ns"`
 	AppLockWaitNS        int64  `json:"app_lock_wait_ns"`
 	Spans                []Span `json:"spans,omitempty"`
+	StageCPUStatus       string `json:"stage_cpu_status,omitempty"`
 }
 
 // Recorder drops excess samples instead of delaying consensus or admission.

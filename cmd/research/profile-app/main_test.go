@@ -12,6 +12,12 @@ func TestParseRequiresLoopbackAndKnownProfile(t *testing.T) {
 	if _, err := parse(base); err != nil {
 		t.Fatal(err)
 	}
+	if _, err := parse(append(append([]string(nil), base...), "-stage-cpu")); err == nil {
+		t.Fatal("stage CPU profiling without recorder accepted")
+	}
+	if _, err := parse(append(append([]string(nil), base...), "-recorder", "-stage-cpu")); err != nil {
+		t.Fatal(err)
+	}
 	for _, bad := range [][]string{
 		{"-listen", "tcp://0.0.0.0:26758"},
 		{"-listen", "tcp://127.0.0.1:0"},

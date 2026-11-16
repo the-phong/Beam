@@ -58,6 +58,17 @@ reason. X07/X16 boxes are ticked only when the corresponding full checklist
 requirements have independently verified evidence; this lock alone is not
 completion.
 
+Before any confirmatory X16 block, run an **engineering QA pair** at the
+accepted X10 I workload (six fixed valid H/s plus fourteen late-bad-ML H/s,
+12-second steady interval). Use the same signed fixture and genesis on two
+fresh networks, with Comet trace ON in both; vary only the dedicated app's
+thread-CPU probe OFF/ON. Check AppHash, exact-once valid commit, invalid
+non-commit, app/observer recorder drops, process identities, stage CPU
+presence when ON and absence when OFF. This pair has no effect or overhead
+CI. The probe pins the evaluating goroutine to one OS thread and reads
+Linux `CLOCK_THREAD_CPUTIME_ID` at stage boundaries; raw intervals include
+clock-call and scheduling perturbation until independently bounded.
+
 Topology remains four validators on one physical host, loopback RPC origin
 at validator 0. Keep max 25 tx/s, 65,536 B/s, 16 outstanding and 60 s/run,
 plus all other existing S06 safety aborts. Raw and trace files stay private

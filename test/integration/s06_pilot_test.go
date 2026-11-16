@@ -242,6 +242,12 @@ func startS06NetworkAtMode(t *testing.T, c load.Config, f *load.PilotFixture, pr
 			if recorderOn {
 				args = append(args, "-recorder")
 			}
+			if os.Getenv("FILE02_X16_STAGE_CPU_ENABLED") == "1" {
+				if !recorderOn {
+					t.Fatal("stage CPU profiler requires recorder")
+				}
+				args = append(args, "-stage-cpu")
+			}
 			cmd := exec.Command(appBinary, args...)
 			cmd.Stdout, cmd.Stderr = logFile, logFile
 			if err := cmd.Start(); err != nil {
