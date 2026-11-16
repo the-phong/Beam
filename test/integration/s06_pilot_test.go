@@ -43,6 +43,7 @@ type s06Network struct {
 	appLogs      [4]*os.File
 	appResources [4]string
 	appEvents    [4]string
+	cometTraces  [4]string
 	recorders    [4]*telemetry.Recorder
 	observers    [4]*exec.Cmd
 	observerLogs [4]*os.File
@@ -282,6 +283,10 @@ func startS06NetworkAtMode(t *testing.T, c load.Config, f *load.PilotFixture, pr
 			t.Fatal(err)
 		}
 		cmd := exec.Command(comet, "node", "--home", home)
+		if os.Getenv("FILE02_X07_TRACE_ENABLED") == "1" {
+			pilot.cometTraces[i] = filepath.Join(runRoot, fmt.Sprintf("comet-%d-trace.jsonl", i))
+			cmd.Env = append(os.Environ(), "PLUTO_X07_TRACE_FILE="+pilot.cometTraces[i])
+		}
 		cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 		cmd.Stdout, cmd.Stderr = logFile, logFile
 		if err := cmd.Start(); err != nil {

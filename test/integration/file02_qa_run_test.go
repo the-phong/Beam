@@ -44,11 +44,12 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if err := os.Mkdir(run, 0700); err != nil {
 		t.Fatal(err)
 	}
+	mechanismTraceCase := metadata["case_id"] == "X07" || metadata["case_id"] == "X16"
 	planPath := filepath.Join(run, "plan.json")
 	if err := load.WritePlan(planPath, plan, c, configHash); err != nil {
 		t.Fatal(err)
 	}
-	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || file02ValidFloodCase(metadata["case_id"]) || file02DynamicsCase(metadata["case_id"]) || file02FaultCase(metadata["case_id"]) || file02QualityCase(metadata["case_id"]) || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" || metadata["case_id"] == "X10" || metadata["case_id"] == "X13" {
+	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || file02ValidFloodCase(metadata["case_id"]) || file02DynamicsCase(metadata["case_id"]) || file02FaultCase(metadata["case_id"]) || file02QualityCase(metadata["case_id"]) || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" || metadata["case_id"] == "X10" || metadata["case_id"] == "X13" || mechanismTraceCase {
 		configBytes, err := os.ReadFile(configPath)
 		if err != nil {
 			t.Fatal(err)
@@ -78,19 +79,32 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 		t.Fatal(err)
 	}
 	var pilot *s06Network
-	if metadata["case_id"] == "X10" || metadata["case_id"] == "X13" {
+	if mechanismTraceCase {
+		mode, ok := metadata["trace_mode"].(string)
+		if !ok || mode != "ON" && mode != "OFF" {
+			t.Fatal("X07/X16 trace mode must be ON or OFF")
+		}
+		if mode == "ON" {
+			t.Setenv("FILE02_X07_TRACE_ENABLED", "1")
+		} else {
+			t.Setenv("FILE02_X07_TRACE_ENABLED", "")
+		}
+	}
+	if metadata["case_id"] == "X10" || metadata["case_id"] == "X13" || mechanismTraceCase {
 		pilot = startX05NetworkAt(t, c, fixture, profile, t.TempDir())
 	} else {
 		pilot = startS06NetworkAt(t, c, fixture, profile, t.TempDir())
 	}
-	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || file02ValidFloodCase(metadata["case_id"]) || file02DynamicsCase(metadata["case_id"]) || file02FaultCase(metadata["case_id"]) || file02QualityCase(metadata["case_id"]) || metadata["case_id"] == "T05" || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
+	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || file02ValidFloodCase(metadata["case_id"]) || file02DynamicsCase(metadata["case_id"]) || file02FaultCase(metadata["case_id"]) || file02QualityCase(metadata["case_id"]) || metadata["case_id"] == "T05" || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" || mechanismTraceCase {
 		mode, ok := metadata["recorder_mode"].(string)
 		if !ok || (mode != "ON" && mode != "OFF") {
 			t.Fatal("T05 requires recorder mode ON or OFF")
 		}
 		if mode == "OFF" {
 			for _, app := range pilot.apps {
-				app.SetRecorder(nil)
+				if app != nil {
+					app.SetRecorder(nil)
+				}
 			}
 		}
 	}
@@ -248,8 +262,8 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 			t.Fatal(err)
 		}
 	}
-	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || file02ValidFloodCase(metadata["case_id"]) || file02DynamicsCase(metadata["case_id"]) || file02QualityCase(metadata["case_id"]) || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" || metadata["case_id"] == "X10" || metadata["case_id"] == "X13" {
-		if metadata["case_id"] == "X10" || metadata["case_id"] == "X13" {
+	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || file02ValidFloodCase(metadata["case_id"]) || file02DynamicsCase(metadata["case_id"]) || file02QualityCase(metadata["case_id"]) || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" || metadata["case_id"] == "X10" || metadata["case_id"] == "X13" || mechanismTraceCase {
+		if metadata["case_id"] == "X10" || metadata["case_id"] == "X13" || mechanismTraceCase {
 			time.Sleep(1100 * time.Millisecond)
 			for i := range pilot.appProcesses {
 				for suffix, source := range map[string]string{"resources.jsonl": pilot.appResources[i], "events.jsonl": pilot.appEvents[i]} {
@@ -386,6 +400,24 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 			}
 		case <-time.After(10 * time.Second):
 			t.Fatal("A14 per-node observations incomplete")
+		}
+	}
+	if mechanismTraceCase {
+		pilot.n.stopAll()
+		for node, path := range pilot.cometTraces {
+			if metadata["trace_mode"] == "OFF" {
+				if path != "" {
+					t.Fatal("trace OFF emitted a path")
+				}
+				continue
+			}
+			raw, err := os.ReadFile(path)
+			if err != nil || len(raw) == 0 {
+				t.Fatalf("Comet trace %d missing: %v", node, err)
+			}
+			if err := s07WriteExclusive(filepath.Join(run, fmt.Sprintf("comet-%d-trace.jsonl", node)), raw); err != nil {
+				t.Fatal(err)
+			}
 		}
 	}
 	t.Logf("File02 QA run=%s valid=%d invalid=%d height=%d", plan.RunID, oracle.ValidCommitted, oracle.InvalidRejected, oracle.CommonHeight)
