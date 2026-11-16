@@ -69,6 +69,23 @@ CI. The probe pins the evaluating goroutine to one OS thread and reads
 Linux `CLOCK_THREAD_CPUTIME_ID` at stage boundaries; raw intervals include
 clock-call and scheduling perturbation until independently bounded.
 
+If the QA pair passes, the **confirmatory X16 resource contrast** is 24
+matched B/I blocks (48 fresh networks), with twelve `BI` and twelve `IB`
+orders selected by seed 20261116 before execution. Each block uses the same
+genesis, six fixed valid H/s with identical identities/bytes/offsets, and
+20 total H-sized tx/s (51,360 B/s) in each arm: B adds fourteen valid H/s;
+I adds fourteen late-bad-ML H/s. Each run has 1-second warmup, 12-second
+steady send, 5-second drain and 2-second cooldown. Both trace and stage CPU
+are ON in both arms. Independent unit is the fresh network, paired by
+block. Calculate per-run resources and paired 95% percentile bootstrap CIs
+with 20,000 resamples and seed 20261116 for B−I app CPU, Comet CPU,
+observer CPU, relay and accepted-mempool measures. Report stage CPU by arm
+as *instrumented thread CPU*, with process and clock/probe overhead distinct.
+An arm failing locked QC excludes its block without replacement; retain
+all raw and report the exclusion. There is no positive-effect or capacity
+threshold added after seeing data. Bottleneck localization requires the
+prospective rule above; absent accumulation remains `NOT_OBSERVED_WITHIN_SAFE_RANGE`.
+
 Topology remains four validators on one physical host, loopback RPC origin
 at validator 0. Keep max 25 tx/s, 65,536 B/s, 16 outstanding and 60 s/run,
 plus all other existing S06 safety aborts. Raw and trace files stay private

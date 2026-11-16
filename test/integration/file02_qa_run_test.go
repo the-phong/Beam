@@ -145,7 +145,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if err := s07WriteExclusive(filepath.Join(run, "nodes.json"), nodes); err != nil {
 		t.Fatal(err)
 	}
-	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || file02ValidFloodCase(metadata["case_id"]) || file02DynamicsCase(metadata["case_id"]) || file02FaultCase(metadata["case_id"]) || file02QualityCase(metadata["case_id"]) || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" || metadata["case_id"] == "X10" || metadata["case_id"] == "X13" {
+	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || file02ValidFloodCase(metadata["case_id"]) || file02DynamicsCase(metadata["case_id"]) || file02FaultCase(metadata["case_id"]) || file02QualityCase(metadata["case_id"]) || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" || metadata["case_id"] == "X10" || metadata["case_id"] == "X13" || metadata["case_id"] == "X16" && scope == "X_CONFIRMATORY" {
 		binder := "../../research/tools/file02_r06.py"
 		if file02AttackCase(metadata["case_id"]) {
 			binder = "../../research/tools/file02_attack.py"
@@ -164,6 +164,8 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 			if metadata["case_id"] == "X13" {
 				binder = "../../research/tools/file02_x13.py"
 			}
+		} else if metadata["case_id"] == "X16" {
+			binder = "../../research/tools/file02_x16_confirmatory.py"
 		}
 		bind := exec.Command("python3", binder, "bind-run-plan", run, pilot.n.root)
 		output, err := bind.CombinedOutput()
