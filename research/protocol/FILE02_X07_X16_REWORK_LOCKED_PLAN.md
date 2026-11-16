@@ -18,6 +18,9 @@ No raw transaction, key, account or payload may be logged by the new tracer.
 Durations derived from Comet markers must use its *per-process monotonic*
 clock. Cross-process app/Comet UTC stamps are join keys/order evidence only;
 do not subtract them as precise delays without measured clock uncertainty.
+For a later rework source lock, absolute Linux `CLOCK_MONOTONIC` readings in
+both processes may support cross-process subtraction after both clocks are
+verified to use the same host clock and timestamp-call uncertainty is bounded.
 Classify each interval separately: RPC/mempool precheck, socket subqueue,
 app lock/service, accepted-mempool residence, and successful P2P send. A
 successful `peer.Send` reports only the local send handoff, not remote

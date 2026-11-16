@@ -62,6 +62,7 @@ var _ p2p.MsgBytesFilter = (*Reactor)(nil)
         '''        for _, tx := range protoTxs {
             plutoP2PIngressTxs.Inc()
             plutoP2PIngressBytes.Add(float64(len(tx)))
+            plutotrace.Emit("p2p_receive", tx, -1)
         }
         txInfo := TxInfo{SenderID: memR.ids.GetForPeer(e.Src)}
 ''',
@@ -178,6 +179,7 @@ import (
     "path/filepath"
     "sync"
     "time"
+    "golang.org/x/sys/unix"
 )
 
 const maxEvents = 100000
@@ -195,6 +197,7 @@ type event struct {
     PID int `json:"pid"`
     Sequence uint64 `json:"sequence"`
     MonotonicNS int64 `json:"monotonic_ns"`
+    HostMonotonicNS int64 `json:"host_monotonic_ns"`
     UTC string `json:"utc"`
 }
 
@@ -216,6 +219,8 @@ func init() {
 func Emit(name string, tx []byte, code int64) {
     if output == nil { return }
     now := time.Now()
+    var hostClock unix.Timespec
+    if err := unix.ClockGettime(unix.CLOCK_MONOTONIC, &hostClock); err != nil { return }
     digest := sha256.Sum256(tx)
     mu.Lock()
     defer mu.Unlock()
@@ -224,6 +229,7 @@ func Emit(name string, tx []byte, code int64) {
     item := event{Schema:"pluto.file02.x07_comet_trace.v1", Event:name,
         TxSHA256:hex.EncodeToString(digest[:]), WireBytes:len(tx), Code:code,
         PID:os.Getpid(), Sequence:count, MonotonicNS:now.Sub(origin).Nanoseconds(),
+        HostMonotonicNS:hostClock.Sec*1000000000+hostClock.Nsec,
         UTC:now.UTC().Format(time.RFC3339Nano)}
     raw, err := json.Marshal(item)
     if err != nil { return }

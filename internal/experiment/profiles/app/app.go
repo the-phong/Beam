@@ -141,15 +141,19 @@ func (a *App) InitChain(_ context.Context, req *abci.RequestInitChain) (*abci.Re
 func (a *App) CheckTx(_ context.Context, req *abci.RequestCheckTx) (*abci.ResponseCheckTx, error) {
 	recorder := a.recorder.Load()
 	var started time.Time
+	var ingressHostMono *int64
 	if recorder != nil {
 		started = time.Now()
+		ingressHostMono = telemetry.HostMonotonicNS()
 	}
 	a.mu.RLock()
 	defer a.mu.RUnlock()
 	var lockWait time.Duration
 	var lockAcquired time.Time
+	var lockHostMono *int64
 	if recorder != nil {
 		lockAcquired = time.Now()
+		lockHostMono = telemetry.HostMonotonicNS()
 		lockWait = lockAcquired.Sub(started)
 	}
 	s, err := a.stateLocked()
@@ -169,6 +173,7 @@ func (a *App) CheckTx(_ context.Context, req *abci.RequestCheckTx) (*abci.Respon
 			spans = append(spans, telemetry.Span{Stage: string(stage), DurationNS: elapsed.Nanoseconds()})
 		})
 		resultAt := time.Now()
+		resultHostMono := telemetry.HostMonotonicNS()
 		if err == nil {
 			txHash := sha256.Sum256(raw)
 			checkType := "new"
@@ -178,10 +183,13 @@ func (a *App) CheckTx(_ context.Context, req *abci.RequestCheckTx) (*abci.Respon
 				checkType = "recheck"
 			}
 			recorder.Record(telemetry.CheckTxEvent{
-				AppIngressUTC: started.UTC().Format(time.RFC3339Nano),
-				AppLockUTC:    lockAcquired.UTC().Format(time.RFC3339Nano),
-				AppResultUTC:  resultAt.UTC().Format(time.RFC3339Nano),
-				Profile:       uint8(a.profile), CheckType: checkType, WireBytes: len(raw), TxSHA256: hex.EncodeToString(txHash[:]),
+				AppIngressUTC:        started.UTC().Format(time.RFC3339Nano),
+				AppLockUTC:           lockAcquired.UTC().Format(time.RFC3339Nano),
+				AppResultUTC:         resultAt.UTC().Format(time.RFC3339Nano),
+				AppIngressHostMonoNS: ingressHostMono,
+				AppLockHostMonoNS:    lockHostMono,
+				AppResultHostMonoNS:  resultHostMono,
+				Profile:              uint8(a.profile), CheckType: checkType, WireBytes: len(raw), TxSHA256: hex.EncodeToString(txHash[:]),
 				Code: uint32(result.Code), LastStage: string(result.LastStage),
 				ServiceNS:     (time.Since(started) - lockWait).Nanoseconds(),
 				AppLockWaitNS: lockWait.Nanoseconds(), Spans: spans,
