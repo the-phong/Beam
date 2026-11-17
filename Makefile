@@ -12,6 +12,7 @@ build:
 	$(GO) build -o build/profile-ingress ./cmd/research/ingress
 	$(GO) build -o build/profile-load ./cmd/research/workload
 	$(GO) build -o build/profile-workload-corpus ./cmd/research/corpus/workload
+	$(GO) build -o build/profile-app ./cmd/research/profile-app
 
 build-comet-s05:
 	python3 research/tools/comet_overlay.py build/s05-comet-overlay

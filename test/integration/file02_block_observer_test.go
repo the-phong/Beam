@@ -18,10 +18,12 @@ import (
 // The observation is an upper bound on inclusion time, not a consensus clock.
 func file02ObserveCommitsByBlock(pilot *s06Network, plan load.Plan, stop <-chan struct{}, output chan<- []s07CommitObservation) {
 	type pending struct {
-		event  load.PlannedTx
-		seen   [4]bool
-		height int64
-		latest time.Time
+		event                   load.PlannedTx
+		seen                    [4]bool
+		height                  int64
+		latest                  time.Time
+		perValidatorUTC         [4]string
+		perValidatorMonotonicNS [4]int64
 	}
 	items := make(map[string]*pending)
 	ordered := make([]string, 0)
@@ -79,11 +81,17 @@ func file02ObserveCommitsByBlock(pilot *s06Network, plan load.Plan, stop <-chan 
 						}
 						if item.height == 0 || item.height == height {
 							item.seen[node], item.height, item.latest = true, height, observed
+							item.perValidatorUTC[node] = observed.UTC().Format(time.RFC3339Nano)
+							item.perValidatorMonotonicNS[node] = monotonic.Nano()
 							if item.seen == [4]bool{true, true, true, true} {
 								seenMonotonicNS := monotonic.Nano()
 								completed[hash] = s07CommitObservation{ID: item.event.ID, SHA256: hash,
 									AllFourSeenUTC:         item.latest.UTC().Format(time.RFC3339Nano),
 									AllFourSeenMonotonicNS: &seenMonotonicNS, Height: height}
+								entry := completed[hash]
+								entry.PerValidatorSeenUTC = item.perValidatorUTC
+								entry.PerValidatorSeenMonotonicNS = item.perValidatorMonotonicNS
+								completed[hash] = entry
 							}
 						}
 					}

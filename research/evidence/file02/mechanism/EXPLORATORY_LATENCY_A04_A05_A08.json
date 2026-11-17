@@ -1,0 +1,562 @@
+{
+  "bootstrap_resamples": 20000,
+  "bootstrap_seed": 20261115,
+  "cases": [
+    {
+      "case_id": "A04",
+      "metrics": {
+        "mean": {
+          "attack_mean_of_run_metric_ms": 1182.8906561238425,
+          "attack_minus_benign_pair_mean_ms": 56.68153078472219,
+          "benign_mean_of_run_metric_ms": 1126.2091253391204,
+          "exploratory_bootstrap_CI95_ms": [
+            37.43442239635418,
+            77.68648618443278
+          ]
+        },
+        "p50": {
+          "attack_mean_of_run_metric_ms": 1176.7131912083332,
+          "attack_minus_benign_pair_mean_ms": 61.00040937499997,
+          "benign_mean_of_run_metric_ms": 1115.7127818333333,
+          "exploratory_bootstrap_CI95_ms": [
+            34.90576153020826,
+            90.63257968333326
+          ]
+        },
+        "p95": {
+          "attack_mean_of_run_metric_ms": 1797.5286541666667,
+          "attack_minus_benign_pair_mean_ms": 67.85777559166665,
+          "benign_mean_of_run_metric_ms": 1729.6708785750002,
+          "exploratory_bootstrap_CI95_ms": [
+            34.305383031354175,
+            103.0579708189582
+          ]
+        }
+      },
+      "n_independent_pairs": 12,
+      "original_3s_timely_effect": 0,
+      "pairs": [
+        {
+          "attack_minus_benign_ms": {
+            "mean": 106.52769390277763,
+            "p50": 113.89132249999989,
+            "p95": 157.94323559999975
+          },
+          "attack_run_id": "A04-p00-attack",
+          "benign_run_id": "A04-p00-benign",
+          "pair": 0,
+          "samples_per_arm": 72,
+          "seed": 2026111300
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 34.55105808333337,
+            "p50": 64.56215799999973,
+            "p95": 41.723299649999944
+          },
+          "attack_run_id": "A04-p01-attack",
+          "benign_run_id": "A04-p01-benign",
+          "pair": 1,
+          "samples_per_arm": 72,
+          "seed": 2026111301
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 24.289220958333317,
+            "p50": 8.316665999999941,
+            "p95": 36.28662865000001
+          },
+          "attack_run_id": "A04-p02-attack",
+          "benign_run_id": "A04-p02-benign",
+          "pair": 2,
+          "samples_per_arm": 72,
+          "seed": 2026111302
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 92.76229326388875,
+            "p50": 167.46778399999994,
+            "p95": 88.17374325000014
+          },
+          "attack_run_id": "A04-p03-attack",
+          "benign_run_id": "A04-p03-benign",
+          "pair": 3,
+          "samples_per_arm": 72,
+          "seed": 2026111303
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 25.404307625,
+            "p50": 41.312171000000035,
+            "p95": 42.00667300000009
+          },
+          "attack_run_id": "A04-p04-attack",
+          "benign_run_id": "A04-p04-benign",
+          "pair": 4,
+          "samples_per_arm": 72,
+          "seed": 2026111304
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 49.63751590277775,
+            "p50": 24.991915499999777,
+            "p95": 145.05720759999986
+          },
+          "attack_run_id": "A04-p05-attack",
+          "benign_run_id": "A04-p05-benign",
+          "pair": 5,
+          "samples_per_arm": 72,
+          "seed": 2026111305
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 8.477966388888944,
+            "p50": -5.643883000000187,
+            "p95": -19.837919549999924
+          },
+          "attack_run_id": "A04-p06-attack",
+          "benign_run_id": "A04-p06-benign",
+          "pair": 6,
+          "samples_per_arm": 72,
+          "seed": 2026111306
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 81.57842708333328,
+            "p50": 44.629867000000104,
+            "p95": 139.94626870000002
+          },
+          "attack_run_id": "A04-p07-attack",
+          "benign_run_id": "A04-p07-benign",
+          "pair": 7,
+          "samples_per_arm": 72,
+          "seed": 2026111307
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 18.49150519444447,
+            "p50": 29.17548099999999,
+            "p95": -9.009336150000081
+          },
+          "attack_run_id": "A04-p08-attack",
+          "benign_run_id": "A04-p08-benign",
+          "pair": 8,
+          "samples_per_arm": 72,
+          "seed": 2026111308
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 124.9655337083334,
+            "p50": 128.52407800000015,
+            "p95": 139.0670111500001
+          },
+          "attack_run_id": "A04-p09-attack",
+          "benign_run_id": "A04-p09-benign",
+          "pair": 9,
+          "samples_per_arm": 72,
+          "seed": 2026111309
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 56.310606138888716,
+            "p50": 43.9509465000001,
+            "p95": 15.540194349999865
+          },
+          "attack_run_id": "A04-p10-attack",
+          "benign_run_id": "A04-p10-benign",
+          "pair": 10,
+          "samples_per_arm": 72,
+          "seed": 2026111310
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 57.1822411666667,
+            "p50": 70.82640600000013,
+            "p95": 37.39630084999999
+          },
+          "attack_run_id": "A04-p11-attack",
+          "benign_run_id": "A04-p11-benign",
+          "pair": 11,
+          "samples_per_arm": 72,
+          "seed": 2026111311
+        }
+      ],
+      "source_qc": "PASS",
+      "source_raw_manifest_sha256": "41d2bf5bef4aef6cc3c01720710a80b84704952da2c6458e3c0f68194c29c37d",
+      "source_session": "a04-20261113T174032Z-edd720e5"
+    },
+    {
+      "case_id": "A05",
+      "metrics": {
+        "mean": {
+          "attack_mean_of_run_metric_ms": 1178.0795289050925,
+          "attack_minus_benign_pair_mean_ms": 55.827683201388915,
+          "benign_mean_of_run_metric_ms": 1122.2518457037036,
+          "exploratory_bootstrap_CI95_ms": [
+            38.000207914178276,
+            72.83103048651618
+          ]
+        },
+        "p50": {
+          "attack_mean_of_run_metric_ms": 1183.1733128333333,
+          "attack_minus_benign_pair_mean_ms": 71.29831216666662,
+          "benign_mean_of_run_metric_ms": 1111.8750006666667,
+          "exploratory_bootstrap_CI95_ms": [
+            48.25079066249993,
+            93.53580939270819
+          ]
+        },
+        "p95": {
+          "attack_mean_of_run_metric_ms": 1787.6920747666668,
+          "attack_minus_benign_pair_mean_ms": 69.1269831208333,
+          "benign_mean_of_run_metric_ms": 1718.5650916458335,
+          "exploratory_bootstrap_CI95_ms": [
+            54.981941095937444,
+            82.7609205414583
+          ]
+        }
+      },
+      "n_independent_pairs": 12,
+      "original_3s_timely_effect": 0,
+      "pairs": [
+        {
+          "attack_minus_benign_ms": {
+            "mean": 101.26731940277773,
+            "p50": 131.01380149999977,
+            "p95": 95.03825784999981
+          },
+          "attack_run_id": "A05-p00-attack",
+          "benign_run_id": "A05-p00-benign",
+          "pair": 0,
+          "samples_per_arm": 72,
+          "seed": 2026111300
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 70.08621175000007,
+            "p50": 90.39260499999978,
+            "p95": 64.38143914999978
+          },
+          "attack_run_id": "A05-p01-attack",
+          "benign_run_id": "A05-p01-benign",
+          "pair": 1,
+          "samples_per_arm": 72,
+          "seed": 2026111301
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 52.77651219444465,
+            "p50": 39.92209150000008,
+            "p95": 62.36349985000015
+          },
+          "attack_run_id": "A05-p02-attack",
+          "benign_run_id": "A05-p02-benign",
+          "pair": 2,
+          "samples_per_arm": 72,
+          "seed": 2026111302
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 72.87293113888882,
+            "p50": 71.91222650000009,
+            "p95": 94.05481044999988
+          },
+          "attack_run_id": "A05-p03-attack",
+          "benign_run_id": "A05-p03-benign",
+          "pair": 3,
+          "samples_per_arm": 72,
+          "seed": 2026111303
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 88.45595608333338,
+            "p50": 130.11229949999984,
+            "p95": 83.50682239999992
+          },
+          "attack_run_id": "A05-p04-attack",
+          "benign_run_id": "A05-p04-benign",
+          "pair": 4,
+          "samples_per_arm": 72,
+          "seed": 2026111304
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 41.533926569444475,
+            "p50": 68.34887849999996,
+            "p95": 55.52807770000004
+          },
+          "attack_run_id": "A05-p05-attack",
+          "benign_run_id": "A05-p05-benign",
+          "pair": 5,
+          "samples_per_arm": 72,
+          "seed": 2026111305
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 91.15541476388876,
+            "p50": 83.90399049999996,
+            "p95": 109.34118050000006
+          },
+          "attack_run_id": "A05-p06-attack",
+          "benign_run_id": "A05-p06-benign",
+          "pair": 6,
+          "samples_per_arm": 72,
+          "seed": 2026111306
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 33.72435811111109,
+            "p50": 47.033266499999854,
+            "p95": 70.96718635000025
+          },
+          "attack_run_id": "A05-p07-attack",
+          "benign_run_id": "A05-p07-benign",
+          "pair": 7,
+          "samples_per_arm": 72,
+          "seed": 2026111307
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 29.965555958333425,
+            "p50": 33.351278500000035,
+            "p95": 39.58061195000005
+          },
+          "attack_run_id": "A05-p08-attack",
+          "benign_run_id": "A05-p08-benign",
+          "pair": 8,
+          "samples_per_arm": 72,
+          "seed": 2026111308
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": -9.460046138888856,
+            "p50": -14.465134499999976,
+            "p95": 22.7887896499999
+          },
+          "attack_run_id": "A05-p09-attack",
+          "benign_run_id": "A05-p09-benign",
+          "pair": 9,
+          "samples_per_arm": 72,
+          "seed": 2026111309
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 32.8779501250001,
+            "p50": 65.54956600000014,
+            "p95": 44.32587279999984
+          },
+          "attack_run_id": "A05-p10-attack",
+          "benign_run_id": "A05-p10-benign",
+          "pair": 10,
+          "samples_per_arm": 72,
+          "seed": 2026111310
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 64.67610845833337,
+            "p50": 108.50487649999991,
+            "p95": 87.64724879999994
+          },
+          "attack_run_id": "A05-p11-attack",
+          "benign_run_id": "A05-p11-benign",
+          "pair": 11,
+          "samples_per_arm": 72,
+          "seed": 2026111311
+        }
+      ],
+      "source_qc": "PASS",
+      "source_raw_manifest_sha256": "b90bc2b95ac43388d9d7db8e85cfa3a2dc052258c421623a56cbe2d1ccc1026b",
+      "source_session": "a05-20261113T175129Z-edc80e07"
+    },
+    {
+      "case_id": "A08",
+      "metrics": {
+        "mean": {
+          "attack_mean_of_run_metric_ms": 1210.3952634444445,
+          "attack_minus_benign_pair_mean_ms": 80.07860941203701,
+          "benign_mean_of_run_metric_ms": 1130.3166540324073,
+          "exploratory_bootstrap_CI95_ms": [
+            47.58975867479744,
+            112.22406121990743
+          ]
+        },
+        "p50": {
+          "attack_mean_of_run_metric_ms": 1202.8815342083333,
+          "attack_minus_benign_pair_mean_ms": 66.66893854166672,
+          "benign_mean_of_run_metric_ms": 1136.2125956666666,
+          "exploratory_bootstrap_CI95_ms": [
+            36.58960628333339,
+            97.82179996562508
+          ]
+        },
+        "p95": {
+          "attack_mean_of_run_metric_ms": 1821.3614827208335,
+          "attack_minus_benign_pair_mean_ms": 80.1079966624999,
+          "benign_mean_of_run_metric_ms": 1741.2534860583335,
+          "exploratory_bootstrap_CI95_ms": [
+            36.54218715718738,
+            126.03986552343741
+          ]
+        }
+      },
+      "n_independent_pairs": 12,
+      "original_3s_timely_effect": 0,
+      "pairs": [
+        {
+          "attack_minus_benign_ms": {
+            "mean": -7.727072208333311,
+            "p50": -33.005893000000015,
+            "p95": -12.905799100000195
+          },
+          "attack_run_id": "A08-p00-attack",
+          "benign_run_id": "A08-p00-benign",
+          "pair": 0,
+          "samples_per_arm": 72,
+          "seed": 2026111300
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 167.9068915694445,
+            "p50": 158.37590200000022,
+            "p95": 221.63095339999973
+          },
+          "attack_run_id": "A08-p01-attack",
+          "benign_run_id": "A08-p01-benign",
+          "pair": 1,
+          "samples_per_arm": 72,
+          "seed": 2026111301
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 161.3887465555556,
+            "p50": 114.11314149999998,
+            "p95": 205.82193900000016
+          },
+          "attack_run_id": "A08-p02-attack",
+          "benign_run_id": "A08-p02-benign",
+          "pair": 2,
+          "samples_per_arm": 72,
+          "seed": 2026111302
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 76.69455995833323,
+            "p50": 65.47633050000013,
+            "p95": 113.4558311999997
+          },
+          "attack_run_id": "A08-p03-attack",
+          "benign_run_id": "A08-p03-benign",
+          "pair": 3,
+          "samples_per_arm": 72,
+          "seed": 2026111303
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 106.55965709722227,
+            "p50": 59.97835400000008,
+            "p95": 87.97296729999994
+          },
+          "attack_run_id": "A08-p04-attack",
+          "benign_run_id": "A08-p04-benign",
+          "pair": 4,
+          "samples_per_arm": 72,
+          "seed": 2026111304
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 70.48230879166658,
+            "p50": 82.1583149999999,
+            "p95": 26.34403979999979
+          },
+          "attack_run_id": "A08-p05-attack",
+          "benign_run_id": "A08-p05-benign",
+          "pair": 5,
+          "samples_per_arm": 72,
+          "seed": 2026111305
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 70.19602208333322,
+            "p50": 28.958526500000062,
+            "p95": 32.270890150000014
+          },
+          "attack_run_id": "A08-p06-attack",
+          "benign_run_id": "A08-p06-benign",
+          "pair": 6,
+          "samples_per_arm": 72,
+          "seed": 2026111306
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 23.96887394444434,
+            "p50": 16.15225650000002,
+            "p95": -16.2201713500001
+          },
+          "attack_run_id": "A08-p07-attack",
+          "benign_run_id": "A08-p07-benign",
+          "pair": 7,
+          "samples_per_arm": 72,
+          "seed": 2026111307
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 78.08242009722221,
+            "p50": 39.657743999999866,
+            "p95": 70.62568084999998
+          },
+          "attack_run_id": "A08-p08-attack",
+          "benign_run_id": "A08-p08-benign",
+          "pair": 8,
+          "samples_per_arm": 72,
+          "seed": 2026111308
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": -16.53398759722222,
+            "p50": 18.473237500000096,
+            "p95": -14.47065455000029
+          },
+          "attack_run_id": "A08-p09-attack",
+          "benign_run_id": "A08-p09-benign",
+          "pair": 9,
+          "samples_per_arm": 72,
+          "seed": 2026111309
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 88.19431722222225,
+            "p50": 104.66306500000019,
+            "p95": 99.61431215000016
+          },
+          "attack_run_id": "A08-p10-attack",
+          "benign_run_id": "A08-p10-benign",
+          "pair": 10,
+          "samples_per_arm": 72,
+          "seed": 2026111310
+        },
+        {
+          "attack_minus_benign_ms": {
+            "mean": 141.73057543055552,
+            "p50": 145.02628300000015,
+            "p95": 147.1559711
+          },
+          "attack_run_id": "A08-p11-attack",
+          "benign_run_id": "A08-p11-benign",
+          "pair": 11,
+          "samples_per_arm": 72,
+          "seed": 2026111311
+        }
+      ],
+      "source_qc": "PASS",
+      "source_raw_manifest_sha256": "18eed7952c91b5cff08a418055a0a742ffaeb3f70e06f94f115f4e99e5ad8b4d",
+      "source_session": "a08-20261113T182741Z-0dff8ab6"
+    }
+  ],
+  "estimand": "attack-minus-benign difference in per-run first-all-four inclusion observation upper-bound metrics",
+  "independent_unit": "matched fresh-network pair",
+  "measurement_limit": "100-ms block scanner gives observation upper bound, not exact commit timestamp; scanner scheduling adds uncertainty",
+  "multiple_testing": "unadjusted exploratory intervals across three cases and three metrics",
+  "schema": "pluto.file02.x03_exploratory_latency.v1",
+  "status": "EXPLORATORY_NOT_CONFIRMATORY",
+  "unit": "milliseconds"
+}

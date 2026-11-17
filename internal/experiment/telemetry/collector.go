@@ -50,6 +50,7 @@ type NodeSample struct {
 	CheckTxSocketQueueSeconds *float64       `json:"checktx_socket_queue_seconds"`
 	Comet                     *ProcessSample `json:"comet_process"`
 	Application               *ProcessSample `json:"application_process"`
+	Observer                  *ProcessSample `json:"observer_process"`
 	Unavailable               []string       `json:"unavailable,omitempty"`
 	DroppedSamples            uint64         `json:"dropped_samples"`
 }
@@ -124,6 +125,11 @@ func (c *Collector) Sample(ctx context.Context) NodeSample {
 		s.Application = &p
 	} else {
 		s.Unavailable = append(s.Unavailable, "application_process:"+err.Error())
+	}
+	if p, err := readProcess(os.Getpid(), c.clockTicks); err == nil {
+		s.Observer = &p
+	} else {
+		s.Unavailable = append(s.Unavailable, "observer_process:"+err.Error())
 	}
 	if len(s.Unavailable) != 0 {
 		c.dropped++

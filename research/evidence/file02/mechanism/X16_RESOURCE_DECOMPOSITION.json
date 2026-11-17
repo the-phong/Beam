@@ -1,0 +1,1445 @@
+{
+  "arm_means": {
+    "B": {
+      "accepted_mempool_v0_peak_bytes": 86884,
+      "app_cpu_s": 2.4151,
+      "checktx_socket_queue_v0_delta_s": 0.013053154791666665,
+      "comet_cpu_s": 5.869583333333333,
+      "generator_cpu_s": 0.17678575,
+      "relay_send_v0_delta_bytes": 1853280
+    },
+    "I": {
+      "accepted_mempool_v0_peak_bytes": 24824,
+      "app_cpu_s": 1.7208320416666667,
+      "checktx_socket_queue_v0_delta_s": 0.010193541958333333,
+      "comet_cpu_s": 5.465416666666667,
+      "generator_cpu_s": 0.17595629166666665,
+      "relay_send_v0_delta_bytes": 555984
+    },
+    "L": {
+      "accepted_mempool_v0_peak_bytes": 24931,
+      "app_cpu_s": 1.5984059583333334,
+      "checktx_socket_queue_v0_delta_s": 0.0035050742083333336,
+      "comet_cpu_s": 5.4783333333333335,
+      "generator_cpu_s": 0.07753183333333333,
+      "relay_send_v0_delta_bytes": 555984
+    }
+  },
+  "full_queue_reason": "UNAVAILABLE_COMET_TO_APP_QUEUE_LINKAGE",
+  "full_queue_residence_ms": null,
+  "n_blocks": 24,
+  "n_networks": 72,
+  "note": "CPU intervals include all process work; relay counter includes envelope bytes, not transaction-only bytes",
+  "observer_cpu_reason": "UNAVAILABLE_OBSERVER_SELF_CPU_IN_X10",
+  "observer_cpu_s": null,
+  "paired_B_minus_I": {
+    "accepted_mempool_v0_peak_bytes": {
+      "ci95": [
+        59492.0,
+        64628.0
+      ],
+      "mean": 62060
+    },
+    "app_cpu_s": {
+      "ci95": [
+        0.6707372697916666,
+        0.7203316229166665
+      ],
+      "mean": 0.6942679583333333
+    },
+    "checktx_socket_queue_v0_delta_s": {
+      "ci95": [
+        0.0024416140781249943,
+        0.00327829588541666
+      ],
+      "mean": 0.0028596128333333313
+    },
+    "comet_cpu_s": {
+      "ci95": [
+        0.2933333333333333,
+        0.5508333333333334
+      ],
+      "mean": 0.4041666666666667
+    },
+    "generator_cpu_s": {
+      "ci95": [
+        -0.00358814479166667,
+        0.005223923958333334
+      ],
+      "mean": 0.0008294583333333325
+    },
+    "relay_send_v0_delta_bytes": {
+      "ci95": [
+        1297296.0,
+        1297296.0
+      ],
+      "mean": 1297296
+    }
+  },
+  "per_run": [
+    {
+      "accepted_mempool_v0_peak_bytes": 79608,
+      "app_cpu_s": 2.347385,
+      "block": 0,
+      "checktx_socket_queue_v0_delta_s": 0.012243773000000001,
+      "comet_cpu_s": 5.61,
+      "condition": "B",
+      "generator_cpu_s": 0.173618,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 1853280,
+      "run_id": "X10-b00-B",
+      "v0_sample_count": 19,
+      "valid_committed": 241
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 25680,
+      "app_cpu_s": 1.654276,
+      "block": 0,
+      "checktx_socket_queue_v0_delta_s": 0.009934031,
+      "comet_cpu_s": 5.35,
+      "condition": "I",
+      "generator_cpu_s": 0.163928,
+      "invalid_rejected": 168,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b00-I",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 25680,
+      "app_cpu_s": 1.615619,
+      "block": 0,
+      "checktx_socket_queue_v0_delta_s": 0.0034425189999999994,
+      "comet_cpu_s": 5.28,
+      "condition": "L",
+      "generator_cpu_s": 0.074045,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b00-L",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 25680,
+      "app_cpu_s": 1.879062,
+      "block": 1,
+      "checktx_socket_queue_v0_delta_s": 0.010353937999999997,
+      "comet_cpu_s": 5.81,
+      "condition": "I",
+      "generator_cpu_s": 0.185014,
+      "invalid_rejected": 168,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b01-I",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 97584,
+      "app_cpu_s": 2.565857,
+      "block": 1,
+      "checktx_socket_queue_v0_delta_s": 0.015801169999999996,
+      "comet_cpu_s": 7.49,
+      "condition": "B",
+      "generator_cpu_s": 0.209842,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 1853280,
+      "run_id": "X10-b01-B",
+      "v0_sample_count": 19,
+      "valid_committed": 241
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 23112,
+      "app_cpu_s": 1.587316,
+      "block": 1,
+      "checktx_socket_queue_v0_delta_s": 0.003421972,
+      "comet_cpu_s": 5.48,
+      "condition": "L",
+      "generator_cpu_s": 0.080339,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b01-L",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 23112,
+      "app_cpu_s": 1.641863,
+      "block": 2,
+      "checktx_socket_queue_v0_delta_s": 0.003283674,
+      "comet_cpu_s": 5.44,
+      "condition": "L",
+      "generator_cpu_s": 0.078108,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b02-L",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 25680,
+      "app_cpu_s": 1.743867,
+      "block": 2,
+      "checktx_socket_queue_v0_delta_s": 0.009544179000000014,
+      "comet_cpu_s": 5.27,
+      "condition": "I",
+      "generator_cpu_s": 0.170304,
+      "invalid_rejected": 168,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b02-I",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 82176,
+      "app_cpu_s": 2.400393,
+      "block": 2,
+      "checktx_socket_queue_v0_delta_s": 0.013062462999999988,
+      "comet_cpu_s": 5.57,
+      "condition": "B",
+      "generator_cpu_s": 0.168665,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 1853280,
+      "run_id": "X10-b02-B",
+      "v0_sample_count": 19,
+      "valid_committed": 241
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 28248,
+      "app_cpu_s": 1.627905,
+      "block": 3,
+      "checktx_socket_queue_v0_delta_s": 0.003299922,
+      "comet_cpu_s": 5.6,
+      "condition": "L",
+      "generator_cpu_s": 0.075321,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b03-L",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 97584,
+      "app_cpu_s": 2.349683,
+      "block": 3,
+      "checktx_socket_queue_v0_delta_s": 0.012696190999999992,
+      "comet_cpu_s": 5.64,
+      "condition": "B",
+      "generator_cpu_s": 0.173952,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 1853280,
+      "run_id": "X10-b03-B",
+      "v0_sample_count": 19,
+      "valid_committed": 241
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 25680,
+      "app_cpu_s": 1.706003,
+      "block": 3,
+      "checktx_socket_queue_v0_delta_s": 0.009556594000000003,
+      "comet_cpu_s": 5.32,
+      "condition": "I",
+      "generator_cpu_s": 0.167222,
+      "invalid_rejected": 168,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b03-I",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 23112,
+      "app_cpu_s": 1.702661,
+      "block": 4,
+      "checktx_socket_queue_v0_delta_s": 0.009414434999999997,
+      "comet_cpu_s": 5.36,
+      "condition": "I",
+      "generator_cpu_s": 0.186759,
+      "invalid_rejected": 168,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b04-I",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 28248,
+      "app_cpu_s": 1.556155,
+      "block": 4,
+      "checktx_socket_queue_v0_delta_s": 0.003378742,
+      "comet_cpu_s": 5.34,
+      "condition": "L",
+      "generator_cpu_s": 0.075457,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b04-L",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 77040,
+      "app_cpu_s": 2.466175,
+      "block": 4,
+      "checktx_socket_queue_v0_delta_s": 0.013182515000000004,
+      "comet_cpu_s": 5.74,
+      "condition": "B",
+      "generator_cpu_s": 0.184652,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 1853280,
+      "run_id": "X10-b04-B",
+      "v0_sample_count": 19,
+      "valid_committed": 241
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 28248,
+      "app_cpu_s": 1.667636,
+      "block": 5,
+      "checktx_socket_queue_v0_delta_s": 0.010074418999999996,
+      "comet_cpu_s": 5.46,
+      "condition": "I",
+      "generator_cpu_s": 0.178041,
+      "invalid_rejected": 168,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b05-I",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 23112,
+      "app_cpu_s": 1.609381,
+      "block": 5,
+      "checktx_socket_queue_v0_delta_s": 0.0035922910000000005,
+      "comet_cpu_s": 5.43,
+      "condition": "L",
+      "generator_cpu_s": 0.077902,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b05-L",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 79608,
+      "app_cpu_s": 2.559715,
+      "block": 5,
+      "checktx_socket_queue_v0_delta_s": 0.013379613,
+      "comet_cpu_s": 6.23,
+      "condition": "B",
+      "generator_cpu_s": 0.196389,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 1853280,
+      "run_id": "X10-b05-B",
+      "v0_sample_count": 19,
+      "valid_committed": 241
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 25680,
+      "app_cpu_s": 1.602545,
+      "block": 6,
+      "checktx_socket_queue_v0_delta_s": 0.005918595,
+      "comet_cpu_s": 5.43,
+      "condition": "L",
+      "generator_cpu_s": 0.07291,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b06-L",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 23112,
+      "app_cpu_s": 1.742001,
+      "block": 6,
+      "checktx_socket_queue_v0_delta_s": 0.009624080999999993,
+      "comet_cpu_s": 5.51,
+      "condition": "I",
+      "generator_cpu_s": 0.172396,
+      "invalid_rejected": 168,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b06-I",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 82176,
+      "app_cpu_s": 2.4065,
+      "block": 6,
+      "checktx_socket_queue_v0_delta_s": 0.012120786000000005,
+      "comet_cpu_s": 5.59,
+      "condition": "B",
+      "generator_cpu_s": 0.165126,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 1853280,
+      "run_id": "X10-b06-B",
+      "v0_sample_count": 19,
+      "valid_committed": 241
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 25680,
+      "app_cpu_s": 1.726034,
+      "block": 7,
+      "checktx_socket_queue_v0_delta_s": 0.013300382,
+      "comet_cpu_s": 5.41,
+      "condition": "I",
+      "generator_cpu_s": 0.174474,
+      "invalid_rejected": 168,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b07-I",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 92448,
+      "app_cpu_s": 2.342081,
+      "block": 7,
+      "checktx_socket_queue_v0_delta_s": 0.013938485999999993,
+      "comet_cpu_s": 5.7,
+      "condition": "B",
+      "generator_cpu_s": 0.177135,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 1853280,
+      "run_id": "X10-b07-B",
+      "v0_sample_count": 19,
+      "valid_committed": 241
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 23112,
+      "app_cpu_s": 1.549508,
+      "block": 7,
+      "checktx_socket_queue_v0_delta_s": 0.003166330000000001,
+      "comet_cpu_s": 5.43,
+      "condition": "L",
+      "generator_cpu_s": 0.082756,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b07-L",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 89880,
+      "app_cpu_s": 2.416064,
+      "block": 8,
+      "checktx_socket_queue_v0_delta_s": 0.01409248200000001,
+      "comet_cpu_s": 5.89,
+      "condition": "B",
+      "generator_cpu_s": 0.166673,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 1853280,
+      "run_id": "X10-b08-B",
+      "v0_sample_count": 19,
+      "valid_committed": 241
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 23112,
+      "app_cpu_s": 1.593367,
+      "block": 8,
+      "checktx_socket_queue_v0_delta_s": 0.003089292,
+      "comet_cpu_s": 5.48,
+      "condition": "L",
+      "generator_cpu_s": 0.076448,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b08-L",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 23112,
+      "app_cpu_s": 1.709419,
+      "block": 8,
+      "checktx_socket_queue_v0_delta_s": 0.009921314,
+      "comet_cpu_s": 5.46,
+      "condition": "I",
+      "generator_cpu_s": 0.182698,
+      "invalid_rejected": 168,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b08-I",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 82176,
+      "app_cpu_s": 2.380879,
+      "block": 9,
+      "checktx_socket_queue_v0_delta_s": 0.012463239999999992,
+      "comet_cpu_s": 5.75,
+      "condition": "B",
+      "generator_cpu_s": 0.17426,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 1853280,
+      "run_id": "X10-b09-B",
+      "v0_sample_count": 19,
+      "valid_committed": 241
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 25680,
+      "app_cpu_s": 1.585048,
+      "block": 9,
+      "checktx_socket_queue_v0_delta_s": 0.0032859790000000005,
+      "comet_cpu_s": 5.5,
+      "condition": "L",
+      "generator_cpu_s": 0.075251,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b09-L",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 23112,
+      "app_cpu_s": 1.713549,
+      "block": 9,
+      "checktx_socket_queue_v0_delta_s": 0.009498627000000008,
+      "comet_cpu_s": 5.45,
+      "condition": "I",
+      "generator_cpu_s": 0.173717,
+      "invalid_rejected": 168,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b09-I",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 84744,
+      "app_cpu_s": 2.377675,
+      "block": 10,
+      "checktx_socket_queue_v0_delta_s": 0.013018364999999995,
+      "comet_cpu_s": 5.77,
+      "condition": "B",
+      "generator_cpu_s": 0.168109,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 1853280,
+      "run_id": "X10-b10-B",
+      "v0_sample_count": 19,
+      "valid_committed": 241
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 25680,
+      "app_cpu_s": 1.740539,
+      "block": 10,
+      "checktx_socket_queue_v0_delta_s": 0.011443156000000003,
+      "comet_cpu_s": 5.45,
+      "condition": "I",
+      "generator_cpu_s": 0.180058,
+      "invalid_rejected": 168,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b10-I",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 25680,
+      "app_cpu_s": 1.585247,
+      "block": 10,
+      "checktx_socket_queue_v0_delta_s": 0.003442746999999998,
+      "comet_cpu_s": 5.52,
+      "condition": "L",
+      "generator_cpu_s": 0.084418,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b10-L",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 23112,
+      "app_cpu_s": 1.70208,
+      "block": 11,
+      "checktx_socket_queue_v0_delta_s": 0.010555494999999998,
+      "comet_cpu_s": 5.57,
+      "condition": "I",
+      "generator_cpu_s": 0.192506,
+      "invalid_rejected": 168,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b11-I",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 25680,
+      "app_cpu_s": 1.556606,
+      "block": 11,
+      "checktx_socket_queue_v0_delta_s": 0.0030259370000000007,
+      "comet_cpu_s": 5.43,
+      "condition": "L",
+      "generator_cpu_s": 0.07941,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b11-L",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 89880,
+      "app_cpu_s": 2.389877,
+      "block": 11,
+      "checktx_socket_queue_v0_delta_s": 0.012224250999999992,
+      "comet_cpu_s": 5.98,
+      "condition": "B",
+      "generator_cpu_s": 0.172947,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 1853280,
+      "run_id": "X10-b11-B",
+      "v0_sample_count": 19,
+      "valid_committed": 241
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 23112,
+      "app_cpu_s": 1.573036,
+      "block": 12,
+      "checktx_socket_queue_v0_delta_s": 0.003653634,
+      "comet_cpu_s": 5.39,
+      "condition": "L",
+      "generator_cpu_s": 0.081499,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b12-L",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 23112,
+      "app_cpu_s": 1.703307,
+      "block": 12,
+      "checktx_socket_queue_v0_delta_s": 0.010086469999999993,
+      "comet_cpu_s": 5.44,
+      "condition": "I",
+      "generator_cpu_s": 0.172365,
+      "invalid_rejected": 168,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b12-I",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 97584,
+      "app_cpu_s": 2.384126,
+      "block": 12,
+      "checktx_socket_queue_v0_delta_s": 0.013874340999999998,
+      "comet_cpu_s": 5.66,
+      "condition": "B",
+      "generator_cpu_s": 0.172694,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 1853280,
+      "run_id": "X10-b12-B",
+      "v0_sample_count": 19,
+      "valid_committed": 241
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 23112,
+      "app_cpu_s": 1.604969,
+      "block": 13,
+      "checktx_socket_queue_v0_delta_s": 0.003589789,
+      "comet_cpu_s": 5.52,
+      "condition": "L",
+      "generator_cpu_s": 0.082084,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b13-L",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 89880,
+      "app_cpu_s": 2.37733,
+      "block": 13,
+      "checktx_socket_queue_v0_delta_s": 0.012015872000000007,
+      "comet_cpu_s": 5.93,
+      "condition": "B",
+      "generator_cpu_s": 0.182638,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 1853280,
+      "run_id": "X10-b13-B",
+      "v0_sample_count": 19,
+      "valid_committed": 241
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 25680,
+      "app_cpu_s": 1.687816,
+      "block": 13,
+      "checktx_socket_queue_v0_delta_s": 0.009867852999999985,
+      "comet_cpu_s": 5.7,
+      "condition": "I",
+      "generator_cpu_s": 0.183796,
+      "invalid_rejected": 168,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b13-I",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 25680,
+      "app_cpu_s": 1.69904,
+      "block": 14,
+      "checktx_socket_queue_v0_delta_s": 0.010009922000000003,
+      "comet_cpu_s": 5.58,
+      "condition": "I",
+      "generator_cpu_s": 0.186193,
+      "invalid_rejected": 168,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b14-I",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 25680,
+      "app_cpu_s": 1.597542,
+      "block": 14,
+      "checktx_socket_queue_v0_delta_s": 0.003584715999999998,
+      "comet_cpu_s": 5.51,
+      "condition": "L",
+      "generator_cpu_s": 0.072169,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b14-L",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 89880,
+      "app_cpu_s": 2.419369,
+      "block": 14,
+      "checktx_socket_queue_v0_delta_s": 0.013013458000000004,
+      "comet_cpu_s": 5.73,
+      "condition": "B",
+      "generator_cpu_s": 0.166495,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 1853280,
+      "run_id": "X10-b14-B",
+      "v0_sample_count": 19,
+      "valid_committed": 241
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 25680,
+      "app_cpu_s": 1.636716,
+      "block": 15,
+      "checktx_socket_queue_v0_delta_s": 0.0032585100000000005,
+      "comet_cpu_s": 5.46,
+      "condition": "L",
+      "generator_cpu_s": 0.074997,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b15-L",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 89880,
+      "app_cpu_s": 2.409417,
+      "block": 15,
+      "checktx_socket_queue_v0_delta_s": 0.013835991999999991,
+      "comet_cpu_s": 5.78,
+      "condition": "B",
+      "generator_cpu_s": 0.176832,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 1853280,
+      "run_id": "X10-b15-B",
+      "v0_sample_count": 19,
+      "valid_committed": 241
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 23112,
+      "app_cpu_s": 1.806803,
+      "block": 15,
+      "checktx_socket_queue_v0_delta_s": 0.009609643000000001,
+      "comet_cpu_s": 5.6,
+      "condition": "I",
+      "generator_cpu_s": 0.180547,
+      "invalid_rejected": 168,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b15-I",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 89880,
+      "app_cpu_s": 2.464441,
+      "block": 16,
+      "checktx_socket_queue_v0_delta_s": 0.011957842000000003,
+      "comet_cpu_s": 5.81,
+      "condition": "B",
+      "generator_cpu_s": 0.18403,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 1853280,
+      "run_id": "X10-b16-B",
+      "v0_sample_count": 19,
+      "valid_committed": 241
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 23112,
+      "app_cpu_s": 1.583266,
+      "block": 16,
+      "checktx_socket_queue_v0_delta_s": 0.0030492110000000018,
+      "comet_cpu_s": 5.49,
+      "condition": "L",
+      "generator_cpu_s": 0.073682,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b16-L",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 23112,
+      "app_cpu_s": 1.740457,
+      "block": 16,
+      "checktx_socket_queue_v0_delta_s": 0.010614694999999997,
+      "comet_cpu_s": 5.43,
+      "condition": "I",
+      "generator_cpu_s": 0.1781,
+      "invalid_rejected": 168,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b16-I",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 82176,
+      "app_cpu_s": 2.34287,
+      "block": 17,
+      "checktx_socket_queue_v0_delta_s": 0.013147713999999998,
+      "comet_cpu_s": 5.7,
+      "condition": "B",
+      "generator_cpu_s": 0.174097,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 1853280,
+      "run_id": "X10-b17-B",
+      "v0_sample_count": 19,
+      "valid_committed": 241
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 25680,
+      "app_cpu_s": 1.809069,
+      "block": 17,
+      "checktx_socket_queue_v0_delta_s": 0.003717364000000001,
+      "comet_cpu_s": 6.42,
+      "condition": "L",
+      "generator_cpu_s": 0.093578,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b17-L",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 23112,
+      "app_cpu_s": 1.745856,
+      "block": 17,
+      "checktx_socket_queue_v0_delta_s": 0.010059025000000004,
+      "comet_cpu_s": 5.48,
+      "condition": "I",
+      "generator_cpu_s": 0.179025,
+      "invalid_rejected": 168,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b17-I",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 25680,
+      "app_cpu_s": 1.739919,
+      "block": 18,
+      "checktx_socket_queue_v0_delta_s": 0.010367834000000008,
+      "comet_cpu_s": 5.35,
+      "condition": "I",
+      "generator_cpu_s": 0.176145,
+      "invalid_rejected": 168,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b18-I",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 84744,
+      "app_cpu_s": 2.424426,
+      "block": 18,
+      "checktx_socket_queue_v0_delta_s": 0.012203016999999997,
+      "comet_cpu_s": 5.76,
+      "condition": "B",
+      "generator_cpu_s": 0.180548,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 1853280,
+      "run_id": "X10-b18-B",
+      "v0_sample_count": 19,
+      "valid_committed": 241
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 28248,
+      "app_cpu_s": 1.534801,
+      "block": 18,
+      "checktx_socket_queue_v0_delta_s": 0.003500951,
+      "comet_cpu_s": 5.63,
+      "condition": "L",
+      "generator_cpu_s": 0.075402,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b18-L",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 28248,
+      "app_cpu_s": 1.648736,
+      "block": 19,
+      "checktx_socket_queue_v0_delta_s": 0.010551300000000005,
+      "comet_cpu_s": 5.45,
+      "condition": "I",
+      "generator_cpu_s": 0.160296,
+      "invalid_rejected": 168,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b19-I",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 89880,
+      "app_cpu_s": 2.377611,
+      "block": 19,
+      "checktx_socket_queue_v0_delta_s": 0.012921219000000006,
+      "comet_cpu_s": 5.89,
+      "condition": "B",
+      "generator_cpu_s": 0.167848,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 1853280,
+      "run_id": "X10-b19-B",
+      "v0_sample_count": 19,
+      "valid_committed": 241
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 25680,
+      "app_cpu_s": 1.537136,
+      "block": 19,
+      "checktx_socket_queue_v0_delta_s": 0.0033945860000000007,
+      "comet_cpu_s": 5.24,
+      "condition": "L",
+      "generator_cpu_s": 0.075629,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b19-L",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 25680,
+      "app_cpu_s": 1.587027,
+      "block": 20,
+      "checktx_socket_queue_v0_delta_s": 0.0036545680000000004,
+      "comet_cpu_s": 5.51,
+      "condition": "L",
+      "generator_cpu_s": 0.075737,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b20-L",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 23112,
+      "app_cpu_s": 1.740214,
+      "block": 20,
+      "checktx_socket_queue_v0_delta_s": 0.010025785999999997,
+      "comet_cpu_s": 5.38,
+      "condition": "I",
+      "generator_cpu_s": 0.177553,
+      "invalid_rejected": 168,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b20-I",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 89880,
+      "app_cpu_s": 2.480235,
+      "block": 20,
+      "checktx_socket_queue_v0_delta_s": 0.013442161,
+      "comet_cpu_s": 5.63,
+      "condition": "B",
+      "generator_cpu_s": 0.180124,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 1853280,
+      "run_id": "X10-b20-B",
+      "v0_sample_count": 19,
+      "valid_committed": 241
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 77040,
+      "app_cpu_s": 2.457742,
+      "block": 21,
+      "checktx_socket_queue_v0_delta_s": 0.012269076999999998,
+      "comet_cpu_s": 5.91,
+      "condition": "B",
+      "generator_cpu_s": 0.164248,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 1853280,
+      "run_id": "X10-b21-B",
+      "v0_sample_count": 19,
+      "valid_committed": 241
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 23112,
+      "app_cpu_s": 1.664873,
+      "block": 21,
+      "checktx_socket_queue_v0_delta_s": 0.010207993000000002,
+      "comet_cpu_s": 5.39,
+      "condition": "I",
+      "generator_cpu_s": 0.148854,
+      "invalid_rejected": 168,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b21-I",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 25680,
+      "app_cpu_s": 1.608993,
+      "block": 21,
+      "checktx_socket_queue_v0_delta_s": 0.00351598,
+      "comet_cpu_s": 5.35,
+      "condition": "L",
+      "generator_cpu_s": 0.074772,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b21-L",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 23112,
+      "app_cpu_s": 1.570231,
+      "block": 22,
+      "checktx_socket_queue_v0_delta_s": 0.003780359999999999,
+      "comet_cpu_s": 5.41,
+      "condition": "L",
+      "generator_cpu_s": 0.075602,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b22-L",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 79608,
+      "app_cpu_s": 2.37085,
+      "block": 22,
+      "checktx_socket_queue_v0_delta_s": 0.013687874999999992,
+      "comet_cpu_s": 5.6,
+      "condition": "B",
+      "generator_cpu_s": 0.173491,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 1853280,
+      "run_id": "X10-b22-B",
+      "v0_sample_count": 19,
+      "valid_committed": 241
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 28248,
+      "app_cpu_s": 1.665373,
+      "block": 22,
+      "checktx_socket_queue_v0_delta_s": 0.010332466000000007,
+      "comet_cpu_s": 5.41,
+      "condition": "I",
+      "generator_cpu_s": 0.177948,
+      "invalid_rejected": 168,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b22-I",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 89880,
+      "app_cpu_s": 2.451699,
+      "block": 23,
+      "checktx_socket_queue_v0_delta_s": 0.012683811999999992,
+      "comet_cpu_s": 6.51,
+      "condition": "B",
+      "generator_cpu_s": 0.188445,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 1853280,
+      "run_id": "X10-b23-B",
+      "v0_sample_count": 19,
+      "valid_committed": 241
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 25680,
+      "app_cpu_s": 1.770448,
+      "block": 23,
+      "checktx_socket_queue_v0_delta_s": 0.009691368999999998,
+      "comet_cpu_s": 5.54,
+      "condition": "I",
+      "generator_cpu_s": 0.175012,
+      "invalid_rejected": 168,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b23-I",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    },
+    {
+      "accepted_mempool_v0_peak_bytes": 23112,
+      "app_cpu_s": 1.608397,
+      "block": 23,
+      "checktx_socket_queue_v0_delta_s": 0.003074112,
+      "comet_cpu_s": 5.19,
+      "condition": "L",
+      "generator_cpu_s": 0.073248,
+      "invalid_rejected": 0,
+      "relay_send_v0_delta_bytes": 555984,
+      "run_id": "X10-b23-L",
+      "v0_sample_count": 19,
+      "valid_committed": 73
+    }
+  ],
+  "raw_manifest_sha256": "a97e1665deca67e747f30a1c6b03268140b716886e42fb24d9c1e1a6512233c8",
+  "schema": "pluto.file02.x16_resources.v1",
+  "source": "X10 successful 24-block session",
+  "stage_cpu_ns": null,
+  "stage_cpu_reason": "UNAVAILABLE_NETWORK_STAGE_CPU_ATTRIBUTION",
+  "status": "DESCRIPTIVE",
+  "validator0_sample_index_curves": {
+    "B": [
+      {
+        "mean_comet_cpu_cumulative_s": 0.0,
+        "mean_mempool_bytes": 0,
+        "n_networks": 24,
+        "sample_index": 0
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.06875,
+        "mean_mempool_bytes": 2568,
+        "n_networks": 24,
+        "sample_index": 1
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.15416666666666667,
+        "mean_mempool_bytes": 25787,
+        "n_networks": 24,
+        "sample_index": 2
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.2475,
+        "mean_mempool_bytes": 42372,
+        "n_networks": 24,
+        "sample_index": 3
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.34875,
+        "mean_mempool_bytes": 42479,
+        "n_networks": 24,
+        "sample_index": 4
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.44125,
+        "mean_mempool_bytes": 73295,
+        "n_networks": 24,
+        "sample_index": 5
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.5341666666666667,
+        "mean_mempool_bytes": 58208,
+        "n_networks": 24,
+        "sample_index": 6
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.6258333333333334,
+        "mean_mempool_bytes": 40553,
+        "n_networks": 24,
+        "sample_index": 7
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.7208333333333333,
+        "mean_mempool_bytes": 49648,
+        "n_networks": 24,
+        "sample_index": 8
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.8108333333333334,
+        "mean_mempool_bytes": 73188,
+        "n_networks": 24,
+        "sample_index": 9
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.9045833333333333,
+        "mean_mempool_bytes": 58101,
+        "n_networks": 24,
+        "sample_index": 10
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.99625,
+        "mean_mempool_bytes": 40553,
+        "n_networks": 24,
+        "sample_index": 11
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 1.0845833333333335,
+        "mean_mempool_bytes": 54677,
+        "n_networks": 24,
+        "sample_index": 12
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 1.1804166666666667,
+        "mean_mempool_bytes": 71262,
+        "n_networks": 24,
+        "sample_index": 13
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 1.2654166666666666,
+        "mean_mempool_bytes": 29211,
+        "n_networks": 24,
+        "sample_index": 14
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 1.3433333333333333,
+        "mean_mempool_bytes": 535,
+        "n_networks": 24,
+        "sample_index": 15
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 1.4175,
+        "mean_mempool_bytes": 0,
+        "n_networks": 24,
+        "sample_index": 16
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 1.4845833333333334,
+        "mean_mempool_bytes": 0,
+        "n_networks": 24,
+        "sample_index": 17
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 1.5558333333333334,
+        "mean_mempool_bytes": 0,
+        "n_networks": 24,
+        "sample_index": 18
+      }
+    ],
+    "I": [
+      {
+        "mean_comet_cpu_cumulative_s": 0.0,
+        "mean_mempool_bytes": 0,
+        "n_networks": 24,
+        "sample_index": 0
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.06708333333333334,
+        "mean_mempool_bytes": 2568,
+        "n_networks": 24,
+        "sample_index": 1
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.14416666666666667,
+        "mean_mempool_bytes": 8560,
+        "n_networks": 24,
+        "sample_index": 2
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.2325,
+        "mean_mempool_bytes": 13803,
+        "n_networks": 24,
+        "sample_index": 3
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.32083333333333336,
+        "mean_mempool_bytes": 8346,
+        "n_networks": 24,
+        "sample_index": 4
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.4008333333333333,
+        "mean_mempool_bytes": 23754,
+        "n_networks": 24,
+        "sample_index": 5
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.49,
+        "mean_mempool_bytes": 19474,
+        "n_networks": 24,
+        "sample_index": 6
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.5770833333333333,
+        "mean_mempool_bytes": 12626,
+        "n_networks": 24,
+        "sample_index": 7
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.6620833333333334,
+        "mean_mempool_bytes": 13268,
+        "n_networks": 24,
+        "sample_index": 8
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.745,
+        "mean_mempool_bytes": 23005,
+        "n_networks": 24,
+        "sample_index": 9
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.8304166666666667,
+        "mean_mempool_bytes": 18083,
+        "n_networks": 24,
+        "sample_index": 10
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.9187500000000001,
+        "mean_mempool_bytes": 12091,
+        "n_networks": 24,
+        "sample_index": 11
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 1.0066666666666666,
+        "mean_mempool_bytes": 13910,
+        "n_networks": 24,
+        "sample_index": 12
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 1.0895833333333333,
+        "mean_mempool_bytes": 22791,
+        "n_networks": 24,
+        "sample_index": 13
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 1.1720833333333334,
+        "mean_mempool_bytes": 9630,
+        "n_networks": 24,
+        "sample_index": 14
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 1.25,
+        "mean_mempool_bytes": 0,
+        "n_networks": 24,
+        "sample_index": 15
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 1.3191666666666668,
+        "mean_mempool_bytes": 0,
+        "n_networks": 24,
+        "sample_index": 16
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 1.3825,
+        "mean_mempool_bytes": 0,
+        "n_networks": 24,
+        "sample_index": 17
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 1.45125,
+        "mean_mempool_bytes": 0,
+        "n_networks": 24,
+        "sample_index": 18
+      }
+    ],
+    "L": [
+      {
+        "mean_comet_cpu_cumulative_s": 0.0,
+        "mean_mempool_bytes": 0,
+        "n_networks": 24,
+        "sample_index": 0
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.06708333333333334,
+        "mean_mempool_bytes": 2568,
+        "n_networks": 24,
+        "sample_index": 1
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.14500000000000002,
+        "mean_mempool_bytes": 7918,
+        "n_networks": 24,
+        "sample_index": 2
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.22208333333333333,
+        "mean_mempool_bytes": 12947,
+        "n_networks": 24,
+        "sample_index": 3
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.30375,
+        "mean_mempool_bytes": 9951,
+        "n_networks": 24,
+        "sample_index": 4
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.38208333333333333,
+        "mean_mempool_bytes": 23754,
+        "n_networks": 24,
+        "sample_index": 5
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.4666666666666667,
+        "mean_mempool_bytes": 19153,
+        "n_networks": 24,
+        "sample_index": 6
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.55,
+        "mean_mempool_bytes": 13054,
+        "n_networks": 24,
+        "sample_index": 7
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.6316666666666667,
+        "mean_mempool_bytes": 11235,
+        "n_networks": 24,
+        "sample_index": 8
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.7075,
+        "mean_mempool_bytes": 23433,
+        "n_networks": 24,
+        "sample_index": 9
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.7866666666666667,
+        "mean_mempool_bytes": 19153,
+        "n_networks": 24,
+        "sample_index": 10
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.8683333333333333,
+        "mean_mempool_bytes": 13161,
+        "n_networks": 24,
+        "sample_index": 11
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 0.94875,
+        "mean_mempool_bytes": 11984,
+        "n_networks": 24,
+        "sample_index": 12
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 1.0266666666666666,
+        "mean_mempool_bytes": 21721,
+        "n_networks": 24,
+        "sample_index": 13
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 1.1041666666666667,
+        "mean_mempool_bytes": 11021,
+        "n_networks": 24,
+        "sample_index": 14
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 1.1816666666666666,
+        "mean_mempool_bytes": 0,
+        "n_networks": 24,
+        "sample_index": 15
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 1.2533333333333334,
+        "mean_mempool_bytes": 0,
+        "n_networks": 24,
+        "sample_index": 16
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 1.3204166666666668,
+        "mean_mempool_bytes": 0,
+        "n_networks": 24,
+        "sample_index": 17
+      },
+      {
+        "mean_comet_cpu_cumulative_s": 1.3904166666666666,
+        "mean_mempool_bytes": 0,
+        "n_networks": 24,
+        "sample_index": 18
+      }
+    ]
+  }
+}

@@ -272,11 +272,13 @@ type s07OracleRecord struct {
 }
 
 type s07CommitObservation struct {
-	ID                     string `json:"id"`
-	SHA256                 string `json:"sha256"`
-	AllFourSeenUTC         string `json:"all_four_seen_utc"`
-	AllFourSeenMonotonicNS *int64 `json:"all_four_seen_monotonic_ns,omitempty"`
-	Height                 int64  `json:"height"`
+	ID                          string    `json:"id"`
+	SHA256                      string    `json:"sha256"`
+	AllFourSeenUTC              string    `json:"all_four_seen_utc"`
+	AllFourSeenMonotonicNS      *int64    `json:"all_four_seen_monotonic_ns,omitempty"`
+	Height                      int64     `json:"height"`
+	PerValidatorSeenUTC         [4]string `json:"per_validator_seen_utc,omitempty"`
+	PerValidatorSeenMonotonicNS [4]int64  `json:"per_validator_seen_monotonic_ns,omitempty"`
 }
 
 // Polling observes the first indexed result on each real validator. It is a

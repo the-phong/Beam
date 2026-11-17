@@ -14,23 +14,31 @@ const Schema = "pluto.telemetry.v1"
 type Span struct {
 	Stage      string `json:"stage"`
 	DurationNS int64  `json:"duration_ns"`
+	CPUNS      *int64 `json:"cpu_ns,omitempty"`
 }
 
 type CheckTxEvent struct {
-	Schema        string `json:"schema"`
-	Kind          string `json:"kind"`
-	Sequence      uint64 `json:"sequence"`
-	ObservedUTC   string `json:"observed_utc"`
-	Profile       uint8  `json:"profile"`
-	CheckType     string `json:"check_type"`
-	Source        string `json:"source"`
-	WireBytes     int    `json:"wire_bytes"`
-	TxSHA256      string `json:"tx_sha256,omitempty"`
-	Code          uint32 `json:"code"`
-	LastStage     string `json:"last_stage"`
-	ServiceNS     int64  `json:"service_ns"`
-	AppLockWaitNS int64  `json:"app_lock_wait_ns"`
-	Spans         []Span `json:"spans,omitempty"`
+	Schema               string `json:"schema"`
+	Kind                 string `json:"kind"`
+	Sequence             uint64 `json:"sequence"`
+	ObservedUTC          string `json:"observed_utc"`
+	AppIngressUTC        string `json:"app_ingress_utc,omitempty"`
+	AppLockUTC           string `json:"app_lock_acquired_utc,omitempty"`
+	AppResultUTC         string `json:"app_result_utc,omitempty"`
+	AppIngressHostMonoNS *int64 `json:"app_ingress_host_monotonic_ns,omitempty"`
+	AppLockHostMonoNS    *int64 `json:"app_lock_host_monotonic_ns,omitempty"`
+	AppResultHostMonoNS  *int64 `json:"app_result_host_monotonic_ns,omitempty"`
+	Profile              uint8  `json:"profile"`
+	CheckType            string `json:"check_type"`
+	Source               string `json:"source"`
+	WireBytes            int    `json:"wire_bytes"`
+	TxSHA256             string `json:"tx_sha256,omitempty"`
+	Code                 uint32 `json:"code"`
+	LastStage            string `json:"last_stage"`
+	ServiceNS            int64  `json:"service_ns"`
+	AppLockWaitNS        int64  `json:"app_lock_wait_ns"`
+	Spans                []Span `json:"spans,omitempty"`
+	StageCPUStatus       string `json:"stage_cpu_status,omitempty"`
 }
 
 // Recorder drops excess samples instead of delaying consensus or admission.

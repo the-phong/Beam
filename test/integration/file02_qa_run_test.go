@@ -44,11 +44,12 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if err := os.Mkdir(run, 0700); err != nil {
 		t.Fatal(err)
 	}
+	mechanismTraceCase := metadata["case_id"] == "X07" || metadata["case_id"] == "X16"
 	planPath := filepath.Join(run, "plan.json")
 	if err := load.WritePlan(planPath, plan, c, configHash); err != nil {
 		t.Fatal(err)
 	}
-	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || file02ValidFloodCase(metadata["case_id"]) || file02DynamicsCase(metadata["case_id"]) || file02FaultCase(metadata["case_id"]) || file02QualityCase(metadata["case_id"]) || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
+	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || file02ValidFloodCase(metadata["case_id"]) || file02DynamicsCase(metadata["case_id"]) || file02FaultCase(metadata["case_id"]) || file02QualityCase(metadata["case_id"]) || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" || metadata["case_id"] == "X10" || metadata["case_id"] == "X13" || mechanismTraceCase {
 		configBytes, err := os.ReadFile(configPath)
 		if err != nil {
 			t.Fatal(err)
@@ -65,7 +66,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if !ok {
 		scope = "QA_ONLY"
 	}
-	if scope != "QA_ONLY" && scope != "T_PREFLIGHT" && scope != "R_CONFIRMATORY" && scope != "A_CONFIRMATORY" && scope != "Q_CONFIRMATORY" {
+	if scope != "QA_ONLY" && scope != "T_PREFLIGHT" && scope != "R_CONFIRMATORY" && scope != "A_CONFIRMATORY" && scope != "Q_CONFIRMATORY" && scope != "X_CONFIRMATORY" {
 		t.Fatal("unsupported File 02 run scope")
 	}
 	metadata["scope"] = scope
@@ -77,15 +78,51 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if err := s07WriteJSON(filepath.Join(run, "metadata.json"), metadata); err != nil {
 		t.Fatal(err)
 	}
-	pilot := startS06NetworkAt(t, c, fixture, profile, t.TempDir())
-	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || file02ValidFloodCase(metadata["case_id"]) || file02DynamicsCase(metadata["case_id"]) || file02FaultCase(metadata["case_id"]) || file02QualityCase(metadata["case_id"]) || metadata["case_id"] == "T05" || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
+	var pilot *s06Network
+	if mechanismTraceCase {
+		mode, ok := metadata["trace_mode"].(string)
+		if !ok || mode != "ON" && mode != "OFF" {
+			t.Fatal("X07/X16 trace mode must be ON or OFF")
+		}
+		if mode == "ON" {
+			t.Setenv("FILE02_X07_TRACE_ENABLED", "1")
+		} else {
+			t.Setenv("FILE02_X07_TRACE_ENABLED", "")
+		}
+		if metadata["case_id"] == "X07" && metadata["x07_queue_v2"] == true {
+			if mode == "ON" {
+				t.Setenv("FILE02_X07_APP_TRACE_ENABLED", "1")
+			} else {
+				t.Setenv("FILE02_X07_APP_TRACE_ENABLED", "")
+			}
+		}
+		if metadata["case_id"] == "X16" {
+			stageMode, ok := metadata["stage_cpu_mode"].(string)
+			if !ok || stageMode != "ON" && stageMode != "OFF" {
+				t.Fatal("X16 stage CPU mode must be ON or OFF")
+			}
+			if stageMode == "ON" {
+				t.Setenv("FILE02_X16_STAGE_CPU_ENABLED", "1")
+			} else {
+				t.Setenv("FILE02_X16_STAGE_CPU_ENABLED", "")
+			}
+		}
+	}
+	if metadata["case_id"] == "X10" || metadata["case_id"] == "X13" || mechanismTraceCase {
+		pilot = startX05NetworkAt(t, c, fixture, profile, t.TempDir())
+	} else {
+		pilot = startS06NetworkAt(t, c, fixture, profile, t.TempDir())
+	}
+	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || file02ValidFloodCase(metadata["case_id"]) || file02DynamicsCase(metadata["case_id"]) || file02FaultCase(metadata["case_id"]) || file02QualityCase(metadata["case_id"]) || metadata["case_id"] == "T05" || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" || mechanismTraceCase {
 		mode, ok := metadata["recorder_mode"].(string)
 		if !ok || (mode != "ON" && mode != "OFF") {
 			t.Fatal("T05 requires recorder mode ON or OFF")
 		}
 		if mode == "OFF" {
 			for _, app := range pilot.apps {
-				app.SetRecorder(nil)
+				if app != nil {
+					app.SetRecorder(nil)
+				}
 			}
 		}
 	}
@@ -115,7 +152,7 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	if err := s07WriteExclusive(filepath.Join(run, "nodes.json"), nodes); err != nil {
 		t.Fatal(err)
 	}
-	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || file02ValidFloodCase(metadata["case_id"]) || file02DynamicsCase(metadata["case_id"]) || file02FaultCase(metadata["case_id"]) || file02QualityCase(metadata["case_id"]) || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
+	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || file02ValidFloodCase(metadata["case_id"]) || file02DynamicsCase(metadata["case_id"]) || file02FaultCase(metadata["case_id"]) || file02QualityCase(metadata["case_id"]) || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" || metadata["case_id"] == "X10" || metadata["case_id"] == "X13" || metadata["case_id"] == "X16" && scope == "X_CONFIRMATORY" {
 		binder := "../../research/tools/file02_r06.py"
 		if file02AttackCase(metadata["case_id"]) {
 			binder = "../../research/tools/file02_attack.py"
@@ -129,6 +166,13 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 			binder = "../../research/tools/file02_a14.py"
 		} else if file02QualityCase(metadata["case_id"]) {
 			binder = "../../research/tools/file02_q02.py"
+		} else if metadata["case_id"] == "X10" || metadata["case_id"] == "X13" {
+			binder = "../../research/tools/file02_x10.py"
+			if metadata["case_id"] == "X13" {
+				binder = "../../research/tools/file02_x13.py"
+			}
+		} else if metadata["case_id"] == "X16" {
+			binder = "../../research/tools/file02_x16_confirmatory.py"
 		}
 		bind := exec.Command("python3", binder, "bind-run-plan", run, pilot.n.root)
 		output, err := bind.CombinedOutput()
@@ -238,22 +282,37 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 			t.Fatal(err)
 		}
 	}
-	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || file02ValidFloodCase(metadata["case_id"]) || file02DynamicsCase(metadata["case_id"]) || file02FaultCase(metadata["case_id"]) || file02QualityCase(metadata["case_id"]) || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" {
-		for i, recorder := range pilot.recorders {
-			events, dropped := recorder.Drain()
-			if dropped != 0 {
-				t.Fatalf("File02 R recorder %d dropped %d events", i, dropped)
+	if file02AttackCase(metadata["case_id"]) || file02ReplayCase(metadata["case_id"]) || file02ValidFloodCase(metadata["case_id"]) || file02DynamicsCase(metadata["case_id"]) || file02QualityCase(metadata["case_id"]) || metadata["case_id"] == "R06" || metadata["case_id"] == "R07" || metadata["case_id"] == "R08" || metadata["case_id"] == "R09" || metadata["case_id"] == "R14" || metadata["case_id"] == "R15" || metadata["case_id"] == "R16" || metadata["case_id"] == "X10" || metadata["case_id"] == "X13" || mechanismTraceCase {
+		if metadata["case_id"] == "X10" || metadata["case_id"] == "X13" || mechanismTraceCase {
+			time.Sleep(1100 * time.Millisecond)
+			for i := range pilot.appProcesses {
+				for suffix, source := range map[string]string{"resources.jsonl": pilot.appResources[i], "events.jsonl": pilot.appEvents[i]} {
+					data, err := os.ReadFile(source)
+					if err != nil {
+						t.Fatal(err)
+					}
+					if err := s07WriteExclusive(filepath.Join(run, fmt.Sprintf("app-%d-%s", i, suffix)), data); err != nil {
+						t.Fatal(err)
+					}
+				}
 			}
-			file, err := os.OpenFile(filepath.Join(run, fmt.Sprintf("recorder-%d.jsonl", i)), os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if err := telemetry.WriteJSONL(file, events); err != nil {
-				_ = file.Close()
-				t.Fatal(err)
-			}
-			if err := file.Close(); err != nil {
-				t.Fatal(err)
+		} else {
+			for i, recorder := range pilot.recorders {
+				events, dropped := recorder.Drain()
+				if dropped != 0 {
+					t.Fatalf("File02 R recorder %d dropped %d events", i, dropped)
+				}
+				file, err := os.OpenFile(filepath.Join(run, fmt.Sprintf("recorder-%d.jsonl", i)), os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if err := telemetry.WriteJSONL(file, events); err != nil {
+					_ = file.Close()
+					t.Fatal(err)
+				}
+				if err := file.Close(); err != nil {
+					t.Fatal(err)
+				}
 			}
 		}
 	}
@@ -361,6 +420,41 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 			}
 		case <-time.After(10 * time.Second):
 			t.Fatal("A14 per-node observations incomplete")
+		}
+	}
+	if mechanismTraceCase {
+		pilot.n.stopAll()
+		if metadata["case_id"] == "X07" && metadata["x07_queue_v2"] == true {
+			for node, path := range pilot.appServerTraces {
+				if metadata["trace_mode"] == "OFF" {
+					if path != "" {
+						t.Fatal("app server trace OFF emitted a path")
+					}
+					continue
+				}
+				raw, err := os.ReadFile(path)
+				if err != nil || len(raw) == 0 {
+					t.Fatalf("app server trace %d missing: %v", node, err)
+				}
+				if err := s07WriteExclusive(filepath.Join(run, fmt.Sprintf("app-server-%d-trace.jsonl", node)), raw); err != nil {
+					t.Fatal(err)
+				}
+			}
+		}
+		for node, path := range pilot.cometTraces {
+			if metadata["trace_mode"] == "OFF" {
+				if path != "" {
+					t.Fatal("trace OFF emitted a path")
+				}
+				continue
+			}
+			raw, err := os.ReadFile(path)
+			if err != nil || len(raw) == 0 {
+				t.Fatalf("Comet trace %d missing: %v", node, err)
+			}
+			if err := s07WriteExclusive(filepath.Join(run, fmt.Sprintf("comet-%d-trace.jsonl", node)), raw); err != nil {
+				t.Fatal(err)
+			}
 		}
 	}
 	t.Logf("File02 QA run=%s valid=%d invalid=%d height=%d", plan.RunID, oracle.ValidCommitted, oracle.InvalidRejected, oracle.CommonHeight)

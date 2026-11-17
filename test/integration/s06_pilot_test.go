@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io"
 	"math/rand"
+	"net"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -35,14 +36,20 @@ import (
 )
 
 type s06Network struct {
-	n            *fourNetwork
-	metricsPorts [4]int
-	apps         [4]*researchv2app.App
-	recorders    [4]*telemetry.Recorder
-	observers    [4]*exec.Cmd
-	observerLogs [4]*os.File
-	observerErrs [4]*os.File
-	nodes        [4]load.WatchedNode
+	n               *fourNetwork
+	metricsPorts    [4]int
+	apps            [4]*researchv2app.App
+	appProcesses    [4]*exec.Cmd
+	appLogs         [4]*os.File
+	appResources    [4]string
+	appEvents       [4]string
+	cometTraces     [4]string
+	appServerTraces [4]string
+	recorders       [4]*telemetry.Recorder
+	observers       [4]*exec.Cmd
+	observerLogs    [4]*os.File
+	observerErrs    [4]*os.File
+	nodes           [4]load.WatchedNode
 }
 
 func startS06Network(t *testing.T, c load.Config, f *load.PilotFixture, profile researchv2.Profile) *s06Network {
@@ -52,6 +59,20 @@ func startS06Network(t *testing.T, c load.Config, f *load.PilotFixture, profile 
 // startS06NetworkAt keeps a selected private run directory for reproducibility.
 // The S06 caller still uses testing's disposable directory.
 func startS06NetworkAt(t *testing.T, c load.Config, f *load.PilotFixture, profile researchv2.Profile, runRoot string) *s06Network {
+	return startS06NetworkAtMode(t, c, f, profile, runRoot, false, false)
+}
+
+// startX05NetworkAt isolates each app from the integration harness while
+// preserving the existing single-host, loopback Comet/network setup.
+func startX05NetworkAt(t *testing.T, c load.Config, f *load.PilotFixture, profile researchv2.Profile, runRoot string) *s06Network {
+	return startX05NetworkAtRecorder(t, c, f, profile, runRoot, true)
+}
+
+func startX05NetworkAtRecorder(t *testing.T, c load.Config, f *load.PilotFixture, profile researchv2.Profile, runRoot string, recorder bool) *s06Network {
+	return startS06NetworkAtMode(t, c, f, profile, runRoot, true, recorder)
+}
+
+func startS06NetworkAtMode(t *testing.T, c load.Config, f *load.PilotFixture, profile researchv2.Profile, runRoot string, separateApps, recorderOn bool) *s06Network {
 	t.Helper()
 	comet, _ := filepath.Abs("../../build/cometbft-s05")
 	if _, err := os.Stat(comet); err != nil {
@@ -121,6 +142,13 @@ func startS06NetworkAt(t *testing.T, c load.Config, f *load.PilotFixture, profil
 		t.Fatal(err)
 	}
 	var stopServers []func() error
+	var appGenesisPath string
+	if separateApps {
+		appGenesisPath = filepath.Join(runRoot, "app-genesis.bin")
+		if err := os.WriteFile(appGenesisPath, f.Genesis, 0600); err != nil {
+			t.Fatal(err)
+		}
+	}
 	t.Cleanup(func() {
 		for i, cmd := range pilot.observers {
 			if cmd != nil && cmd.Process != nil {
@@ -135,6 +163,15 @@ func startS06NetworkAt(t *testing.T, c load.Config, f *load.PilotFixture, profil
 			}
 		}
 		n.stopAll()
+		for i, cmd := range pilot.appProcesses {
+			if cmd != nil && cmd.Process != nil {
+				_ = cmd.Process.Signal(syscall.SIGTERM)
+				_ = cmd.Wait()
+			}
+			if pilot.appLogs[i] != nil {
+				_ = pilot.appLogs[i].Close()
+			}
+		}
 		for _, stop := range stopServers {
 			_ = stop()
 		}
@@ -184,26 +221,89 @@ func startS06NetworkAt(t *testing.T, c load.Config, f *load.PilotFixture, profil
 		if err := store.Close(); err != nil {
 			t.Fatal(err)
 		}
-		pilot.apps[i], err = researchv2app.Open(dir, f.Genesis, f.ChainID, profile)
-		if err != nil {
-			t.Fatal(err)
+		if separateApps {
+			appBinary, err := filepath.Abs("../../build/profile-app")
+			if err != nil {
+				t.Fatal(err)
+			}
+			if os.Getenv("FILE02_X07_APP_TRACE_ENABLED") == "1" {
+				appBinary, err = filepath.Abs("../../build/profile-app-x07")
+				if err != nil {
+					t.Fatal(err)
+				}
+			}
+			profileName := map[researchv2.Profile]string{
+				researchv2.ProfileC: "C", researchv2.ProfileCP: "CP",
+				researchv2.ProfileP: "P", researchv2.ProfileH: "H",
+			}[profile]
+			pilot.appResources[i] = filepath.Join(runRoot, fmt.Sprintf("app-%d-resources.jsonl", i))
+			pilot.appEvents[i] = filepath.Join(runRoot, fmt.Sprintf("app-%d-events.jsonl", i))
+			logFile, err := os.OpenFile(filepath.Join(runRoot, fmt.Sprintf("app-%d.log", i)), os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
+			if err != nil {
+				t.Fatal(err)
+			}
+			pilot.appLogs[i] = logFile
+			args := []string{"-db", dir, "-genesis", appGenesisPath,
+				"-chain-id", f.ChainID, "-profile", profileName, "-listen", cfg.ProxyApp,
+				"-resources", pilot.appResources[i], "-events", pilot.appEvents[i]}
+			if recorderOn {
+				args = append(args, "-recorder")
+			}
+			if os.Getenv("FILE02_X16_STAGE_CPU_ENABLED") == "1" {
+				if !recorderOn {
+					t.Fatal("stage CPU profiler requires recorder")
+				}
+				args = append(args, "-stage-cpu")
+			}
+			cmd := exec.Command(appBinary, args...)
+			if os.Getenv("FILE02_X07_APP_TRACE_ENABLED") == "1" {
+				pilot.appServerTraces[i] = filepath.Join(runRoot, fmt.Sprintf("app-server-%d-trace.jsonl", i))
+				cmd.Env = append(os.Environ(), "PLUTO_X07_TRACE_FILE="+pilot.appServerTraces[i])
+			}
+			cmd.Stdout, cmd.Stderr = logFile, logFile
+			if err := cmd.Start(); err != nil {
+				t.Fatal(err)
+			}
+			pilot.appProcesses[i] = cmd
+			address := strings.TrimPrefix(cfg.ProxyApp, "tcp://")
+			deadline := time.Now().Add(10 * time.Second)
+			for {
+				conn, err := net.DialTimeout("tcp", address, 100*time.Millisecond)
+				if err == nil {
+					_ = conn.Close()
+					break
+				}
+				if time.Now().After(deadline) {
+					t.Fatalf("dedicated app %d did not become ready (private app log)", i)
+				}
+				time.Sleep(50 * time.Millisecond)
+			}
+		} else {
+			pilot.apps[i], err = researchv2app.Open(dir, f.Genesis, f.ChainID, profile)
+			if err != nil {
+				t.Fatal(err)
+			}
+			pilot.recorders[i] = telemetry.NewRecorder(2048)
+			pilot.apps[i].SetRecorder(pilot.recorders[i])
+			abciServer, err := server.NewServer(cfg.ProxyApp, "socket", pilot.apps[i])
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err := abciServer.Start(); err != nil {
+				t.Fatal(err)
+			}
+			stopServers = append(stopServers, abciServer.Stop)
 		}
-		pilot.recorders[i] = telemetry.NewRecorder(2048)
-		pilot.apps[i].SetRecorder(pilot.recorders[i])
-		abciServer, err := server.NewServer(cfg.ProxyApp, "socket", pilot.apps[i])
-		if err != nil {
-			t.Fatal(err)
-		}
-		if err := abciServer.Start(); err != nil {
-			t.Fatal(err)
-		}
-		stopServers = append(stopServers, abciServer.Stop)
 		logPath := filepath.Join(filepath.Dir(n.root), fmt.Sprintf("validator-%d.log", i))
 		logFile, err := os.Create(logPath)
 		if err != nil {
 			t.Fatal(err)
 		}
 		cmd := exec.Command(comet, "node", "--home", home)
+		if os.Getenv("FILE02_X07_TRACE_ENABLED") == "1" {
+			pilot.cometTraces[i] = filepath.Join(runRoot, fmt.Sprintf("comet-%d-trace.jsonl", i))
+			cmd.Env = append(os.Environ(), "PLUTO_X07_TRACE_FILE="+pilot.cometTraces[i])
+		}
 		cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 		cmd.Stdout, cmd.Stderr = logFile, logFile
 		if err := cmd.Start(); err != nil {
@@ -233,14 +333,18 @@ func (p *s06Network) startObservers(t *testing.T, c load.Config) {
 		}
 		n := &p.n.nodes[i]
 		rpc := fmt.Sprintf("http://127.0.0.1:%d", n.ports.RPC)
+		appPID := os.Getpid()
+		if p.appProcesses[i] != nil {
+			appPID = p.appProcesses[i].Process.Pid
+		}
 		cmd := exec.Command(observer, "-rpc", rpc, "-metrics", fmt.Sprintf("http://127.0.0.1:%d", p.metricsPorts[i]),
-			"-comet-pid", fmt.Sprint(n.pid), "-app-pid", fmt.Sprint(os.Getpid()), "-interval", fmt.Sprintf("%dms", c.Network.CollectorIntervalMS), "-count", "0")
+			"-comet-pid", fmt.Sprint(n.pid), "-app-pid", fmt.Sprint(appPID), "-interval", fmt.Sprintf("%dms", c.Network.CollectorIntervalMS), "-count", "0")
 		cmd.Stdout, cmd.Stderr = out, stderr
 		if err := cmd.Start(); err != nil {
 			t.Fatal(err)
 		}
 		p.observers[i], p.observerLogs[i], p.observerErrs[i] = cmd, out, stderr
-		p.nodes[i] = load.WatchedNode{RPC: rpc, ObserverFile: outPath, ObserverPID: cmd.Process.Pid, CometPID: n.pid, AppPID: os.Getpid()}
+		p.nodes[i] = load.WatchedNode{RPC: rpc, ObserverFile: outPath, ObserverPID: cmd.Process.Pid, CometPID: n.pid, AppPID: appPID}
 	}
 }
 

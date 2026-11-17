@@ -1,5 +1,55 @@
 # Architectural decision log
 
+## D-046 — X18 bounded mechanism/service engineering disposition (2026-11-15)
+
+The [X18 evidence decision](evidence/file02/mechanism/MECHANISM_GATE_DECISION.md)
+proposes **CONDITIONAL GO** for reporting measured resource and service
+effects on four validators sharing one host with validator-0 loopback RPC.
+X10's new 24-block primary I−B mean first-all-four observation upper-bound
+effect is +60.03 ms, 95% CI [+39.51,+81.54], inside the prospectively
+registered ±100-ms research margin; every fixed H in X10/X13 met the
+unchanged 3-s endpoint. X13's 20/23/25-tx/s sensitivity did not observe a
+knee. Process CPU, accepted mempool and relay differ by workload, while
+stage CPU, full queue, observer self CPU and a localized bottleneck remain
+unavailable. X07 and X16 boxes remain PARTIAL/unchecked.
+
+This is an **engineering disposition pending independent Controller/Owner
+Gate acceptance**, not a new authorization. The original early service-
+degradation RQ2 target is `NOT ESTABLISHED` because no qualifying event was
+measured; RQ3 is `NOT_RUN`. D01–D13 and ML remain closed. No DoS,
+distributed-network, exact-commit, P2P-origin, independent-host, universal
+equivalence or capacity claim is made. The interrupted X13 raw session is
+quarantined for manifest mismatch and excluded from all estimates. Accepted
+RQ1/RQ1b definitions, historical raw and S06 caps remain unchanged.
+
+## D-045 — Open a bounded mechanism/service measurement addendum (2026-11-14)
+
+After PR #28 merged into `test-mainet` at
+`da46f0cc4f87548825d9768d9242e346c17bb137` with four final-head
+checks PASS and unchanged private raw manifests, the Owner's autonomous
+G00.1–G00.4/X01–X18 instruction opens **one prospective mechanism/service
+measurement addendum**. Work begins on `research/file02-mechanism-service`
+from that verified merge. This decision permits design, implementation and
+bounded X measurements in checklist order, but only after the extension
+estimands, controls, precision, topology, run duration, QC and safety are
+locked before each confirmatory send.
+
+The new RQ-Mechanism is separate from accepted RQ1 H−CP and RQ1b fixed
+legitimate service. Historical RQ1/RQ1b plans, 3-second results, source
+bytes and raw data are not revised. The 3-second result is negative within
+tested single-host RPC strata and remains ceiling-limited. The X program
+must retain ≤25 tx/s, ≤65,536 B/s, ≤16 outstanding, ≤60 s/run and all
+other S06 caps, with loopback origin. No positive-result search, automatic
+P2P/multi-host claim, D01–D13, ML training or DoS declaration is authorized.
+Unsupported measurements remain `null` with a reason and an open box.
+
+The [proposal](protocol/FILE02_MECHANISM_SERVICE_EXTENSION_PROPOSAL.md)
+is the scope input, not itself a locked case plan. X04 must produce the
+prospective locked protocol before any X10–X13 network run. X05–X09
+instrumentation must pass correctness, overhead and safety QA before being
+used for inference. The Gate MECHANISM/SERVICE decision at X18 may be
+negative or inconclusive; it does not open D without a separate decision.
+
 ## D-044 — Delegated bounded Gate QUALITY acceptance and G00 integration (2026-11-14)
 
 The Owner instructed autonomous completion of the outside master checklist

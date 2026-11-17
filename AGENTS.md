@@ -1,5 +1,41 @@
 # Pluto agent execution contract
 
+## Current status — X07/X16 bounded engineering rework pending independent Gate review (2026-11-17)
+
+The Owner requested full X07 and X16 closeout. On
+`research/file02-mechanism-service`, new source-locked X07 queue-path QA
+passed 16/16 runs and 8/8 matched ON/OFF pairs; it separately observes
+ABCI client/server, application lock/service, accepted mempool and P2P
+per-peer queue paths. X16 matched B/I passed 48/48 runs and 24/24 pairs;
+stage thread CPU and observer self CPU were added. The X16 probe overhead
+QA passed 16/16 runs and 8/8 pairs. One earlier X16 overhead QA session
+with wrong wire size was stopped, frozen and excluded. The outside master
+checklist now records X07 and X16 technical PASS with explicit limitations;
+this is not independent Gate MECHANISM/SERVICE acceptance. A single additive
+end-to-end queue scalar, unperturbed stage CPU, exact relay/commit CPU
+shares and a capacity bottleneck remain unavailable. The historical RQ1b
+negative endpoint, lack of an observed knee, single-host RPC scope and S06
+caps remain unchanged. D01–D13, ML, DoS and automatic merge remain closed.
+The branch requires Controller/Owner review before Gate acceptance.
+
+## Historical status — X engineering closeout pending independent Gate review (2026-11-15)
+
+D-046 and the X18 evidence package record a bounded engineering
+disposition on `research/file02-mechanism-service`. The outside master
+checklist has G00.1–G00.4, X01–X06, X08–X15 and X17–X18 evidenced;
+X07 and X16 remain PARTIAL/unchecked because full queue residence,
+stage/observer CPU and bottleneck attribution are unavailable. X10 and
+X13 successful new sessions passed independent raw/QC verification; an
+interrupted X13 session is quarantined for manifest mismatch and supplies
+no estimate. The Gate MECHANISM/SERVICE engineering recommendation is
+CONDITIONAL GO for bounded reporting, pending independent Controller/Owner
+acceptance. The original early service-degradation RQ2 target is NOT
+ESTABLISHED and RQ3 is NOT_RUN. D01–D13, ML, DoS and phase transition
+remain closed; no automatic merge of the X branch is authorized. Preserve
+historical and quarantined raw, accepted RQ1/RQ1b, single-host RPC scope
+and S06 caps. The authority paragraph below records the execution grant
+that produced this engineering package.
+
 ## Current authority — delegated Gate QUALITY closeout and X extension (2026-11-14)
 
 The Owner directed autonomous completion of the outside master checklist

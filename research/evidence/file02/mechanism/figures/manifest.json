@@ -1,0 +1,14 @@
+{
+  "figures": {
+    "x10_resource_curves.png": "ad3b401aa0cc276ac81d72cb03ca423e4e1635118e4f02c9b8b3aa6c5f5c59dd",
+    "x10_service.png": "f34fe95c14cb982a434a848f29951113aa9afc358a112499fc73eca38966c214",
+    "x11_invalid_wall.png": "2b5ea14263661d135ebd77da86e6408a1cf414c6aef9358c94b87453fbe23f8a",
+    "x13_rate_response.png": "8da7c9028b4010ba098ce5fbb033813e53ba0ef1cdbcce3f13a8ff933537e18d"
+  },
+  "matplotlib": "3.5.1",
+  "schema": "pluto.file02.x17_figures.v1",
+  "x10_raw_manifest_sha256": "a97e1665deca67e747f30a1c6b03268140b716886e42fb24d9c1e1a6512233c8",
+  "x11_class_sha256": "384d3103d0dfff08bf2ba327fb36c19c936fde903b0424da57bbd2460dd4bee6",
+  "x13_raw_manifest_sha256": "9eaa4d990f43e5c9d1c38d2ab4f968db3dc7a3c4e94a6a0a2a8d60ed4e0ab0e3",
+  "x16_resource_sha256": "dc564a2350bccabb1c69bae16229fa84bd5bf4ec11f99311b92a2cc1583182af"
+}

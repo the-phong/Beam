@@ -1,0 +1,91 @@
+{
+  "full_transaction_queue_ns": null,
+  "full_transaction_queue_reason": "PARALLEL_RELAY_AND_CONSENSUS_NO_SINGLE_ADDITIVE_QUEUE_SCALAR",
+  "n_pairs": 8,
+  "p2p_queue_accepted_after_dequeue_race_total": 0,
+  "p2p_queue_success_total": 1752,
+  "paired_ON_minus_OFF": {
+    "app_cpu_s": {
+      "ci95": [
+        -0.056072125000000056,
+        0.06649850000000004
+      ],
+      "mean": 0.006902624999999968
+    },
+    "comet_cpu_s": {
+      "ci95": [
+        -0.4149999999999998,
+        0.11875000000000013
+      ],
+      "mean": -0.12624999999999986
+    },
+    "fixed_valid_observation_upper_mean_ms": {
+      "ci95": [
+        -42.388836595890496,
+        12.45384339383557
+      ],
+      "mean": -13.643271881849358
+    },
+    "observer_cpu_s": {
+      "ci95": [
+        -0.023750000000000004,
+        -0.0012499999999999976
+      ],
+      "mean": -0.012500000000000002
+    },
+    "producer_rpc_median_ms": {
+      "ci95": [
+        0.08558137499999997,
+        0.108532625
+      ],
+      "mean": 0.09608099999999999
+    }
+  },
+  "raw_manifest_sha256": "8a2082525610b5615bed6753ef38add2a79ab41d368b459cbf55b8dd68099fc2",
+  "schema": "pluto.file02.x07_v2_aggregate.v1",
+  "status": "ANALYZED",
+  "trace_on_segment_means_ns": {
+    "accepted_mempool_residence_ns_mean": 1093721005.5804794,
+    "app_lock_wait_ns_mean": 803.0010373443984,
+    "app_service_ns_mean": 364425.47717842326,
+    "client_dequeue_to_server_read_ns_mean": 112806.28786307054,
+    "p2p_queue_attempt_to_dequeue_ns_mean": 49137.27283105023,
+    "server_mutex_wait_ns_mean": 6759.835062240664,
+    "server_return_to_client_callback_ns_mean": 104597.4403526971,
+    "socket_client_attempt_to_dequeue_ns_mean": 40742.146265560164
+  },
+  "trace_on_segment_run_bootstrap_ci95_ns": {
+    "accepted_mempool_residence_ns_mean": [
+      1081917220.0684931,
+      1108202517.2226028
+    ],
+    "app_lock_wait_ns_mean": [
+      769.1364107883817,
+      837.9839989626553
+    ],
+    "app_service_ns_mean": [
+      355970.15155601664,
+      372538.6509336099
+    ],
+    "client_dequeue_to_server_read_ns_mean": [
+      108078.22436462656,
+      120305.96991701245
+    ],
+    "p2p_queue_attempt_to_dequeue_ns_mean": [
+      45620.73955479452,
+      53253.27843892692
+    ],
+    "server_mutex_wait_ns_mean": [
+      5355.685165975104,
+      8599.129149377593
+    ],
+    "server_return_to_client_callback_ns_mean": [
+      100469.60165975103,
+      109590.83402489626
+    ],
+    "socket_client_attempt_to_dequeue_ns_mean": [
+      38837.92905860996,
+      42588.84024896265
+    ]
+  }
+}

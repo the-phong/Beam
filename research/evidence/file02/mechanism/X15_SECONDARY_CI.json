@@ -1,0 +1,91 @@
+{
+  "interpretation": "secondary exploratory intervals; upper-bound observation, not exact commit",
+  "method": "network-level statistic, matched-block percentile bootstrap, 20000 draws seed 20261115",
+  "schema": "pluto.file02.x15_secondary_ci.v1",
+  "x10_raw_manifest_sha256": "a97e1665deca67e747f30a1c6b03268140b716886e42fb24d9c1e1a6512233c8",
+  "x10_secondary": {
+    "I_minus_B_p50": {
+      "ci95_ms": [
+        53.05649577499997,
+        91.89248978854161
+      ],
+      "effect_ms": 72.43823066666666,
+      "n_blocks": 24
+    },
+    "I_minus_B_p95": {
+      "ci95_ms": [
+        26.2541061432812,
+        89.8921031933853
+      ],
+      "effect_ms": 57.23928456666662,
+      "n_blocks": 24
+    },
+    "I_minus_L_p50": {
+      "ci95_ms": [
+        -8.71145165625001,
+        42.53608646406244
+      ],
+      "effect_ms": 17.049812374999988,
+      "n_blocks": 24
+    },
+    "I_minus_L_p95": {
+      "ci95_ms": [
+        -20.509970365520765,
+        33.60705245057292
+      ],
+      "effect_ms": 6.711201689583352,
+      "n_blocks": 24
+    }
+  },
+  "x13_raw_manifest_sha256": "9eaa4d990f43e5c9d1c38d2ab4f968db3dc7a3c4e94a6a0a2a8d60ed4e0ab0e3",
+  "x13_secondary": {
+    "rate_20_p50": {
+      "ci95_ms": [
+        1177.684340370833,
+        1200.4100440927082
+      ],
+      "mean_ms": 1189.2807265,
+      "n_networks": 12
+    },
+    "rate_20_p95": {
+      "ci95_ms": [
+        1771.6865407234377,
+        1803.8551893328124
+      ],
+      "mean_ms": 1787.5934484458335,
+      "n_networks": 12
+    },
+    "rate_23_p50": {
+      "ci95_ms": [
+        1149.1132773,
+        1182.6479111177084
+      ],
+      "mean_ms": 1165.620894,
+      "n_networks": 12
+    },
+    "rate_23_p95": {
+      "ci95_ms": [
+        1752.814029561146,
+        1799.471961782083
+      ],
+      "mean_ms": 1775.9474972625,
+      "n_networks": 12
+    },
+    "rate_25_p50": {
+      "ci95_ms": [
+        1147.915736025,
+        1197.7914066041667
+      ],
+      "mean_ms": 1171.2506076666666,
+      "n_networks": 12
+    },
+    "rate_25_p95": {
+      "ci95_ms": [
+        1772.6837924679166,
+        1842.1491400509374
+      ],
+      "mean_ms": 1804.5636819833335,
+      "n_networks": 12
+    }
+  }
+}

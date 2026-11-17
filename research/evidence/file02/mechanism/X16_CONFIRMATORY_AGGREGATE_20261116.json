@@ -1,0 +1,562 @@
+{
+  "arm_means": {
+    "B": {
+      "accepted_mempool_v0_peak_bytes": 88810,
+      "accepted_residence_v0_mean_ms": 1094.4487442984093,
+      "app_cpu_s": 2.5627384583333335,
+      "comet_cpu_s": 7.1275,
+      "fixed_valid_mean_observation_upper_ms": 1123.5348684840183,
+      "fixed_valid_timely_fraction": 1.0,
+      "generator_cpu_s": 0.18833054166666666,
+      "observer_cpu_s": 0.11833333333333333,
+      "relay_send_v0_bytes": 1853280,
+      "socket_queue_v0_cumulative_s": 0.018407010750000008
+    },
+    "I": {
+      "accepted_mempool_v0_peak_bytes": 27499,
+      "accepted_residence_v0_mean_ms": 1111.5546713601598,
+      "app_cpu_s": 1.8592028333333332,
+      "comet_cpu_s": 6.9366666666666665,
+      "fixed_valid_mean_observation_upper_ms": 1168.4145684412101,
+      "fixed_valid_timely_fraction": 1.0,
+      "generator_cpu_s": 0.19233933333333333,
+      "observer_cpu_s": 0.11375,
+      "relay_send_v0_bytes": 555984,
+      "socket_queue_v0_cumulative_s": 0.011874143666666668
+    }
+  },
+  "bottleneck_location": null,
+  "bottleneck_reason": "NOT_OBSERVED_WITHIN_SAFE_RANGE",
+  "full_transaction_queue_ns": null,
+  "full_transaction_queue_reason": "UNAVAILABLE_P2P_AND_CONSENSUS_QUEUE_SUBINTERVALS",
+  "n_pairs": 24,
+  "paired_B_minus_I": {
+    "accepted_mempool_v0_peak_bytes": {
+      "ci95": [
+        59385.0,
+        63130.0
+      ],
+      "mean": 61311
+    },
+    "accepted_residence_v0_mean_ms": {
+      "ci95": [
+        -36.49624358978792,
+        1.7471458718759405
+      ],
+      "mean": -17.105927061750396
+    },
+    "app_cpu_s": {
+      "ci95": [
+        0.6465655729166667,
+        0.7553968229166667
+      ],
+      "mean": 0.703535625
+    },
+    "comet_cpu_s": {
+      "ci95": [
+        -0.13042708333333325,
+        0.45708333333333334
+      ],
+      "mean": 0.19083333333333338
+    },
+    "fixed_valid_mean_observation_upper_ms": {
+      "ci95": [
+        -68.69469419748857,
+        -23.04364003798515
+      ],
+      "mean": -44.879699957191775
+    },
+    "fixed_valid_timely_fraction": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean": 0.0
+    },
+    "generator_cpu_s": {
+      "ci95": [
+        -0.010400167708333337,
+        0.002357808333333333
+      ],
+      "mean": -0.0040087916666666674
+    },
+    "observer_cpu_s": {
+      "ci95": [
+        -0.0058333333333333345,
+        0.014999999999999998
+      ],
+      "mean": 0.004583333333333331
+    },
+    "relay_send_v0_bytes": {
+      "ci95": [
+        1297296.0,
+        1297296.0
+      ],
+      "mean": 1297296
+    },
+    "socket_queue_v0_cumulative_s": {
+      "ci95": [
+        0.003194850882291669,
+        0.012631116135416683
+      ],
+      "mean": 0.006532867083333338
+    }
+  },
+  "plan_sha256": "372647c1c7104808abc9c3d054016add135c3bfdb439dde95daee00edf74cb89",
+  "raw_manifest_sha256": "53848abd502b0d922277852df1f59ace910238270777943bcb40335dd329be09",
+  "schema": "pluto.file02.x16_aggregate.v1",
+  "stage_cpu_unperturbed": null,
+  "stage_cpu_unperturbed_reason": "INSTRUMENTED_THREAD_CLOCK_ONLY_OVERHEAD_NOT_PRECISELY_BOUNDED",
+  "stage_thread_cpu_ns_by_arm": {
+    "B": {
+      "binding": {
+        "ci95": [
+          3689.5914721645922,
+          3940.477403181189
+        ],
+        "mean": 3811.2356500691562
+      },
+      "digest": {
+        "ci95": [
+          2421.6921723720607,
+          2602.5166104771783
+        ],
+        "mean": 2510.281466113416
+      },
+      "ml": {
+        "ci95": [
+          85212.08314315352,
+          88896.20698046335
+        ],
+        "mean": 86976.53838174274
+      },
+      "secp": {
+        "ci95": [
+          192559.992042704,
+          201973.20355290454
+        ],
+        "mean": 197169.58402489626
+      },
+      "state": {
+        "ci95": [
+          23618.017401452285,
+          25051.320885200552
+        ],
+        "mean": 24302.449861687415
+      },
+      "state_copy": {
+        "ci95": [
+          35451.865715767635,
+          37600.060974239284
+        ],
+        "mean": 36503.597683264175
+      },
+      "structural": {
+        "ci95": [
+          2233.350730463347,
+          2462.719847856155
+        ],
+        "mean": 2333.77316735823
+      }
+    },
+    "I": {
+      "binding": {
+        "ci95": [
+          3867.387876037344,
+          4134.2934171853385
+        ],
+        "mean": 4002.812067773167
+      },
+      "digest": {
+        "ci95": [
+          2530.364942081604,
+          2768.4769493430153
+        ],
+        "mean": 2644.1236168741357
+      },
+      "ml": {
+        "ci95": [
+          60859.124623962656,
+          64669.69203405948
+        ],
+        "mean": 62546.26573305671
+      },
+      "secp": {
+        "ci95": [
+          192580.21149291148,
+          202614.1609007607
+        ],
+        "mean": 196953.67946058093
+      },
+      "state": {
+        "ci95": [
+          23798.231820776255,
+          26750.95199771689
+        ],
+        "mean": 25206.044520547945
+      },
+      "state_copy": {
+        "ci95": [
+          35470.68206335616,
+          37967.45783390411
+        ],
+        "mean": 36686.125
+      },
+      "structural": {
+        "ci95": [
+          2227.2629279045645,
+          2411.878652316736
+        ],
+        "mean": 2314.6011410788383
+      }
+    }
+  },
+  "stage_thread_cpu_paired_B_minus_I": {
+    "binding": {
+      "ci95": [
+        -328.2048841632089,
+        -37.47154650760728
+      ],
+      "mean": -191.57641770401105
+    },
+    "digest": {
+      "ci95": [
+        -264.4827282157676,
+        -4.8557875172890625
+      ],
+      "mean": -133.84215076071925
+    },
+    "ml": {
+      "ci95": [
+        21621.8799533195,
+        27009.141977869986
+      ],
+      "mean": 24430.27264868603
+    },
+    "secp": {
+      "ci95": [
+        -7101.703016943293,
+        6901.041355463342
+      ],
+      "mean": 215.90456431535372
+    },
+    "structural": {
+      "ci95": [
+        -110.50448219225449,
+        170.15061808437062
+      ],
+      "mean": 19.172026279391446
+    }
+  },
+  "status": "ANALYZED",
+  "validator0_resource_curves": {
+    "B": [
+      {
+        "accepted_mempool_bytes": 0,
+        "app_cpu_cumulative_s": 0.0,
+        "comet_cpu_cumulative_s": 0.0,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.0,
+        "sample_index": 0
+      },
+      {
+        "accepted_mempool_bytes": 2568,
+        "app_cpu_cumulative_s": 0.0075,
+        "comet_cpu_cumulative_s": 0.08416666666666667,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.0020833333333333333,
+        "sample_index": 1
+      },
+      {
+        "accepted_mempool_bytes": 38413,
+        "app_cpu_cumulative_s": 0.035833333333333335,
+        "comet_cpu_cumulative_s": 0.19291666666666668,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.004166666666666667,
+        "sample_index": 2
+      },
+      {
+        "accepted_mempool_bytes": 43121,
+        "app_cpu_cumulative_s": 0.07791666666666666,
+        "comet_cpu_cumulative_s": 0.3041666666666667,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.006666666666666667,
+        "sample_index": 3
+      },
+      {
+        "accepted_mempool_bytes": 42051,
+        "app_cpu_cumulative_s": 0.12291666666666667,
+        "comet_cpu_cumulative_s": 0.42083333333333334,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.007916666666666667,
+        "sample_index": 4
+      },
+      {
+        "accepted_mempool_bytes": 79394,
+        "app_cpu_cumulative_s": 0.14875,
+        "comet_cpu_cumulative_s": 0.53375,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.007916666666666667,
+        "sample_index": 5
+      },
+      {
+        "accepted_mempool_bytes": 61953,
+        "app_cpu_cumulative_s": 0.19125,
+        "comet_cpu_cumulative_s": 0.6458333333333334,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.010833333333333334,
+        "sample_index": 6
+      },
+      {
+        "accepted_mempool_bytes": 42800,
+        "app_cpu_cumulative_s": 0.23666666666666666,
+        "comet_cpu_cumulative_s": 0.7591666666666667,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.0125,
+        "sample_index": 7
+      },
+      {
+        "accepted_mempool_bytes": 51895,
+        "app_cpu_cumulative_s": 0.27666666666666667,
+        "comet_cpu_cumulative_s": 0.8766666666666667,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.014166666666666668,
+        "sample_index": 8
+      },
+      {
+        "accepted_mempool_bytes": 74793,
+        "app_cpu_cumulative_s": 0.3070833333333333,
+        "comet_cpu_cumulative_s": 0.9858333333333333,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.015416666666666667,
+        "sample_index": 9
+      },
+      {
+        "accepted_mempool_bytes": 57780,
+        "app_cpu_cumulative_s": 0.34750000000000003,
+        "comet_cpu_cumulative_s": 1.0979166666666667,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.015833333333333335,
+        "sample_index": 10
+      },
+      {
+        "accepted_mempool_bytes": 40874,
+        "app_cpu_cumulative_s": 0.3925,
+        "comet_cpu_cumulative_s": 1.2066666666666666,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.018333333333333333,
+        "sample_index": 11
+      },
+      {
+        "accepted_mempool_bytes": 55961,
+        "app_cpu_cumulative_s": 0.43,
+        "comet_cpu_cumulative_s": 1.3183333333333334,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.02,
+        "sample_index": 12
+      },
+      {
+        "accepted_mempool_bytes": 71797,
+        "app_cpu_cumulative_s": 0.46208333333333335,
+        "comet_cpu_cumulative_s": 1.43,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.0225,
+        "sample_index": 13
+      },
+      {
+        "accepted_mempool_bytes": 14873,
+        "app_cpu_cumulative_s": 0.49291666666666667,
+        "comet_cpu_cumulative_s": 1.5295833333333333,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.024166666666666666,
+        "sample_index": 14
+      },
+      {
+        "accepted_mempool_bytes": 0,
+        "app_cpu_cumulative_s": 0.5104166666666666,
+        "comet_cpu_cumulative_s": 1.6183333333333334,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.025416666666666667,
+        "sample_index": 15
+      },
+      {
+        "accepted_mempool_bytes": 0,
+        "app_cpu_cumulative_s": 0.52125,
+        "comet_cpu_cumulative_s": 1.7016666666666667,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.02625,
+        "sample_index": 16
+      },
+      {
+        "accepted_mempool_bytes": 0,
+        "app_cpu_cumulative_s": 0.52875,
+        "comet_cpu_cumulative_s": 1.7833333333333332,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.0275,
+        "sample_index": 17
+      },
+      {
+        "accepted_mempool_bytes": 0,
+        "app_cpu_cumulative_s": 0.5420833333333334,
+        "comet_cpu_cumulative_s": 1.8679166666666667,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.03,
+        "sample_index": 18
+      }
+    ],
+    "I": [
+      {
+        "accepted_mempool_bytes": 0,
+        "app_cpu_cumulative_s": 0.0,
+        "comet_cpu_cumulative_s": 0.0,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.0,
+        "sample_index": 0
+      },
+      {
+        "accepted_mempool_bytes": 2568,
+        "app_cpu_cumulative_s": 0.007083333333333334,
+        "comet_cpu_cumulative_s": 0.08791666666666667,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.0016666666666666668,
+        "sample_index": 1
+      },
+      {
+        "accepted_mempool_bytes": 12840,
+        "app_cpu_cumulative_s": 0.035,
+        "comet_cpu_cumulative_s": 0.19041666666666668,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.002916666666666667,
+        "sample_index": 2
+      },
+      {
+        "accepted_mempool_bytes": 14445,
+        "app_cpu_cumulative_s": 0.06666666666666667,
+        "comet_cpu_cumulative_s": 0.2966666666666667,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.004166666666666667,
+        "sample_index": 3
+      },
+      {
+        "accepted_mempool_bytes": 12305,
+        "app_cpu_cumulative_s": 0.10166666666666667,
+        "comet_cpu_cumulative_s": 0.4075,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.00625,
+        "sample_index": 4
+      },
+      {
+        "accepted_mempool_bytes": 26108,
+        "app_cpu_cumulative_s": 0.12041666666666667,
+        "comet_cpu_cumulative_s": 0.5179166666666667,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.008333333333333333,
+        "sample_index": 5
+      },
+      {
+        "accepted_mempool_bytes": 19902,
+        "app_cpu_cumulative_s": 0.15291666666666667,
+        "comet_cpu_cumulative_s": 0.62625,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.01,
+        "sample_index": 6
+      },
+      {
+        "accepted_mempool_bytes": 14124,
+        "app_cpu_cumulative_s": 0.19125,
+        "comet_cpu_cumulative_s": 0.7325,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.011666666666666667,
+        "sample_index": 7
+      },
+      {
+        "accepted_mempool_bytes": 14017,
+        "app_cpu_cumulative_s": 0.22166666666666668,
+        "comet_cpu_cumulative_s": 0.8404166666666667,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.01375,
+        "sample_index": 8
+      },
+      {
+        "accepted_mempool_bytes": 25038,
+        "app_cpu_cumulative_s": 0.24125,
+        "comet_cpu_cumulative_s": 0.9429166666666666,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.015416666666666667,
+        "sample_index": 9
+      },
+      {
+        "accepted_mempool_bytes": 18939,
+        "app_cpu_cumulative_s": 0.26916666666666667,
+        "comet_cpu_cumulative_s": 1.045,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.015833333333333335,
+        "sample_index": 10
+      },
+      {
+        "accepted_mempool_bytes": 14766,
+        "app_cpu_cumulative_s": 0.30583333333333335,
+        "comet_cpu_cumulative_s": 1.15375,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.017083333333333332,
+        "sample_index": 11
+      },
+      {
+        "accepted_mempool_bytes": 15194,
+        "app_cpu_cumulative_s": 0.33708333333333335,
+        "comet_cpu_cumulative_s": 1.2658333333333334,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.017916666666666668,
+        "sample_index": 12
+      },
+      {
+        "accepted_mempool_bytes": 23326,
+        "app_cpu_cumulative_s": 0.3595833333333333,
+        "comet_cpu_cumulative_s": 1.3720833333333333,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.019583333333333335,
+        "sample_index": 13
+      },
+      {
+        "accepted_mempool_bytes": 4922,
+        "app_cpu_cumulative_s": 0.38125,
+        "comet_cpu_cumulative_s": 1.4670833333333333,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.023333333333333334,
+        "sample_index": 14
+      },
+      {
+        "accepted_mempool_bytes": 0,
+        "app_cpu_cumulative_s": 0.39916666666666667,
+        "comet_cpu_cumulative_s": 1.56625,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.024166666666666666,
+        "sample_index": 15
+      },
+      {
+        "accepted_mempool_bytes": 0,
+        "app_cpu_cumulative_s": 0.41208333333333336,
+        "comet_cpu_cumulative_s": 1.6620833333333334,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.025833333333333333,
+        "sample_index": 16
+      },
+      {
+        "accepted_mempool_bytes": 0,
+        "app_cpu_cumulative_s": 0.4216666666666667,
+        "comet_cpu_cumulative_s": 1.7541666666666667,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.026666666666666665,
+        "sample_index": 17
+      },
+      {
+        "accepted_mempool_bytes": 0,
+        "app_cpu_cumulative_s": 0.4375,
+        "comet_cpu_cumulative_s": 1.8483333333333334,
+        "n_networks": 24,
+        "observer_cpu_cumulative_s": 0.03,
+        "sample_index": 18
+      }
+    ]
+  }
+}

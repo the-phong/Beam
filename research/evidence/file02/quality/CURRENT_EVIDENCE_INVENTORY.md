@@ -3,7 +3,8 @@
 Snapshot date: 2026-11-14. Q engineering source/result commit:
 `f629b47c67dd75d929936a98aebf4617f513d108`. This is a source
 inventory, not a new scientific result or Gate QUALITY acceptance. PR #28
-is still Draft. The raw sessions remain in the ignored, private
+was still Draft at this original snapshot; its post-merge state is recorded
+below. The raw sessions remain in the ignored, private
 `research/artifacts/file02/` tree; this inventory publishes identifiers and
 hashes only.
 
@@ -18,13 +19,27 @@ hashes only.
 | [#25](https://github.com/the-phong/Beam/pull/25) | R result tree into `test-mainet` | MERGED | `d67fef2598f278015968353763357f6aed28250d` |
 | [#26](https://github.com/the-phong/Beam/pull/26) | bounded R gate acceptance | MERGED | `2df001620d799eafa6359603f1e6dedded1d8107` |
 | [#27](https://github.com/the-phong/Beam/pull/27) | A result tree | MERGED | `2b453b3c14c410545d5699e03cff90d0eb21d63e` |
-| [#28](https://github.com/the-phong/Beam/pull/28) | bounded A acceptance and Q audit | OPEN Draft; four checks PASS | `f629b47c67dd75d929936a98aebf4617f513d108` is the Q evidence head before this review supplement |
+| [#28](https://github.com/the-phong/Beam/pull/28) | bounded A acceptance and Q audit | OPEN Draft at original snapshot; now MERGED per freeze below | `f629b47c67dd75d929936a98aebf4617f513d108` is the Q evidence head before review supplements |
+
+**Post-merge freeze, 2026-11-14:** PR #28 was merged into `test-mainet` at
+`da46f0cc4f87548825d9768d9242e346c17bb137` from exact head
+`86d45346bf72ac3f7d62c0271620d6e78f4952dc`. All four final-head CI
+checks passed: `scan`, `smoke`, and two `verify` jobs. D-044 records the
+delegated bounded Gate QUALITY decision. The private pre/post-merge
+comparison of all **31** frozen `raw/manifest.json` SHA-256 values was
+identical; the public PR diff contained no private raw or key files. The
+published [provenance index](DATA_PROVENANCE_INDEX.csv) remained byte-identical
+and `file02_provenance_index.py check` exited 0 from the merge head. This
+addendum updates the integration state; it does not revise historical
+measurements or inferential eligibility.
 
 Relevant decisions: [D-032](../../../DECISIONS.md) accepted the scientific
 contract; D-038 accepted bounded COMMON and separated RQ1b; D-039 accepted
 bounded T; D-040 opened R; D-041 accepted bounded R; D-042 opened A; D-043
-accepted bounded ATTACK and opened Q. There is **no D-044 or Owner Gate
-QUALITY acceptance** at this snapshot. The current authority is recorded
+accepted bounded ATTACK and opened Q. At the original Q evidence snapshot,
+there was **no D-044 or Owner Gate QUALITY acceptance**; D-044 and the
+delegated bounded acceptance are recorded in the post-merge freeze above.
+The current authority is recorded
 in `AGENTS.md` and the outside Checklist 02. Prior decision identifiers
 remain historical; this inventory does not amend them.
 
@@ -123,10 +138,11 @@ authorized by this inventory.
 
 ## CI and verification snapshot
 
-PR #28 checks: `scan` PASS, `smoke` PASS, and both `verify` jobs PASS.
+PR #28 final-head checks: `scan` PASS, `smoke` PASS, and both `verify` jobs PASS.
 The present Controller review independently reran Q01, Q02 v2, Q03,
 Q04, Q06 and Q07 verifiers with exit code 0. Q03 reported 22/22 groups
 `INSUFFICIENT_SAMPLES`; Q06 reported `PARTIAL_HOST_REPLICATION`.
 The published index generator's hash check and tamper-rejection unit test
-also passed. See the separate review record for disposition; the PR and
-Gate have not been accepted or merged by this inventory.
+also passed. The original inventory was a pre-acceptance source snapshot;
+the post-merge freeze above records the subsequent delegated decision and
+integration without overwriting that history.
