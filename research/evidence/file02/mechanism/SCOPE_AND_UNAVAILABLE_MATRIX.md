@@ -1,5 +1,10 @@
 # X14 — source and topology boundary
 
+This matrix records the original 2026-11-15 X18 scope. Later X07 queue-path
+and X16 instrumented-stage/observer measurements are indexed in
+`X07_X16_GATE_REVIEW_ADDENDUM_20261117.md`; native stage CPU, exact
+bottleneck and multi-host claims remain unavailable.
+
 The accepted X extension uses **one physical host**, four isolated Comet
 validator processes with four dedicated application PIDs, one load sender,
 and loopback RPC into validator 0. The other validators can receive and

@@ -1,0 +1,9 @@
+{
+  "schema": "pluto.file02.x07_v2_public_derived.v1",
+  "source_commit": "07dc11b",
+  "raw_manifest_sha256": "8a2082525610b5615bed6753ef38add2a79ab41d368b459cbf55b8dd68099fc2",
+  "qc": "PASS_16_RUNS_8_PAIRS",
+  "files": {
+    "X07_QUEUE_V2_AGGREGATE_20261117.json": "d7e500a82d42c4b8d255fca50678985d150560480708c21a20d08e13e1ff171c"
+  }
+}

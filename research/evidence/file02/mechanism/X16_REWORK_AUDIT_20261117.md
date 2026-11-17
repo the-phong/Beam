@@ -53,7 +53,7 @@ accepted-mempool bytes in B. Valid background enters accepted
 mempool/relay/commit while invalid background stops after CheckTx; the
 paired differences support a downstream-work interpretation. They do not
 numerically isolate relay or commit CPU. Comet CPU CI includes zero. The
-full transaction queue remains X07 `null`, and no exact bottleneck or
+single additive transaction-wide queue scalar remains X07 `null`, and no exact bottleneck or
 capacity knee was observed within the unchanged safe range. The new
 fixed-valid upper-bound interval is not exact commit latency; the accepted
 historical 3-second RQ1b negative endpoint remains unchanged. No DoS or

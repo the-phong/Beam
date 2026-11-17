@@ -3,6 +3,7 @@
 
 import argparse
 from collections import defaultdict
+import hashlib
 import json
 from pathlib import Path
 import random
@@ -50,6 +51,24 @@ def first_event(events, name):
     found = [event for event in events if event["event"] == name]
     require(found, f"missing {name}")
     return found[0]
+
+
+def varint(value):
+    require(isinstance(value, int) and value >= 0, "negative protobuf length")
+    output = bytearray()
+    while value >= 128:
+        output.append((value & 0x7f) | 0x80)
+        value >>= 7
+    output.append(value)
+    return bytes(output)
+
+
+def mempool_envelope_sha256(tx_hex):
+    """Independently encode pinned Comet Message{Txs{one tx}} for hash QC."""
+    tx = bytes.fromhex(tx_hex)
+    inner = b"\x0a" + varint(len(tx)) + tx
+    wrapped = b"\x0a" + varint(len(inner)) + inner
+    return hashlib.sha256(wrapped).hexdigest()
 
 
 def trace_intervals(workload, comet, server, app):
@@ -100,6 +119,9 @@ def trace_intervals(workload, comet, server, app):
         if event["event"] == "p2p_envelope_map":
             require(event.get("envelope_sha256") and event["tx_sha256"] in planned,
                     "unmatched P2P envelope map")
+            require(event["envelope_sha256"] == mempool_envelope_sha256(
+                planned[event["tx_sha256"]]["bytes_hex"]),
+                "P2P envelope bytes/hash mismatch")
             mappings[event["tx_sha256"]].add(event["envelope_sha256"])
     queue = defaultdict(lambda: defaultdict(list))
     for event in comet[0][0]:
@@ -131,9 +153,17 @@ def trace_intervals(workload, comet, server, app):
             p2p_bounds.append(dequeue[0]["monotonic_ns"]-attempt[0]["monotonic_ns"])
             success_count += 1
     require(success_count == 219, "P2P queue total success coverage")
+    valid_hashes = {tx for tx, item in planned.items() if int(item["expected_code"]) == 0}
     for n in range(1, 4):
-        require(len([event for event in comet[n][0] if event["event"] == "p2p_receive"]) >= 73,
-                f"validator {n} P2P receiver coverage")
+        received = {event["tx_sha256"] for event in comet[n][0]
+                    if event["event"] == "p2p_receive"}
+        accepted = {event["tx_sha256"] for event in comet[n][0]
+                    if event["event"] == "mempool_accepted"}
+        server_read = {event["tx_sha256"] for event in server[n][0]
+                       if event["event"] == "server_socket_read"}
+        require(valid_hashes <= received and accepted == valid_hashes and
+                valid_hashes <= server_read,
+                f"validator {n} P2P/server/accepted tx hash coverage")
     return {name+"_mean": statistics.mean(row[name] for row in intervals if row[name] is not None)
             for name in ("socket_client_attempt_to_dequeue_ns",
                          "client_dequeue_to_server_read_ns", "server_mutex_wait_ns",
@@ -266,6 +296,7 @@ def derive(session):
                  "status": "ANALYZED" if status == "PASS" else "WITHHELD_QC_FAILURE",
                  "raw_manifest_sha256": manifest, "n_pairs": len(complete),
                  "paired_ON_minus_OFF": None, "trace_on_segment_means_ns": None,
+                 "trace_on_segment_run_bootstrap_ci95_ns": None,
                  "full_transaction_queue_ns": None,
                  "full_transaction_queue_reason":
                     "PARALLEL_RELAY_AND_CONSENSUS_NO_SINGLE_ADDITIVE_QUEUE_SCALAR"}
@@ -275,6 +306,8 @@ def derive(session):
                 complete[b]["ON"][field]-complete[b]["OFF"][field] for b in range(8)]]}
         aggregate["trace_on_segment_means_ns"] = {field: statistics.mean(
             complete[b]["ON"]["trace"][field] for b in range(8)) for field in TRACE_FIELDS}
+        aggregate["trace_on_segment_run_bootstrap_ci95_ns"] = {field: ci([
+            complete[b]["ON"]["trace"][field] for b in range(8)]) for field in TRACE_FIELDS}
         aggregate["p2p_queue_accepted_after_dequeue_race_total"] = sum(
             complete[b]["ON"]["trace"]["p2p_accepted_after_dequeue_race_count"]
             for b in range(8))

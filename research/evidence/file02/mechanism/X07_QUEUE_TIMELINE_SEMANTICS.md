@@ -1,6 +1,10 @@
 # X07 — bounded queue timeline semantics and disposition
 
-Status: **PARTIAL; full transaction queue residence remains unavailable**.
+Current technical status: **PASS for the bounded queue-path observation
+contract** after the source-locked X07 v2 rework; see
+`X07_QUEUE_V2_AUDIT_20261117.md`. A single additive end-to-end queue scalar
+remains unavailable by design because peer relay and consensus paths
+overlap. The table below documents the historical pre-v2 capture points.
 The application CheckTx recorder now emits `app_ingress_utc`,
 `app_lock_acquired_utc` and `app_result_utc` for recorder-ON requests.
 The public ON/OFF corpus test passed for accepted and rejected cases,

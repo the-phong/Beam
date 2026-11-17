@@ -1,5 +1,10 @@
 # G00 and X01–X18 engineering closeout for independent review
 
+Historical closeout dated 2026-11-15. The later X07/X16 bounded technical
+rework is recorded in `X07_X16_GATE_REVIEW_ADDENDUM_20261117.md`; independent
+Gate acceptance is still pending. The status table below is preserved as
+the original engineering disposition.
+
 The outside master checklist at
 `/home/ntp/research/BEAM_MASTER_CHECKLIST_TONG_HOP_20261114.md` was
 processed in order. G00.1–G00.4 completed after bounded Gate QUALITY

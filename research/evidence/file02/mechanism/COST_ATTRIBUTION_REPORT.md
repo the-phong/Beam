@@ -1,5 +1,9 @@
 # X06 — crypto-stage attribution and CPU sampling
 
+This isolated-stage report predates the new X16 network thread-clock probe.
+The later instrumented CPU observations and measured probe overhead are in
+`X16_REWORK_AUDIT_20261117.md`; native per-stage CPU remains unavailable.
+
 Status: **PASS for isolated primitive CPU-path profiling; network
 `CPU_crypto` remains `null`**. The accepted RQ1 H−CP effect remains
 +81.47 µs/tx for application CheckTx wall time in its tested network

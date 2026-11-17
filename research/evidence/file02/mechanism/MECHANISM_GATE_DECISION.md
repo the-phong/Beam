@@ -1,5 +1,11 @@
 # X18 — MECHANISM/SERVICE evidence gate, engineering disposition
 
+Historical record dated 2026-11-15. The later bounded X07/X16 technical
+rework is documented in
+`X07_X16_GATE_REVIEW_ADDENDUM_20261117.md`; independent Gate acceptance is
+still pending. The original X18 evidence, estimands and decision below are
+preserved.
+
 **Technical disposition for Controller/Owner review:**
 **CONDITIONAL GO for reporting bounded mechanism and service measurements;
 NO-GO/NOT ESTABLISHED for opening the original early service-degradation

@@ -1,6 +1,7 @@
 # X07 rework audit — transaction-linked ingress and queue segments
 
-Disposition: **PARTIAL; master X07 remains unchecked**. The bounded
+Historical 2026-11-16 disposition: **PARTIAL**, superseded by the verified
+eight-pair queue-path rework in `X07_QUEUE_V2_AUDIT_20261117.md`. The bounded
 source-hash-checked Comet overlay now records transaction-hash-linked RPC,
 mempool precheck, ABCI socket queue, CheckTx callback, accepted-mempool
 insertion/removal, committed update, and local P2P send/receive events.
@@ -59,6 +60,10 @@ markers and repeated ON/OFF QA with an uncertainty bound, without changing
 Comet consensus or S06 caps.
 
 ## Source-level gap audit, 2026-11-17
+
+This section records the gap *before* the v2 overlay. The subsequent
+eight-pair v2 QA closed the observable path markers described below;
+its remaining composite intervals are documented in the newer audit.
 
 The pinned Comet v0.38.26 copy confirms that `abci/client/socket_client.go`
 has a request channel: the current trace marks its enqueue *attempt* and
