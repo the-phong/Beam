@@ -20,6 +20,9 @@ EXPECTED = {
     "rpc/core/mempool.go": "23aa63b395a2622b2baf1045f7ebeb1f96ce24ef6b9aafed414d15009ba13313",
     "abci/client/socket_client.go": "e2aa962874c2226993a805617b32a6ac6acb998c80c019e439da6e467b2de426",
     "abci/client/client.go": "03f68615e6baf423547c503550a031c7edcfb822713bca7dac4134b57f64ca2c",
+    "abci/server/socket_server.go": "5f47f1fa08e2e7a01b46d0f47b9afb53eca6e9443a421c2b76c381f9e8b17c35",
+    "p2p/peer.go": "de9d3744d2aa1bca3edc43eafdba326ddf34a24c1c6813c0298a71ffb6009ff2",
+    "p2p/conn/connection.go": "40e6548229f0b0adb484cfa6b56ce88e9d3215a9403eebad00f046096925af26",
 }
 
 
@@ -166,6 +169,100 @@ def patch_rpc(source: str) -> str:
     return source
 
 
+def patch_server(source: str) -> str:
+    source = replace_once(source,
+        '\t"github.com/cometbft/cometbft/abci/types"\n',
+        '\t"github.com/cometbft/cometbft/abci/types"\n\t"github.com/cometbft/cometbft/internal/plutotrace"\n')
+    source = replace_once(source,
+        '\t\ts.appMtx.Lock()\n\t\tlocked = true\n\t\tresp, err := s.handleRequest(context.TODO(), req)\n',
+        '''        if check := req.GetCheckTx(); check != nil {
+            plutotrace.Emit("server_socket_read", check.Tx, -1)
+            plutotrace.Emit("server_mutex_attempt", check.Tx, -1)
+        }
+        s.appMtx.Lock()
+        locked = true
+        if check := req.GetCheckTx(); check != nil {
+            plutotrace.Emit("server_mutex_acquired", check.Tx, -1)
+        }
+        resp, err := s.handleRequest(context.TODO(), req)
+        if check := req.GetCheckTx(); check != nil {
+            code := int64(-1)
+            if resp != nil && resp.GetCheckTx() != nil { code = int64(resp.GetCheckTx().Code) }
+            plutotrace.Emit("server_app_return", check.Tx, code)
+        }
+''')
+    source = replace_once(source,
+        '\t\ts.appMtx.Unlock()\n\t\tlocked = false\n',
+        '''            if check := req.GetCheckTx(); check != nil {
+                plutotrace.Emit("server_response_handoff", check.Tx, -1)
+            }
+            s.appMtx.Unlock()
+            locked = false
+''')
+    return source
+
+
+def patch_peer(source: str) -> str:
+    source = replace_once(source,
+        '\t"github.com/cometbft/cometbft/libs/cmap"\n',
+        '\t"github.com/cometbft/cometbft/internal/plutotrace"\n\t"github.com/cometbft/cometbft/libs/cmap"\n')
+    source = replace_once(source,
+        '\tmetricLabelValue := p.mlc.ValueToMetricLabel(msg)\n',
+        '''    metricLabelValue := p.mlc.ValueToMetricLabel(msg)
+    // The mempool Txs type exposes GetTxs without importing its package
+    // (which would create a p2p import cycle).
+    var plutoTxs [][]byte
+    if txs, ok := msg.(interface{ GetTxs() [][]byte }); ok {
+        plutoTxs = txs.GetTxs()
+    }
+''')
+    source = replace_once(source,
+        '\tres := sendFunc(chID, msgBytes)\n',
+        '''    if chID == 0x30 {
+        for _, tx := range plutoTxs {
+            plutotrace.EmitEnvelopeMap(tx, msgBytes)
+        }
+    }
+    res := sendFunc(chID, msgBytes)
+''')
+    return source
+
+
+def patch_connection(source: str) -> str:
+    source = replace_once(source,
+        '\t"github.com/cometbft/cometbft/config"\n',
+        '\t"github.com/cometbft/cometbft/config"\n\t"github.com/cometbft/cometbft/internal/plutotrace"\n')
+    source = replace_once(source,
+        '\tsendQueue     chan []byte\n',
+        '\tsendQueue     chan []byte\n\tplutoTraceID uint64 // private overlay-only per-channel correlation token\n')
+    source = replace_once(source,
+        '\t\tsendQueue:               make(chan []byte, desc.SendQueueCapacity),\n',
+        '\t\tsendQueue:               make(chan []byte, desc.SendQueueCapacity),\n'
+        '\t\tplutoTraceID:            plutotrace.NewChannelID(),\n')
+    source = replace_once(source,
+        'func (ch *Channel) sendBytes(bytes []byte) bool {\n\tselect {\n\tcase ch.sendQueue <- bytes:\n',
+        '''func (ch *Channel) sendBytes(bytes []byte) bool {
+    if ch.desc.ID == 0x30 { plutotrace.EmitEnvelope("p2p_queue_attempt", bytes, ch.plutoTraceID) }
+    select {
+    case ch.sendQueue <- bytes:
+        if ch.desc.ID == 0x30 { plutotrace.EmitEnvelope("p2p_queue_accepted", bytes, ch.plutoTraceID) }
+''')
+    source = replace_once(source,
+        'func (ch *Channel) trySendBytes(bytes []byte) bool {\n\tselect {\n\tcase ch.sendQueue <- bytes:\n',
+        '''func (ch *Channel) trySendBytes(bytes []byte) bool {
+    if ch.desc.ID == 0x30 { plutotrace.EmitEnvelope("p2p_queue_attempt", bytes, ch.plutoTraceID) }
+    select {
+    case ch.sendQueue <- bytes:
+        if ch.desc.ID == 0x30 { plutotrace.EmitEnvelope("p2p_queue_accepted", bytes, ch.plutoTraceID) }
+''')
+    source = replace_once(source,
+        '\t\tch.sending = <-ch.sendQueue\n',
+        '''        ch.sending = <-ch.sendQueue
+        if ch.desc.ID == 0x30 { plutotrace.EmitEnvelope("p2p_queue_dequeue", ch.sending, ch.plutoTraceID) }
+''')
+    return source
+
+
 TRACE_SOURCE = '''// Measurement-only, bounded per-validator transaction-hash trace.
 // Built only in the disposable source-checked Comet overlay.
 package plutotrace
@@ -178,6 +275,7 @@ import (
     "os"
     "path/filepath"
     "sync"
+    "sync/atomic"
     "time"
     "golang.org/x/sys/unix"
 )
@@ -187,12 +285,16 @@ var origin = time.Now()
 var mu sync.Mutex
 var output *os.File
 var count uint64
+var enabled atomic.Bool
+var channelCounter uint64
 
 type event struct {
     Schema string `json:"schema"`
     Event string `json:"event"`
     TxSHA256 string `json:"tx_sha256"`
     WireBytes int `json:"wire_bytes"`
+    EnvelopeSHA256 string `json:"envelope_sha256,omitempty"`
+    ChannelID uint64 `json:"channel_id,omitempty"`
     Code int64 `json:"code"`
     PID int `json:"pid"`
     Sequence uint64 `json:"sequence"`
@@ -214,20 +316,49 @@ func init() {
         return
     }
     output = f
+    enabled.Store(true)
 }
 
 func Emit(name string, tx []byte, code int64) {
-    if output == nil { return }
+    if !enabled.Load() { return }
+    digest := sha256.Sum256(tx)
+    emit(name, hex.EncodeToString(digest[:]), len(tx), code, "", 0)
+}
+
+func NewChannelID() uint64 { return atomic.AddUint64(&channelCounter, 1) }
+
+// EmitEnvelopeMap correlates a wrapped mempool message with its tx without
+// writing either payload. The peer supplies the unwrapped tx before Send.
+func EmitEnvelopeMap(tx, envelope []byte) {
+    if !enabled.Load() { return }
+    txDigest := sha256.Sum256(tx)
+    envelopeDigest := sha256.Sum256(envelope)
+    emit("p2p_envelope_map", hex.EncodeToString(txDigest[:]), len(tx), -1,
+        hex.EncodeToString(envelopeDigest[:]), 0)
+}
+
+// Connection queue events carry the envelope hash as both the trace key and
+// envelope identifier. A separate peer marker supplies its transaction hash.
+func EmitEnvelope(name string, envelope []byte, channelID uint64) {
+    if !enabled.Load() { return }
+    digest := sha256.Sum256(envelope)
+    key := hex.EncodeToString(digest[:])
+    emit(name, key, len(envelope), -1, key, channelID)
+}
+
+func emit(name, key string, wireBytes int, code int64, envelope string, channelID uint64) {
+    if !enabled.Load() { return }
     now := time.Now()
     var hostClock unix.Timespec
     if err := unix.ClockGettime(unix.CLOCK_MONOTONIC, &hostClock); err != nil { return }
-    digest := sha256.Sum256(tx)
     mu.Lock()
     defer mu.Unlock()
+    if output == nil { return }
     if count >= maxEvents { return }
     count++
     item := event{Schema:"pluto.file02.x07_comet_trace.v1", Event:name,
-        TxSHA256:hex.EncodeToString(digest[:]), WireBytes:len(tx), Code:code,
+        TxSHA256:key, WireBytes:wireBytes, Code:code,
+        EnvelopeSHA256:envelope, ChannelID:channelID,
         PID:os.Getpid(), Sequence:count, MonotonicNS:now.Sub(origin).Nanoseconds(),
         HostMonotonicNS:hostClock.Sec*1000000000+hostClock.Nsec,
         UTC:now.UTC().Format(time.RFC3339Nano)}
@@ -238,6 +369,7 @@ func Emit(name string, tx []byte, code int64) {
         fmt.Fprintln(os.Stderr, "X07 trace write failed:", err)
         _ = output.Close()
         output = nil
+        enabled.Store(false)
     }
 }
 '''
@@ -249,6 +381,9 @@ PATCHERS = {
     "rpc/core/mempool.go": patch_rpc,
     "abci/client/socket_client.go": patch_socket,
     "abci/client/client.go": patch_client,
+    "abci/server/socket_server.go": patch_server,
+    "p2p/peer.go": patch_peer,
+    "p2p/conn/connection.go": patch_connection,
 }
 
 

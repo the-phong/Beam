@@ -1,0 +1,13 @@
+{
+  "schema": "pluto.file02.x16_public_derived.v1",
+  "source_commit": "47c44cc2cf9f10d6704de253d6133a61af920294",
+  "raw_manifest_sha256": "53848abd502b0d922277852df1f59ace910238270777943bcb40335dd329be09",
+  "overhead_qa_raw_manifest_sha256": "9cd3e1fd7250ab0edb4b4a1b7b335fba5ff3153256de583315c01f7434ffb860",
+  "qc": "PASS_48_RUNS_24_PAIRS",
+  "files": {
+    "X16_CONFIRMATORY_AGGREGATE_20261116.json": "de859e266c8dc45dcf65e37e8a67d07c93d6a8936192c2120eb294f37de6290e",
+    "X16_PROBE_OVERHEAD_AGGREGATE_20261117.json": "1f08522fdaed76257d025c39e4c05107aa40b97e8147156c4a558b7b521a5815",
+    "figures/x16_resource_curve.png": "fdfd119789c8af2dfc2762dc26b67be22c378f9f3ffa592306e01682ef347fb9",
+    "figures/x16_stage_thread_cpu.png": "7b34ae7e717635646cee5b9229c8810710c7d68179d487233e1944a9211c6261"
+  }
+}

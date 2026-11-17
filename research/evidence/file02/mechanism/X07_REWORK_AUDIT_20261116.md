@@ -57,3 +57,43 @@ for mechanism diagnosis; it does not satisfy the master checklist's **full
 queue observation** claim. Closing X07 requires validated additional queue
 markers and repeated ON/OFF QA with an uncertainty bound, without changing
 Comet consensus or S06 caps.
+
+## Source-level gap audit, 2026-11-17
+
+The pinned Comet v0.38.26 copy confirms that `abci/client/socket_client.go`
+has a request channel: the current trace marks its enqueue *attempt* and
+writer dequeue. The attempted enqueue timestamp can include blocking while
+the bounded channel is full; it is not a pure post-accept queue timestamp.
+`abci/server/socket_server.go` then decodes the request, waits on
+`appMtx`, invokes the application and passes its response through another
+buffered channel. The current dedicated-app event begins **after** this
+server-side wait; its `app_lock_wait_ns` measures a different, application
+mutex. These two waits must not be combined or called a full ABCI queue.
+
+The mempool reactor's successful `peer.Send` event is only a handoff to
+`p2p/conn/connection.go`. That connection has a bounded per-peer/channel
+`sendQueue`; it dequeues later, fragments messages and flushes a buffered
+writer. The handed-off transaction hash does not identify the serialized
+queue item without an additional correlation mechanism. A sender can also
+block before queue acceptance. Hence the current sender event and receiver
+event bound relay progress, but do not yield an exact P2P queue residence.
+Accepted-mempool insertion/removal is measured; its residence overlaps
+proposal/commit scheduling and parallel peer relay, so summing it with
+per-peer waits would double-count time.
+
+The 48 new X16 networks at source `47c44cc` independently confirmed the
+existing measurable segments: all 48 passed linked trace and oracle QC;
+the B/I validator-0 socket-subqueue cumulative means were 0.0184/0.0119
+s/run and accepted-mempool residence means 1,094.45/1,111.55 ms per
+accepted transaction. These are **different accepted populations** in B/I.
+They do not close the server dispatch, response or P2P egress gaps. The
+private X16 manifest is
+`53848abd502b0d922277852df1f59ace910238270777943bcb40335dd329be09`.
+No single additive "end-to-end queue" scalar is defined across the
+branching relay/consensus path; uninstrumented components remain `null`.
+The master X07 box therefore stays open pending a source-locked overlay
+that correlates server and connection queue events, validates timing bias
+with repeated ON/OFF networks, and passes an independent per-transaction
+coverage verifier. This is engineering work within the accepted topology;
+the Owner does not need to operate another machine to expose these local
+code paths.

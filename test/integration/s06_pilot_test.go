@@ -36,19 +36,20 @@ import (
 )
 
 type s06Network struct {
-	n            *fourNetwork
-	metricsPorts [4]int
-	apps         [4]*researchv2app.App
-	appProcesses [4]*exec.Cmd
-	appLogs      [4]*os.File
-	appResources [4]string
-	appEvents    [4]string
-	cometTraces  [4]string
-	recorders    [4]*telemetry.Recorder
-	observers    [4]*exec.Cmd
-	observerLogs [4]*os.File
-	observerErrs [4]*os.File
-	nodes        [4]load.WatchedNode
+	n               *fourNetwork
+	metricsPorts    [4]int
+	apps            [4]*researchv2app.App
+	appProcesses    [4]*exec.Cmd
+	appLogs         [4]*os.File
+	appResources    [4]string
+	appEvents       [4]string
+	cometTraces     [4]string
+	appServerTraces [4]string
+	recorders       [4]*telemetry.Recorder
+	observers       [4]*exec.Cmd
+	observerLogs    [4]*os.File
+	observerErrs    [4]*os.File
+	nodes           [4]load.WatchedNode
 }
 
 func startS06Network(t *testing.T, c load.Config, f *load.PilotFixture, profile researchv2.Profile) *s06Network {
@@ -225,6 +226,12 @@ func startS06NetworkAtMode(t *testing.T, c load.Config, f *load.PilotFixture, pr
 			if err != nil {
 				t.Fatal(err)
 			}
+			if os.Getenv("FILE02_X07_APP_TRACE_ENABLED") == "1" {
+				appBinary, err = filepath.Abs("../../build/profile-app-x07")
+				if err != nil {
+					t.Fatal(err)
+				}
+			}
 			profileName := map[researchv2.Profile]string{
 				researchv2.ProfileC: "C", researchv2.ProfileCP: "CP",
 				researchv2.ProfileP: "P", researchv2.ProfileH: "H",
@@ -249,6 +256,10 @@ func startS06NetworkAtMode(t *testing.T, c load.Config, f *load.PilotFixture, pr
 				args = append(args, "-stage-cpu")
 			}
 			cmd := exec.Command(appBinary, args...)
+			if os.Getenv("FILE02_X07_APP_TRACE_ENABLED") == "1" {
+				pilot.appServerTraces[i] = filepath.Join(runRoot, fmt.Sprintf("app-server-%d-trace.jsonl", i))
+				cmd.Env = append(os.Environ(), "PLUTO_X07_TRACE_FILE="+pilot.appServerTraces[i])
+			}
 			cmd.Stdout, cmd.Stderr = logFile, logFile
 			if err := cmd.Start(); err != nil {
 				t.Fatal(err)

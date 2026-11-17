@@ -89,6 +89,13 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 		} else {
 			t.Setenv("FILE02_X07_TRACE_ENABLED", "")
 		}
+		if metadata["case_id"] == "X07" && metadata["x07_queue_v2"] == true {
+			if mode == "ON" {
+				t.Setenv("FILE02_X07_APP_TRACE_ENABLED", "1")
+			} else {
+				t.Setenv("FILE02_X07_APP_TRACE_ENABLED", "")
+			}
+		}
 		if metadata["case_id"] == "X16" {
 			stageMode, ok := metadata["stage_cpu_mode"].(string)
 			if !ok || stageMode != "ON" && stageMode != "OFF" {
@@ -417,6 +424,23 @@ func file02ExecuteQA(t *testing.T, c load.Config, configPath, configHash string,
 	}
 	if mechanismTraceCase {
 		pilot.n.stopAll()
+		if metadata["case_id"] == "X07" && metadata["x07_queue_v2"] == true {
+			for node, path := range pilot.appServerTraces {
+				if metadata["trace_mode"] == "OFF" {
+					if path != "" {
+						t.Fatal("app server trace OFF emitted a path")
+					}
+					continue
+				}
+				raw, err := os.ReadFile(path)
+				if err != nil || len(raw) == 0 {
+					t.Fatalf("app server trace %d missing: %v", node, err)
+				}
+				if err := s07WriteExclusive(filepath.Join(run, fmt.Sprintf("app-server-%d-trace.jsonl", node)), raw); err != nil {
+					t.Fatal(err)
+				}
+			}
+		}
 		for node, path := range pilot.cometTraces {
 			if metadata["trace_mode"] == "OFF" {
 				if path != "" {
