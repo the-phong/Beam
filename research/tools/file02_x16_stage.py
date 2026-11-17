@@ -28,7 +28,7 @@ def process_delta(samples, key, pid):
     return values[-1]["cpu_ns"] - values[0]["cpu_ns"]
 
 
-def stage_statistics(events, mode):
+def stage_statistics(events, mode, expected_valid=73):
     by_stage_wall = defaultdict(list)
     by_stage_cpu = defaultdict(list)
     new_count = 0
@@ -49,7 +49,7 @@ def stage_statistics(events, mode):
                 require("cpu_ns" not in span, "OFF mode fabricated stage CPU")
     require(new_count == 241 and set(by_stage_wall) ==
             {"structural", "binding", "digest", "secp", "ml", "state", "state_copy"} and
-            all(len(by_stage_wall[stage]) == (73 if stage in ("state", "state_copy") else 241)
+            all(len(by_stage_wall[stage]) == (expected_valid if stage in ("state", "state_copy") else 241)
                 for stage in by_stage_wall), "stage path coverage")
     return {"wall_ns_mean": {stage: statistics.mean(values) for stage, values in by_stage_wall.items()},
             "instrumented_thread_cpu_ns_mean":

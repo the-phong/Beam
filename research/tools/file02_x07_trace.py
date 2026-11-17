@@ -64,7 +64,7 @@ def first_stage(items, name):
     return found[0]["monotonic_ns"]
 
 
-def validate_origin(plan, grouped, app_events):
+def validate_origin(plan, grouped, app_events, require_all_relays=True):
     planned = {item["sha256"]: item for item in plan["events"]}
     require(len(planned) == len(plan["events"]) == 241, "duplicate/missing workload hash")
     require({tx for tx, events in grouped.items() if any(e["event"] == "rpc_sync_entry" for e in events)} ==
@@ -92,7 +92,8 @@ def validate_origin(plan, grouped, app_events):
         removed = [e for e in events if e["event"] == "mempool_removed"]
         relays = [e for e in events if e["event"] == "p2p_send_handoff"]
         if callback["code"] == 0:
-            require(len(accepted) == len(removed) == 1 and len(relays) == 3 and
+            require(len(accepted) == len(removed) == 1 and
+                    (len(relays) == 3 if require_all_relays else 0 <= len(relays) <= 3) and
                     len([e for e in events if e["event"] == "committed_update"]) == 1 and
                     points[6] <= accepted[0]["monotonic_ns"] <= removed[0]["monotonic_ns"],
                     f"accepted path incomplete: {txid}")
