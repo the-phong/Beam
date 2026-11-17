@@ -40,6 +40,9 @@ def prepare(session):
             "source_tree": r01.git("rev-parse", "HEAD^{tree}"),
             "created_utc": datetime.now(timezone.utc).isoformat(),
             "protocol": "research/protocol/FILE02_X16_PROBE_OVERHEAD_LOCKED_PLAN.md",
+            "protocol_correction": "research/protocol/FILE02_X16_PROBE_OVERHEAD_CORRECTION_20261117.md",
+            "quarantined_prior_raw_manifest_sha256":
+                "d6f38452707aff536aac9cdad4e1e50c1e70a344ae0dadab278a9a2d15c4ec43",
             "config_sha256": common.digest(raw / "config.json"),
             "schedule_sha256": common.digest(raw / "schedule.json"),
             "topology": "four_validator_single_physical_host_loopback_RPC_validator0",

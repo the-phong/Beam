@@ -28,13 +28,23 @@ func TestFile02X16ProbeOverheadQA(t *testing.T) {
 		t.Fatal(err)
 	}
 	for block := 0; block < 8; block++ {
-		fixture, err := load.NewPilotFixture(fmt.Sprintf("pluto-file02-x16-overhead-%02d", block), 241)
+		// Chain-ID length is part of the signed wire size. Keep the previously
+		// verified 2,568-byte H fixture while drawing fresh identities per block.
+		fixture, err := load.NewPilotFixture("pluto-file02-x16", 241)
 		if err != nil {
 			t.Fatal(err)
 		}
 		_, _, lockedPlan, err := load.BuildX10TripletPlans(fixture, block, config, hash)
 		if err != nil {
 			t.Fatal(err)
+		}
+		if len(lockedPlan.Events) != 241 {
+			t.Fatal("X16 overhead workload count drift")
+		}
+		for _, event := range lockedPlan.Events {
+			if len(event.BytesHex) != 2*2568 {
+				t.Fatal("X16 overhead wire bytes differ from locked 2,568-byte H")
+			}
 		}
 		modes := []string{"OFF", "ON"}
 		if block%2 == 1 {

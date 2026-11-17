@@ -116,6 +116,10 @@ def derive(session):
     require(plan.get("schema") == "pluto.file02.x16_overhead_plan.v1" and
             plan.get("status") == "LOCKED" and plan.get("scope") == "QA_ONLY" and
             plan.get("n_pairs") == 8 and plan.get("n_networks") == 16 and
+            plan.get("protocol_correction") ==
+                "research/protocol/FILE02_X16_PROBE_OVERHEAD_CORRECTION_20261117.md" and
+            plan.get("quarantined_prior_raw_manifest_sha256") ==
+                "d6f38452707aff536aac9cdad4e1e50c1e70a344ae0dadab278a9a2d15c4ec43" and
             plan.get("safety_caps") == [25, 65536, 16, 60] and
             plan.get("trace_mode") == "ON" and
             plan.get("ci_method") == "paired_block_percentile_bootstrap_20000_seed_20261116" and
