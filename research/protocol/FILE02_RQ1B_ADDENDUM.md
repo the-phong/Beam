@@ -43,6 +43,6 @@ occupancy, CheckTx service and socket queue wait, CPU and RSS. Unavailable
 measurements remain `null` with reasons. RPC single-host evidence does not
 support P2P-origin or multi-host conclusions.
 
-The [design comparison](../evidence/file02/SECTION2_RQ1_CONSISTENCY.md)
-explains why RQ1 and RQ1b are separate. The [proposal history](../evidence/file02/SECTION2_SERVICE_DEGRADATION_PROPOSAL.md)
-records the review candidate that preceded this Owner instruction.
+The accepted [RQ1 protocol](RESEARCH_PROTOCOL.md) defines the separate
+H-minus-CP resource-cost question. This addendum defines RQ1b's service
+contrast and endpoint independently.

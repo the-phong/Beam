@@ -3,7 +3,7 @@
 Date: 2026-11-14. A12 requires Actor D to originate transactions from
 multiple controlled peers toward four validators on an isolated testnet,
 then measure per-peer rates, ingress fairness, relay congestion and valid
-goodput. The accepted [`file02_factors.json`](../../config/file02_factors.json)
+goodput. The accepted [`file02_factors.json`](../../../configs/experiments/file02_factors.json)
 currently marks `RPC_MULTI=UNSUPPORTED`,
 `P2P_ORIGIN_INJECTION=UNSUPPORTED` and
 `FOUR_VALIDATOR_MULTI_HOST_PRIMARY=UNSUPPORTED`. The bounded load sender

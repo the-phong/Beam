@@ -6,7 +6,7 @@ import (
 )
 
 func TestBuildX10TripletPlans(t *testing.T) {
-	c, hash, err := ReadConfig(filepath.Join("..", "..", "..", "research", "config", "s06_pilot.json"))
+	c, hash, err := ReadConfig(filepath.Join("..", "..", "..", "configs", "experiments", "s06_pilot.json"))
 	if err != nil {
 		t.Fatal(err)
 	}

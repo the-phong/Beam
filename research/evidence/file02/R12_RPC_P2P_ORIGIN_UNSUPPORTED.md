@@ -2,7 +2,7 @@
 
 Date: 2026-11-13. R12 requires matched transactions sent through separate
 RPC and direct P2P origins, with end-to-end stages, timestamps and gossip
-path/counters. [`file02_factors.json`](../../config/file02_factors.json)
+path/counters. [`file02_factors.json`](../../../configs/experiments/file02_factors.json)
 lists `origins_available=["RPC"]` and
 `P2P_ORIGIN_INJECTION=UNSUPPORTED`. The current bounded load sender is an
 HTTP RPC client; the four-validator relay test begins with

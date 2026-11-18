@@ -11,7 +11,7 @@ import (
 
 func main() {
 	mode := flag.String("mode", "verify", "generate, generate-contention, or verify")
-	path := flag.String("file", "research/corpus/b0b1/public_corpus.json", "public corpus path")
+	path := flag.String("file", "experiments/scenarios/corpus/b0b1/public_corpus.json", "public corpus path")
 	flag.Parse()
 	if err := run(*mode, *path); err != nil {
 		fmt.Fprintln(os.Stderr, err)

@@ -18,7 +18,7 @@ import (
 
 func pilotConfig(t *testing.T) (Config, string) {
 	t.Helper()
-	c, hash, err := ReadConfig(filepath.Join("..", "..", "..", "research", "config", "s06_pilot.json"))
+	c, hash, err := ReadConfig(filepath.Join("..", "..", "..", "configs", "experiments", "s06_pilot.json"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -228,7 +228,7 @@ func TestFile02MempoolLimitReasonClassification(t *testing.T) {
 }
 
 func TestS06PublicCorpusOracleRejectsMislabel(t *testing.T) {
-	c, err := ReadScenarioCorpus(filepath.Join("..", "..", "..", "research", "corpus", "s06_scenarios.json"))
+	c, err := ReadScenarioCorpus(filepath.Join("..", "..", "..", "experiments", "scenarios", "corpus", "s06_scenarios.json"))
 	if err != nil {
 		t.Fatal(err)
 	}

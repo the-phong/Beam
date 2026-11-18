@@ -17,7 +17,7 @@ was run.
 
 ## Artifacts and oracle
 
-The [public corpus](../../corpus/s04_public_corpus.json) contains one common
+The [public corpus](../../../experiments/scenarios/corpus/s04_public_corpus.json) contains one common
 Genesis V4 and 34 immutable cases: eight per profile plus CP's nonzero pad
 and H's late bad ML proof. Each case records ID, profile, exact signed or
 mutated wire bytes, SHA-256, expected code and last stage, actor capability

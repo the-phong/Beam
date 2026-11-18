@@ -39,7 +39,7 @@ jobs:
         run: make benchmark-corpus
         timeout-minutes: 5
       - name: Verify Phase 05 result analysis
-        run: python3 -m unittest discover research/benchmarks/b0b1 -p 'test_*.py' -v
+        run: python3 -m unittest discover experiments/analysis/b0b1 -p 'test_*.py' -v
         timeout-minutes: 2
       - name: Verify Phase 05 real four-validator workload smoke
         run: make benchmark-smoke

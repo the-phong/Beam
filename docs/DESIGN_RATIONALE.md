@@ -1,0 +1,14 @@
+# Design rationale
+
+This repository implements a controlled blockchain experiment rather than claiming a new consensus or blockchain architecture.
+
+1. **CometBFT** supplies a pinned, tested BFT consensus, P2P and mempool path. This lets the study exercise real validator agreement without modifying consensus. Its native precheck/cache and scheduling remain possible confounders for application-cost questions.
+2. **A custom ABCI++ application** makes transaction encoding, authentication, state rules and AppHash explicit. It permits direct CheckTx measurements and proposal validity checks while preserving CometBFT's responsibility for ordering and networking. The custom application does not imply EVM semantics.
+3. **Four validators** exercise proposal, voting, relay and same-height AppHash agreement. The count supports a real multi-validator path; placing all four on one host does not supply independent failure domains or distributed-network latency.
+4. **C/CP/P/H** vary classical proof, canonical padding, post-quantum proof and hybrid proof under a shared logical transfer and state rule. This is an experimental comparison distinct from deployable B0 and B1 applications.
+5. **CP** has a valid classical secp256k1 transfer padded canonically to H's 2,568-byte wire size at the tested chain ID. H−CP therefore controls offered bytes and accepted transfer semantics more closely than H−C. It still includes parser and path differences, so it is not pure ML-DSA CPU cost.
+6. **One physical host** made fresh, controlled four-validator networks and source-locked instrumentation feasible inside safety limits. Shared CPU, disk, scheduler and loopback timing narrow external validity and can affect treatment contrasts.
+7. The system answers **RQ1** application resource cost and **RQ1b** legitimate-service impact under bounded invalid hybrid workloads. Later measurement work explores queue and resource mechanisms. It does not yet establish the original early-degradation event needed for RQ2, and RQ3 ML benefit has not been evaluated.
+8. The measured topology does **not** represent independent-host deployment, P2P-origin load, production capacity, Internet latency, an EVM chain or a general DoS outcome.
+
+The separate `internal/legacy`, `internal/classical`, `internal/hybrid` and `internal/experiment/profiles` domains preserve different accepted wire and state semantics. Merging them for superficial code reduction would confound comparisons or change protocol behavior. The directory organization instead separates node operation from measurement while retaining historical case IDs in locked plans and verifier names where provenance requires them. See [architecture](ARCHITECTURE.md), [profile semantics](AUTHENTICATION_PROFILES.md) and [limitations](../results/LIMITATIONS.md).

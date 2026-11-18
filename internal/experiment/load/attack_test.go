@@ -8,7 +8,7 @@ import (
 )
 
 func TestBuildAttackPairPlans(t *testing.T) {
-	config, hash, err := ReadConfig("../../../research/config/s06_pilot.json")
+	config, hash, err := ReadConfig("../../../configs/experiments/s06_pilot.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -79,7 +79,7 @@ func TestBuildAttackPairPlans(t *testing.T) {
 }
 
 func TestA08MixedAttackRatioAndStage(t *testing.T) {
-	config, hash, err := ReadConfig("../../../research/config/s06_pilot.json")
+	config, hash, err := ReadConfig("../../../configs/experiments/s06_pilot.json")
 	if err != nil {
 		t.Fatal(err)
 	}

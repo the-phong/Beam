@@ -33,7 +33,7 @@ meaning in the outside Checklist 02 and
 origin. P2P origin is available only after an actual P2P injector and oracle
 are implemented; observing relay does not make an RPC-origin run P2P-origin.
 The factor levels and exclusions are encoded in
-[`file02_factors.json`](../config/file02_factors.json). Numerical load levels
+[`file02_factors.json`](../../configs/experiments/file02_factors.json). Numerical load levels
 tested by the bounded T06 pilots are 2/6/12/20/23/25 tx/s on the single-host
 diagnostic topology. These are tested pilot rates, not confirmatory case rates
 or proven load regions. The [knee pilot](../evidence/file02/T06_KNEE_PILOT.md)
@@ -94,12 +94,12 @@ case-specific producers and figures remain for the later case work.
 ## Safety and current gate
 
 Only controlled loopback/private targets, disposable test keys and the S06
-caps in [`s06_pilot.json`](../config/s06_pilot.json) are allowed. The generator
+caps in [`s06_pilot.json`](../../configs/experiments/s06_pilot.json) are allowed. The generator
 and observer abort guards remain mandatory. S07 demonstrates a bounded
 four-validator oracle/recorder/load/abort chain; it is QA evidence, not
 confirmatory data. The Owner-authorized bounded T06 calibration and
 precision extension satisfy COMMON-06 with 12 independent networks and
-2,880 steady samples per profile; [the gate audit](../evidence/file02/COMMON_GATE_AUDIT.md)
+2,880 steady samples per profile; the historical Gate COMMON audit
 records the result. The later bounded knee pilot did not identify a
 defensible near/at/above-knee region; its preregistered flags and the
 observation-window limitation remain in the historical evidence. Gate COMMON

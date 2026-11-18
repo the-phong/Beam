@@ -1,7 +1,7 @@
 # X04 — locked prospective mechanism/service extension protocol
 
 Status: **LOCKED DESIGN BEFORE ANY NEW X MEASUREMENT**, 2026-11-15, under
-[D-045](../DECISIONS.md). This protocol creates a new RQ-Mechanism and new
+D-045. This protocol creates a new RQ-Mechanism and new
 continuous service estimands. It does **not** amend accepted RQ1 H−CP,
 RQ1b's fixed legitimate H stream, or the historical 3,000-ms endpoint and
 its negative result. It is a design lock, not evidence that the new

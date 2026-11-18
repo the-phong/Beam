@@ -3,10 +3,10 @@
 The outside Checklist 02 remains the operator checklist. Its sections 0–2
 were accepted for bounded pre-case readiness under D-038 and are implemented
 by the [common contract](FILE02_COMMON_CONTRACT.md),
-[factor registry](../config/file02_factors.json),
+[factor registry](../../configs/experiments/file02_factors.json),
 [metric dictionary](FILE02_METRICS.md) and
-[`file02_common.py`](../tools/file02_common.py). The template is
-[`file02_plan.template.json`](../config/file02_plan.template.json). Copy it
+[`file02_common.py`](../../experiments/analysis/file02_common.py). The template is
+[`file02_plan.template.json`](../../configs/experiments/file02_plan.template.json). Copy it
 into a private case directory and fill every field from the actual run
 configuration. `DRAFT` can be inspected with `--allow-draft`; a QC run requires
 `LOCKED`, a pilot reference, independent-run target and p99 precision rule.
@@ -81,12 +81,12 @@ Python standard library and adds no Go dependency.
 
 ## Section 2 contract after the bounded T06 pilots
 
-The [factor registry](../config/file02_factors.json) records six tested
+The [factor registry](../../configs/experiments/file02_factors.json) records six tested
 pilot rates and labels all three knee-relative levels
 `NOT_OBSERVED_WITHIN_SAFE_RANGE`. It does not turn those pilot rates into
-confirmatory case plans. The [metric registry](../config/file02_metrics.json)
+confirmatory case plans. The [metric registry](../../configs/experiments/file02_metrics.json)
 defines every canonical field, unit, capture point, availability time,
-calculation, limitation and status. The [artifact templates](../config/file02_artifact_templates.json)
+calculation, limitation and status. The [artifact templates](../../configs/experiments/file02_artifact_templates.json)
 declare the schemas and `PENDING_CASE_EXECUTION` placeholders for all eight
 required outputs and the observation envelope.
 
@@ -113,4 +113,4 @@ decision is `PENDING_CASE_EXECUTION`. Their schema/validator readiness is
 complete; the outside Checklist 02's per-experiment output boxes remain
 unchecked until actual authorized cases create those artifacts. Gate COMMON
 still requires Controller/Owner review of the knee-level limitation and the
-[RQ1 wording discrepancy](../evidence/file02/SECTION2_RQ1_CONSISTENCY.md).
+[RQ1 and RQ1b definitions](FILE02_RQ1B_ADDENDUM.md).

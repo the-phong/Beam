@@ -1,6 +1,6 @@
 # Section 2.1 factor and level audit
 
-The versioned [factor registry](../../config/file02_factors.json) was checked
+The versioned [factor registry](../../../configs/experiments/file02_factors.json) was checked
 against Checklist 02 section 2.1, `RESEARCH_PROTOCOL.md`, the S06 safety
 config and the T06 pilot evidence. C/CP/P/H and nine workload classes retain
 their documented meanings. `MLDSA_INVALID` is invalid for C/CP;

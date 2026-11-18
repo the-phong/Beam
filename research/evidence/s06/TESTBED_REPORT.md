@@ -2,7 +2,7 @@
 
 ## Provenance and scope
 
-Owner merged S05 Draft PR #16 into `test-mainet` at `ac91250ddff31d07b6dcb19f81878e149256e84f` and authorized S06. This report covers branch `research/s06-safe-testbed` in the original `pluto` directory. The test used Go 1.24.1 on Linux 6.18.33.2 WSL2, x86-64, Intel i7-12700H (20 logical CPUs), 19 GiB reported memory. Four validator processes shared this host. CometBFT is pinned to v0.38.26. The exact executable config is [`../../config/s06_pilot.json`](../../config/s06_pilot.json), SHA-256 `9bc640db8b8875af3f9a5e4f89faa1882e8f4bc10459997d1a891397768cf21a`. The public scenario corpus is [`../../corpus/s06_scenarios.json`](../../corpus/s06_scenarios.json), SHA-256 `6f43b725156f60deb0f0d2e6c451605bae479a5e890ff58f7e3be46c5a8ca0e2`.
+Owner merged S05 Draft PR #16 into `test-mainet` at `ac91250ddff31d07b6dcb19f81878e149256e84f` and authorized S06. This report covers branch `research/s06-safe-testbed` in the original `pluto` directory. The test used Go 1.24.1 on Linux 6.18.33.2 WSL2, x86-64, Intel i7-12700H (20 logical CPUs), 19 GiB reported memory. Four validator processes shared this host. CometBFT is pinned to v0.38.26. The exact executable config is [`../../config/s06_pilot.json`](../../../configs/experiments/s06_pilot.json), SHA-256 `9bc640db8b8875af3f9a5e4f89faa1882e8f4bc10459997d1a891397768cf21a`. The public scenario corpus is [`../../corpus/s06_scenarios.json`](../../../experiments/scenarios/corpus/s06_scenarios.json), SHA-256 `6f43b725156f60deb0f0d2e6c451605bae479a5e890ff58f7e3be46c5a8ca0e2`.
 
 ## Checks and observed result
 
