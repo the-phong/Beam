@@ -7,7 +7,7 @@ import (
 )
 
 func TestBuildX13InvalidPlan(t *testing.T) {
-	c, hash, err := ReadConfig("../../../research/config/s06_pilot.json")
+	c, hash, err := ReadConfig("../../../configs/experiments/s06_pilot.json")
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -1,7 +1,8 @@
 # Phase 05 matched-rate contention evidence audit
 
-This audit is for the Controller correction on Draft PR #10. It does not
-confer acceptance or authorize a DoS mechanism.
+This audit records the historical B0/B1 matched-rate contention dataset,
+its source identities, exclusions and published derived tables. It does not
+establish a DoS mechanism.
 
 ## Source and public fixtures
 
@@ -46,9 +47,8 @@ hash list can be audited independently when the corresponding files are made
 available through an Owner-approved channel.
 
 The 22 local regression/race/fuzz/benchmark command logs and their JSONL
-execution ledger are identified by
-[`CONTENTION_VERIFICATION_SHA256.txt`](CONTENTION_VERIFICATION_SHA256.txt)
-(23 files, manifest SHA-256
+execution ledger were identified by a historical 23-file verification
+manifest with SHA-256
 `724f452be7e6373adc8b7cacef3ca10515927ed58f6e53e73a589acb745ae579`).
 Every command exited 0 and the manifest check returned 0. The benchmark
 matrix command and repair ledgers are in the raw manifest above.
@@ -56,10 +56,9 @@ matrix command and repair ledgers are in the raw manifest above.
 Hosted push run `40332212464` and PR run `40332222233` both succeeded on
 correction implementation commit `547190a9f6b945cf327f8b6855704b887ad78bda`.
 Each had 14 successful job steps, including a real matched-rate smoke run.
-Downloaded hosted logs are retained locally under ignored
-`raw/hosted-ci-547190/`; their two hashes are in
-[`CONTENTION_HOSTED_CI_SHA256.txt`](CONTENTION_HOSTED_CI_SHA256.txt), manifest
-SHA-256 `0e26dc0a913870210a6c9eaa568521c580565cff809a2a2c14067146a6efe2b8`.
+Downloaded hosted logs were retained locally under ignored
+`raw/hosted-ci-547190/`; their two hashes were in the historical hosted CI
+manifest with SHA-256 `0e26dc0a913870210a6c9eaa568521c580565cff809a2a2c14067146a6efe2b8`.
 No hosted step or test-level SKIP/FAIL was observed. Full 78-run timing data
 was collected locally, not in CI.
 

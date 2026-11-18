@@ -3,7 +3,7 @@
 Date: 2026-11-13. R05 requires H baseline secp→ML verification compared
 with a reverse or earlier-reject policy under the same workload, plus
 stage reach counts, rejected-transaction CPU and correctness. The
-[factor registry](../../config/file02_factors.json) explicitly marks only
+[factor registry](../../../configs/experiments/file02_factors.json) explicitly marks only
 `BASELINE_VERIFY_ORDER` implemented; `REVERSE_VERIFY_ORDER` and
 `EARLY_REJECT` are `UNSUPPORTED`. The accepted
 [`EvaluateTrustedObserved`](../../../internal/experiment/profiles/state.go)

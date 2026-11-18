@@ -14,7 +14,7 @@ import (
 )
 
 func TestMeasurementDoesNotChangeB1Result(t *testing.T) {
-	c, _, err := corpus.Load("../../../research/corpus/b0b1/public_corpus.json")
+	c, _, err := corpus.Load("../../../experiments/scenarios/corpus/b0b1/public_corpus.json")
 	if err != nil {
 		t.Fatal(err)
 	}

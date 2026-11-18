@@ -1,6 +1,5 @@
 /build/
 /.pluto/
-/results/
 priv_validator_key.json
 priv_validator_state.json
 node_key.json

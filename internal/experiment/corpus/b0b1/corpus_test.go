@@ -8,8 +8,8 @@ import (
 	"testing"
 )
 
-const publicCorpus = "../../../../research/corpus/b0b1/public_corpus.json"
-const contentionCorpus = "../../../../research/corpus/b0b1/public_corpus_contention.json"
+const publicCorpus = "../../../../experiments/scenarios/corpus/b0b1/public_corpus.json"
+const contentionCorpus = "../../../../experiments/scenarios/corpus/b0b1/public_corpus_contention.json"
 
 func TestContentionCorpusOracleAndNonceSequence(t *testing.T) {
 	c, _, err := Load(contentionCorpus)

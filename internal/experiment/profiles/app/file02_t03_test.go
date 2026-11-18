@@ -13,7 +13,7 @@ import (
 // TestFile02T03LateInvalidStageOrdering ensures late ML rejection on H
 // actually passes the secp stage, while earlier failures stop before it.
 func TestFile02T03LateInvalidStageOrdering(t *testing.T) {
-	corpus, err := researchv2corpus.Read(filepath.Join("..", "..", "..", "..", "research", "corpus", "s04_public_corpus.json"))
+	corpus, err := researchv2corpus.Read(filepath.Join("..", "..", "..", "..", "experiments", "scenarios", "corpus", "s04_public_corpus.json"))
 	if err != nil {
 		t.Fatal(err)
 	}

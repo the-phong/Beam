@@ -1,6 +1,6 @@
 # File 02 metric dictionary v2
 
-The machine-readable source is [`file02_metrics.json`](../config/file02_metrics.json). Each row defines unit, capture point, availability time, calculation, limitation and implementation status. `AVAILABLE_WITH_CASE` means the capture path exists but no confirmatory case has run. `PENDING_CASE_EXECUTION` requires its own case producer. `UNAVAILABLE` must be JSON `null` with a reason; a zero is permitted only after a real measurement. All per-run results retain the full field set.
+The machine-readable source is [`file02_metrics.json`](../../configs/experiments/file02_metrics.json). Each row defines unit, capture point, availability time, calculation, limitation and implementation status. `AVAILABLE_WITH_CASE` means the capture path exists but no confirmatory case has run. `PENDING_CASE_EXECUTION` requires its own case producer. `UNAVAILABLE` must be JSON `null` with a reason; a zero is permitted only after a real measurement. All per-run results retain the full field set.
 
 The T06 knee pilot distinguishes **actual socket writes** from RPC acceptance; **eventual goodput** includes drain commits and cannot be called sustainable steady-state throughput. CheckTx socket queue wait is one socket interval, not total transaction queue wait. The 100-ms all-four block-scan observation is an inclusion **upper bound**, not an exact commit timestamp; it cannot populate an exact inclusion-latency field. Percentiles require n, censoring semantics and independent-run precision review.
 

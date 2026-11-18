@@ -5,7 +5,7 @@ Status: S02 design candidate, 2026-11-09. The source baseline is `test-mainet` c
 2026-11-13 addendum: the Owner kept the accepted RQ1 contrast and directed
 the distinct [RQ1b legitimate-service question](FILE02_RQ1B_ADDENDUM.md)
 for later case planning. The original RQ1 row and decision rule below are
-unchanged. [D-038](../DECISIONS.md) records Gate COMMON's bounded pre-case
+unchanged. D-038 records Gate COMMON's bounded pre-case
 acceptance; it does not supply confirmatory data.
 
 ## Research questions and falsifiable decisions

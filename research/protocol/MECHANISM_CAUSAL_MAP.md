@@ -2,7 +2,7 @@
 
 Status: reviewed design input for the bounded X extension, 2026-11-14.
 Source baseline: PR #28 merge `da46f0cc4f87548825d9768d9242e346c17bb137`,
-[D-045](../DECISIONS.md), accepted [RQ1](RESEARCH_PROTOCOL.md) and separate
+D-045, accepted [RQ1](RESEARCH_PROTOCOL.md) and separate
 [RQ1b](FILE02_RQ1B_ADDENDUM.md). The graph is a set of testable pathways,
 not a claim that any path caused degradation. All observed Q/A services
 remain negative at the original 3-second endpoint.

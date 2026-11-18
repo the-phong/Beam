@@ -31,8 +31,7 @@ crypto CPU. No sustained bottleneck or knee was observed in the tested
 safe range; 25 tx/s remains the safety cap, not chain capacity.
 
 The failed QA-only schedule-representation attempt and passing QA-only
-3-network attempt are documented in [X13_PREFLIGHT_QA.md](X13_PREFLIGHT_QA.md)
-and excluded. The first full 36-network attempt was interrupted and is
+3-network attempt were excluded. The first full 36-network attempt was interrupted and is
 quarantined for raw-integrity failure in
 [X13_INTERRUPTED_ATTEMPT.md](X13_INTERRUPTED_ATTEMPT.md); none of its
 24 complete runs enters this table or the CIs. No case was selectively

@@ -23,7 +23,7 @@ func writeJSON(t *testing.T, path string, value any) {
 }
 
 func TestReplayAcceptsFullStateAndRejectsCorruption(t *testing.T) {
-	c, configHash, err := load.ReadConfig("../../../research/config/s06_pilot.json")
+	c, configHash, err := load.ReadConfig("../../../configs/experiments/s06_pilot.json")
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -1,0 +1,21 @@
+# Experimental methodology
+
+## Questions and estimands
+
+**RQ1 resource cost** compares accepted C/CP/P/H transfers. Its accepted primary contrast is H−CP application CheckTx service wall time at matched offered valid tx/s and exact CP/H wire size. Direct crypto microbenchmarks and C−CP size controls are separate mechanism evidence. **RQ1b legitimate service** holds six valid H/s fixed and compares three arms: L (no background), B (+14 valid H/s), I (+14 late-bad-ML H/s). I−L estimates adding invalid background; I−B estimates replacement of matched offered transactions and bytes. These contrasts must not be interchanged. RQ2 early service-degradation detection requires a measured predefined service event; it is NOT ESTABLISHED in the tested scope. RQ3 ML benefit is NOT_RUN.
+
+## Factors and controls
+
+The controlled factors include profile C/CP/P/H, invalid stage/class, offered rate and bytes, benign versus invalid background, observer ON/OFF and network order. Published L/B/I B and I arms each offer 20 H-sized tx/s (51,360 B/s); fixed legitimate signed identities, bytes, send offsets, genesis, topology and safety configuration are paired. X13 separately probes total 20/23/25 tx/s with six fixed valid H/s. The accepted safety ceiling is 25 tx/s, 65,536 B/s, 16 outstanding requests and 60 seconds per run. A tested level is not an observed knee.
+
+Scenarios use pre-signed public/nonproduction fixtures and absolute send deadlines. The load guard rejects non-loopback endpoints and stops on safety, oracle, rate or observer failure. Fresh four-validator networks are the independent run units, with balanced order and matched seeds/fixtures where the locked plan requires them. The validator processes share one physical host; RPC origin is validator 0. The locked case plans in [`research/protocol`](../research/protocol/) specify exact per-case schedule, repetitions, QC and exclusion rules. Public scenario inputs are in [`experiments/scenarios/corpus`](../experiments/scenarios/corpus/).
+
+## Capture, inference and quality control
+
+Optional CheckTx stage spans, process CPU/RSS, Comet mempool/relay counters, generator timing, per-validator block observations and X07 queue markers are collected at their stated points. The correctness oracle checks expected rejection stage, exact-once valid commit, no invalid commit, state and AppHash agreement at all four validators. Raw run sessions are private, immutable and SHA-256 bound. The independent verifier recomputes per-run JSON/CSV, QC, aggregate, confidence intervals and decision artifacts before a run enters analysis. Failed or interrupted sessions remain frozen and excluded with reasons; they are never silently dropped or reused.
+
+The experimental unit for confidence intervals is a fresh network or matched network block, not individual transactions treated as independent replicates. Paired bootstrap CIs use the case's preregistered seed/count. X10's primary continuous metric is mean first-all-four block-observation **upper bound** with 100-ms scanner granularity; the original 3-second timely fraction remains a distinct binary endpoint. Its ±100-ms research-relevance margin was registered before the new confirmatory runs, not adopted from a production SLO. X13 rate sensitivity is descriptive and does not estimate sustainable steady-state throughput. See [metrics](METRICS.md), [resource result](../results/RESOURCE_COST.md) and [service result](../results/SERVICE_IMPACT.md).
+
+## Provenance and threats
+
+Each published contrast links to source commit, plan, raw-manifest SHA-256, QC decision and verifier in [`results/provenance/INDEX.md`](../results/provenance/INDEX.md). The original source revision in ordinary Git history must be used for exact historical raw verification if a later structural refactor changes paths. The large private sessions in ignored `research/artifacts/` are unavailable in a fresh public clone; public aggregates and manifests can be checked, while complete raw rederivation requires authorized access to those sessions. Shared-host interference, scanner phase, probe perturbation, RPC-origin restriction, unavailable exact stage CPU and lack of observed saturation bound causal and external claims. [Limitations](../results/LIMITATIONS.md) records these boundaries.

@@ -1,3 +1,0 @@
-*.log -whitespace
-*.diff -whitespace
-source_review_bundle.txt -whitespace

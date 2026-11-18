@@ -35,18 +35,21 @@ six balanced rate orders and the safety byte cap.
 
 ## Recompute commands
 
-Run from repository root with the private ignored sessions present:
+The commands below use the current layout and require the private ignored
+sessions. For source-locked full rederivation, check out each study's locked
+source commit in this same repository and use the paths and verifier from
+that commit; the locked plan and raw bytes must remain unchanged.
 
 ```sh
-python3 research/tools/file02_x10.py verify research/artifacts/file02/x10-20261115T051140Z-3d69d6eb
-python3 research/tools/file02_x13.py verify research/artifacts/file02/x13-20261115T135447Z-a960b885
-python3 research/tools/file02_x11_historical.py check
-python3 research/tools/file02_x15_secondary.py check
-python3 research/tools/file02_x16_resources.py check
-python3 research/tools/file02_x17_figures.py check
-python3 -m unittest discover -s research/tools -p 'test_file02_common.py' -v
-python3 -m unittest discover -s research/tools -p 'test_file02_x10.py' -v
-python3 -m unittest discover -s research/tools -p 'test_file02_x13.py' -v
+python3 experiments/analysis/file02_x10.py verify research/artifacts/file02/x10-20261115T051140Z-3d69d6eb
+python3 experiments/analysis/file02_x13.py verify research/artifacts/file02/x13-20261115T135447Z-a960b885
+python3 experiments/analysis/file02_x11_historical.py check
+python3 experiments/analysis/file02_x15_secondary.py check
+python3 experiments/analysis/file02_x16_resources.py check
+python3 experiments/analysis/file02_x17_figures.py check
+python3 -m unittest discover -s experiments/analysis -p 'test_file02_common.py' -v
+python3 -m unittest discover -s experiments/analysis -p 'test_file02_x10.py' -v
+python3 -m unittest discover -s experiments/analysis -p 'test_file02_x13.py' -v
 make verify
 ```
 
@@ -63,11 +66,11 @@ remain unchanged; the publication figures are separate outputs.
 
 | Attempt | Disposition | Evidence |
 | --- | --- | --- |
-| X10 one-block preflight | QA_ONLY, excluded | Raw manifest `9081a49c...`; [preflight note](X10_PREFLIGHT_QA.md). |
+| X10 one-block preflight | QA_ONLY, excluded | Raw manifest `9081a49c...`; excluded preflight record in the frozen private session. |
 | X10 first 72-network attempt | `INVALID_FOR_INFERENCE`; stopped after 31 good arms due one `RATE_MISS`, no effect/CI | Raw manifest `b75610e8...`; [first-attempt QC](X10_FIRST_ATTEMPT_QC.md). |
 | X10 successful second full attempt | PASS 72/72, no excluded block | Raw manifest `a97e1665...`; [audit](X10_THREE_ARM_AUDIT.md). The original derived `analysis-v1/` is frozen; the corrected decision label changes no raw/effect/CI. |
-| X13 first preflight | `INVALID_FOR_INFERENCE`; schedule representation mismatch before sends | Raw manifest `5db79c07...`; [preflight note](X13_PREFLIGHT_QA.md). |
-| X13 second preflight | QA_ONLY 3/3; excluded | Raw manifest `0e0a86a4...`; [preflight note](X13_PREFLIGHT_QA.md). |
+| X13 first preflight | `INVALID_FOR_INFERENCE`; schedule representation mismatch before sends | Raw manifest `5db79c07...`; excluded preflight record in the frozen private session. |
+| X13 second preflight | QA_ONLY 3/3; excluded | Raw manifest `0e0a86a4...`; excluded preflight record in the frozen private session. |
 | X13 first full attempt | **Quarantined** after Owner interruption: 24 complete run oracles, 12 missing/incomplete; manifest subsequently mismatches one detached generator write | Manifest file SHA `20c13714...` is **not an integrity PASS**; [interruption audit](X13_INTERRUPTED_ATTEMPT.md). No estimator uses its data. |
 | X13 successful whole-session restart | PASS 36/36, no excluded block | Raw manifest `9eaa4d99...`; [audit](X13_SAFE_RANGE_SENSITIVITY_AUDIT.md). |
 

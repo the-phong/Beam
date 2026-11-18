@@ -25,7 +25,7 @@ type fixture struct {
 
 func baseFixture(t testing.TB) (Address, Address, []byte) {
 	t.Helper()
-	data, err := os.ReadFile("../../../research/evidence/phase_03b/golden_vectors.json")
+	data, err := os.ReadFile("../../../tests/fixtures/b0_golden_vectors.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -128,7 +128,7 @@ func TestGenesisCanonicalAndBoundaries(t *testing.T) {
 }
 
 func TestIndependentGoldenVectors(t *testing.T) {
-	data, err := os.ReadFile("../../../research/evidence/phase_03c/state_vectors.json")
+	data, err := os.ReadFile("../../../tests/fixtures/b0_state_vectors.json")
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -34,7 +34,7 @@ type vector struct {
 
 func fixture(t *testing.T) ([]byte, []byte, b0state.Address, b0state.Address) {
 	t.Helper()
-	data, err := osReadFile("../../../research/evidence/phase_03b/golden_vectors.json")
+	data, err := osReadFile("../../../tests/fixtures/b0_golden_vectors.json")
 	if err != nil {
 		t.Fatal(err)
 	}

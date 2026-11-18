@@ -17,7 +17,7 @@ import (
 )
 
 func TestS05CheckTxTelemetryONOFFCorpus(t *testing.T) {
-	c, err := researchv2corpus.Read(filepath.Join("..", "..", "..", "..", "research", "corpus", "s04_public_corpus.json"))
+	c, err := researchv2corpus.Read(filepath.Join("..", "..", "..", "..", "experiments", "scenarios", "corpus", "s04_public_corpus.json"))
 	if err != nil {
 		t.Fatal(err)
 	}

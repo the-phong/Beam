@@ -1,2 +1,0 @@
-# Preserve verbatim CometBFT output while keeping whitespace checks on source.
-*.log -whitespace

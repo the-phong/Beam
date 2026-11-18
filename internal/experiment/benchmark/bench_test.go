@@ -23,7 +23,7 @@ var sinkDigest [32]byte
 
 func fixture(b *testing.B, name string) (corpus.Profile, []byte, []byte, []byte, []byte) {
 	b.Helper()
-	c, _, err := corpus.Load("../../../research/corpus/b0b1/public_corpus.json")
+	c, _, err := corpus.Load("../../../experiments/scenarios/corpus/b0b1/public_corpus.json")
 	if err != nil {
 		b.Fatal(err)
 	}
