@@ -248,6 +248,20 @@ prometheus_listen_addr = "127.0.0.1:10003"
         with self.assertRaisesRegex(ValueError, "raw hash mismatch"):
             f.verify_raw(raw)
 
+    def test_freeze_raw_accepts_ignored_repository_artifact(self):
+        artifacts = f.ROOT / "research" / "artifacts"
+        artifacts.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=artifacts) as directory:
+            raw = Path(directory) / "raw"
+            raw.mkdir()
+            item = raw / "synthetic.json"
+            item.write_text("{}\n")
+            try:
+                self.assertEqual(f.freeze_raw(raw), f.verify_raw(raw))
+            finally:
+                raw.chmod(0o755)
+                item.chmod(0o644)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -172,7 +172,7 @@ def freeze_raw(raw_dir):
     require(not Path(raw_dir).is_symlink(), "raw directory symlink")
     root = Path(raw_dir).resolve()
     require(root.is_dir() and not (root / "manifest.json").exists(), "raw directory must exist without manifest")
-    repository = ROOT.parent.resolve()
+    repository = ROOT.resolve()
     if root.is_relative_to(repository):
         ignored = subprocess.run(["git", "check-ignore", "-q", "--", str(root)], cwd=repository)
         require(ignored.returncode == 0, "raw directory inside repository must be Git-ignored")
